@@ -294,9 +294,11 @@ idRenderModel *idRenderModelManagerLocal::GetModel( const char *modelName, bool 
 	if ( ( extension.Icmp( "ase" ) == 0 ) || ( extension.Icmp( "lwo" ) == 0 ) || ( extension.Icmp( "flt" ) == 0 ) ) {
 		model = new idRenderModelStatic;
 		model->InitFromFile( modelName );
+#ifdef ID_MAYA_IMPORT_TOOL
 	} else if ( extension.Icmp( "ma" ) == 0 ) {
 		model = new idRenderModelStatic;
 		model->InitFromFile( modelName );
+#endif
 	} else if ( extension.Icmp( MD5_MESH_EXT ) == 0 ) {
 		model = new idRenderModelMD5;
 		model->InitFromFile( modelName );

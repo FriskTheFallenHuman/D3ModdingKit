@@ -297,9 +297,11 @@ void idRenderModelStatic::InitFromFile( const char *fileName ) {
 	} else if ( extension.Icmp( "flt" ) == 0 ) {
 		loaded		= LoadFLT( name );
 		reloadable	= true;
+#ifdef ID_MAYA_IMPORT_TOOL
 	} else if ( extension.Icmp( "ma" ) == 0 ) {
 		loaded		= LoadMA( name );
 		reloadable	= true;
+#endif
 	} else if ( extension.Icmp( "obj" ) == 0 ) {
 		loaded		= LoadOBJ( name );
 		reloadable = true;
@@ -1551,6 +1553,7 @@ struct aseModel_s *idRenderModelStatic::ConvertLWOToASE( const struct st_lwObjec
 	return ase;
 }
 
+#ifdef ID_MAYA_IMPORT_TOOL
 /*
 =================
 idRenderModelStatic::ConvertMAToModelSurfaces
@@ -1878,6 +1881,7 @@ bool idRenderModelStatic::ConvertMAToModelSurfaces (const struct maModel_s *ma )
 
 	return true;
 }
+#endif
 
 /*
 =================
@@ -1966,6 +1970,7 @@ bool idRenderModelStatic::LoadLWO( const char *fileName ) {
 	return true;
 }
 
+#ifdef ID_MAYA_IMPORT_TOOL
 /*
 =================
 idRenderModelStatic::LoadMA
@@ -1985,6 +1990,7 @@ bool idRenderModelStatic::LoadMA( const char *fileName ) {
 
 	return true;
 }
+#endif
 
 /*
 =================

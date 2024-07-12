@@ -2980,7 +2980,11 @@ cm_model_t *idCollisionModelManagerLocal::LoadRenderModel( const char *fileName 
 
 	// only load ASE and LWO models
 	idStr( fileName ).ExtractFileExtension( extension );
-	if ( ( extension.Icmp( "ase" ) != 0 ) && ( extension.Icmp( "lwo" ) != 0 ) && ( extension.Icmp( "ma" ) != 0 ) ) {
+#ifdef ID_MAYA_IMPORT_TOOL
+	if ( ( extension.Icmp( "ase" ) != 0 ) && ( extension.Icmp( "lwo" ) != 0 ) && ( extension.Icmp( "md3" ) != 0 ) && ( extension.Icmp( "ma" ) != 0 ) ) {
+#else
+	if ( ( extension.Icmp( "ase" ) != 0 ) && ( extension.Icmp( "lwo" ) != 0 ) && ( extension.Icmp( "md3" ) != 0 ) ) {
+#endif
 		return NULL;
 	}
 

@@ -93,12 +93,16 @@ public:
 	bool						LoadASE( const char *fileName );
 	bool						LoadLWO( const char *fileName );
 	bool						LoadFLT( const char *fileName );
+#ifdef ID_MAYA_IMPORT_TOOL
 	bool						LoadMA( const char *filename );
+#endif
 	bool						LoadOBJ( const char *filename );
 
 	bool						ConvertASEToModelSurfaces( const struct aseModel_s *ase );
 	bool						ConvertLWOToModelSurfaces( const struct st_lwObject *lwo );
-	bool						ConvertMAToModelSurfaces (const struct maModel_s *ma );
+#ifdef ID_MAYA_IMPORT_TOOL
+	bool						ConvertMAToModelSurfaces( const struct maModel_s *ma );
+#endif
 	bool						ConvertOBJToModelSurfaces( const char *filename );
 
 	struct aseModel_s *			ConvertLWOToASE( const struct st_lwObject *obj, const char *fileName );

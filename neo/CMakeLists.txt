@@ -72,22 +72,27 @@ set( MFC_TOOLS OFF ) # (Visual Studio + SDL2 only)
 # Define our cpu variable
 include( CPUDefine )
 
+# Nicely tied our thirdparty libraries here
+set( sys_thirdparty_libs )
+
 # libs
 find_package( Stb REQUIRED )
 include_directories( ${Stb_INCLUDE_DIR} )
 
 find_package( OpenAL REQUIRED )
 include_directories( ${OPENAL_INCLUDE_DIR} )
+list( APPEND sys_thirdparty_libs ${OPENAL_LIBRARY} )
 
 find_package( SDL2 REQUIRED )
 include_directories( ${SDL2_INCLUDE_DIR} )
-set( SDL2_LIBRARY SDL2::SDL2 )
+list( APPEND sys_thirdparty_libs SDL2::SDL2 )
 
 if ( FREETYPE )
-	find_package(Freetype REQUIRED)
+	find_package( Freetype REQUIRED )
 	find_path( FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype" )
 	include_directories( ${FREETYPE_INCLUDE_DIR} )
 	add_definitions( -DID_BUILD_FREETYPE )
+	list( APPEND sys_thirdparty_libs Freetype::Freetype )
 endif()
 
 if( IMGUI )
@@ -105,6 +110,7 @@ if( CURL_FOUND )
 	set( ID_ENABLE_CURL ON )
 	include_directories( ${CURL_INCLUDE_DIR} )
 	message( STATUS "libcurl found and enabled" )
+	list( APPEND sys_thirdparty_libs ${CURL_LIBRARY} )
 else()
 	message( WARNING "libcurl not found, server downloads won't be available (apart from that the engine will work)" )
 	set( ID_ENABLE_CURL OFF )
@@ -142,6 +148,8 @@ if( TOOLS )
 			BUILD_COMMAND ""
 			INSTALL_COMMAND ""
 		)
+
+		add_definitions( -DID_MAYA_IMPORT_TOOL )
 
 		set_target_properties( MayaDevKit PROPERTIES FOLDER "libs" )
 	endif()
@@ -502,6 +510,13 @@ set(src_renderer
 
 add_globbed_headers(src_renderer "renderer")
 
+if ( NOT MAYA_IMPORT )
+	list( REMOVE_ITEM src_renderer
+		renderer/Model_ma.cpp
+		renderer/Model_ma.h
+	)
+endif()
+
 set(src_framework
 	framework/CVarSystem.cpp
 	framework/CmdSystem.cpp
@@ -813,8 +828,6 @@ if ( NOT MAYA_IMPORT )
 		game/anim/Anim_Import.cpp
 		game/anim/Anim_Import.h
 	)
-else()	
-	add_definitions( -DID_MAYA_IMPORT_TOOL )
 endif()
 
 set(src_d3xp
@@ -905,8 +918,6 @@ if ( NOT MAYA_IMPORT )
 		d3xp/anim/Anim_Import.cpp
 		d3xp/anim/Anim_Import.h
 	)
-else()
-	add_definitions( -DID_MAYA_IMPORT_TOOL )
 endif()
 
 set(src_debuggerServer
@@ -1195,10 +1206,7 @@ if( ENGINE )
 
 	target_link_libraries( ${DHEWM3BINARY}
 		idlib
-		$<$<BOOL:FREETYPE>:Freetype::Freetype>
-		${OPENAL_LIBRARY}
-		${CURL_LIBRARY}
-		${SDL2_LIBRARY}
+		${sys_thirdparty_libs}
 		${sys_libs}
 	)
 
@@ -1243,12 +1251,12 @@ if( DEDICATED )
 	set_target_properties( ${DHEWM3BINARY}ded PROPERTIES LINK_FLAGS "${ldflags}" )
 	set_target_properties( ${DHEWM3BINARY}ded PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} )
 	set_target_properties( ${DHEWM3BINARY}ded PROPERTIES FOLDER "exes" )
+	
+	list( REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY} )
 
 	target_link_libraries( ${DHEWM3BINARY}ded
 		idlib
-		$<$<BOOL:FREETYPE>:Freetype::Freetype>
-		${CURL_LIBRARY}
-		${SDL2_LIBRARY}
+		${sys_thirdparty_libs}
 		${sys_libs}
 	)
 
