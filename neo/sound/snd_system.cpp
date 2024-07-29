@@ -30,6 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "snd_local.h"
+#include <limits.h>
 
 #ifdef ID_DEDICATED
 idCVar idSoundSystemLocal::s_noSound( "s_noSound", "1", CVAR_SOUND | CVAR_BOOL | CVAR_ROM, "" );
@@ -666,7 +667,7 @@ bool idSoundSystemLocal::ShutdownHW() {
 idSoundSystemLocal::ResetALDevice
 
  DG: resets the OpenAL device, applying the settings of s_alHRTF and s_alOutputLimiter
-     returns false if that failed, or the necessary OpenAL extension isn't available
+	 returns false if that failed, or the necessary OpenAL extension isn't available
 ===============
 */
 bool idSoundSystemLocal::ResetALDevice()
@@ -698,10 +699,10 @@ bool idSoundSystemLocal::ResetALDevice()
 idSoundSystemLocal::CheckDeviceAndRecoverIfNeeded
 
  DG: returns true if openalDevice is still available,
-     otherwise it will try to recover the device and return false while it's gone
-     (display audio sound devices sometimes disappear for a few seconds when switching resolution)
-     As this is called every frame, it now also checks if s_alHRTF or s_alOutputLimiter are
-     modified and if they are, resets the device to apply the change
+	 otherwise it will try to recover the device and return false while it's gone
+	 (display audio sound devices sometimes disappear for a few seconds when switching resolution)
+	 As this is called every frame, it now also checks if s_alHRTF or s_alOutputLimiter are
+	 modified and if they are, resets the device to apply the change
 ===============
 */
 bool idSoundSystemLocal::CheckDeviceAndRecoverIfNeeded()
@@ -714,7 +715,7 @@ bool idSoundSystemLocal::CheckDeviceAndRecoverIfNeeded()
 
 	if ( s_alOutputLimiter.IsModified() || s_alHRTF.IsModified() ) {
 		common->Printf( "%s is modified, trying to reset OpenAL device to apply that change\n",
-		                s_alOutputLimiter.IsModified() ? "s_alOutputLimiter" : "s_alHRTF" );
+						s_alOutputLimiter.IsModified() ? "s_alOutputLimiter" : "s_alHRTF" );
 		return ResetALDevice();
 	}
 
