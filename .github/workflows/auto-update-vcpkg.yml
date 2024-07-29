@@ -16,6 +16,7 @@ jobs:
         id: get_commit_id
         run: |
           cd vcpkg
+          git checkout --end-of-options master --
           git pull origin master
           echo "::set-output name=commit_id::$(git rev-parse HEAD)"
 
