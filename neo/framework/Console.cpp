@@ -26,21 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/BuildVersion.h"
-#include "framework/CVarSystem.h"
-#include "framework/Session.h"
-#include "framework/EditField.h"
-#include "framework/KeyInput.h"
-#include "framework/EventLoop.h"
-#include "renderer/RenderSystem.h"
-#include "sound/sound.h"
-
-#include "framework/Console.h"
-
-#include "tools/edit_public.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 void SCR_DrawTextLeftAlign( float &y, VERIFY_FORMAT_STRING const char *text, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
 void SCR_DrawTextRightAlign( float &y, VERIFY_FORMAT_STRING const char *text, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
@@ -1184,7 +1171,7 @@ void idConsoleLocal::DrawSolidConsole( float frac ) {
 		y -= SMALLCHAR_HEIGHT;
 		rows--;
 	}
-	
+
 	row = display;
 
 	if ( x == 0 ) {
@@ -1200,7 +1187,7 @@ void idConsoleLocal::DrawSolidConsole( float frac ) {
 		}
 		if ( current - row >= TOTAL_LINES ) {
 			// past scrollback wrap point
-			continue;	
+			continue;
 		}
 
 		text_p = text + (row % TOTAL_LINES)*LINE_WIDTH;

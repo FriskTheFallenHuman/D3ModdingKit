@@ -29,12 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MULTIPLAYERGAME_H__
 #define	__MULTIPLAYERGAME_H__
 
-#include "idlib/BitMsg.h"
-#include "idlib/Str.h"
-#include "ui/UserInterface.h"
-
-#include "GameBase.h"
-
 /*
 ===============================================================================
 

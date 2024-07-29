@@ -26,13 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/Heap.h"
-#include "framework/Common.h"
-#include <limits.h>
-
-#include "idlib/Str.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 // DG: idDynamicBlockAlloc isn't thread-safe and idStr is used both in the main thread
 //     and the async thread! For some reason this seems to cause lots of problems on

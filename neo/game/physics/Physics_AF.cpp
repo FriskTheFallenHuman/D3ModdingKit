@@ -26,17 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Quat.h"
-#include "idlib/Timer.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Entity.h"
-#include "Player.h"
-#include "WorldSpawn.h"
-
-#include "physics/Physics_AF.h"
-#include "physics/Physics_Liquid.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idPhysics_Base, idPhysics_AF )
 END_CLASS

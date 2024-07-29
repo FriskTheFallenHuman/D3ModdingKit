@@ -26,10 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/DrawVert.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/DeviceContext.h"
+#include "DeviceContext.h"
+#include "../renderer/tr_local.h"
 
 idVec4 idDeviceContext::colorPurple;
 idVec4 idDeviceContext::colorOrange;

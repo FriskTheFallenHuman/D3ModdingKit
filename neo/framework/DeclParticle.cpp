@@ -26,12 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/DrawVert.h"
-#include "framework/File.h"
-#include "renderer/RenderWorld.h"
-#include "renderer/Model.h" // MD5_ENABLE_GIBS
-#include "framework/DeclParticle.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 struct ParticleParmDesc {
 	const char *name;

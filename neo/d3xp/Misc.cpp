@@ -31,19 +31,10 @@ Various utility objects and functions.
 
 */
 
-#include "sys/platform.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "script/Script_Thread.h"
-#include "ai/AI.h"
-#include "Player.h"
-#include "Camera.h"
-#include "WorldSpawn.h"
-#include "Moveable.h"
-#include "SmokeParticles.h"
-
-#include "Misc.h"
+#include "Game_local.h"
 
 /*
 ===============================================================================

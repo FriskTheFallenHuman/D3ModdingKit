@@ -1,9 +1,8 @@
 
-#define IMGUI_DEFINE_MATH_OPERATORS
+#include "precompiled.h"
+#pragma hdrstop
 
 #include <SDL.h>
-
-#include "sys_imgui.h"
 
 #ifdef D3_SDL_X11
 #include <dlfcn.h>
@@ -15,12 +14,9 @@ typedef char* (*MY_XGETDEFAULTFUN)(Display*, const char*, const char*);
 #include "../libs/imgui/backends/imgui_impl_opengl2.h"
 #include "../libs/imgui/backends/imgui_impl_sdl2.h"
 
-#include "framework/Common.h"
-#include "framework/KeyInput.h"
-#include "framework/Session_local.h" // sessLocal.GetActiveMenu()
-#include "renderer/qgl.h"
-#include "renderer/tr_local.h" // glconfig
-#include "ui/DeviceContext.h"
+#include "../framework/Session_local.h" // sessLocal.GetActiveMenu()
+#include "../renderer/tr_local.h" // glconfig
+#include "../ui/DeviceContext.h"
 
 extern void Com_DrawDhewm3SettingsMenu(); // in framework/dhewm3SettingsMenu.cpp
 extern void Com_OpenCloseDhewm3SettingsMenu( bool open ); // ditto

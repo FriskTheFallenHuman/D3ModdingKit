@@ -26,12 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderWorld_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
+
 
 /*
 ================

@@ -26,14 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/async/NetworkSystem.h"
-#include "renderer/RenderSystem.h"
-
-#include "gamesys/SysCmds.h"
-#include "Entity.h"
-#include "Player.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "Game_local.h"
 

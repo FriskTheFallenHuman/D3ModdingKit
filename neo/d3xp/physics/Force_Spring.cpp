@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "physics/Physics.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Force_Spring.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idForce, idForce_Spring )
 END_CLASS

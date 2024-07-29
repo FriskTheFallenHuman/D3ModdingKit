@@ -26,6 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #if defined( MACOS_X ) || defined(__unix__)
 #include <signal.h>
 #include <sys/types.h>
@@ -34,17 +37,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
-
-#include <SDL_endian.h>
-
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/math/Polynomial.h"
-#include "idlib/Str.h"
-#include "idlib/Dict.h"
-#include "framework/Common.h"
-
-#include "idlib/Lib.h"
 
 /*
 ===============================================================================

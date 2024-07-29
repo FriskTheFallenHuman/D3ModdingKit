@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PCH_H__
 #define __PCH_H__
 
-#include "framework.h"
-
 void InitAfx( void );
 
 // tool tips

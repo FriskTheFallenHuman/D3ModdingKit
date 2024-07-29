@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-#include "framework/BuildVersion.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "GameBase.h"
-#include "MultiplayerGame.h"
-
-#include "SysCvar.h"
+#include "../Game_local.h"
 
 #if defined( _DEBUG )
 	#define	BUILD_DEBUG	"-debug"

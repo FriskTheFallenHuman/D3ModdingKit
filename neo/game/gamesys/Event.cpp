@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "script/Script_Program.h"
-#include "Entity.h"
-#include "Game_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Event.h"
+#include "../Game_local.h"
 
 /*
 sys_event.cpp

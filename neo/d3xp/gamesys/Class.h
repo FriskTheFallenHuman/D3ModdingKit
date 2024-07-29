@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_CLASS_H__
 #define __SYS_CLASS_H__
 
-#include "idlib/containers/Hierarchy.h"
-
-#include "gamesys/Event.h"
-#include "gamesys/State.h"
-
 class idClass;
 class idTypeInfo;
 

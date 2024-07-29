@@ -29,12 +29,13 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __AASBUILD_LOCAL_H__
 #define __AASBUILD_LOCAL_H__
 
-#include "tools/compilers/aas/Brush.h"
-#include "tools/compilers/aas/BrushBSP.h"
-#include "libs/aasfile/AASFile.h"
-#include "tools/compilers/aas/AASReach.h"
-#include "tools/compilers/aas/AASCluster.h"
-#include "libs/aasfile/AASFile_local.h"
+#include "../../../libs/aasfile/AASFile_local.h"
+
+#include "Brush.h"
+#include "BrushBSP.h"
+#include "AASReach.h"
+#include "AASCluster.h"
+
 
 //===============================================================
 //

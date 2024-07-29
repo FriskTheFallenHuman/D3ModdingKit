@@ -26,19 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/containers/BinSearch.h"
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/math/Quat.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "ai/AI.h"
-#include "Entity.h"
-#include "Fx.h"
-#include "Game_local.h"
-
-#include "anim/Anim.h"
+#include "../Game_local.h"
 
 static const char *channelNames[ ANIM_NumAnimChannels ] = {
 	"all", "torso", "legs", "head", "eyelids"

@@ -26,12 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/Session_local.h"
-#include "framework/Game.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/async/AsyncNetwork.h"
+#include "AsyncNetwork.h"
+
+#include "../Session_local.h"
 
 const int MIN_RECONNECT_TIME			= 2000;
 const int EMPTY_RESEND_TIME				= 500;

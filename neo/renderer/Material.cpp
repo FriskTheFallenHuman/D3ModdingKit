@@ -26,15 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Interpolate.h"
-#include "renderer/Cinematic.h"
-#include "renderer/tr_local.h"
-#include "ui/Window.h"
-#include "ui/UserInterface.h"
-#include "sound/sound.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Material.h"
+#include "tr_local.h"
 
 #define _SURFTYPE(x) ( ( x ) | ( surfaceFlags & ( ~SURF_TYPE_MASK ) ) )
 

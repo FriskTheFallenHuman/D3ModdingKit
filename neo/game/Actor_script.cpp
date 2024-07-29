@@ -26,20 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SysCvar.h"
-#include "script/Script_Thread.h"
-#include "Item.h"
-#include "Light.h"
-#include "Projectile.h"
-#include "WorldSpawn.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Actor.h"
-
-#if MD5_ENABLE_GIBS > 0
-#include "SmokeParticles.h"
-#endif
-
+#include "Game_local.h"
 
 const idEventDef AI_EnableEyeFocus( "enableEyeFocus" );
 const idEventDef AI_DisableEyeFocus( "disableEyeFocus" );

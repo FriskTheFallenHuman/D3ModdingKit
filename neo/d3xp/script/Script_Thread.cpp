@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Player.h"
-#include "Camera.h"
-
-#include "script/Script_Thread.h"
+#include "../Game_local.h"
 
 const idEventDef EV_Thread_Execute( "<execute>", NULL );
 const idEventDef EV_Thread_SetCallback( "<script_setcallback>", NULL );

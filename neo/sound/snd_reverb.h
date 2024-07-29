@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SND_REVERB_H__
 #define __SND_REVERB_H__
 
-#include "idlib/Str.h"
-#include "idlib/Token.h"
-#include "idlib/containers/List.h"
-
 /*
 ===================================================================================
 

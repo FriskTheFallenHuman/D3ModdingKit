@@ -26,15 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "gamesys/SaveGame.h"
-#include "GameBase.h"
-#include "Player.h"
-
-#include "PlayerView.h"
+#include "Game_local.h"
 
 // _D3XP : rename all gameLocal.time to gameLocal.slow.time for merge!
 

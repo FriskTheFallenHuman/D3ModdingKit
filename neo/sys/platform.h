@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PLATFORM__
 #define __PLATFORM__
 
-#include "config.h"
-#include "framework/BuildDefines.h"
-
-#ifdef _WIN32
-#include <malloc.h> // _alloca()
-#endif
-
 // NOTE: By default Win32 uses a 1MB stack. Doom3 1.3.1 uses 4MB (probably set after compiling with EDITBIN /STACK
 // dhewm3 now uses a 8MB stack, set with a linker flag in CMakeLists.txt (/STACK:8388608 for MSVC, -Wl,--stack,8388608 for mingw)
 // Linux has a 8MB stack by default, and so does macOS, at least for the main thread

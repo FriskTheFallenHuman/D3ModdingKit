@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Player.h"
-
+#include "Game_local.h"
 #include "PlayerIcon.h"
 
 static const char * iconKeys[ ICON_NONE ] = {

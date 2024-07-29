@@ -26,16 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/DeclSkin.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Clip.h"
-#include "Entity.h"
-#include "Game_local.h"
-
-#include "State.h"
+#include "../Game_local.h"
 
 const int HISTORY_COUNT = 50;
 

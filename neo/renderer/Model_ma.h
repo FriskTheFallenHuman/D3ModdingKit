@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MODEL_MA_H__
 #define __MODEL_MA_H__
 
-#include "idlib/containers/List.h"
-#include "idlib/containers/HashTable.h"
-#include "idlib/math/Vector.h"
-
 /*
 ===============================================================================
 

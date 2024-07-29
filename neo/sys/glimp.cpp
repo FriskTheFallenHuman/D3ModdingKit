@@ -26,14 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL.h>
 
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-
-#include "renderer/tr_local.h"
-
-#include "sys/sys_imgui.h"
+#include "../renderer/tr_local.h"
 
 #if defined(_WIN32) && defined(ID_ALLOW_TOOLS)
 #include "sys/win32/win_local.h"

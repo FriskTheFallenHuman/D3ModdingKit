@@ -26,11 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/tr_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Model_local.h"
+#include "tr_local.h"
+#include "Model_local.h"
 
 static const char *MD5_SnapshotName = "_MD5_Snapshot_";
 

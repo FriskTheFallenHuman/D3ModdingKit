@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Parser.h"
-#include "framework/Common.h"
-#include "framework/FileSystem.h"
-#include "framework/Session.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Model_ma.h"
+#include "Model_ma.h"
 
 /*
 ======================================================================

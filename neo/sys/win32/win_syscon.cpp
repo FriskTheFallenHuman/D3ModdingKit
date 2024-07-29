@@ -26,14 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-#include "framework/Common.h"
-#include "framework/KeyInput.h"
-#include "framework/EditField.h"
-#include "sys/win32/rc/resource.h"
-
-#include "sys/win32/win_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include <errno.h>
 #include <float.h>
@@ -45,6 +39,9 @@ If you have questions concerning this license or the applicable additional terms
 #include <uxtheme.h>
 
 #pragma comment(lib, "uxtheme.lib")
+
+#include "win_local.h"
+#include "rc/resource.h"
 
 #define COPY_ID			1
 #define QUIT_ID			2

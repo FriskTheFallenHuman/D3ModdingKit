@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Weapon.h"
-
+#include "Game_local.h"
 
 //
 // event defs

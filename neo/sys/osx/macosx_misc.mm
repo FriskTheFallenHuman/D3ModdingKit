@@ -29,9 +29,8 @@ If you have questions concerning this license or the applicable additional terms
 #define GL_GLEXT_LEGACY // AppKit.h include pulls in gl.h already
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
-
-#include "sys/platform.h"
-#include "sys/sys_local.h"
+#include "precompiled.h"
+#include "../sys_local.h"
 
 /*
 ==================

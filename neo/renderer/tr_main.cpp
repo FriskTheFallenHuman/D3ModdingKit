@@ -26,6 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #if defined(__ppc__) && defined(__APPLE__)
 #include <vecLib/vecLib.h>
 #endif
@@ -33,11 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <xmmintrin.h>
 #endif
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld_local.h"
-
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 //====================================================================
 

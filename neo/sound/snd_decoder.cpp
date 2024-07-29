@@ -26,6 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "SDL_endian.h"
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -38,10 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 #undef C
 #undef R
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-
-#include "sound/snd_local.h"
+#include "snd_local.h"
 
 /*
 ===================================================================================

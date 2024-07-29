@@ -26,14 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/CVarSystem.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld.h"
-#include "renderer/Model_local.h"
-#include "renderer/tr_local.h"	// just for R_FreeWorldInteractions and R_CreateWorldInteractions
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/ModelManager.h"
+#include "Model_local.h"
+#include "tr_local.h"	// just for R_FreeWorldInteractions and R_CreateWorldInteractions
+
 
 class idRenderModelManagerLocal : public idRenderModelManager {
 public:

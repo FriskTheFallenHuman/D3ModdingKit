@@ -29,12 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __RENDERWORLDLOCAL_H__
 #define __RENDERWORLDLOCAL_H__
 
-#include "idlib/geometry/Winding.h"
-#include "renderer/RenderWorld.h"
-#include "renderer/tr_local.h"
-
-class idRenderLightLocal;
-
 // assume any lightDef or entityDef index above this is an internal error
 const int LUDICROUS_INDEX	= 10000;
 

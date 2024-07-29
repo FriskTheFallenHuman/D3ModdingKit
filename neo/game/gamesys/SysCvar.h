@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_CVAR_H__
 #define __SYS_CVAR_H__
 
-#include "framework/CVarSystem.h"
-
-#include "renderer/Model.h" // MD5_ENABLE_LODS
-
 extern idCVar	developer;
 
 extern idCVar	g_cinematic;

@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SysCvar.h"
-#include "Entity.h"
-#include "Player.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Physics_Player.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idPhysics_Actor, idPhysics_Player )
 END_CLASS

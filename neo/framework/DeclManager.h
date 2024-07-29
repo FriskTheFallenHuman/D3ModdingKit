@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLMANAGER_H__
 #define __DECLMANAGER_H__
 
-#include "idlib/Lexer.h"
-
-class idFile;
-
 /*
 ===============================================================================
 

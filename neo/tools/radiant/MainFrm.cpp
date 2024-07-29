@@ -28,7 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #define IDSTR_NO_REDIRECT
 
-#include "tools/edit_gui_common.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "qe3.h"
 #include "Radiant.h"

@@ -26,15 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/RenderSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Player.h"
-#include "Fx.h"
-#include "SmokeParticles.h"
+#include "Game_local.h"
 
-#include "Item.h"
 
 /*
 ===============================================================================

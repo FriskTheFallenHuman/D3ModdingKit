@@ -26,12 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Common.h"
-#include "framework/Game.h"
-
-#include "framework/DeclEntityDef.h"
-#include "framework/Session.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 /*
 =================

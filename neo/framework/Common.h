@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#include "framework/CVarSystem.h"
-
 /*
 ==============================================================
 
@@ -113,10 +111,6 @@ struct MemInfo_t {
 	int				modelAssetsTotal;
 	int				soundAssetsTotal;
 };
-
-class idLangDict;
-class idInterpreter;
-class idProgram;
 
 class idCommon {
 public:

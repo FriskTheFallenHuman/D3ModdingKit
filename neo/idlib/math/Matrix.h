@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MATH_MATRIX_H__
 #define __MATH_MATRIX_H__
 
-#include "idlib/math/Vector.h"
-#ifdef _WIN32
- #include <malloc.h>
-#endif
-
 #ifdef _MSC_VER // DG: I don't care if matrix code has some unused r variable only used for assertions, shut up VS
 #pragma warning( push )
 #pragma warning( disable : 4189 )

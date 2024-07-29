@@ -34,11 +34,10 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "cm/CollisionModel_local.h"
+#include "CollisionModel_local.h"
 
 /*
 ===============================================================================

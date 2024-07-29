@@ -26,11 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "script/Script_Thread.h"
-#include "Player.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Trigger.h"
+#include "Game_local.h"
+
 
 /*
 ===============================================================================

@@ -26,7 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "renderer/tr_local.h" // IMG_ENABLE_PNGS
+#include "precompiled.h"
+#pragma hdrstop
 
 // DG: replace libjpeg with stb_image.h because it causes fewer headaches
 // include this first, otherwise build breaks because of  use_idStr_* #defines in Str.h
@@ -44,11 +45,7 @@ If you have questions concerning this license or the applicable additional terms
 #define STBI_NO_STDIO  // images are passed as buffers
 #include "stb_image.h"
 
-#include "sys/platform.h"
-
-// IMG_ENABLE_PNGS #include "renderer/tr_local.h"
-
-#include "renderer/Image.h"
+#include "tr_local.h"
 
 /*
 

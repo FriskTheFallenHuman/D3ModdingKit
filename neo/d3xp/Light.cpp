@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "script/Script_Thread.h"
-
-#include "Light.h"
+#include "Game_local.h"
 
 /*
 ===============================================================================

@@ -25,18 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#include "sys/platform.h"
-#include "idlib/containers/List.h"
-#include "framework/EventLoop.h"
-#include "framework/Session.h"
-#include "framework/DemoFile.h"
-#include "renderer/ModelManager.h"
-#include "renderer/Material.h"
-#include "renderer/GuiModel.h"
-#include "renderer/VertexCache.h"
-#include "renderer/RenderWorld_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 idRenderSystemLocal	tr;
 idRenderSystem	*renderSystem = &tr;

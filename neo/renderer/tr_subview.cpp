@@ -26,9 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
+
 
 typedef struct {
 	idVec3		origin;

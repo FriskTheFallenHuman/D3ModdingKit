@@ -31,8 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <signal.h>
 
-#include "sys/sys_public.h"
-
 const char*	Posix_Cwd( void );
 
 const char* Posix_GetExePath();

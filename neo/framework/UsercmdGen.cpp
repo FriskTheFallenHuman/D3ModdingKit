@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/Lib.h"
-#include "framework/CVarSystem.h"
-#include "framework/KeyInput.h"
-#include "framework/async/AsyncNetwork.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/UsercmdGen.h"
+#include "Session_local.h"
 
 /*
 ================

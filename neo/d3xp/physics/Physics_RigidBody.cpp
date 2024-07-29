@@ -25,17 +25,11 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#include <algorithm>
 
-#include "sys/platform.h"
-#include "idlib/math/Quat.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Entity.h"
-#include "Player.h"
-
-#include "physics/Physics_RigidBody.h"
-#include "physics/Physics_Liquid.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idPhysics_Base, idPhysics_RigidBody )
 END_CLASS

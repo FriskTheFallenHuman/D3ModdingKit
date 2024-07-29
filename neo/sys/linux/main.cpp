@@ -25,6 +25,9 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#include "../posix/posix_public.h"
+#include "../sys_local.h"
 
 #include <errno.h>
 #include <unistd.h>
@@ -33,12 +36,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <fcntl.h>
 
 #include <SDL_main.h>
-
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-#include "framework/FileSystem.h"
-#include "sys/posix/posix_public.h"
-#include "sys/sys_local.h"
 
 #include <locale.h>
 

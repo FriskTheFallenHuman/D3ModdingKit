@@ -29,19 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
 
-#include "idlib/math/Interpolate.h"
-
-#include "physics/Physics_Player.h"
-#include "Item.h"
-#include "Actor.h"
-#include "Weapon.h"
-#include "Projectile.h"
-#include "PlayerIcon.h"
-#include "GameEdit.h"
-
-class idAI;
-class idFuncMountedObject;
-
 /*
 ===============================================================================
 
@@ -83,8 +70,8 @@ const int DEATH_VOLUME = 15;			// volume at death
 
 const int SAVING_THROW_TIME = 5000;		// maximum one "saving throw" every five seconds
 
-extern const int ASYNC_PLAYER_INV_AMMO_BITS;
-extern const int ASYNC_PLAYER_INV_CLIP_BITS;
+const int ASYNC_PLAYER_INV_AMMO_BITS = idMath::BitsForInteger( 999 );	// 9 bits to cover the range [0, 999]
+const int ASYNC_PLAYER_INV_CLIP_BITS = -7;								// -7 bits to cover the range [-1, 60]
 
 struct idItemInfo {
 	idStr name;

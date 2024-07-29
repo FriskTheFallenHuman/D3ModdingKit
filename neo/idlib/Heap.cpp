@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Common.h"
-
-#include "idlib/Heap.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #ifndef USE_LIBC_MALLOC
 	#define USE_LIBC_MALLOC		0

@@ -78,12 +78,10 @@ If you have questions concerning this license or the applicable additional terms
   #define ALC_OUTPUT_LIMITER_SOFT                  0x199A
 #endif
 
-#include "framework/UsercmdGen.h"
 #include "sound/efxlib.h"
-#include "sound/sound.h"
 #include "sound/snd_reverb.h"
 
-  // demo sound commands
+// demo sound commands
 typedef enum {
 	SCMD_STATE,				// followed by a load game state
 	SCMD_PLACE_LISTENER,

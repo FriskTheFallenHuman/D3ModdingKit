@@ -26,36 +26,16 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL.h>
 
-#include "sys/platform.h"
-#include "idlib/containers/HashTable.h"
-#include "idlib/LangDict.h"
-#include "idlib/MapFile.h"
-#include "cm/CollisionModel.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/async/NetworkSystem.h"
-#include "framework/BuildVersion.h"
-#include "framework/Licensee.h"
-#include "framework/Console.h"
-#include "framework/Session.h"
-#include "framework/Game.h"
-#include "framework/KeyInput.h"
-#include "framework/EventLoop.h"
-#include "renderer/Image.h"
-#include "renderer/Model.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderSystem.h"
-#include "tools/compilers/compiler_public.h"
-#include "libs/aasfile/AASFileManager.h"
-#include "tools/edit_public.h"
-#include "tools/compilers/dmap/dmap.h"
-#include "sys/sys_imgui.h"
+#include "../renderer/Image.h"
 
-#include "framework/Common.h"
-
-#include "GameCallbacks_local.h"
 #include "Session_local.h" // DG: For FT_IsDemo/isDemo() hack
+
+#include "../tools/compilers/dmap/dmap.h"
 
 #define	MAX_PRINT_MSG_SIZE	4096
 #define MAX_WARNING_LIST	256

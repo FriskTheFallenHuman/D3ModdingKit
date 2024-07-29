@@ -26,6 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+
 #include <sys/param.h>
 #include <sys/ucontext.h>
 #include <unistd.h>
@@ -35,15 +37,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <SDL_main.h>
 
-#include "sys/platform.h"
-
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
-#include "idlib/Str.h"
-#include "framework/Common.h"
-
-#include "sys/posix/posix_public.h"
+#include "../posix/posix_public.h"
 
 static char base_path[MAXPATHLEN];
 static char exe_path[MAXPATHLEN];

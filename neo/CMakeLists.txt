@@ -13,14 +13,14 @@ set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules" )
 
-project( dhewm3 )
+project( dhewm3 CXX C)
 
 # build type
 if( NOT CMAKE_BUILD_TYPE )
 	set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
 endif()
 
-set( DHEWM3BINARY "dhewm3" )
+set( DHEWM3BINARY "D3ModdingKit" )
 
 include( CheckCXXCompilerFlag )
 include( GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS )
@@ -118,7 +118,7 @@ else()
 endif()
 
 # MayaImport currently doesn't work in Linux/Mac
-if ( NOT WIN32 )
+if ( NOT WIN32 OR NOT TOOLS )
 	set( MAYA_IMPORT OFF )
 endif()
 
@@ -552,6 +552,15 @@ set(src_framework
 	framework/minizip/unzip.cpp
 )
 
+# Don't use precompiled headers for miniz/minizip sources.
+set_source_files_properties(
+	framework/miniz/miniz.c
+	framework/minizip/ioapi.c
+	PROPERTIES
+	SKIP_PRECOMPILE_HEADERS ON
+	LANGUAGE C
+)
+
 always_optimize_sourcefile(framework/miniz/miniz.c)
 always_optimize_sourcefile(framework/minizip/ioapi.c)
 always_optimize_sourcefile(framework/minizip/unzip.cpp)
@@ -702,6 +711,7 @@ set(src_idlib
 	idlib/Dict.cpp
 	idlib/Str.cpp
 	idlib/Parser.cpp
+	idlib/precompiled.cpp
 	idlib/MapFile.cpp
 	idlib/CmdArgs.cpp
 	idlib/Token.cpp
@@ -715,6 +725,14 @@ add_globbed_headers(src_idlib "idlib")
 
 set(src_mikktspace
 	libs/mikktspace/mikktspace.c
+)
+
+# Don't use precompiled headers for mikktspace sources.
+set_source_files_properties(
+	libs/mikktspace/mikktspace.c
+	PROPERTIES
+	SKIP_PRECOMPILE_HEADERS ON
+	LANGUAGE C
 )
 
 add_globbed_headers(src_mikktspace "mikktspace")
@@ -735,6 +753,19 @@ if( IMGUI )
 		sys/sys_imgui.h
 		sys/sys_imgui.cpp
 		sys/imgui_savestyle.cpp
+	)
+
+	# Don't use precompiled headers for imgui sources.
+	set_source_files_properties(
+		libs/imgui/backends/imgui_impl_sdl2.cpp
+		libs/imgui/backends/imgui_impl_opengl2.cpp
+		libs/imgui/imgui.cpp
+		libs/imgui/imgui_draw.cpp
+		libs/imgui/imgui_tables.cpp
+		libs/imgui/imgui_widgets.cpp
+		libs/imgui/imgui_demo.cpp
+		PROPERTIES
+		SKIP_PRECOMPILE_HEADERS ON
 	)
 else()
 	set(src_imgui
@@ -1033,12 +1064,11 @@ if ( TOOLS AND MFC_TOOLS AND MSVC )
 		${src_sound_editor}
 		${src_script_debugger}
 		"tools/edit_public.h"
-		"tools/edit_gui_common.h"
 		)
 	SET(CMAKE_MFC_FLAG 2)
 	set(TOOLS_DEFINES "ID_ALLOW_TOOLS;_AFXDLL")
 else()
-	set(src_editor_tools "tools/edit_stub.cpp" "tools/edit_public.h" "tools/debugger/debugger_common.h")
+	set(src_editor_tools "tools/edit_stub.cpp" "tools/edit_public.h" )
 	list(APPEND src_editor_tools
 		${src_debuggerServer}
 	)
@@ -1081,6 +1111,14 @@ elseif(WIN32)
 		sys/win32/win_shared.cpp
 		sys/win32/win_syscon.cpp
 		sys/win32/SDL_win32_main.c
+	)
+	
+	# Don't use precompiled headers for our SDL Win32 c sources.
+	set_source_files_properties(
+		sys/win32/SDL_win32_main.c
+		PROPERTIES
+		SKIP_PRECOMPILE_HEADERS ON
+		LANGUAGE C
 	)
 
 	# adding the few relevant headers in sys/ manually..
@@ -1145,9 +1183,11 @@ endif()
 
 if ( MSVC )
 	target_sources( idlib INTERFACE "sys/win32/natvis/idlib.natvis" )
+	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_idlib} )
 endif()
 
-source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_idlib} )
+target_include_directories( idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
+target_precompile_headers( idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
 
 set_target_properties( idlib PROPERTIES FOLDER "libs" )
 
@@ -1176,12 +1216,18 @@ if( ENGINE )
 	)
 	
 	if( MSVC )
-		set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${DHEWM3BINARY} )
+		# set MSVC default debug directory on executable	
+		set_target_properties( ${DHEWM3BINARY} PROPERTIES VS_STARTUP_PROJECT ${DHEWM3BINARY} )
+		set_target_properties( ${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${DHEWM3BINARY}.exe" )
+		set_target_properties( ${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}" )
+		set_target_properties( ${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set developer 1" )
+
+		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_imgui} ${src_editor_tools} )
 	endif()
 
-	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_imgui} ${src_editor_tools} )
-
-	target_include_directories( ${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/libs/imgui" )
+	target_precompile_headers( ${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	
+	target_include_directories( ${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" "${CMAKE_SOURCE_DIR}/libs/imgui" )
 
 	if( HARDLINK_GAME )
 		set_target_properties( ${DHEWM3BINARY} PROPERTIES COMPILE_DEFINITIONS "${TOOLS_DEFINES}" )
@@ -1230,7 +1276,13 @@ if( DEDICATED )
 		${src_debuggerServer}
 	)
 	
-	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer} )
+	if( MSVC )
+		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer} )
+	endif()
+	
+	target_precompile_headers( ${DHEWM3BINARY}ded PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	
+	target_include_directories( ${DHEWM3BINARY}ded PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
 
 	if( HARDLINK_GAME )
 		set_target_properties( ${DHEWM3BINARY}ded PROPERTIES COMPILE_DEFINITIONS "IMGUI_DISABLE;ID_DEDICATED" )
@@ -1303,7 +1355,13 @@ if( TOOLS AND MAYA_IMPORT )
 
 	add_dependencies( MayaImport${MAYA_VERSION} MayaDevKit )
 	
-	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub} )
+	if( MSVC )
+		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub} )
+	endif()
+	
+	target_precompile_headers( MayaImport${MAYA_VERSION} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	
+	target_include_directories( MayaImport${MAYA_VERSION} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
 
 	if( HARDLINK_GAME )
 		if ( MSVC )
@@ -1342,9 +1400,12 @@ if( BASE AND NOT HARDLINK_GAME )
 	
 	if ( MSVC )
 		target_sources( base PRIVATE "sys/win32/natvis/game.natvis" )
+		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} )
 	endif()
 	
-	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} )
+	target_precompile_headers( base PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	
+	target_include_directories( base PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
 	
 	set_target_properties( base PROPERTIES PREFIX "" )
 	set_target_properties( base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL" )
@@ -1371,9 +1432,12 @@ if( D3XP AND NOT HARDLINK_GAME )
 
 	if ( MSVC )
 		target_sources( d3xp PRIVATE "sys/win32/natvis/game.natvis" )
+		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_d3xp} )
 	endif()
 
-	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_d3xp} )
+	target_precompile_headers( d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	
+	target_include_directories( d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
 
 	set_target_properties( d3xp PROPERTIES PREFIX "")
 	set_target_properties( d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF" )

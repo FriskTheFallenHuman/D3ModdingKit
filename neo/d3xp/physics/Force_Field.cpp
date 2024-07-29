@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "physics/Physics_Player.h"
-#include "physics/Physics_Monster.h"
-#include "WorldSpawn.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Force_Field.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idForce, idForce_Field )
 END_CLASS

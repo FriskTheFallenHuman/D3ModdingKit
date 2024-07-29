@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SysCvar.h"
-#include "script/Script_Compiler.h"
-#include "script/Script_Thread.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "script/Script_Interpreter.h"
-
-#include "framework/FileSystem.h"
+#include "../Game_local.h"
 
 // HvG: Debugger support
 extern bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer );

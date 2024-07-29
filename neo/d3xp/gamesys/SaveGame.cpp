@@ -26,16 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/BuildVersion.h"
-#include "framework/DeclSkin.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Clip.h"
-#include "Entity.h"
-#include "Game_local.h"
-
-#include "SaveGame.h"
+#include "../Game_local.h"
 
 /*
 Save game related helper classes.

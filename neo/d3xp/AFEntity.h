@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_AFENTITY_H__
 #define __GAME_AFENTITY_H__
 
-#include "physics/Physics_AF.h"
-#include "physics/Force_Constant.h"
-#include "AnimatedEntity.h"
-#include "AF.h"
 
 /*
 ===============================================================================

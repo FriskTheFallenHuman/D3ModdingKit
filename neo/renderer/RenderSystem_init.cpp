@@ -26,28 +26,17 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/Licensee.h"
-#include "framework/Console.h"
-#include "framework/Session.h"
-#include "renderer/VertexCache.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderWorld_local.h"
-#include "renderer/GuiModel.h"
-#include "sound/sound.h"
-#include "ui/UserInterface.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
-
-#include "framework/GameCallbacks_local.h"
+#include "tr_local.h"
 
 // Vista OpenGL wrapper check
 #ifdef _WIN32
-#include "sys/win32/win_local.h"
+#include "../sys/win32/win_local.h"
 #endif
 
-#include "framework/miniz/miniz.h"
+#include "../framework/miniz/miniz.h"
 
 static unsigned char* compress_for_stbiw(unsigned char* data, int data_len, int* out_len, int quality)
 {
@@ -323,6 +312,60 @@ PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 //  idRenderSystemLocal::TakeScreenshot(), so if your code wants to enforce a specific format,
 //  it must set g_screenshotFormat accordingly before each call to TakeScreenshot().
 int g_screenshotFormat = -1;
+
+enum {
+	// Not all GL.h header know about GL_DEBUG_SEVERITY_NOTIFICATION_*.
+	QGL_DEBUG_SEVERITY_NOTIFICATION = 0x826B
+};
+
+/*
+ * Callback function for debug output.
+ */
+static void APIENTRY
+DebugCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+			  const GLchar *message, const void *userParam )
+{
+	const char* sourceStr = "Source: Unknown";
+	const char* typeStr = "Type: Unknown";
+	const char* severityStr = "Severity: Unknown";
+
+	switch (severity)
+	{
+#define SVRCASE(X, STR)  case GL_DEBUG_SEVERITY_ ## X ## _ARB : severityStr = STR; break;
+		case QGL_DEBUG_SEVERITY_NOTIFICATION: return;
+		SVRCASE(HIGH, "Severity: High")
+		SVRCASE(MEDIUM, "Severity: Medium")
+		SVRCASE(LOW, "Severity: Low")
+#undef SVRCASE
+	}
+
+	switch (source)
+	{
+#define SRCCASE(X)  case GL_DEBUG_SOURCE_ ## X ## _ARB: sourceStr = "Source: " #X; break;
+		SRCCASE(API);
+		SRCCASE(WINDOW_SYSTEM);
+		SRCCASE(SHADER_COMPILER);
+		SRCCASE(THIRD_PARTY);
+		SRCCASE(APPLICATION);
+		SRCCASE(OTHER);
+#undef SRCCASE
+	}
+
+	switch(type)
+	{
+#define TYPECASE(X)  case GL_DEBUG_TYPE_ ## X ## _ARB: typeStr = "Type: " #X; break;
+		TYPECASE(ERROR);
+		TYPECASE(DEPRECATED_BEHAVIOR);
+		TYPECASE(UNDEFINED_BEHAVIOR);
+		TYPECASE(PORTABILITY);
+		TYPECASE(PERFORMANCE);
+		TYPECASE(OTHER);
+#undef TYPECASE
+	}
+
+	common->Warning( "GLDBG %s %s %s: %s\n", sourceStr, typeStr, severityStr, message );
+
+}
 
 /*
 =================

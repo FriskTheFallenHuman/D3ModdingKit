@@ -26,15 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Licensee.h"
-#include "framework/Game.h"
-#include "framework/Session_local.h"
-#include "sound/sound.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/async/AsyncClient.h"
+#include "AsyncNetwork.h"
+
+#include "../Session_local.h"
 
 const int SETUP_CONNECTION_RESEND_TIME	= 1000;
 const int EMPTY_RESEND_TIME				= 500;

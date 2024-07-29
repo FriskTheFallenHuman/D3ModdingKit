@@ -26,21 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/DeclEntityDef.h"
-#include "framework/DeclSkin.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Clip.h" // MD5_ENABLE_GIBS
-
-#include "gamesys/SysCvar.h"
-#include "ai/AI.h"
-#include "Player.h"
-#include "Trigger.h"
-#include "SmokeParticles.h"
-#include "WorldSpawn.h"
-#include "Misc.h"
-
-#include "Weapon.h"
+#include "Game_local.h"
 
 /***********************************************************************
 

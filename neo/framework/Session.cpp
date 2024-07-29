@@ -26,16 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/hashing/CRC32.h"
-#include "idlib/LangDict.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Console.h"
-#include "framework/Game.h"
-#include "framework/EventLoop.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/Session_local.h"
+#include "Session_local.h"
 
 #define CDKEY_FILEPATH "../" BASE_GAMEDIR "/" CDKEY_FILE
 #define XPKEY_FILEPATH "../" BASE_GAMEDIR "/" XPKEY_FILE

@@ -26,15 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/CmdArgs.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Licensee.h"
-#include "framework/UsercmdGen.h"
-#include "renderer/tr_local.h"
-#include "sys/sys_local.h"
-
-#include "sys/win32/win_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include <errno.h>
 #include <float.h>
@@ -50,7 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 #include <sys/stat.h>
 #endif
 
-#include "tools/edit_public.h"
+#include "../sys_local.h"
+#include "win_local.h"
+#include "../../renderer/tr_local.h"
 
 #include <SDL_main.h>
 

@@ -26,17 +26,14 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/DemoFile.h"
-#include "framework/KeyInput.h"
-#include "ui/ListGUILocal.h"
-#include "ui/DeviceContext.h"
-#include "ui/Window.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/UserInterfaceLocal.h"
-
-#include "renderer/tr_local.h" // glConfig for winWidth/winHeight
+#include "ListGUILocal.h"
+#include "DeviceContext.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
+#include "../renderer/tr_local.h" // glConfig for winWidth/winHeight
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
 extern idCVar r_scaleMenusTo43; // DG: for the "scale menus to 4:3" hack

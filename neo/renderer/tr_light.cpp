@@ -26,14 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Interpolate.h"
-#include "framework/Game.h"
-#include "renderer/VertexCache.h"
-#include "renderer/RenderWorld_local.h"
-#include "ui/Window.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
+#include "Model_local.h"
 
 static const float CHECK_BOUNDS_EPSILON = 1.0f;
 

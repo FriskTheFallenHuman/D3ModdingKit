@@ -28,7 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #define IDSTR_NO_REDIRECT
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #ifdef _WIN32
 #define _BOOL
@@ -74,13 +75,8 @@ If you have questions concerning this license or the applicable additional terms
 #undef _BOOL
 #endif // _WIN32
 
-#include "idlib/math/Quat.h"
-#include "idlib/bv/Bounds.h"
-#include "framework/Licensee.h"
-#include "renderer/Model.h"
-
-#include "MayaImport/exporter.h"
-#include "MayaImport/maya_main.h"
+#include "exporter.h"
+#include "maya_main.h"
 
 idStr	errorMessage;
 bool	initialized = false;

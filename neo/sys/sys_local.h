@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_LOCAL__
 #define __SYS_LOCAL__
 
-#include "renderer/RenderSystem.h"
-#include "sound/sound.h"
-#include "sys/sys_public.h"
-
 /*
 ==============================================================
 

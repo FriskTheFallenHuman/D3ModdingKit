@@ -26,20 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL.h>
 
-#include "sys/platform.h"
-#include "idlib/containers/List.h"
-#include "idlib/Heap.h"
-#include "framework/Common.h"
-#include "framework/Console.h"
-#include "framework/KeyInput.h"
-#include "framework/Session_local.h"
-#include "renderer/RenderSystem.h"
-#include "renderer/tr_local.h"
-
-#include "sys/sys_public.h"
-#include "sys/sys_imgui.h"
+#include "../framework/Session_local.h"
+#include "../renderer/tr_local.h"
 
 #if !SDL_VERSION_ATLEAST(2, 0, 0)
 #define SDL_Keycode SDLKey

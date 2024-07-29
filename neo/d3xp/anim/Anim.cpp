@@ -26,17 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/math/Quat.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Game_local.h"
-
-#include "anim/Anim.h"
-
-#if MD5_BINARY_ANIM > 0
-#include "framework/FileSystem.h"
-#endif
+#include "../Game_local.h"
 
 bool idAnimManager::forceExport = false;
 

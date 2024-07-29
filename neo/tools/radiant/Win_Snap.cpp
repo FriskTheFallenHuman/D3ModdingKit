@@ -8,8 +8,8 @@
 //
 //	*ripped from QE5
 //=================================================
-#include "tools/edit_gui_common.h"
-
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "qe3.h"
 

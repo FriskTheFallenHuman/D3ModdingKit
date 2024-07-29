@@ -26,25 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/LangDict.h"
-#include "framework/async/NetworkSystem.h"
-#include "framework/DeclEntityDef.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "physics/Physics_Parametric.h"
-#include "physics/Physics_Actor.h"
-#include "script/Script_Thread.h"
-#include "Fx.h"
-#include "AFEntity.h"
-#include "Player.h"
-#include "Mover.h"
-#include "WorldSpawn.h"
-#include "SmokeParticles.h"
-
-#include "Entity.h"
+#include "Game_local.h"
 
 // overridable events
 const idEventDef EV_PostSpawn( "<postspawn>", NULL );

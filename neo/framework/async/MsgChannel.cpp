@@ -26,11 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/BitMsg.h"
-#include "framework/Compressor.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/async/MsgChannel.h"
+#include "MsgChannel.h"
 
 /*
 

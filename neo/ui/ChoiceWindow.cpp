@@ -26,14 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/KeyInput.h"
-#include "ui/DeviceContext.h"
-#include "ui/Window.h"
-#include "ui/UserInterfaceLocal.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/ChoiceWindow.h"
+#include "DeviceContext.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
+#include "ChoiceWindow.h"
 
 /*
 ============

@@ -26,6 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
+#include "Unzip.h"
+
 #ifdef WIN32
 	#include <io.h>	// for _read
 #else
@@ -34,20 +39,9 @@ If you have questions concerning this license or the applicable additional terms
 	#include <unistd.h>
 #endif
 
-#include "sys/platform.h"
-
 #ifdef ID_ENABLE_CURL
 	#include <curl/curl.h>
 #endif
-
-#include "idlib/hashing/MD4.h"
-#include "framework/Licensee.h"
-#include "framework/Unzip.h"
-#include "framework/EventLoop.h"
-#include "framework/DeclEntityDef.h"
-#include "framework/DeclManager.h"
-
-#include "framework/FileSystem.h"
 
 /*
 =============================================================================

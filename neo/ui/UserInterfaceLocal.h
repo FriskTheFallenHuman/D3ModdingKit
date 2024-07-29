@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#pragma once
-
-#include "ui/UserInterface.h"
-#include "ui/Window.h"
+#ifndef __USERINTERFACE_LOCAL_H__
+#define __USERINTERFACE_LOCAL_H__
 
 class idWindow;
 
@@ -151,3 +149,5 @@ private:
 	idList<idUserInterfaceLocal*> demoGuis;
 
 };
+
+#endif /* !__USERINTERFACE_LOCAL_H__ */

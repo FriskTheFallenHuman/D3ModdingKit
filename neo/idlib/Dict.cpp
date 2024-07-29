@@ -26,12 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/hashing/CRC32.h"
-#include "framework/Common.h"
-#include "framework/File.h"
-
-#include "idlib/Dict.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 idStrPool		idDict::globalKeys;
 idStrPool		idDict::globalValues;

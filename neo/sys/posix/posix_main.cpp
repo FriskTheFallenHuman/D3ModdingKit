@@ -25,6 +25,8 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#include "../sys_local.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,15 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <signal.h>
 #include <fcntl.h>
 
-#include "sys/platform.h"
-#include "idlib/containers/StrList.h"
-#include "framework/FileSystem.h"
-#include "framework/KeyInput.h"
-#include "framework/EditField.h"
-#include "framework/Licensee.h"
-#include "sys/sys_local.h"
-
-#include "sys/posix/posix_public.h"
+#include "posix_public.h"
 
 #include <SDL.h> // clipboard
 

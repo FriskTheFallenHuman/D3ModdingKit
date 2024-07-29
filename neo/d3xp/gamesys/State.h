@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_STATE_H__
 #define __SYS_STATE_H__
 
-#include "framework/DeclFX.h"
-#include "framework/Game.h"
-#include "renderer/Model.h"
-#include "renderer/RenderSystem.h"
-
-#include "gamesys/SaveGame.h"
-
 typedef enum {
 	SRESULT_OK,				// Call was made successfully
 	SRESULT_ERROR,			// An unrecoverable error occurred

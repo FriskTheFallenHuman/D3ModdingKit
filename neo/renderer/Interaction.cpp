@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/tr_local.h"
-#include "renderer/RenderWorld_local.h"
-#include "renderer/VertexCache.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Interaction.h"
+#include "tr_local.h"
 
 /*
 ===========================================================================

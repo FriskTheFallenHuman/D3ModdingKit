@@ -29,16 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __RENDERWORLD_H__
 #define __RENDERWORLD_H__
 
-#include "idlib/geometry/Winding.h"
-#include "idlib/bv/Box.h"
-#include "idlib/bv/Frustum.h"
-#include "framework/DeclParticle.h"
-#include "renderer/Material.h"
-#include "renderer/Model.h" // MD5_ENABLE_GIBS
-
-class idDemoFile;
-class idRenderModel;
-
 /*
 ===============================================================================
 

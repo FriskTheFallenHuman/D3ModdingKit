@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Timer.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "Game_local.h"
-
-#include "Pvs.h"
 
 #define MAX_BOUNDS_AREAS	16
 

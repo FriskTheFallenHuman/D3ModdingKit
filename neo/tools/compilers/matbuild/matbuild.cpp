@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/Game.h"
-#include "tools/compilers/compiler_public.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 /*
 	builds interaction materials for a given directory.

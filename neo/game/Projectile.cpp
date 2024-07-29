@@ -25,19 +25,11 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+ 
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "renderer/ModelManager.h"
-
-#include "gamesys/SysCvar.h"
-#include "script/Script_Thread.h"
-#include "ai/AI.h"
-#include "Player.h"
-#include "Mover.h"
-#include "SmokeParticles.h"
-#include "Misc.h"
-
-#include "Projectile.h"
+#include "Game_local.h"
 
 /*
 ===============================================================================

@@ -29,14 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __COLLISIONMODELMANAGER_H__
 #define __COLLISIONMODELMANAGER_H__
 
-#include "idlib/geometry/TraceModel.h"
-#include "idlib/math/Vector.h"
-#include "idlib/math/Matrix.h"
-#include "idlib/bv/Bounds.h"
-#include "idlib/MapFile.h"
-
-class idMaterial;
-
 /*
 ===============================================================================
 

@@ -26,13 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/DeclEntityDef.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Fx.h"
+#include "Game_local.h"
 
-#include "BrittleFracture.h"
 
 CLASS_DECLARATION( idEntity, idBrittleFracture )
 	EVENT( EV_Activate, idBrittleFracture::Event_Activate )

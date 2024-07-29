@@ -26,10 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "libs/aasfile/AASFileManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "libs/aasfile/AASFile_local.h"
+#include "AASFile.h"
+#include "AASFile_local.h"
 
 /*
 ===============================================================================

@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SaveGame.h"
-#include "Entity.h"
-#include "Game_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Clip.h"
+#include "../Game_local.h"
 
 #define	MAX_SECTOR_DEPTH				12
 #define MAX_SECTORS						((1<<(MAX_SECTOR_DEPTH+1))-1)

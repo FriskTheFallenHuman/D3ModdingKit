@@ -26,44 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL_endian.h>
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "idlib/Timer.h"
-#include "framework/async/NetworkSystem.h"
-#include "framework/BuildVersion.h"
-#include "framework/DeclEntityDef.h"
-#include "framework/DeclSkin.h"
-#include "framework/FileSystem.h"
-#include "renderer/ModelManager.h"
-
-#include "gamesys/SysCvar.h"
-#include "gamesys/SysCmds.h"
-#include "script/Script_Thread.h"
-#include "ai/AI.h"
-#include "anim/Anim_Testmodel.h"
-#include "Camera.h"
-#include "SmokeParticles.h"
-#include "Player.h"
-#include "WorldSpawn.h"
-#include "Misc.h"
-#include "Trigger.h"
-#include "Entity.h"
-
-#include "framework/Licensee.h" // DG: for ID__DATE__
-
 #include "Game_local.h"
-
-#ifndef GAME_DLL
-#include "tools/compilers/aas/AASFileManager.h"
-#endif
-
-const int NUM_RENDER_PORTAL_BITS	= idMath::BitsForInteger( PS_BLOCK_ALL );
-
-const float	DEFAULT_GRAVITY			= 1066.0f;
-const idVec3	DEFAULT_GRAVITY_VEC3( 0, 0, -DEFAULT_GRAVITY );
-const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 
 #ifdef GAME_DLL
 

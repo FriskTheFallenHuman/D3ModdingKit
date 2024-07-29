@@ -26,11 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/ModelManager.h"
-#include "Game_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "SmokeParticles.h"
+#include "Game_local.h"
 
 static const char *smokeParticle_SnapshotName = "_SmokeParticle_Snapshot_";
 

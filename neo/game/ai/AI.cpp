@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Quat.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Moveable.h"
-#include "SmokeParticles.h"
-
-#include "ai/AI.h"
+#include "../Game_local.h"
 
 static const char *moveCommandString[ NUM_MOVE_COMMANDS ] = {
 	"MOVE_NONE",
