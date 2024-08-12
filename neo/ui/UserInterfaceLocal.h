@@ -95,7 +95,6 @@ public:
 	idStr						&GetReturnCmd() { return returnCmd; };
 
 	virtual idRectangle			GetScreenRect( void ) { return desktop->drawRect; }
-
 private:
 	bool						active;
 	bool						loading;

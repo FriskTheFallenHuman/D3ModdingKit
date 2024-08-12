@@ -795,7 +795,6 @@ static void LoadJPG( const char *filename, unsigned char **pic, int *width, int 
 
 	Mem_Free( fbuffer );
 
-
 	if ( decodedImageData == NULL ) {
 		common->Warning( "stb_image was unable to load JPG %s : %s\n",
 					filename, stbi_failure_reason());

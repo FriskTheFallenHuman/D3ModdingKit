@@ -1312,7 +1312,6 @@ typedef struct {
 } tangentVert_t;
 
 static void	R_DuplicateMirroredVertexes( srfTriangles_t *tri ) {
-
 	tangentVert_t	*tverts, *vert;
 	int				i, j;
 	int				totalVerts;
