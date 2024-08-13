@@ -15,6 +15,7 @@
 #define IDD_DIALOG_AF_CONSTRAINT_SLIDER 110
 #define IDD_DIALOG_AF_CONSTRAINT_SPRING 111
 #define IDI_ICON2                       112
+#define IDP_OLE_INIT_FAILED				113
 #define IDC_DIALOG_AF_TAB_MODE          200
 #define IDC_DIALOG_AF_START             201
 #define IDC_COMBO_AF                    202
@@ -331,7 +332,6 @@
 #define IDC_SPIN_SPRING_MAX_LENGTH      513
 #define IDD_DBG_FIND                    2000
 #define IDD_DBG_QUICKWATCH              2001
-#define IDD_DBG_ABOUT                   2002
 #define IDR_DBG_MAIN                    2003
 #define IDR_DBG_ACCELERATORS            2004
 #define IDR_DBG_SCRIPT_POPUP            2005
@@ -377,7 +377,6 @@
 #define IDC_DECLEDITOR_BUTTON_TEST      3218
 #define IDB_BITMAP_LOGO                 4000
 #define IDI_ICON1                       4001
-#define IDD_GUIED_ABOUT                 5000
 #define IDD_GUIED_OPTIONS_GRID          5001
 #define IDD_GUIED_OPTIONS_GENERAL       5002
 #define IDD_GUIED_ITEMPROPS_GENERAL     5003
@@ -390,7 +389,6 @@
 #define IDD_GUIED_ITEMPROPS_TEXT        5010
 #define IDD_GUIED_ITEMPROPS_IMAGE       5011
 #define IDD_GUIED_TRANSFORMER           5012
-#define IDD_GUIED_CHECKIN               5013
 #define IDR_GUIED_MAIN                  5014
 #define IDR_GUIED_ACCELERATORS          5015
 #define IDR_GUIED_ITEM_POPUP            5016
@@ -473,11 +471,8 @@
 #define IDC_GUIED_ITEMRECTH             5268
 #define IDC_GUIED_ITEMTEXTNOWRAP        5269
 #define IDC_GUIED_ITEMRECTY             5270
-#define IDC_GUIED_FILENAME              5271
-#define IDC_GUIED_COMMENT               5272
 #define IDC_GUIED_ITEMTEXTSCALE_SPIN    5273
 #define IDC_GUIED_HAND                  5274
-#define IDD_ME_ABOUTBOX                 6000
 #define IDD_CONSOLE_FORM                6002
 #define IDD_FIND                        6003
 #define IDD_MATERIALEDIT_FORM           6004
@@ -662,8 +657,6 @@
 #define IDD_SIDES                       10005
 #define IDD_ABOUT                       10006
 #define IDD_SURFACE                     10007
-#define IDD_TEXTUREBAR                  10009
-#define IDD_ADDCMD                      10010
 #define IDD_TEXLIST                     10012
 #define IDD_DLG_PREFS                   10013
 #define IDD_DLG_MAPINFO                 10014
@@ -677,8 +670,6 @@
 #define IDD_DLG_WAIT                    10024
 #define IDD_DIALOG_SCALE                10025
 #define IDD_DIALOG_FINDREPLACE          10026
-#define IDD_DIALOG_STAIRS               10027
-#define IDD_DIALOG_INPUT                10028
 #define IDD_DIALOG_TEXTURELIST          10029
 #define IDD_DIALOG_NEWPATCH             10030
 #define IDD_DIALOG_TEXTURELAYOUT        10031
@@ -705,7 +696,6 @@
 #define IDR_MAINFRAME                   10052
 #define IDR_RADIANTYPE                  10053
 #define IDR_SHADERTYPE                  10055
-#define IDR_TOOLBAR_SCALELOCK           10057
 #define IDR_TOOLBAR                     10058
 #define IDR_MENU_DROP                   10059
 #define IDR_POPUP_TEXTURE               10062
@@ -719,12 +709,8 @@
 #define IDB_ENDCAP                      10070
 #define IDB_BEVEL                       10071
 #define IDB_IBEVEL                      10072
-#define IDB_VIEWQE4                     10073
-#define IDB_VIEW4WAY                    10074
-#define IDB_VIEWDEFAULT                 10075
 #define IDB_VIEWDEFAULT2                10076
 #define IDB_VIEWDEFAULT3                10077
-#define IDB_VIEWDEFAULT_Z               10078
 #define IDB_BITMAP_GROUPS               10079
 #define IDB_BITMAP_MATERIAL             10080
 #define IDB_BITMAP_HSB                  10081
@@ -766,13 +752,11 @@
 #define IDC_EDIT_AUTOSAVE               10248
 #define IDC_CHK_FLAT                    10249
 #define IDC_CHECK_NEWMAPFORMAT          10250
-#define IDC_BTN_APPLYTEXTURESTUFF       10251
 #define IDC_BTN_ADD                     10254
 #define IDC_BTN_TEXTURE                 10255
 #define IDC_BTN_PREVIEW                 10256
 #define IDC_BTN_ADDTARGET               10257
 #define IDC_BTN_SET                     10258
-#define IDC_BTN_OLDCOLOR                10259
 #define IDC_BUTTON_MODEL                10260
 #define IDC_SPIN_AUTOSAVE               10261
 #define IDC_BTN_DEL                     10262
@@ -832,27 +816,17 @@
 #define IDC_EDIT_STATUSPOINTSIZE        10319
 #define IDC_SCALEH                      10320
 #define IDC_EDIT_ROTATION               10321
-#define IDC_STATIC_FIELD1               10322
 #define IDC_EDIT_UNDOLEVELS             10323
 #define IDC_HSCALE                      10324
 #define IDC_VSCALE                      10325
-#define IDC_EDIT_FIELD1                 10326
-#define IDC_STATIC_FIELD2               10327
 #define IDC_ROTATE                      10328
-#define IDC_EDIT_FIELD2                 10329
 #define IDC_SLIDER_CAMSPEED             10330
-#define IDC_STATIC_FIELD3               10332
 #define IDC_STATIC_KEY                  10334
 #define IDC_FIND_BRUSH                  10335
-#define IDC_EDIT_FIELD3                 10336
 #define IDC_STATIC_VALUE                10337
-#define IDC_STATIC_FIELD4               10338
 #define IDC_E_KEY_FIELD                 10339
-#define IDC_EDIT_FIELD4                 10340
 #define IDC_FIND_ENTITY                 10341
-#define IDC_STATIC_FIELD5               10342
 #define IDC_SIDES                       10343
-#define IDC_EDIT_FIELD5                 10344
 #define IDC_COMBO_WHATGAME              10345
 #define IDC_ROTX                        10346
 #define IDC_BTN_COLOR                   10347
@@ -872,11 +846,8 @@
 #define IDC_CHECK_NOCLAMP               10365
 #define IDC_SPIN_HSCALE                 10367
 #define IDC_SPIN_ROTATE                 10369
-#define IDC_EDIT_ROTATEAMT              10371
 #define IDC_CHECK_DLLENTITIES           10373
-#define IDC_CMDCOMMAND                  10376
 #define IDC_CHECK_BUGGYICD              10377
-#define IDC_CMDMENUTEXT                 10378
 #define IDC_CHECK_HICOLOR               10382
 #define IDC_CHECK_SHADERTEST            10384
 #define IDC_CHECK_SHOWSHADERS           10386
@@ -1304,9 +1275,7 @@
 #define ID_FILE_SAVEREGION              30070
 #define ID_FILE_LOADREGION              30071
 #define ID_SELECTION_MOVEDOWN           30072
-#define ID_TOOLBAR_MAIN                 30073
 #define ID_SELECTION_MOVEUP             30074
-#define ID_TOOLBAR_TEXTURE              30075
 #define ID_BRUSH_MAKECONE               30076
 #define ID_TEXTURES_LOAD                30077
 #define ID_TOGGLE_ROTATELOCK            30078
@@ -1514,9 +1483,9 @@
 #define ID_TEXTUREBK                    30292
 #define ID_COLORS_XYBK                  30293
 #define ID_FILE_ABOUT                   30294
-#define ID_INSPECTOR_CONSOLE            30295
-#define ID_INSPECTOR_ENTITY             30296
-#define ID_INSPECTOR_TEXTURE            30297
+#define ID_VIEW_CONSOLE                 30295
+#define ID_VIEW_ENTITY                  30296
+#define ID_VIEW_TEXTURE                 30297
 #define ID_COLORS_MAJOR                 30298
 #define ID_COLORS_MINOR                 30299
 #define ID_SELECTION_CONNECT            30300
@@ -1622,9 +1591,6 @@
 #define ID_SELECTION_VIEW_WIREFRAMEOFF  30403
 #define ID_SELECTION_VIEW_VISIBLEON     30404
 #define ID_SELECTION_VIEW_VISIBLEOFF    30405
-#define ID_SET_VIEW_TOP                 30406
-#define ID_SET_VIEW_SIDE                30407
-#define ID_SET_VIEW_FRONT               30408
 #define ID_SCRIPTEDITOR_FIND_NEXT       31000
 #define ID_SCRIPTEDITOR_GOTOLINE        31001
 #define ID_ENTITY_START                 40000
@@ -1646,6 +1612,8 @@
 #define IDC_GOTOLINE_STATIC             45014
 #define IDC_GOTOLINE_EDIT               45015
 #define IDD_WAITDLG_PROGRESS            45016
+#define IDC_ABOUT_TEXT                  45017
+#define IDC_ABOUT_BITMAP                45018
 
 // Next default values for new objects
 // 

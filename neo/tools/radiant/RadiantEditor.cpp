@@ -103,9 +103,6 @@ SCommandInfo	g_Commands[] = {
 	{ "Grid_Toggle",             '0',			0,						ID_GRID_TOGGLE },
 	{ "Grid_ToggleSizePaint",    'Q',			RAD_PRESS,				ID_SELECTION_TOGGLESIZEPAINT },
 	{ "Grid_PrecisionCursorMode",VK_F11,		0,						ID_PRECISION_CURSOR_CYCLE},
-	{ "Grid_SetViewTop",         VK_NUMPAD7,	0,						ID_SET_VIEW_TOP },
-	{ "Grid_SetViewSide",        VK_NUMPAD3,	0,						ID_SET_VIEW_SIDE },
-	{ "Grid_SetViewFront",       VK_NUMPAD1,	0,						ID_SET_VIEW_FRONT },
 	{ "Grid_NextView",           VK_TAB,		RAD_CONTROL,			ID_VIEW_NEXTVIEW },
 	{ "Grid_ToggleCrosshairs",   'X',			RAD_SHIFT,				ID_VIEW_CROSSHAIR },
 	{ "Grid_ZZoomOut",           VK_INSERT,		RAD_CONTROL,			ID_VIEW_ZZOOMOUT },
@@ -156,9 +153,9 @@ SCommandInfo	g_Commands[] = {
 	{ "CameraClip_ZoomIn",         VK_OEM_5,	RAD_CONTROL,			ID_VIEW_CUBEIN },
 	{ "CameraClip_Toggle",         VK_OEM_6,	RAD_CONTROL,			ID_VIEW_CUBICCLIPPING },
 
-	{ "ViewTab_EntityInfo",        'N',			0,						ID_INSPECTOR_ENTITY },
-	{ "ViewTab_Console",           'O',			0,						ID_INSPECTOR_CONSOLE },
-	{ "ViewTab_Textures",          'T',			0,						ID_INSPECTOR_TEXTURE },
+	{ "ViewTab_EntityInfo",        'N',			0,						ID_VIEW_ENTITY },
+	{ "ViewTab_Console",           'O',			0,						ID_VIEW_CONSOLE },
+	{ "ViewTab_Textures",          'T',			0,						ID_VIEW_TEXTURE },
 	{ "ViewTab_MediaBrowser",	   'B',			0,						ID_INSPECTOR_MEDIABROWSER },
 
 	{ "Window_SurfaceInspector",   'M',			0,						ID_TEXTURES_INSPECTOR },

@@ -77,6 +77,7 @@ const float	HUGE_DISTANCE = 100000;
 #include "undo.h"
 #include "PMESH.H"
 #include "SplashScreen.h"
+#include "../common/AboutBoxDlg.h"
 
 void	Error (char *error, ...);
 void	Warning (char *error, ...);
@@ -230,9 +231,6 @@ extern bool LoadRegistryInfo(const char *pszName, void *pvBuf, long *plSize);
 //========================
 // win_dlg.c
 //========================
-void DoFind(void);
-void DoSides(bool bCone = false, bool bSphere = false, bool bTorus = false);
-void DoAbout(void);
 void DoSurface();
 
 //========================

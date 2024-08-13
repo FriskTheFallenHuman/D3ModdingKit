@@ -25,57 +25,28 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#pragma once
 
-#include "mediapreviewdlg.h"
+#ifndef ABOUTBOXDLG_H
+#define ABOUTBOXDLG_H
 
-// CEditViewDlg dialog
+#include "../../sys/win32/rc/resource.h"
 
-class CEditViewDlg : public CDialogEx {
-
-    DECLARE_DYNAMIC( CEditViewDlg )
-
+class CAboutDlg : public CDialog {
 public:
-    enum { MATERIALS, GUIS };
-    CEditViewDlg( CWnd *pParent = nullptr );   // standard constructor
-    virtual ~CEditViewDlg();
+	CAboutDlg( UINT nIDTemplate, CWnd *pParent = nullptr );
 
-    void SetMode( int _mode ) {
-        mode = _mode;
-    }
-
-    void SetMaterialInfo( const char *name, const char *file, int line );
-    void SetGuiInfo( const char *name );
-    void UpdateEditPreview();
-
-    // Dialog Data
-    enum { IDD = IDD_DIALOG_EDITVIEW };
+	void SetDialogTitle( const CString &title );
 
 protected:
-    CFindReplaceDialog *findDlg;
-    CMediaPreviewDlg mediaPreview;
-    int mode;
-    idStr fileName;
-    idStr matName;
-    idStr editText;
-    idStr findStr;
-    int line;
-    CEdit editInfo;
+	virtual void DoDataExchange( CDataExchange *pDX );
+	virtual BOOL OnInitDialog();
 
-    void ShowFindDlg();
+	afx_msg void OnOK( void );
 
-    virtual void DoDataExchange( CDataExchange *pDX ) override;    // DDX/DDV support
+	DECLARE_MESSAGE_MAP()
 
-    DECLARE_MESSAGE_MAP()
-
-public:
-    afx_msg void OnSize( UINT nType, int cx, int cy );
-    afx_msg void OnBnClickedButtonOpen();
-    afx_msg void OnBnClickedButtonSave();
-    virtual BOOL OnInitDialog() override;
-    afx_msg void OnDestroy();
-    afx_msg void OnTimer( UINT_PTR nIDEvent );
-    afx_msg void OnBnClickedButtonGoto();
-    virtual BOOL PreTranslateMessage( MSG *pMsg ) override;
-    afx_msg LRESULT OnFindDialogMessage( WPARAM wParam, LPARAM lParam );
+private:
+	CString m_strTitle;
 };
+
+#endif /* !ABOUTBOXDLG_H */

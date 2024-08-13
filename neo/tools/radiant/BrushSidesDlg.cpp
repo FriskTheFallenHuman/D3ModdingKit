@@ -29,63 +29,64 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "SpinButton.h"
+#include "qe3.h"
+#include "Radiant.h"
+#include "BrushSidesDlg.h"
 
-void SpinButton_SetIncrement ( HWND hWnd, float inc )
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+IMPLEMENT_DYNAMIC( CBrushSidesDlg, CDialogEx )
+
+CBrushSidesDlg::CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd *pParent )
+	: CDialogEx( IDD_SIDES, pParent ), m_bDoCone( bDoCone ), m_bDoSphere( bDoSphere )
 {
-	SetWindowLongPtr ( hWnd, GWLP_USERDATA, (long)(inc * 100.0f) );
 }
 
-void SpinButton_SetRange ( HWND hWnd, float minRange, float maxRange )
+
+CBrushSidesDlg::~CBrushSidesDlg()
 {
-	SendMessage ( hWnd, UDM_SETRANGE32, (LONG)(minRange*100.0f), (LONG)(maxRange*100.0f) );
 }
 
-void SpinButton_HandleNotify ( NMHDR* hdr )
-{
-	// Return if incorrect data in edit box
-	NM_UPDOWN* udhdr= (NM_UPDOWN*)hdr;
+void CBrushSidesDlg::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Control(pDX, IDC_SIDES, m_editSides);
+}
 
-	// Change with 0.1 on each click
-	char strValue[64];
-	float value;
-	GetWindowText ( (HWND)SendMessage ( hdr->hwndFrom, UDM_GETBUDDY, 0, 0 ), strValue, 63 );
+BEGIN_MESSAGE_MAP( CBrushSidesDlg, CDialogEx )
+	ON_BN_CLICKED( IDOK, OnOK )
+	ON_BN_CLICKED( IDCANCEL, OnCancel )
+END_MESSAGE_MAP()
 
-	float inc = (float)GetWindowLongPtr ( hdr->hwndFrom, GWLP_USERDATA );
-	if ( inc == 0 )
-	{
-		inc = 100.0f;
-		SetWindowLongPtr ( hdr->hwndFrom, GWLP_USERDATA, 100 );
-	}
-	inc /= 100.0f;
+BOOL CBrushSidesDlg::OnInitDialog() {
+	CDialogEx::OnInitDialog();
 
-	if ( GetAsyncKeyState ( VK_SHIFT ) & 0x8000 )
-	{
-		inc *= 10.0f;
-	}
+	m_editSides.SetFocus();
 
-	value  = atof(strValue);
-	value += (udhdr->iDelta)*(inc);
+	return FALSE;  // return TRUE unless you set the focus to a control
+}
 
-	// Avoid round-off errors
-	value = floor(value*1e3+0.5)/1e3;
+void CBrushSidesDlg::OnOK() {
+	CString str;
+	m_editSides.GetWindowText( str );
 
-	LONG minRange;
-	LONG maxRange;
-	SendMessage ( hdr->hwndFrom, UDM_GETRANGE32, (LONG_PTR)&minRange, (LONG_PTR)&maxRange );
-	if ( minRange !=  0 || maxRange != 0 )
-	{
-		float minRangef = (float)(long)minRange / 100.0f;
-		float maxRangef = (float)maxRange / 100.0f;
-		if ( value > maxRangef )
-		{
-			value = maxRangef;
-		}
-		if ( value < minRangef )
-		{
-			value = minRangef;
-		}
+	if ( m_bDoCone ) {
+		Brush_MakeSidedCone( _ttoi( str ) );
+	} else if ( m_bDoSphere ) {
+		Brush_MakeSidedSphere( _ttoi( str ) );
+	} else {
+		Brush_MakeSided( _ttoi( str ) );
 	}
 
-	SetWindowText ( (HWND)SendMessage ( hdr->hwndFrom, UDM_GETBUDDY, 0, 0 ), va("%g",value) );
+	CDialogEx::OnOK();
+}
+
+void CBrushSidesDlg::OnCancel() {
+	CDialogEx::OnCancel();
+}
+
+void DoSides( bool bCone, bool bSphere, bool bTorus ) {
+	CBrushSidesDlg dlg( bCone, bSphere );
+	dlg.DoModal();
 }

@@ -33,6 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../../sys/win32/rc/resource.h"
 #include "../../ui/DeviceContext.h"
+#include "../Common/AboutBoxDlg.h"
 
 #include "GEApp.h"
 #include "GEOptionsDlg.h"
@@ -41,18 +42,56 @@ If you have questions concerning this license or the applicable additional terms
 static const int IDM_WINDOWCHILD	= 1000;
 static const int ID_GUIED_FILE_MRU1 = 10000;
 
-static INT_PTR CALLBACK AboutDlg_WndProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	switch ( msg )
-	{
-		case WM_COMMAND:
-			EndDialog ( hwnd, 1 );
-			break;
+class CAboutGEDlg : public CAboutDlg {
+public:
+	CAboutGEDlg( void );
+	virtual BOOL OnInitDialog();
+};
+
+CAboutGEDlg::CAboutGEDlg() : CAboutDlg( IDD_ABOUT ) {
+	SetDialogTitle( _T( "About GUI Editor" ) );
+}
+
+BOOL CAboutGEDlg::OnInitDialog() {
+	CAboutDlg::OnInitDialog();
+
+	CString buffer;
+	buffer.Format( "GUI Editor Build: %i\n%s\nCopyright 2004, 2011 Id Software, Inc\n\n", BUILD_NUMBER, ID__DATE__ );
+	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
+
+	return TRUE;
+}
+
+static INT_PTR CALLBACK AboutDlgProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam ) {
+	static CAboutGEDlg *pDlg = nullptr;
+
+	if ( message == WM_INITDIALOG ) {
+		pDlg = reinterpret_cast<CAboutGEDlg *>( lParam );
+		pDlg->Attach( hDlg ); // Attach the HWND to the MFC dialog
+		pDlg->OnInitDialog();
+		return TRUE;
+	}
+
+	if ( pDlg ) {
+		switch ( message ) {
+			case WM_COMMAND:
+				if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL ) {
+					EndDialog( hDlg, LOWORD( wParam ) );
+					return TRUE;
+				}
+				break;
+			default:
+				break;
+		}
 	}
 
 	return FALSE;
 }
 
+static void ShowAboutDialog( HINSTANCE hInstance, HWND hParent ) {
+	CAboutGEDlg aboutDlg;
+	DialogBoxParam( hInstance, MAKEINTRESOURCE( IDD_ABOUT ), hParent, AboutDlgProc, reinterpret_cast<LPARAM>( &aboutDlg ) );
+}
 
 rvGEApp::rvGEApp ( )
 {
@@ -113,7 +152,7 @@ bool rvGEApp::Initialize ( void )
 
 	// Create the main window
 	mMDIFrame = CreateWindow ( "QUAKE4_GUIEDITOR_CLASS",
-							  "UserInterface Development Environment",
+							  "GUI Editor",
 							  WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS,
 							  CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 							  NULL, NULL, mInstance, (LPVOID)this );
@@ -571,7 +610,7 @@ int rvGEApp::HandleCommand ( WPARAM wParam, LPARAM lParam )
 			break;
 
 		case ID_GUIED_HELP_ABOUT:
-			DialogBox ( GetInstance(), MAKEINTRESOURCE(IDD_GUIED_ABOUT), mMDIFrame, AboutDlg_WndProc );
+			ShowAboutDialog( GetInstance(), mMDIFrame );
 			break;
 
 		case ID_GUIED_TOOLS_VIEWER:

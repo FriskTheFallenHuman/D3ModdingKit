@@ -32,13 +32,14 @@ If you have questions concerning this license or the applicable additional terms
 #include "ZWnd.h"
 #include "CamWnd.h"
 #include "NewTexWnd.h"
-#include "TextureBar.h"
+#include "FindBrushDlg.h"
+#include "BrushSidesDlg.h"
 #include "RadiantEditor.h"
 
-class CMainFrame : public CFrameWnd {
+class CMainFrame : public CFrameWndEx {
 	DECLARE_DYNAMIC( CMainFrame )
 public:
-				CMainFrame();
+				CMainFrame() noexcept;
 	virtual		~CMainFrame();
 
 	void HandleKey( UINT nChar, UINT nRepCnt, UINT nFlags, bool bDown = true )
@@ -49,20 +50,13 @@ public:
 			OnKeyUp( nChar, nRepCnt, nFlags );
 	};
 
-public:
-	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
-	virtual BOOL PreTranslateMessage( MSG* pMsg );
-
 protected:
-	virtual BOOL OnCommand( WPARAM wParam, LPARAM lParam );
-	virtual LRESULT DefWindowProc( UINT message, WPARAM wParam, LPARAM lParam );
-	virtual LRESULT WindowProc( UINT message, WPARAM wParam, LPARAM lParam );
 	virtual BOOL OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext );
+	virtual BOOL PreCreateWindow( CREATESTRUCT &cs );
 
 public:
 	void UpdatePatchToolbarButtons();
 	void NudgeSelection( int nDirection, float fAmount );
-	void UpdateTextureBar();
 	void SetButtonMenuStates();
 	void SetTexValStatus();
 	void SetGridStatus();
@@ -101,11 +95,15 @@ public:
 		return m_pZWnd;
 	};
 	
-	CStatusBar* GetStatusbarWnd() {
+	CMFCStatusBar* GetStatusbarWnd() {
 		return &m_wndStatusBar;
 	};
 
-	CToolBar* GetToolbarWnd() {
+	CMFCMenuBar* GetMenuWnd() {
+		return &m_wndMenuBar;
+	};
+
+	CMFCToolBar* GetToolbarWnd() {
 		return &m_wndToolBar;
 	};
 
@@ -126,12 +124,9 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CStatusBar  m_wndStatusBar;
-	CToolBar m_wndToolBar;
-	CTextureBar m_wndTextureBar;
-	CSplitterWnd m_wndSplit;
-	CSplitterWnd m_wndSplit2;
-	CSplitterWnd m_wndSplit3;
+	CMFCStatusBar  m_wndStatusBar;
+	CMFCMenuBar m_wndMenuBar;
+	CMFCToolBar m_wndToolBar;
 	CXYWnd* m_pXYWnd;
 	CXYWnd* m_pYZWnd;
 	CXYWnd* m_pXZWnd;
@@ -161,7 +156,6 @@ public:
 
 	// these are public so i can easily reflect messages
 	// from child windows..
-	afx_msg void OnParentNotify(UINT message, LPARAM lParam);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
@@ -170,7 +164,6 @@ public:
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void ToggleCamera();
-	afx_msg void OnFileClose();
 	afx_msg void OnFileExit();
 	afx_msg void OnFileNew();
 	afx_msg void OnFileOpen();
@@ -181,13 +174,6 @@ public:
 	afx_msg void OnInspectorEntity();
 	afx_msg void OnInspectorMediaBrowser();
 	afx_msg void OnInspectorTexture();
-
-	/* Begin SS2 Changes */
-	afx_msg void OnSetViewTop();
-	afx_msg void OnSetViewSide();
-	afx_msg void OnSetViewFront();
-	/* end SS2 Changes */
-
 	afx_msg void OnViewInspector();
 	afx_msg void OnViewShowModels();
 	afx_msg void OnView100();
@@ -273,7 +259,6 @@ public:
 	afx_msg void OnViewChange();
 	afx_msg void OnViewCameraupdate();
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
-	afx_msg void OnHelpAbout();
 	afx_msg void OnViewClipper();
 	afx_msg void OnCameraAngledown();
 	afx_msg void OnCameraAngleup();
@@ -288,7 +273,6 @@ public:
 	afx_msg void OnGridToggle();
 	afx_msg void OnPrefs();
 	afx_msg void OnToggleToolbar();
-	afx_msg void OnToggleTextureBar();
 	afx_msg void OnTogglecamera();
 	afx_msg void OnToggleview();
 	afx_msg void OnTogglez();
@@ -357,8 +341,6 @@ public:
 	afx_msg void OnUpdateFileSaveregion(CCmdUI* pCmdUI);
 	afx_msg void OnSelectionMovedown();
 	afx_msg void OnSelectionMoveup();
-	afx_msg void OnToolbarMain();
-	afx_msg void OnToolbarTexture();
 	afx_msg void OnSelectionPrint();
 	afx_msg void OnSelectionTogglesizepaint();
 	afx_msg void OnBrushMakecone();
@@ -511,7 +493,6 @@ public:
 	afx_msg void OnMru(unsigned int nID);
 	afx_msg void OnViewNearest(unsigned int nID);
 	afx_msg void OnGrid1(unsigned int nID);
-	afx_msg void OnDisplayChange(WPARAM wp, LPARAM lp);
 	afx_msg void OnSelectAlltargets();
 
 	void CheckTextureScale( int id );

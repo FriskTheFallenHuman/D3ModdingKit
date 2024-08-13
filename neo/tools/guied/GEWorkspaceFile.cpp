@@ -31,8 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "GEApp.h"
 
-bool GECheckInDlg_DoModal ( HWND parent, const char* filename, idStr* comment );
-
 /*
 ================
 rvGEWorkspace::SaveFile

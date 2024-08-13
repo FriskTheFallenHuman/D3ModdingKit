@@ -25,57 +25,64 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#pragma once
 
-#include "mediapreviewdlg.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-// CEditViewDlg dialog
+#include "AboutBoxDlg.h"
 
-class CEditViewDlg : public CDialogEx {
+CAboutDlg::CAboutDlg( UINT nIDTemplate, CWnd *pParent /*=nullptr*/ )
+	: CDialog( nIDTemplate, pParent ) {
+}
 
-    DECLARE_DYNAMIC( CEditViewDlg )
+void CAboutDlg::DoDataExchange( CDataExchange *pDX ) {
+	CDialog::DoDataExchange( pDX );
+}
 
-public:
-    enum { MATERIALS, GUIS };
-    CEditViewDlg( CWnd *pParent = nullptr );   // standard constructor
-    virtual ~CEditViewDlg();
+BEGIN_MESSAGE_MAP( CAboutDlg, CDialog )
+	ON_COMMAND( IDOK, &CAboutDlg::OnOK )
+END_MESSAGE_MAP()
 
-    void SetMode( int _mode ) {
-        mode = _mode;
-    }
+void CAboutDlg::OnOK( void ) {
+	EndDialog( IDOK );
+}
 
-    void SetMaterialInfo( const char *name, const char *file, int line );
-    void SetGuiInfo( const char *name );
-    void UpdateEditPreview();
+void CAboutDlg::SetDialogTitle( const CString &title ) {
+	m_strTitle = title;
+}
 
-    // Dialog Data
-    enum { IDD = IDD_DIALOG_EDITVIEW };
+BOOL CAboutDlg::OnInitDialog() {
+	CDialog::OnInitDialog();
 
-protected:
-    CFindReplaceDialog *findDlg;
-    CMediaPreviewDlg mediaPreview;
-    int mode;
-    idStr fileName;
-    idStr matName;
-    idStr editText;
-    idStr findStr;
-    int line;
-    CEdit editInfo;
+	if ( !m_strTitle.IsEmpty() ) {
+		SetWindowText( m_strTitle );
+	}
 
-    void ShowFindDlg();
+	CString buffer;
+	buffer.Format( "Renderer:\t%s", qglGetString( GL_RENDERER ) );
+	SetDlgItemText( IDC_ABOUT_GLRENDERER, buffer);
 
-    virtual void DoDataExchange( CDataExchange *pDX ) override;    // DDX/DDV support
+	buffer.Format( "Version:\t\t%s", qglGetString( GL_VERSION ) );
+	SetDlgItemText( IDC_ABOUT_GLVERSION, buffer );
 
-    DECLARE_MESSAGE_MAP()
+	buffer.Format( "Vendor:\t\t%s", qglGetString( GL_VENDOR ) );
+	SetDlgItemText( IDC_ABOUT_GLVENDOR, buffer );
 
-public:
-    afx_msg void OnSize( UINT nType, int cx, int cy );
-    afx_msg void OnBnClickedButtonOpen();
-    afx_msg void OnBnClickedButtonSave();
-    virtual BOOL OnInitDialog() override;
-    afx_msg void OnDestroy();
-    afx_msg void OnTimer( UINT_PTR nIDEvent );
-    afx_msg void OnBnClickedButtonGoto();
-    virtual BOOL PreTranslateMessage( MSG *pMsg ) override;
-    afx_msg LRESULT OnFindDialogMessage( WPARAM wParam, LPARAM lParam );
-};
+	const GLubyte *extensions = qglGetString( GL_EXTENSIONS );
+	if ( extensions ) {
+		CString extStr = (char *)extensions;
+		CListBox *pListBox = (CListBox *)GetDlgItem( IDC_ABOUT_GLEXTENSIONS );
+
+		int start = 0;
+		int end;
+		while ( ( end = extStr.Find( ' ', start ) ) != -1 ) {
+			pListBox->AddString( extStr.Mid( start, end - start ) );
+			start = end + 1;
+		}
+		pListBox->AddString( extStr.Mid( start ) );
+	} else {
+		SetDlgItemText( IDC_ABOUT_GLEXTENSIONS, "No extensions found." );
+	}
+
+	return TRUE;
+}

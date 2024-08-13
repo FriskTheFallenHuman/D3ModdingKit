@@ -26,11 +26,25 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef SPINBUTTON_H_
-#define SPINBUTTON_H_
+#pragma once
 
-void SpinButton_SetIncrement ( HWND hWnd, float inc );
-void SpinButton_HandleNotify ( NMHDR* hdr );
-void SpinButton_SetRange	 ( HWND hWnd, float min, float max );
+class CFindBrushDlg : public CDialogEx {
+	DECLARE_DYNAMIC( CFindBrushDlg )
 
-#endif // SPINBUTOTN_H_
+public:
+			CFindBrushDlg( CWnd *pParent = nullptr );   // standard constructor
+	virtual ~CFindBrushDlg( void );
+
+protected:
+	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+
+	DECLARE_MESSAGE_MAP()
+public:
+	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
+
+private:
+	CEdit m_editEntity;
+	CEdit m_editBrush;
+};

@@ -271,7 +271,6 @@ void UpdateSurfaceDialog() {
 	if (g_surfwin)  {
 		g_dlgSurface.SetTexMods();
 	}
-	g_pParentWnd->UpdateTextureBar();
 }
 
 bool ByeByeSurfaceDialog();

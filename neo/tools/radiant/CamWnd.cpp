@@ -174,7 +174,7 @@ void CCamWnd::OnPaint() {
 	CPaintDC	dc(this);	// device context for painting
 
 	if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
-		common->Printf("ERROR: wglMakeCurrent failed..\n ");
+		common->Printf("ERROR: qwglMakeCurrent failed..\n ");
 		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the camera view is not working\n");
 	}
 	else {
@@ -188,7 +188,7 @@ void CCamWnd::OnPaint() {
 
 		Cam_Draw();
 		QE_CheckOpenGLForErrors();
-		qwglSwapBuffers(dc.m_hDC);
+		SwapBuffers(dc.m_hDC);
 	}
 }
 
@@ -343,7 +343,7 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	//qwglMakeCurrent (hDC, win32.hGLRC);
 	if( qwglMakeCurrent ( hDC, win32.hGLRC ) == FALSE ) {
-		common->Warning("wglMakeCurrent failed: %d", ::GetLastError());
+		common->Warning("qwglMakeCurrent failed: %d", ::GetLastError());
 		if ( r_multiSamples.GetInteger() > 0 ) {
 			common->Warning("\n!!! Try setting r_multiSamples 0 when using the editor !!!\n");
 		}
@@ -355,15 +355,15 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	// create the bitmap display lists we're making images of glyphs 0 thru 255
 	if ( !qwglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
-		common->Warning( "wglUseFontBitmaps failed (%d).  Trying again.", GetLastError() );
+		common->Warning( "qwglUseFontBitmaps failed (%d).  Trying again.", GetLastError() );
 
 		// FIXME: This is really wacky, sometimes the first call fails, but calling it again makes it work
 		//		This probably indicates there's something wrong somewhere else in the code, but I'm not sure what
 		if ( !qwglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
-			common->Warning( "wglUseFontBitmaps failed again (%d).  Trying outlines.", GetLastError() );
+			common->Warning( "qwglUseFontBitmaps failed again (%d).  Trying outlines.", GetLastError() );
 
 			if (!qwglUseFontOutlines(hDC, 0, 255, g_qeglobals.d_font_list, 0.0f, 0.1f, WGL_FONT_LINES, NULL)) {
-				common->Warning( "wglUseFontOutlines also failed (%d), no coordinate text will be visible.", GetLastError() );
+				common->Warning( "qwglUseFontOutlines also failed (%d), no coordinate text will be visible.", GetLastError() );
 			}
 		}
 	}
@@ -916,7 +916,7 @@ void CCamWnd::SetProjectionMatrix() {
 #if 0
 	float screenaspect = (float)m_Camera.width / m_Camera.height;
 	qglLoadIdentity();
-	gluPerspective(yfov, screenaspect, 2, 8192);
+	qgluPerspective(yfov, screenaspect, 2, 8192);
 #else
 	float	xmin, xmax, ymin, ymax;
 	float	width, height;
@@ -969,8 +969,6 @@ void CCamWnd::SetProjectionMatrix() {
 void CCamWnd::DrawGrid() {
 	const float GRID_SPACING = 64.0f;
 	const int GRID_LINES = 100;
-	const float GRID_COLOR[4] = { 0.0f, 0.0f, 0.5f, 1.0f }; // Blue color for regular lines
-	const float DARKER_LINE_COLOR[4] = { 0.0f, 0.0f, 0.25f, 1.0f }; // Darker blue color for center lines
 
 	// Calculate the grid bounds based on the camera position
 	float startX = floor(m_Camera.origin.x / GRID_SPACING) * GRID_SPACING - GRID_LINES * GRID_SPACING;
@@ -981,22 +979,22 @@ void CCamWnd::DrawGrid() {
 	// Draw vertical grid lines
 	qglBegin(GL_LINES);
 	for (float x = startX; x <= endX; x += GRID_SPACING) {
-		if (fabs(x) < 0.01f) {
-			qglColor4fv(GRID_COLOR); // Center line color
+		if (idMath::Fabs(x) < 0.01f) {
+			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2], 1.0f ); // Center line color
 		}
 		else {
-			qglColor4fv(DARKER_LINE_COLOR); // Regular grid line color
+			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][2], 1.0f ); // Regular grid line color
 		}
 		qglVertex3f(x, startY, 0);
 		qglVertex3f(x, endY, 0);
 	}
 	// Draw horizontal grid lines
 	for (float y = startY; y <= endY; y += GRID_SPACING) {
-		if (fabs(y) < 0.01f) {
-			qglColor4fv(GRID_COLOR); // Center line color
+		if (idMath::Fabs(y) < 0.01f) {
+			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2], 1.0f ); // Center line color
 		}
 		else {
-			qglColor4fv(DARKER_LINE_COLOR); // Regular grid line color
+			qglColor4f(g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0], g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1], g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][2], 1.0f); // Regular grid line color
 		}
 		qglVertex3f(startX, y, 0);
 		qglVertex3f(endX, y, 0);
@@ -2051,7 +2049,7 @@ void CCamWnd::Cam_Render() {
 	// DG: from SteelStorm2
 	// Jmarshal23 recommended to disable this to fix lighting render in the Cam window
 	/* if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
-		common->Printf("ERROR: wglMakeCurrent failed..\n ");
+		common->Printf("ERROR: qwglMakeCurrent failed..\n ");
 		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the camera view is not working\n");
 		return;
 	} */

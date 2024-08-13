@@ -39,57 +39,40 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
 idCVar radiant_entityMode( "radiant_entityMode", "0", CVAR_TOOL | CVAR_ARCHIVE, "" );
 
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp
-
-BEGIN_MESSAGE_MAP(CRadiantApp, CWinApp)
-	//{{AFX_MSG_MAP(CRadiantApp)
-	ON_COMMAND(ID_HELP, OnHelp)
-	//}}AFX_MSG_MAP
+BEGIN_MESSAGE_MAP(CRadiantApp, CWinAppEx)
+	ON_COMMAND(ID_HELP, &CRadiantApp::OnAppHelp)
+	ON_COMMAND(ID_HELP_ABOUT, &CRadiantApp::OnAppAbout)
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp construction
 
 /*
 ================
 CRadiantApp::CRadiantApp
 ================
 */
-CRadiantApp::CRadiantApp()
-{
+CRadiantApp::CRadiantApp() noexcept {
+	SetAppID( _T( "Radiant.AppID.NoVersion" ) );
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CRadiantApp object
-
 CRadiantApp theApp;
-
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp initialization
 
 /*
 ================
 CRadiantApp::InitInstance
 ================
 */
-BOOL CRadiantApp::InitInstance()
-{
+BOOL CRadiantApp::InitInstance() {
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
 	InitCtrls.dwSize = sizeof(InitCtrls);
-
 	// Set this to include all the common control classes you want to use
 	// in your application.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
@@ -98,13 +81,15 @@ BOOL CRadiantApp::InitInstance()
 	CWinAppEx::InitInstance();
 
 	// Initialize OLE libraries
-	if (!AfxOleInit())
-	{
+	if (!AfxOleInit()) {
 		return FALSE;
 	}
 
+	EnableTaskbarInteraction( FALSE );
+
 	AfxEnableControlContainer();
 
+	// AfxInitRichEdit2() is required to use RichEdit control
 	AfxInitRichEdit2();
 
 	// Change the registry key under which our settings are stored.
@@ -112,59 +97,51 @@ BOOL CRadiantApp::InitInstance()
 
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
-
-	// Register the application's document templates.  Document templates
-	//  serve as the connection between documents, frame windows and views.
-
-//	CMultiDocTemplate* pDocTemplate;
-//	pDocTemplate = new CMultiDocTemplate(
-//		IDR_RADIANTYPE,
-//		RUNTIME_CLASS(CRadiantDoc),
-//		RUNTIME_CLASS(CMainFrame), // custom MDI child frame
-//		RUNTIME_CLASS(CRadiantView));
-//	AddDocTemplate(pDocTemplate);
-
 	// create main MDI Frame window
-
 	g_PrefsDlg.LoadPrefs();
 
 	qglEnableClientState( GL_VERTEX_ARRAY );
 
-	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame->LoadFrame(IDR_MAINFRAME)) {
+	InitContextMenuManager();
+
+	InitKeyboardManager();
+
+	InitTooltipManager();
+	CMFCToolTipInfo ttParams;
+	ttParams.m_bVislManagerTheme = TRUE;
+	theApp.GetTooltipManager()->SetTooltipParams( AFX_TOOLTIP_TYPE_ALL,
+		RUNTIME_CLASS( CMFCToolTipCtrl ), &ttParams );
+
+	// To create the main window, this code creates a new frame window
+	// object and then sets it as the application's main window object
+	CFrameWnd *pFrame = new CMainFrame;
+	if ( !pFrame ) {
 		return FALSE;
 	}
 
-	if (pMainFrame->m_hAccelTable) {
-		::DestroyAcceleratorTable(pMainFrame->m_hAccelTable);
-	}
+	m_pMainWnd = pFrame;
+	// create and load the frame with its resources
+	pFrame->LoadFrame( IDR_MAINFRAME,
+		WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, nullptr,
+		nullptr );
 
-	pMainFrame->LoadAccelTable(MAKEINTRESOURCE(IDR_MINIACCEL));
-
-	m_pMainWnd = pMainFrame;
-
-	// The main window has been initialized, so show and update it.
-	pMainFrame->ShowWindow(m_nCmdShow);
-	pMainFrame->UpdateWindow();
+	// The one and only window has been initialized, so show and update it
+	pFrame->ShowWindow( SW_SHOW );
+	pFrame->UpdateWindow();
 
 	return TRUE;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp commands
 
 /*
 ================
 CRadiantApp::ExitInstance
 ================
 */
-int CRadiantApp::ExitInstance()
-{
+int CRadiantApp::ExitInstance() {
 	common->Shutdown();
 	g_pParentWnd = NULL;
-	int ret = CWinApp::ExitInstance();
 	ExitProcess(0);
-	return ret;
+	return CWinAppEx::ExitInstance();
 }
 
 /*
@@ -177,17 +154,16 @@ BOOL CRadiantApp::OnIdle(LONG lCount) {
 		g_pParentWnd->RoutineProcessing();
 	}
 	return FALSE;
-	//return CWinApp::OnIdle(lCount);
+	//return CWinAppEx::OnIdle(lCount);
 }
 
 /*
 ================
-CRadiantApp::OnHelp
+CRadiantApp::OnAppHelp
 ================
 */
-void CRadiantApp::OnHelp()
-{
-	ShellExecute(m_pMainWnd->GetSafeHwnd(), "open", "https://iddevnet.dhewm3.org/doom3/index.html", NULL, NULL, SW_SHOW);
+void CRadiantApp::OnAppHelp() {
+	ShellExecute( m_pMainWnd->GetSafeHwnd(), "open", "https://iddevnet.dhewm3.org/doom3/index.html", NULL, NULL, SW_SHOW );
 }
 
 /*
@@ -195,8 +171,7 @@ void CRadiantApp::OnHelp()
 CRadiantApp::Run
 ================
 */
-int CRadiantApp::Run( void )
-{
+int CRadiantApp::Run( void ) {
 	BOOL bIdle = TRUE;
 	LONG lIdleCount = 0;
 
@@ -232,4 +207,34 @@ int CRadiantApp::Run( void )
 	} while (::PeekMessage(msg, NULL, NULL, NULL, PM_NOREMOVE));
 
 	return 0;
+}
+
+class CAboutRadiantDlg : public CAboutDlg {
+public:
+	CAboutRadiantDlg( void );
+	virtual BOOL OnInitDialog();
+};
+
+CAboutRadiantDlg::CAboutRadiantDlg() : CAboutDlg( IDD_ABOUT ) {
+	SetDialogTitle( _T( "About Radiant Editor" ) );
+}
+
+BOOL CAboutRadiantDlg::OnInitDialog() {
+	CAboutDlg::OnInitDialog();
+
+	CString buffer;
+	buffer.Format( "Radiant Editor Build: %i\n%s\nCopyright 2004, 2011 Id Software, Inc\n\n", BUILD_NUMBER, ID__DATE__ );
+	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
+
+	return TRUE;
+}
+
+/*
+================
+CRadiantApp::OnAppAbout
+================
+*/
+void CRadiantApp::OnAppAbout() {
+	CAboutRadiantDlg aboutDlg;
+	aboutDlg.DoModal();
 }
