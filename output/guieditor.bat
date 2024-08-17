@@ -1,1 +1,1 @@
-start dhewm3.exe +editguis
+start D3ModdingKit.exe +editguis

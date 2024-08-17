@@ -15,7 +15,7 @@
 #define IDD_DIALOG_AF_CONSTRAINT_SLIDER 110
 #define IDD_DIALOG_AF_CONSTRAINT_SPRING 111
 #define IDI_ICON2                       112
-#define IDP_OLE_INIT_FAILED				113
+#define IDP_OLE_INIT_FAILED             113
 #define IDC_DIALOG_AF_TAB_MODE          200
 #define IDC_DIALOG_AF_START             201
 #define IDC_COMBO_AF                    202
@@ -647,7 +647,7 @@
 #define ID_PASTE                        9008
 #define ID_EDIT_DELETE                  9009
 #define ID_EDIT_SELECTALL               9010
-#define IDI_MAINFRAME_RADIANT           9013
+#define IDI_MAINFRAME_IDSTUDIO           9013
 #define IDC_SPLITTER                    9200
 #define IDC_FPOINT                      9201
 #define IDD_FINDTEXTURE                 10000
@@ -1620,7 +1620,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        9019
+#define _APS_NEXT_RESOURCE_VALUE        9020
 #define _APS_NEXT_COMMAND_VALUE         29005
 #define _APS_NEXT_CONTROL_VALUE         9207
 #define _APS_NEXT_SYMED_VALUE           9005

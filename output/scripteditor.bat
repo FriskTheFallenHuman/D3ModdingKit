@@ -1,1 +1,1 @@
-start dhewm3.exe +editScripts
+start D3ModdingKit.exe +editScripts

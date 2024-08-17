@@ -1,1 +1,1 @@
-start dhewm3.exe +editPDAs
+start D3ModdingKit.exe +editPDAs

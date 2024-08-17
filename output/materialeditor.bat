@@ -1,1 +1,1 @@
-start dhewm3.exe +materialEditor
+start D3ModdingKit.exe +materialEditor

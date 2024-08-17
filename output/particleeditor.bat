@@ -1,1 +1,1 @@
-start dhewm3.exe +editParticles
+start D3ModdingKit.exe +editParticles

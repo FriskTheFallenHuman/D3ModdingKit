@@ -1,1 +1,1 @@
-start dhewm3.exe +debugger
+start D3ModdingKit.exe +debugger

@@ -787,7 +787,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	}
 
 	// Load the icon
-	HICON hIcon = AfxGetApp()->LoadIconA( IDI_MAINFRAME_RADIANT );
+	HICON hIcon = AfxGetApp()->LoadIconA( IDI_MAINFRAME_IDSTUDIO );
 	if ( hIcon ) {
 		SetIcon( hIcon, TRUE );
 		SetIcon( hIcon, FALSE );
@@ -834,19 +834,19 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	m_bCamPreview = true;
 
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SCALELOCKX, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SCALELOCKY, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SCALELOCKZ, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SELECT_BYBOUNDINGBRUSH, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SELECT_BRUSHESONLY, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_PATCH_SHOWBOUNDINGBOX, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_PATCH_WELD, TRUE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_PATCH_DRILLDOWN, TRUE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SHOW_LIGHTVOLUMES, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SHOW_LIGHTTEXTURES, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SELECTION_MOVEONLY, FALSE);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SOUND_SHOWSOUNDVOLUMES,g_qeglobals.d_savedinfo.showSoundAlways);
-	SetToolbarButtonCheckState( m_wndToolBar, ID_SOUND_SHOWSELECTEDSOUNDVOLUMES,g_qeglobals.d_savedinfo.showSoundWhenSelected);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SCALELOCKX, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SCALELOCKY, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SCALELOCKZ, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SELECT_BYBOUNDINGBRUSH, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SELECT_BRUSHESONLY, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_PATCH_SHOWBOUNDINGBOX, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_PATCH_WELD, TRUE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_PATCH_DRILLDOWN, TRUE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SHOW_LIGHTVOLUMES, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SHOW_LIGHTTEXTURES, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SELECTION_MOVEONLY, FALSE);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SOUND_SHOWSOUNDVOLUMES,g_qeglobals.d_savedinfo.showSoundAlways);
+	SetToolbarButtonCheckState(m_wndToolBar, ID_SOUND_SHOWSELECTEDSOUNDVOLUMES,g_qeglobals.d_savedinfo.showSoundWhenSelected);
 
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -897,8 +897,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	SetActiveXY(m_pXYWnd);
 	m_pXYWnd->SetFocus();
 
-	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
+	// set the visual manager used to draw all user interface elements
+	CMFCVisualManager::SetDefaultManager( RUNTIME_CLASS( CMFCVisualManagerVS2008 ) );
+
+	// enable Visual Studio 2005 style docking window behavior
 	CDockingManager::SetDockingMode(DT_SMART);
+
+	// enable Visual Studio 2005 style docking window auto-hide behavior
+	EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
 	PostMessage(WM_KEYDOWN, 'O', NULL);
 
@@ -924,9 +930,6 @@ BOOL CMainFrame::PreCreateWindow( CREATESTRUCT &cs ) {
 	if( !CFrameWndEx::PreCreateWindow( cs ) ) {
 		return FALSE;
 	}
-
-	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
-	cs.lpszClass = AfxRegisterWndClass(0);
 	return TRUE;
 }
 
@@ -3475,7 +3478,7 @@ void CMainFrame::UpdateWindows(int nBits) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void WINAPI Sys_UpdateWindows(int nBits) {
+void Sys_UpdateWindows(int nBits) {
 	if ( g_pParentWnd ) {
 		g_pParentWnd->UpdateWindows(nBits);
 	}
@@ -5939,16 +5942,14 @@ void CMainFrame::OnSelectBrushlight()
 void CMainFrame::OnSelectionCombine()
 {
 	if (g_qeglobals.d_select_count < 2) {
-		Sys_Status("Must have at least two things selected.", 0);
-		Sys_Beep();
+		MessageBox( "Must have at least two things selected.", "Can't Combine", MB_OK | MB_ICONINFORMATION );
 		return;
 	}
 
 	idEditorEntity *e1 = g_qeglobals.d_select_order[0]->owner;
 
 	if (e1 == world_entity) {
-		Sys_Status("First selection must not be world.", 0);
-		Sys_Beep();
+		MessageBox( "First selection must not be world.", "Can't Combine", MB_OK | MB_ICONINFORMATION );
 		return;
 	}
 

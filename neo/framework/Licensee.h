@@ -95,10 +95,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _WIN32
 	// editor registry info
-	#define EDITOR_REGISTRY_KEY				"Radiant"
+	#define EDITOR_REGISTRY_KEY				"idStudio"
 
 	// editor info
-	#define EDITOR_WINDOWTEXT				"Radiant Editor"
+	#define EDITOR_WINDOWTEXT				"idStudio"
 
 	// win32 info classes
 	#define WIN32_CONSOLE_CLASS				"dhewm 3 WinConsole"

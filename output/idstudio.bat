@@ -1,0 +1,1 @@
+start D3ModdingKit.exe +editor

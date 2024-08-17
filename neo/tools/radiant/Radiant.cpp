@@ -216,14 +216,14 @@ public:
 };
 
 CAboutRadiantDlg::CAboutRadiantDlg() : CAboutDlg( IDD_ABOUT ) {
-	SetDialogTitle( _T( "About Radiant Editor" ) );
+	SetDialogTitle( _T( "About idStudio" ) );
 }
 
 BOOL CAboutRadiantDlg::OnInitDialog() {
 	CAboutDlg::OnInitDialog();
 
 	CString buffer;
-	buffer.Format( "Radiant Editor Build: %i\n%s\nCopyright 2004, 2011 Id Software, Inc\n\n", BUILD_NUMBER, ID__DATE__ );
+	buffer.Format( "idStudio Build: %i\n%s\nCopyright 2004, 2011 Id Software, Inc\n\n", BUILD_NUMBER, ID__DATE__ );
 	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
 
 	return TRUE;

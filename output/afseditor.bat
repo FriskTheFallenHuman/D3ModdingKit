@@ -1,1 +1,1 @@
-start dhewm3.exe +editAFs
+start D3ModdingKit.exe +editAFs

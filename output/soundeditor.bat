@@ -1,1 +1,1 @@
-start dhewm3.exe +editSounds
+start D3ModdingKit.exe +editSounds
