@@ -67,23 +67,6 @@ bool R_CreateAmbientCache( srfTriangles_t *tri, bool needsLighting ) {
 
 /*
 ==================
-R_CreateLightingCache
-
-Returns false if the cache couldn't be allocated, in which case the surface should be skipped.
-==================
-*/
-bool R_CreateLightingCache( const idRenderEntityLocal *ent, const idRenderLightLocal *light, srfTriangles_t *tri ) {
-	// fogs and blends don't need light vectors
-	if ( light->lightShader->IsFogLight() || light->lightShader->IsBlendLight() ) {
-		return true;
-	}
-
-	// not needed if we have vertex programs
-	return true;
-}
-
-/*
-==================
 R_CreatePrivateShadowCache
 
 This is used only for a specific light
@@ -243,77 +226,6 @@ void R_WobbleskyTexGen( drawSurf_t *surf, const idVec3 &viewOrg ) {
 
 	surf->dynamicTexCoords = vertexCache.AllocFrameTemp( texCoords, size );
 }
-
-/*
-=================
-R_SpecularTexGen
-
-Calculates the specular coordinates for cards without vertex programs.
-=================
-*/
-static void R_SpecularTexGen( drawSurf_t *surf, const idVec3 &globalLightOrigin, const idVec3 &viewOrg ) {
-	const srfTriangles_t *tri;
-	idVec3	localLightOrigin;
-	idVec3	localViewOrigin;
-
-	R_GlobalPointToLocal( surf->space->modelMatrix, globalLightOrigin, localLightOrigin );
-	R_GlobalPointToLocal( surf->space->modelMatrix, viewOrg, localViewOrigin );
-
-	tri = surf->geo;
-
-	// FIXME: change to 3 component?
-	int	size = tri->numVerts * sizeof( idVec4 );
-	idVec4 *texCoords = (idVec4 *) _alloca16( size );
-
-#if 1
-
-	SIMDProcessor->CreateSpecularTextureCoords( texCoords, localLightOrigin, localViewOrigin,
-											tri->verts, tri->numVerts, tri->indexes, tri->numIndexes );
-
-#else
-
-	bool *used = (bool *)_alloca16( tri->numVerts * sizeof( used[0] ) );
-	memset( used, 0, tri->numVerts * sizeof( used[0] ) );
-
-	// because the interaction may be a very small subset of the full surface,
-	// it makes sense to only deal with the verts used
-	for ( int j = 0; j < tri->numIndexes; j++ ) {
-		int i = tri->indexes[j];
-		if ( used[i] ) {
-			continue;
-		}
-		used[i] = true;
-
-		float ilength;
-
-		const idDrawVert *v = &tri->verts[i];
-
-		idVec3 lightDir = localLightOrigin - v->xyz;
-		idVec3 viewDir = localViewOrigin - v->xyz;
-
-		ilength = idMath::RSqrt( lightDir * lightDir );
-		lightDir[0] *= ilength;
-		lightDir[1] *= ilength;
-		lightDir[2] *= ilength;
-
-		ilength = idMath::RSqrt( viewDir * viewDir );
-		viewDir[0] *= ilength;
-		viewDir[1] *= ilength;
-		viewDir[2] *= ilength;
-
-		lightDir += viewDir;
-
-		texCoords[i][0] = lightDir * v->tangents[0];
-		texCoords[i][1] = lightDir * v->tangents[1];
-		texCoords[i][2] = lightDir * v->normal;
-		texCoords[i][3] = 1;
-	}
-
-#endif
-
-	surf->dynamicTexCoords = vertexCache.AllocFrameTemp( texCoords, size );
-}
-
 
 //=======================================================================================================
 
