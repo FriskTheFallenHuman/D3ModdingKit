@@ -105,7 +105,7 @@ void idCollisionModelManagerLocal::ParseProcNodes( idLexer *src ) {
 struct basicSurf_t {
 	idDrawVert			*verts;
 	int					numVerts;
-	glIndex_t			*indices;
+	triIndex_t			*indices;
 	int					numIndices;
 	const idMaterial	*mat;
 };
@@ -182,7 +182,7 @@ void idCollisionModelManagerLocal::CheckProcModelSurfClip( idLexer *src ) {
 		model->maxEdges += numIndices;
 
 		idDrawVert *verts = (idDrawVert *)Mem_Alloc(numVerts * sizeof(idDrawVert));
-		glIndex_t *indices = (glIndex_t *)Mem_Alloc(numIndices * sizeof(glIndex_t));
+		triIndex_t *indices = (triIndex_t *)Mem_Alloc(numIndices * sizeof(triIndex_t));
 
 		//parse the actual verts and tris
 		for ( j = 0; j < numVerts; j++ ) {

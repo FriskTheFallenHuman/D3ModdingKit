@@ -129,20 +129,20 @@ static idBlockAlloc<srfTriangles_t, 1<<8>				srfTrianglesAllocator;
 
 #ifdef USE_TRI_DATA_ALLOCATOR
 static idDynamicBlockAlloc<idDrawVert, 1<<20, 1<<10>	triVertexAllocator;
-static idDynamicBlockAlloc<glIndex_t, 1<<18, 1<<10>		triIndexAllocator;
+static idDynamicBlockAlloc<triIndex_t, 1<<18, 1<<10>		triIndexAllocator;
 static idDynamicBlockAlloc<shadowCache_t, 1<<18, 1<<10>	triShadowVertexAllocator;
 static idDynamicBlockAlloc<idPlane, 1<<17, 1<<10>		triPlaneAllocator;
-static idDynamicBlockAlloc<glIndex_t, 1<<17, 1<<10>		triSilIndexAllocator;
+static idDynamicBlockAlloc<triIndex_t, 1<<17, 1<<10>		triSilIndexAllocator;
 static idDynamicBlockAlloc<silEdge_t, 1<<17, 1<<10>		triSilEdgeAllocator;
 static idDynamicBlockAlloc<dominantTri_t, 1<<16, 1<<10>	triDominantTrisAllocator;
 static idDynamicBlockAlloc<int, 1<<16, 1<<10>			triMirroredVertAllocator;
 static idDynamicBlockAlloc<int, 1<<16, 1<<10>			triDupVertAllocator;
 #else
 static idDynamicAlloc<idDrawVert, 1<<20, 1<<10>			triVertexAllocator;
-static idDynamicAlloc<glIndex_t, 1<<18, 1<<10>			triIndexAllocator;
+static idDynamicAlloc<triIndex_t, 1<<18, 1<<10>			triIndexAllocator;
 static idDynamicAlloc<shadowCache_t, 1<<18, 1<<10>		triShadowVertexAllocator;
 static idDynamicAlloc<idPlane, 1<<17, 1<<10>			triPlaneAllocator;
-static idDynamicAlloc<glIndex_t, 1<<17, 1<<10>			triSilIndexAllocator;
+static idDynamicAlloc<triIndex_t, 1<<17, 1<<10>			triSilIndexAllocator;
 static idDynamicAlloc<silEdge_t, 1<<17, 1<<10>			triSilEdgeAllocator;
 static idDynamicAlloc<dominantTri_t, 1<<16, 1<<10>		triDominantTrisAllocator;
 static idDynamicAlloc<int, 1<<16, 1<<10>				triMirroredVertAllocator;
@@ -2172,7 +2172,7 @@ void R_ReverseTriangles( srfTriangles_t *tri ) {
 
 	// flip the index order to make them back sided
 	for ( i = 0 ; i < tri->numIndexes ; i+= 3 ) {
-		glIndex_t	temp;
+		triIndex_t	temp;
 
 		temp = tri->indexes[ i + 0 ];
 		tri->indexes[ i + 0 ] = tri->indexes[ i + 1 ];

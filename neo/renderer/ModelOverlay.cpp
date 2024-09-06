@@ -119,7 +119,7 @@ void idRenderModelOverlay::CreateOverlay( const idRenderModel *model, const idPl
 
 	// make temporary buffers for the building process
 	overlayVertex_t	*overlayVerts = (overlayVertex_t *)_alloca( maxVerts * sizeof( *overlayVerts ) );
-	glIndex_t *overlayIndexes = (glIndex_t *)_alloca16( maxIndexes * sizeof( *overlayIndexes ) );
+	triIndex_t *overlayIndexes = (triIndex_t *)_alloca16( maxIndexes * sizeof( *overlayIndexes ) );
 
 	// pull out the triangles we need from the base surfaces
 	for ( surfNum = 0; surfNum < model->NumBaseSurfaces(); surfNum++ ) {
@@ -154,7 +154,7 @@ void idRenderModelOverlay::CreateOverlay( const idRenderModel *model, const idPl
 
 		SIMDProcessor->OverlayPointCull( cullBits, texCoords, localTextureAxis, stri->verts, stri->numVerts );
 
-		glIndex_t *vertexRemap = (glIndex_t *)_alloca16( sizeof( vertexRemap[0] ) * stri->numVerts );
+		triIndex_t *vertexRemap = (triIndex_t *)_alloca16( sizeof( vertexRemap[0] ) * stri->numVerts );
 		SIMDProcessor->Memset( vertexRemap, -1,  sizeof( vertexRemap[0] ) * stri->numVerts );
 
 		// find triangles that need the overlay
@@ -176,7 +176,7 @@ void idRenderModelOverlay::CreateOverlay( const idRenderModel *model, const idPl
 			// keep this triangle
 			for ( int vnum = 0; vnum < 3; vnum++ ) {
 				int ind = stri->indexes[index+vnum];
-				if ( vertexRemap[ind] == (glIndex_t)-1 ) {
+				if ( vertexRemap[ind] == (triIndex_t)-1 ) {
 					vertexRemap[ind] = numVerts;
 
 					overlayVerts[numVerts].vertexNum = ind;
@@ -199,7 +199,7 @@ void idRenderModelOverlay::CreateOverlay( const idRenderModel *model, const idPl
 		s->verts = (overlayVertex_t *)Mem_Alloc( numVerts * sizeof( s->verts[0] ) );
 		memcpy( s->verts, overlayVerts, numVerts * sizeof( s->verts[0] ) );
 		s->numVerts = numVerts;
-		s->indexes = (glIndex_t *)Mem_Alloc( numIndexes * sizeof( s->indexes[0] ) );
+		s->indexes = (triIndex_t *)Mem_Alloc( numIndexes * sizeof( s->indexes[0] ) );
 		memcpy( s->indexes, overlayIndexes, numIndexes * sizeof( s->indexes[0] ) );
 		s->numIndexes = numIndexes;
 

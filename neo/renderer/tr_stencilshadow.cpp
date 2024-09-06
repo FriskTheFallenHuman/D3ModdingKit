@@ -143,7 +143,7 @@ static int	*remap;
 #define	MAX_SHADOW_INDEXES		0x18000
 #define	MAX_SHADOW_VERTS		0x18000
 static int	numShadowIndexes;
-static glIndex_t	shadowIndexes[MAX_SHADOW_INDEXES];
+static triIndex_t	shadowIndexes[MAX_SHADOW_INDEXES];
 static int	numShadowVerts;
 static idVec4	shadowVerts[MAX_SHADOW_VERTS];
 static bool overflowed;

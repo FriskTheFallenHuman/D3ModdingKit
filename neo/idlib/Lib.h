@@ -75,9 +75,43 @@ public:
 ===============================================================================
 */
 
+typedef int						qhandle_t;
+
 class idFile;
 class idVec3;
 class idVec4;
+
+#ifndef NULL
+#define NULL					((void *)0)
+#endif
+
+#ifndef BIT
+#define BIT( num )				( 1ULL << ( num ) )
+#endif
+
+#define	MAX_STRING_CHARS		1024		// max length of a string
+#define MAX_PRINT_MSG			16384		// buffer size for our various printf routines
+
+// maximum world size
+#define MAX_WORLD_COORD			( 128 * 1024 )
+#define MIN_WORLD_COORD			( -128 * 1024 )
+#define MAX_WORLD_SIZE			( MAX_WORLD_COORD - MIN_WORLD_COORD )
+
+#define SIZE_KB( x )						( ( (x) + 1023 ) / 1024 )
+#define SIZE_MB( x )						( ( ( SIZE_KB( x ) ) + 1023 ) / 1024 )
+#define SIZE_GB( x )						( ( ( SIZE_MB( x ) ) + 1023 ) / 1024 )
+
+#ifndef BIT
+#define BIT( num )				BITT< num >::VALUE
+#endif
+
+template< unsigned int B >
+class BITT {
+public:
+	typedef enum bitValue_e {
+		VALUE = 1 << B,
+	} bitValue_t;
+};
 
 // basic colors
 extern	idVec4 colorBlack;
@@ -120,33 +154,75 @@ bool	Swap_IsBigEndian( void );
 void	SixtetsForInt( byte *out, int src);
 int		IntForSixtets( byte *in );
 
-#define MAX_TYPE( x )			( ( ( ( 1 << ( ( sizeof( x ) - 1 ) * 8 - 1 ) ) - 1 ) << 8 ) | 255 )
-#define MIN_TYPE( x )			( - MAX_TYPE( x ) - 1 )
-#define MAX_UNSIGNED_TYPE( x )	( ( ( ( 1U << ( ( sizeof( x ) - 1 ) * 8 ) ) - 1 ) << 8 ) | 255U )
-#define MIN_UNSIGNED_TYPE( x )	0
-
-template< typename _type_ >
-bool IsSignedType( const _type_ t ) {
-	return _type_( -1 ) < 0;
-}
-
-#ifdef _DEBUG
-void AssertFailed( const char *file, int line, const char *expression );
-#undef assert
-// DG: change assert to use ?: so I can use it in _alloca()/_alloca16() (MSVC didn't like if() in there)
-#define assert( X )			(X) ? 1 : (AssertFailed( __FILE__, __LINE__, #X ), 0)
-#endif
-
+/*
+================================================
+idException
+================================================
+*/
 class idException {
 public:
-	char error[MAX_STRING_CHARS];
+	static const int MAX_ERROR_LEN = 2048;
 
-	idException( const char *text = "" ) { strcpy( error, text ); }
+					idException( const char *text = "" ) { 
+						strncpy( error, text, MAX_ERROR_LEN ); 
+					}
+
+	// this really, really should be a const function, but it's referenced too many places to change right now
+	const char *	GetError() { 
+						return error; 
+					}	
+
+protected:
+	// if GetError() were correctly const this would be named GetError(), too
+	char *		GetErrorBuffer() { 
+					return error; 
+				}	
+	int			GetErrorBufferSize() { 
+					return MAX_ERROR_LEN; 
+				}
+
+private:
+	friend class idFatalException;
+	static char error[MAX_ERROR_LEN];
 };
 
-// move from Math.h to keep gcc happy
-template<class T> ID_INLINE T	Max( T x, T y ) { return ( x > y ) ? x : y; }
-template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
+/*
+================================================
+idFatalException
+================================================
+*/
+class idFatalException {
+public:
+	static const int MAX_ERROR_LEN = 2048;
+
+	idFatalException( const char *text = "" ) { 
+		strncpy( idException::error, text, MAX_ERROR_LEN ); 
+	}
+
+	// this really, really should be a const function, but it's referenced too many places to change right now
+	const char *	GetError() { 
+		return idException::error; 
+	}	
+
+protected:
+	// if GetError() were correctly const this would be named GetError(), too
+	char *		GetErrorBuffer() { 
+		return idException::error; 
+	}	
+	int			GetErrorBufferSize() { 
+		return MAX_ERROR_LEN; 
+	}
+};
+
+/*
+================================================
+idNetworkLoadException
+================================================
+*/
+class idNetworkLoadException : public idException {
+public:
+	idNetworkLoadException( const char * text = "" ) : idException( text ) { }
+};
 
 /*
 ===============================================================================
@@ -155,6 +231,10 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 
 ===============================================================================
 */
+
+// System
+#include "sys/sys_assert.h"
+//#include "sys/sys_threading.h"
 
 // memory management and arrays
 #include "Heap.h"

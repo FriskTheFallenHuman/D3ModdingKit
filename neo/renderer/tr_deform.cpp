@@ -105,7 +105,7 @@ static void R_AutospriteDeform( drawSurf_t *surf ) {
 	newTri = (srfTriangles_t *)R_ClearedFrameAlloc( sizeof( *newTri ) );
 	newTri->numVerts = tri->numVerts;
 	newTri->numIndexes = tri->numIndexes;
-	newTri->indexes = (glIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
+	newTri->indexes = (triIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
 
 	idDrawVert	*ac = (idDrawVert *)_alloca16( newTri->numVerts * sizeof( idDrawVert ) );
 
@@ -192,7 +192,7 @@ static int edgeVerts[6][2] = {
 	srfTriangles_t *newTri = (srfTriangles_t *)R_ClearedFrameAlloc( sizeof( *newTri ) );
 	newTri->numVerts = tri->numVerts;
 	newTri->numIndexes = tri->numIndexes;
-	newTri->indexes = (glIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
+	newTri->indexes = (triIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
 	memcpy( newTri->indexes, tri->indexes, newTri->numIndexes * sizeof( newTri->indexes[0] ) );
 
 	idDrawVert	*ac = (idDrawVert *)_alloca16( newTri->numVerts * sizeof( idDrawVert ) );
@@ -283,7 +283,7 @@ R_WindingFromTriangles
 =====================
 */
 #define	MAX_TRI_WINDING_INDEXES		16
-int	R_WindingFromTriangles( const srfTriangles_t *tri, glIndex_t indexes[MAX_TRI_WINDING_INDEXES] ) {
+int	R_WindingFromTriangles( const srfTriangles_t *tri, triIndex_t indexes[MAX_TRI_WINDING_INDEXES] ) {
 	int			i, j, k, l;
 
 	indexes[0] = tri->indexes[0];
@@ -389,7 +389,7 @@ static void R_FlareDeform( drawSurf_t *surf ) {
 	newTri = (srfTriangles_t *)R_ClearedFrameAlloc( sizeof( *newTri ) );
 	newTri->numVerts = 4;
 	newTri->numIndexes = 2*3;
-	newTri->indexes = (glIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
+	newTri->indexes = (triIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
 
 	idDrawVert *ac = (idDrawVert *)_alloca16( newTri->numVerts * sizeof( idDrawVert ) );
 
@@ -431,7 +431,7 @@ static void R_FlareDeform( drawSurf_t *surf ) {
 
 	float	spread = surf->shaderRegisters[ surf->material->GetDeformRegister(0) ] * r_flareSize.GetFloat();
 	idVec3	edgeDir[4][3];
-	glIndex_t		indexes[MAX_TRI_WINDING_INDEXES];
+	triIndex_t		indexes[MAX_TRI_WINDING_INDEXES];
 	int		numIndexes = R_WindingFromTriangles( tri, indexes );
 
 	surf->material = declManager->FindMaterial( "textures/smf/anamorphicFlare" );
@@ -496,7 +496,7 @@ static void R_FlareDeform( drawSurf_t *surf ) {
 	}
 
 	// setup indexes
-	static glIndex_t	triIndexes[2*3] = {
+	static triIndex_t	triIndexes[2*3] = {
 		0,1,2,  0,2,3
 	};
 
@@ -527,7 +527,7 @@ static void R_FlareDeform( drawSurf_t *surf ) {
 	newTri = (srfTriangles_t *)R_ClearedFrameAlloc( sizeof( *newTri ) );
 	newTri->numVerts = 16;
 	newTri->numIndexes = 18*3;
-	newTri->indexes = (glIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
+	newTri->indexes = (triIndex_t *)R_FrameAlloc( newTri->numIndexes * sizeof( newTri->indexes[0] ) );
 
 	idDrawVert *ac = (idDrawVert *)_alloca16( newTri->numVerts * sizeof( idDrawVert ) );
 
@@ -572,7 +572,7 @@ static void R_FlareDeform( drawSurf_t *surf ) {
 
 	float	spread = surf->shaderRegisters[ surf->material->GetDeformRegister(0) ] * r_flareSize.GetFloat();
 	idVec3	edgeDir[4][3];
-	glIndex_t		indexes[MAX_TRI_WINDING_INDEXES];
+	triIndex_t		indexes[MAX_TRI_WINDING_INDEXES];
 	int		numIndexes = R_WindingFromTriangles( tri, indexes );
 
 
@@ -675,14 +675,14 @@ static void R_FlareDeform( drawSurf_t *surf ) {
 	}
 
 #if 1
-	static glIndex_t	triIndexes[18*3] = {
+	static triIndex_t	triIndexes[18*3] = {
 		0,4,5,  0,5,6, 0,6,7, 0,7,1, 1,7,8, 1,8,9,
 		15,4,0, 15,0,3, 3,0,1, 3,1,2, 2,1,9, 2,9,10,
 		14,15,3, 14,3,13, 13,3,2, 13,2,12, 12,2,11, 11,2,10
 	};
 #else
 	newTri->numIndexes = 12;
-	static glIndex_t triIndexes[4*3] = {
+	static triIndex_t triIndexes[4*3] = {
 		0,1,2, 0,2,3, 0,4,5,0,5,6
 	};
 #endif
@@ -916,7 +916,7 @@ static void R_EyeballDeform( drawSurf_t *surf ) {
 	memset( newTri, 0, sizeof( *newTri ) );
 	newTri->numVerts = tri->numVerts;
 	newTri->numIndexes = tri->numIndexes;
-	newTri->indexes = (glIndex_t *)R_FrameAlloc( tri->numIndexes * sizeof( newTri->indexes[0] ) );
+	newTri->indexes = (triIndex_t *)R_FrameAlloc( tri->numIndexes * sizeof( newTri->indexes[0] ) );
 	idDrawVert *ac = (idDrawVert *)_alloca16( tri->numVerts * sizeof( idDrawVert ) );
 
 	newTri->numIndexes = 0;
@@ -1092,7 +1092,7 @@ static void R_ParticleDeform( drawSurf_t *surf, bool useArea ) {
 			tri->numVerts = 4 * count;
 			tri->numIndexes = 6 * count;
 			tri->verts = (idDrawVert *)R_FrameAlloc( tri->numVerts * sizeof( tri->verts[0] ) );
-			tri->indexes = (glIndex_t *)R_FrameAlloc( tri->numIndexes * sizeof( tri->indexes[0] ) );
+			tri->indexes = (triIndex_t *)R_FrameAlloc( tri->numIndexes * sizeof( tri->indexes[0] ) );
 
 			// just always draw the particles
 			tri->bounds = stage->bounds;

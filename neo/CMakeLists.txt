@@ -726,6 +726,7 @@ set(src_idlib
 	idlib/math/Simd_SSE2.cpp
 	idlib/math/Simd_SSE3.cpp
 	idlib/math/Vector.cpp
+	idlib/sys/sys_assert.cpp
 	idlib/BitMsg.cpp
 	idlib/LangDict.cpp
 	idlib/Lexer.cpp

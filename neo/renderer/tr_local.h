@@ -710,12 +710,12 @@ public:
 	virtual void			SetColor( const idVec4 &rgba );
 	virtual void			SetColor4( float r, float g, float b, float a );
 	virtual idVec4			GetColor( void ) const;
-	virtual void			DrawStretchPic ( const idDrawVert *verts, const glIndex_t *indexes, int vertCount, int indexCount, const idMaterial *material,
+	virtual void			DrawStretchPic ( const idDrawVert *verts, const triIndex_t *indexes, int vertCount, int indexCount, const idMaterial *material,
 											bool clip = true, float x = 0.0f, float y = 0.0f, float w = 640.0f, float h = 0.0f );
 	virtual void			DrawStretchPic ( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const idMaterial *material );
 
 	virtual void			DrawStretchTri ( idVec2 p1, idVec2 p2, idVec2 p3, idVec2 t1, idVec2 t2, idVec2 t3, const idMaterial *material );
-	virtual idDrawVert *	AllocTris( int numVerts, const glIndex_t * indexes, int numIndexes, const idMaterial *material );
+	virtual idDrawVert *	AllocTris( int numVerts, const triIndex_t * indexes, int numIndexes, const idMaterial *material );
 	virtual void			GlobalToNormalizedDeviceCoordinates( const idVec3 &global, idVec3 &ndc );
 	virtual void			GetGLSettings( int& width, int& height );
 	virtual void			PrintMemInfo( MemInfo_t *mi );
@@ -1460,7 +1460,7 @@ dmap time optimization of shadow volumes, called from R_CreateShadowVolume
 typedef struct {
 	idVec3	*verts;			// includes both front and back projections, caller should free
 	int		numVerts;
-	glIndex_t	*indexes;	// caller should free
+	triIndex_t	*indexes;	// caller should free
 
 	// indexes must be sorted frontCap, rearCap, silPlanes so the caps can be removed
 	// when the viewer is in a position that they don't need to see them
@@ -1470,7 +1470,7 @@ typedef struct {
 	int		totalIndexes;
 } optimizedShadow_t;
 
-optimizedShadow_t SuperOptimizeOccluders( idVec4 *verts, glIndex_t *indexes, int numIndexes,
+optimizedShadow_t SuperOptimizeOccluders( idVec4 *verts, triIndex_t *indexes, int numIndexes,
 										 idPlane projectionPlane, idVec3 projectionOrigin );
 
 void CleanupOptimizedShadowTris( srfTriangles_t *tri );
@@ -1540,8 +1540,8 @@ typedef struct deformInfo_s { // NB: Better pointer alignment, adds; numDominant
 	int				numMirroredVerts;
 	int				numDominantTris;
 	int				numHiddenTris; // HINTS
-	glIndex_t*		indexes;
-	glIndex_t*		silIndexes;
+	triIndex_t*		indexes;
+	triIndex_t*		silIndexes;
 	silEdge_t*		silEdges;
 	int*			dupVerts;
 	int*			mirroredVerts;
@@ -1560,9 +1560,9 @@ typedef struct deformInfo_s {
 	int *			mirroredVerts;
 
 	int				numIndexes;
-	glIndex_t *		indexes;
+	triIndex_t *		indexes;
 
-	glIndex_t *		silIndexes;
+	triIndex_t *		silIndexes;
 
 	int				numDupVerts;
 	int *			dupVerts;
@@ -1683,7 +1683,7 @@ TR_ORDERINDEXES
 =============================================================
 */
 
-void R_OrderIndexes( int numIndexes, glIndex_t *indexes );
+void R_OrderIndexes( int numIndexes, triIndex_t *indexes );
 
 /*
 =============================================================

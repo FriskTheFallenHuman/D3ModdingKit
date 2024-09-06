@@ -327,7 +327,7 @@ void idRenderSystemLocal::DrawFilled( const idVec4 & color, float x, float y, fl
 DrawStretchPic
 =============
 */
-void idRenderSystemLocal::DrawStretchPic( const idDrawVert *verts, const glIndex_t *indexes, int vertCount, int indexCount, const idMaterial *material,
+void idRenderSystemLocal::DrawStretchPic( const idDrawVert *verts, const triIndex_t *indexes, int vertCount, int indexCount, const idMaterial *material,
 									   bool clip, float min_x, float min_y, float max_x, float max_y ) {
 	guiModel->DrawStretchPic( verts, indexes, vertCount, indexCount, material,
 		clip, min_x, min_y, max_x, max_y );
@@ -360,7 +360,7 @@ void idRenderSystemLocal::DrawStretchTri( idVec2 p1, idVec2 p2, idVec2 p3, idVec
 idRenderSystemLocal::AllocTris
 =============
 */
-idDrawVert* idRenderSystemLocal::AllocTris( int numVerts, const glIndex_t* indexes, int numIndexes, const idMaterial *material ) {
+idDrawVert* idRenderSystemLocal::AllocTris( int numVerts, const triIndex_t* indexes, int numIndexes, const idMaterial *material ) {
 	return guiModel->AllocTris( numVerts, indexes, numIndexes, material, 0 );
 }
 

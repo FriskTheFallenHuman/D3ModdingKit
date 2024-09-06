@@ -98,7 +98,7 @@ for each triangle
 typedef struct {
 	idVec3	v[3];
 	idVec3	edge[3];	// positive side is inside the triangle
-	glIndex_t	index[3];
+	triIndex_t	index[3];
 	idPlane	plane;		// positive side is forward for the triangle, which is away from the light
 	int		planeNum;	// from original triangle, not calculated from the clipped verts
 } shadowTri_t;
@@ -109,7 +109,7 @@ static	shadowTri_t	outputTris[MAX_SHADOW_TRIS];
 static	int		numOutputTris;
 
 typedef struct shadowOptEdge_s {
-	glIndex_t	index[2];
+	triIndex_t	index[2];
 	struct shadowOptEdge_s	*nextEdge;
 } shadowOptEdge_t;
 
@@ -309,7 +309,7 @@ Generates outputTris by clipping all the triangles against each other,
 retaining only those closest to the projectionOrigin
 ====================
 */
-static void ClipOccluders( idVec4 *verts, glIndex_t *indexes, int numIndexes,
+static void ClipOccluders( idVec4 *verts, triIndex_t *indexes, int numIndexes,
 										 idVec3 projectionOrigin ) {
 	int					numTris = numIndexes / 3;
 	int					i;
@@ -1006,7 +1006,7 @@ verts have been culled against individual frustums of point lights
 
 ====================
 */
-optimizedShadow_t SuperOptimizeOccluders( idVec4 *verts, glIndex_t *indexes, int numIndexes,
+optimizedShadow_t SuperOptimizeOccluders( idVec4 *verts, triIndex_t *indexes, int numIndexes,
 										 idPlane projectionPlane, idVec3 projectionOrigin )
 {
 	memset( &ret, 0, sizeof( ret ) );
@@ -1048,7 +1048,7 @@ optimizedShadow_t SuperOptimizeOccluders( idVec4 *verts, glIndex_t *indexes, int
 
 	maxRetIndexes = ret.numFrontCapIndexes + ret.numRearCapIndexes + ret.numSilPlaneIndexes;
 
-	ret.indexes = (glIndex_t *)Mem_Alloc( maxRetIndexes * sizeof( ret.indexes[0] ) );
+	ret.indexes = (triIndex_t *)Mem_Alloc( maxRetIndexes * sizeof( ret.indexes[0] ) );
 	for ( int i = 0 ; i < numOutputTris ; i++ ) {
 		// flip the indexes so the surface triangle faces outside the shadow volume
 		ret.indexes[i*3+0] = outputTris[i].index[2];
@@ -1142,7 +1142,7 @@ void CleanupOptimizedShadowTris( srfTriangles_t *tri ) {
 	uniqued = (idVec3 *)_alloca( sizeof( *uniqued ) * maxUniqued );
 	numUniqued = 0;
 
-	glIndex_t	*remap = (glIndex_t *)_alloca( sizeof( *remap ) * tri->numVerts );
+	triIndex_t	*remap = (triIndex_t *)_alloca( sizeof( *remap ) * tri->numVerts );
 
 	for ( i = 0 ; i < tri->numIndexes ; i++ ) {
 		if ( tri->indexes[i] > tri->numVerts || tri->indexes[i] < 0 ) {

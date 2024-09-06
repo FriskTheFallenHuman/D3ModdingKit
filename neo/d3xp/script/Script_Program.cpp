@@ -1667,7 +1667,7 @@ void idProgram::BeginCompilation( void ) {
 	}
 
 	catch( idCompileError &err ) {
-		gameLocal.Error( "%s", err.error );
+		gameLocal.Error( "%s", err.GetError() );
 	}
 }
 
@@ -1843,10 +1843,10 @@ bool idProgram::CompileText( const char *source, const char *text, bool console 
 
 	catch( idCompileError &err ) {
 		if ( console ) {
-			gameLocal.Printf( "%s\n", err.error );
+			gameLocal.Printf( "%s\n", err.GetError() );
 			return false;
 		} else {
-			gameLocal.Error( "%s\n", err.error );
+			gameLocal.Error( "%s\n", err.GetError() );
 		}
 	};
 

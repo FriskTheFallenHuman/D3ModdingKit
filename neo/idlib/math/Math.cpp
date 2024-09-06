@@ -136,7 +136,7 @@ idMath::Ftob
 ========================
 */
 byte idMath::Ftob( float f ) {
-#ifdef ID_WIN_X86_SSE_INTRIN
+#if 0
 	// If a converted result is negative the value (0) is returned and if the
 	// converted result is larger than the maximum byte the value (255) is returned.
 	__m128 x = _mm_load_ss( &f );

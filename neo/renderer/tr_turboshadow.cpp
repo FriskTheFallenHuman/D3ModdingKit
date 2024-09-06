@@ -83,7 +83,7 @@ srfTriangles_t *R_CreateVertexProgramTurboShadowVolume( const idRenderEntityLoca
 	int		i, j;
 	srfTriangles_t	*newTri;
 	silEdge_t	*sil;
-	const glIndex_t *indexes;
+	const triIndex_t *indexes;
 	const byte *facing;
 
 	R_CalcInteractionFacing( ent, tri, light, cullInfo );
@@ -137,11 +137,11 @@ srfTriangles_t *R_CreateVertexProgramTurboShadowVolume( const idRenderEntityLoca
 	// alloc the max possible size
 #ifdef USE_TRI_DATA_ALLOCATOR
 	R_AllocStaticTriSurfIndexes( newTri, ( numShadowingFaces + tri->numSilEdges ) * 6 );
-	glIndex_t *tempIndexes = newTri->indexes;
-	glIndex_t *shadowIndexes = newTri->indexes;
+	triIndex_t *tempIndexes = newTri->indexes;
+	triIndex_t *shadowIndexes = newTri->indexes;
 #else
-	glIndex_t *tempIndexes = (glIndex_t *)_alloca16( tri->numSilEdges * 6 * sizeof( tempIndexes[0] ) );
-	glIndex_t *shadowIndexes = tempIndexes;
+	triIndex_t *tempIndexes = (triIndex_t *)_alloca16( tri->numSilEdges * 6 * sizeof( tempIndexes[0] ) );
+	triIndex_t *shadowIndexes = tempIndexes;
 #endif
 
 	// create new triangles along sil planes
@@ -226,7 +226,7 @@ srfTriangles_t *R_CreateTurboShadowVolume( const idRenderEntityLocal *ent,
 	idVec3	localLightOrigin;
 	srfTriangles_t	*newTri;
 	silEdge_t	*sil;
-	const glIndex_t *indexes;
+	const triIndex_t *indexes;
 	const byte *facing;
 
 	R_CalcInteractionFacing( ent, tri, light, cullInfo );
@@ -313,11 +313,11 @@ srfTriangles_t *R_CreateTurboShadowVolume( const idRenderEntityLocal *ent,
 	// alloc the max possible size
 #ifdef USE_TRI_DATA_ALLOCATOR
 	R_AllocStaticTriSurfIndexes( newTri, ( numShadowingFaces + tri->numSilEdges ) * 6 );
-	glIndex_t *tempIndexes = newTri->indexes;
-	glIndex_t *shadowIndexes = newTri->indexes;
+	triIndex_t *tempIndexes = newTri->indexes;
+	triIndex_t *shadowIndexes = newTri->indexes;
 #else
-	glIndex_t *tempIndexes = (glIndex_t *)_alloca16( tri->numSilEdges * 6 * sizeof( tempIndexes[0] ) );
-	glIndex_t *shadowIndexes = tempIndexes;
+	triIndex_t *tempIndexes = (triIndex_t *)_alloca16( tri->numSilEdges * 6 * sizeof( tempIndexes[0] ) );
+	triIndex_t *shadowIndexes = tempIndexes;
 #endif
 
 	// create new triangles along sil planes

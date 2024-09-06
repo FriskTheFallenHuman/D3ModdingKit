@@ -1022,7 +1022,7 @@ maModel_t *MA_Load( const char *fileName ) {
 		ma = MA_Parse( buf, fileName, false );
 		ma->timeStamp = timeStamp;
 	} catch( idException &e ) {
-		common->Warning("%s", e.error);
+		common->Warning("%s", e.GetError());
 		if(maGlobal.model) {
 			MA_Free(maGlobal.model);
 		}

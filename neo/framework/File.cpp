@@ -31,8 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "Unzip.h"
 
-#define	MAX_PRINT_MSG		4096
-
 /*
 =================
 FS_WriteFloatString

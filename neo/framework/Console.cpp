@@ -31,8 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "ConsoleHistory.h"
 
-#define	MAX_PRINT_MSG		4096
-
 #define	CON_TEXTSIZE			0x30000
 #define	NUM_CON_TIMES			4
 #define CONSOLE_FIRSTREPEAT		200

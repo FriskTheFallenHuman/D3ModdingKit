@@ -110,7 +110,6 @@ void MayaError( const char *fmt, ... ) {
 FS_WriteFloatString
 =================
 */
-#define	MAX_PRINT_MSG	4096
 static int WriteFloatString( FILE *file, const char *fmt, ... ) {
 	long i;
 	unsigned long u;
@@ -3133,7 +3132,7 @@ ID_MAYA_IMPORT_API const char *Maya_ConvertModel( const char *ospath, const char
 	}
 
 	catch( idException &exception ) {
-		errorMessage = exception.error;
+		errorMessage = exception.GetError();
 	}
 
 	return errorMessage;

@@ -48,7 +48,7 @@ typedef struct overlaySurface_s {
 	int							surfaceNum;
 	int							surfaceId;
 	int							numIndexes;
-	glIndex_t *					indexes;
+	triIndex_t *					indexes;
 	int							numVerts;
 	overlayVertex_t *			verts;
 } overlaySurface_t;

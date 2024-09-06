@@ -124,7 +124,8 @@ public:
 	type *			Find( type const & obj ) const;						// find pointer to the given element
 	int				FindNull( void ) const;								// find the index for the first NULL pointer in the list
 	int				IndexOf( const type *obj ) const;					// returns the index for the pointer to an element in the list
-	bool			RemoveIndex( int index );							// remove the element at the given index
+	bool			RemoveIndex( int index );							// remove the element at the given index	
+	bool			RemoveIndexFast( int index );						// removes the element at the given index and places the last element into its spot - DOES NOT PRESERVE LIST ORDER
 	bool			Remove( const type & obj );							// remove the element
 	void			Sort( cmp_t *compare = ( cmp_t * )&idListSortCompare<type> );
 	void			SortSubSection( int startIndex, int endIndex, cmp_t *compare = ( cmp_t * )&idListSortCompare<type> );
@@ -894,6 +895,36 @@ ID_INLINE bool idList<type>::RemoveIndex( int index ) {
 
 	return true;
 }
+
+/*
+========================
+idList<_type_,_tag_>::RemoveIndexFast
+
+Removes the element at the specified index and moves the last element into its spot, rather
+than moving the whole array down by one. Of course, this doesn't maintain the order of
+elements! The number of elements in the list is reduced by one.
+
+return:	bool	- false if the data is not found in the list.
+
+NOTE:	The element is not destroyed, so any memory used by it may not be freed until the
+		destruction of the list.
+========================
+*/
+template< class type >
+ID_INLINE bool idList<type>::RemoveIndexFast( int index ) {
+	if ( ( index < 0 ) || ( index >= num ) ) {
+		return false;
+	}
+
+	num--;
+
+	if ( index != num ) {
+		list[ index ] = list[ num ];
+	}
+
+	return true;
+}
+
 
 /*
 ================

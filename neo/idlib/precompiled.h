@@ -29,38 +29,22 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PRECOMPILED_H__
 #define __PRECOMPILED_H__
 
-#ifdef _WIN32
+#include "sys/sys_includes.h"
+#include "sys/sys_defines.h"
+#include "sys/sys_builddefines.h"
+#include "sys/sys_assert.h"
+#include "sys/sys_types.h"
+//#include "sys/sys_intrinsics.h"
+//#include "sys/sys_threading.h"
 
-#if defined(ID_ALLOW_TOOLS) && !defined(_D3SDK) && !defined(GAME_DLL)
-// (hopefully) suppress "warning C4996: 'MBCS_Support_Deprecated_In_MFC':
-//   MBCS support in MFC is deprecated and may be removed in a future version of MFC."
-#define NO_WARN_MBCS_MFC_DEPRECATION
-
-#include <afxwin.h>
-
-#include "tools/comafx/framework.h"
-#include "tools/comafx/pch.h"
-
+#if defined(_WIN32) && defined(ID_ALLOW_TOOLS) && !defined(_D3SDK) && !defined(GAME_DLL)
 // scaling factor based on DPI (dpi/96.0f, so 1.0 by default); implemented in win_main.cpp
 float Win_GetWindowScalingFactor(HWND window);
-#endif
-
-#include <winsock2.h>
-#include <mmsystem.h>
-#include <mmreg.h>
-
-#include <malloc.h>							// no malloc.h on mac or unix
-
-#endif /* _WIN32 */
+#endif /* _WIN32 && !ID_ALLOW_TOOLS && !_D3SDK && !GAME_DLL */
 
 //-----------------------------------------------------
 
-#if !defined( _DEBUG ) && !defined( NDEBUG )
-	// don't generate asserts
-	#define NDEBUG
-#endif
-
-//-----------------------------------------------------
+#define ID_TIME_T time_t // Signed because -1 means "File not found" and we don't want that to compare > than any other time
 
 // configuration
 #include "config.h"

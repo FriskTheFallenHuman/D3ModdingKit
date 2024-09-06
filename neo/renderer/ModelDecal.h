@@ -98,7 +98,7 @@ private:
 	srfTriangles_t				tri;
 	idDrawVert					verts[MAX_DECAL_VERTS];
 	float						vertDepthFade[MAX_DECAL_VERTS];
-	glIndex_t					indexes[MAX_DECAL_INDEXES];
+	triIndex_t					indexes[MAX_DECAL_INDEXES];
 	int							indexStartTime[MAX_DECAL_INDEXES];
 	idRenderModelDecal *		nextDecal;
 

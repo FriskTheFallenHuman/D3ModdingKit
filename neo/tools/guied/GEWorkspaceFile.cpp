@@ -339,7 +339,7 @@ bool rvGEWorkspace::LoadFile ( const char* filename, idStr* error )
 		result = false;
 		if ( error )
 		{
-			*error = e.error;
+			*error = e.GetError();
 		}
 		return false;
 	}

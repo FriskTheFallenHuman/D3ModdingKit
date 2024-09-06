@@ -220,7 +220,7 @@ idRenderModel *idRenderModelPrt::InstantiateDynamicModel( const struct renderEnt
 
 		// build the indexes
 		int	numIndexes = 0;
-		glIndex_t *indexes = surf->geometry->indexes;
+		triIndex_t *indexes = surf->geometry->indexes;
 		for ( int i = 0; i < numVerts; i += 4 ) {
 			indexes[numIndexes+0] = i;
 			indexes[numIndexes+1] = i+2;

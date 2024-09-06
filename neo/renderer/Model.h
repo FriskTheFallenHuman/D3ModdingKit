@@ -168,30 +168,15 @@ Enabled by including 'mikktspace' in the material definition.
 idTech4 Discord https://discord.com/channels/488393111014342656/488393514690805790/1053987460452982865
 =================================================================================================== */
 
-// using shorts for triangle indexes can save a significant amount of traffic, but
-// to support the large models that renderBump loads, they need to be 32 bits
-#if 1
-
-#define GL_INDEX_TYPE		GL_UNSIGNED_INT
-typedef int glIndex_t;
-
-#else
-
-#define GL_INDEX_TYPE		GL_UNSIGNED_SHORT
-typedef short glIndex_t;
-
-#endif
-
-
 typedef struct {
 	// NOTE: making this a glIndex is dubious, as there can be 2x the faces as verts
-	glIndex_t					p1, p2;					// planes defining the edge
-	glIndex_t					v1, v2;					// verts defining the edge
+	triIndex_t					p1, p2;					// planes defining the edge
+	triIndex_t					v1, v2;					// verts defining the edge
 } silEdge_t;
 
 // this is used for calculating unsmoothed normals and tangents for deformed models
 typedef struct dominantTri_s {
-	glIndex_t					v2, v3;
+	triIndex_t					v2, v3;
 	float						normalizationScale[3];
 } dominantTri_t;
 
@@ -223,9 +208,9 @@ typedef struct srfTriangles_s {
 	idDrawVert *				verts;					// vertices, allocated with special allocator
 
 	int							numIndexes;				// for shadows, this has both front and rear end caps and silhouette planes
-	glIndex_t *					indexes;				// indexes, allocated with special allocator
+	triIndex_t *					indexes;				// indexes, allocated with special allocator
 
-	glIndex_t *					silIndexes;				// indexes changed to be the first vertex with same XYZ, ignoring normal and texcoords
+	triIndex_t *					silIndexes;				// indexes changed to be the first vertex with same XYZ, ignoring normal and texcoords
 
 	int							numMirroredVerts;		// this many verts at the end of the vert list are tangent mirrors
 	int *						mirroredVerts;			// tri->mirroredVerts[0] is the mirror of tri->numVerts - tri->numMirroredVerts + 0

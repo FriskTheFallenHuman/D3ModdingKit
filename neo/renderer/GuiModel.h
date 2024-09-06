@@ -52,13 +52,13 @@ public:
 
 	// the returned pointer will be in write-combined memory, so only make contiguous
 	// 32 bit writes and never read from it.
-	idDrawVert * AllocTris( int numVerts, const glIndex_t *indexes, int numIndexes, const idMaterial *material, 
+	idDrawVert * AllocTris( int numVerts, const triIndex_t *indexes, int numIndexes, const idMaterial *material, 
 							const uint64_t glState );
 
 	// these calls are forwarded from the renderer
 	void	SetColor( float r, float g, float b, float a );
 	idVec4	GetColor( void ) const;
-	void	DrawStretchPic( const idDrawVert *verts, const glIndex_t *indexes, int vertCount, int indexCount, const idMaterial *hShader,
+	void	DrawStretchPic( const idDrawVert *verts, const triIndex_t *indexes, int vertCount, int indexCount, const idMaterial *hShader,
 									bool clip = true, float min_x = 0.0f, float min_y = 0.0f, float max_x = 640.0f, float max_y = 480.0f );
 	void	DrawStretchPic( float x, float y, float w, float h,
 									float s1, float t1, float s2, float t2, const idMaterial *hShader);
@@ -72,7 +72,7 @@ private:
 	guiModelSurface_t		*surf;
 
 	idList<guiModelSurface_t>	surfaces;
-	idList<glIndex_t>		indexes;
+	idList<triIndex_t>		indexes;
 	idList<idDrawVert>	verts;
 };
 

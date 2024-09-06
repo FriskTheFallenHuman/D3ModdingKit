@@ -883,7 +883,7 @@ static idRenderModel *CombineModelSurfaces( idRenderModel *model ) {
 	newTri->bounds.Clear();
 
 	idDrawVert *verts = newTri->verts;
-	glIndex_t *indexes = newTri->indexes;
+	triIndex_t *indexes = newTri->indexes;
 	numIndexes = 0;
 	numVerts = 0;
 	for ( i = 0 ; i < model->NumSurfaces() ; i++ ) {

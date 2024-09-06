@@ -1570,7 +1570,7 @@ int idEditorBrushoTris(idEditorBrush *brush, idTriList *tris, idMatList *mats, b
 				R_ResizeStaticTriSurfIndexes( existingTri, newNumIndexes );
 
 				idDrawVert* newVerts = existingTri->verts;
-				glIndex_t* newIndexes = existingTri->indexes;
+				triIndex_t* newIndexes = existingTri->indexes;
 
 				// Copy new vertices
 				for ( int k = 0; k < tri->numVerts; k++ ) {

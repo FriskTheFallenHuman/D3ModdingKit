@@ -52,6 +52,8 @@ idCVarSystem *	idLib::cvarSystem	= NULL;
 idFileSystem *	idLib::fileSystem	= NULL;
 int				idLib::frameNumber	= 0;
 
+char idException::error[2048];
+
 /*
 ================
 idLib::Init
@@ -81,7 +83,9 @@ void idLib::Init( void ) {
 	//idMatX::Test();
 
 	// test idPolynomial
+#ifdef _DEBUG
 	idPolynomial::Test();
+#endif
 
 	// initialize the dictionary string pools
 	idDict::Init();
@@ -135,29 +139,16 @@ idVec4	colorLtGrey	= idVec4( 0.75f, 0.75f, 0.75f, 1.00f );
 idVec4	colorMdGrey	= idVec4( 0.50f, 0.50f, 0.50f, 1.00f );
 idVec4	colorDkGrey	= idVec4( 0.25f, 0.25f, 0.25f, 1.00f );
 
-static dword colorMask[2] = { 255, 0 };
-
-/*
-================
-ColorFloatToByte
-================
-*/
-ID_INLINE static byte ColorFloatToByte( float c ) {
-	return (byte) ( ( (dword) ( c * 255.0f ) ) & colorMask[FLOATSIGNBITSET(c)] );
-}
-
 /*
 ================
 PackColor
 ================
 */
 dword PackColor( const idVec4 &color ) {
-	dword dw, dx, dy, dz;
-
-	dx = ColorFloatToByte( color.x );
-	dy = ColorFloatToByte( color.y );
-	dz = ColorFloatToByte( color.z );
-	dw = ColorFloatToByte( color.w );
+	byte dx = idMath::Ftob( color.x * 255.0f );
+	byte dy = idMath::Ftob( color.y * 255.0f );
+	byte dz = idMath::Ftob( color.z * 255.0f );
+	byte dw = idMath::Ftob( color.w * 255.0f );
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 	return ( dx << 0 ) | ( dy << 8 ) | ( dz << 16 ) | ( dw << 24 );
@@ -191,11 +182,9 @@ PackColor
 ================
 */
 dword PackColor( const idVec3 &color ) {
-	dword dx, dy, dz;
-
-	dx = ColorFloatToByte( color.x );
-	dy = ColorFloatToByte( color.y );
-	dz = ColorFloatToByte( color.z );
+	byte dx = idMath::Ftob( color.x * 255.0f );
+	byte dy = idMath::Ftob( color.y * 255.0f );
+	byte dz = idMath::Ftob( color.z * 255.0f );
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 	return ( dx << 0 ) | ( dy << 8 ) | ( dz << 16 );
@@ -416,7 +405,7 @@ ID_INLINE static void RevBitFieldSwap( void *bp, int elsize) {
 	while ( elsize-- ) {
 		v = *p;
 		t = 0;
-		for (i = 7; i; i--) {
+		for (i = 7; i>=0; i--) {
 			t <<= 1;
 			v >>= 1;
 			t |= v & 1;
@@ -569,25 +558,19 @@ int		IntForSixtets( byte *in ) {
 }
 
 /*
-===============================================================================
+========================
+BreakOnListGrowth
 
-	Assertion
-
-===============================================================================
+debug tool to find uses of idlist that are dynamically growing
+========================
 */
+void BreakOnListGrowth() {
+}
 
-void AssertFailed( const char *file, int line, const char *expression ) {
-	idLib::sys->DebugPrintf( "\n\nASSERTION FAILED!\n%s(%d): '%s'\n", file, line, expression );
-#ifdef _MSC_VER
-	__debugbreak();
-	_exit(1);
-#elif defined(__unix__)
-	// __builtin_trap() causes an illegal instruction which is kinda ugly.
-	// especially if you'd like to be able to continue after the assertion during debugging
-	raise(SIGTRAP); // this will break into the debugger.
-#elif defined( __GNUC__ )
-	__builtin_trap();
-	_exit(1);
-#endif
-
+/*
+========================
+BreakOnListDefault
+========================
+*/
+void BreakOnListDefault() {
 }

@@ -170,7 +170,7 @@ void idGuiModel::EmitSurface( guiModelSurface_t *surf, float modelMatrix[16], fl
 
 	tri->numIndexes = surf->numIndexes;
 	tri->numVerts = surf->numVerts;
-	tri->indexes = (glIndex_t *)R_FrameAlloc( tri->numIndexes * sizeof( tri->indexes[0] ) );
+	tri->indexes = (triIndex_t *)R_FrameAlloc( tri->numIndexes * sizeof( tri->indexes[0] ) );
 	memcpy( tri->indexes, &indexes[surf->firstIndex], tri->numIndexes * sizeof( tri->indexes[0] ) );
 
 	// we might be able to avoid copying these and just let them reference the list vars
@@ -371,7 +371,7 @@ idVec4 idGuiModel::GetColor( void ) const {
 DrawStretchPic
 =============
 */
-void idGuiModel::DrawStretchPic( const idDrawVert *dverts, const glIndex_t *dindexes, int vertCount, int indexCount, const idMaterial *hShader,
+void idGuiModel::DrawStretchPic( const idDrawVert *dverts, const triIndex_t *dindexes, int vertCount, int indexCount, const idMaterial *hShader,
 									   bool clip, float min_x, float min_y, float max_x, float max_y ) {
 	if ( !glConfig.isInitialized ) {
 		return;
@@ -473,7 +473,7 @@ x/y/w/h are in the 0,0 to 640,480 range
 */
 void idGuiModel::DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const idMaterial *hShader ) {
 	idDrawVert verts[4];
-	glIndex_t indexes[6];
+	triIndex_t indexes[6];
 
 	if ( !glConfig.isInitialized ) {
 		return;
@@ -582,7 +582,7 @@ x/y/w/h are in the 0,0 to 640,480 range
 */
 void idGuiModel::DrawStretchTri( idVec2 p1, idVec2 p2, idVec2 p3, idVec2 t1, idVec2 t2, idVec2 t3, const idMaterial *material ) {
 	idDrawVert tempVerts[3];
-	glIndex_t tempIndexes[3];
+	triIndex_t tempIndexes[3];
 	int vertCount = 3;
 	int indexCount = 3;
 
@@ -671,7 +671,7 @@ void idGuiModel::DrawStretchTri( idVec2 p1, idVec2 p2, idVec2 p3, idVec2 t1, idV
 AllocTris
 =============
 */
-idDrawVert * idGuiModel::AllocTris( int vertCount, const glIndex_t * tempIndexes, int indexCount, const idMaterial * material, const uint64_t glState ) {
+idDrawVert * idGuiModel::AllocTris( int vertCount, const triIndex_t * tempIndexes, int indexCount, const idMaterial * material, const uint64_t glState ) {
 	if ( material == NULL ) {
 		return NULL;
 	}

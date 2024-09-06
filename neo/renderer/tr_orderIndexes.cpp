@@ -39,7 +39,7 @@ R_MeshCost
 #if 0
 #define	CACHE_SIZE	24
 #define	STALL_SIZE	8
-int	R_MeshCost( int numIndexes, glIndex_t *indexes ) {
+int	R_MeshCost( int numIndexes, triIndex_t *indexes ) {
 	int	inCache[CACHE_SIZE];
 	int	i, j, v;
 	int	c_stalls;
@@ -88,11 +88,11 @@ Reorganizes the indexes so they will take best advantage
 of the internal GPU vertex caches
 ====================
 */
-void R_OrderIndexes( int numIndexes, glIndex_t *indexes ) {
+void R_OrderIndexes( int numIndexes, triIndex_t *indexes ) {
 	bool	*triangleUsed;
 	int			numTris;
-	glIndex_t	*oldIndexes;
-	glIndex_t	*base;
+	triIndex_t	*oldIndexes;
+	triIndex_t	*base;
 	int			numOldIndexes;
 	int			tri;
 	int			i;
@@ -107,7 +107,7 @@ void R_OrderIndexes( int numIndexes, glIndex_t *indexes ) {
 	}
 
 	// save off the original indexes
-	oldIndexes = (glIndex_t *)_alloca( numIndexes * sizeof( *oldIndexes ) );
+	oldIndexes = (triIndex_t *)_alloca( numIndexes * sizeof( *oldIndexes ) );
 	memcpy( oldIndexes, indexes, numIndexes * sizeof( *oldIndexes ) );
 	numOldIndexes = numIndexes;
 
