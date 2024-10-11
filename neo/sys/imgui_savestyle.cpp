@@ -4,7 +4,7 @@
  *
  * Hosted at https://github.com/DanielGibson/Snippets/
  *
- * Written for/tested with Dear ImGui v1.90.6
+ * Written for/tested with Dear ImGui v1.90.8 (incl. Docking Branch)
  *
  * If anything changes in struct ImGuiStyle or enum ImGuiCol_, this code should detect it
  * during compilation and give (hopefully) helpful errors with static_assert() (always check and
@@ -73,12 +73,15 @@ namespace DG {
 
 #undef warnPrintf
 // TODO: maybe use your own logging system instead of fprintf() to stderr
-//#define warnPrintf(...)  fprintf( stderr, "Warning: " __VA_ARGS__ )
+#define warnPrintf(...)  fprintf( stderr, "Warning: " __VA_ARGS__ )
 
-// DG: adjustment for dhewm3:
-#include "framework/Common.h"
-#undef strncmp // No, I don't want to use idStr::Cmpn() in this file.
-#define warnPrintf(...)  common->Warning( __VA_ARGS__ )
+#ifdef IMGUI_HAS_DOCK
+  // some members of struct ImGuiStyle and enum ImGuiCol_ only exist in the Docking branch..
+  #define DGIMST_ENABLE_IF_DOCKING(x) x
+#else
+  // .. so disable them in the regular branch
+  #define DGIMST_ENABLE_IF_DOCKING(x)
+#endif
 
 // Note: The trick I'm using with these #defines below is called "X Macro"
 //       see https://en.wikipedia.org/wiki/X_macro (except I'm not calling the "entries" X,
@@ -118,6 +121,7 @@ namespace DG {
 	D3_IMATTR_FLOAT( TabBorderSize               ) \
 	D3_IMATTR_FLOAT( TabMinWidthForCloseButton   ) \
 	D3_IMATTR_FLOAT( TabBarBorderSize            ) \
+	D3_IMATTR_FLOAT( TabBarOverlineSize          ) \
 	D3_IMATTR_FLOAT( TableAngledHeadersAngle     ) \
 	D3_IMATTR_VEC2(  TableAngledHeadersTextAlign ) \
 	D3_IMATTR_DIR(   ColorButtonPosition         ) \
@@ -128,6 +132,7 @@ namespace DG {
 	D3_IMATTR_VEC2(  SeparatorTextPadding        ) \
 	D3_IMATTR_VEC2(  DisplayWindowPadding        ) \
 	D3_IMATTR_VEC2(  DisplaySafeAreaPadding      ) \
+	DGIMST_ENABLE_IF_DOCKING( D3_IMATTR_FLOAT( DockingSeparatorSize ) ) \
 	D3_IMATTR_FLOAT( MouseCursorScale            ) \
 	D3_IMATTR_BOOL(  AntiAliasedLines            ) \
 	D3_IMATTR_BOOL(  AntiAliasedLinesUseTex      ) \
@@ -182,11 +187,15 @@ namespace DG {
 	D3_IMSTYLE_COLOR( ResizeGrip            ) \
 	D3_IMSTYLE_COLOR( ResizeGripHovered     ) \
 	D3_IMSTYLE_COLOR( ResizeGripActive      ) \
-	D3_IMSTYLE_COLOR( Tab                   ) \
 	D3_IMSTYLE_COLOR( TabHovered            ) \
-	D3_IMSTYLE_COLOR( TabActive             ) \
-	D3_IMSTYLE_COLOR( TabUnfocused          ) \
-	D3_IMSTYLE_COLOR( TabUnfocusedActive    ) \
+	D3_IMSTYLE_COLOR( Tab                   ) \
+	D3_IMSTYLE_COLOR( TabSelected           ) \
+	D3_IMSTYLE_COLOR( TabSelectedOverline   ) \
+	D3_IMSTYLE_COLOR( TabDimmed             ) \
+	D3_IMSTYLE_COLOR( TabDimmedSelected     ) \
+	D3_IMSTYLE_COLOR( TabDimmedSelectedOverline ) \
+	DGIMST_ENABLE_IF_DOCKING( D3_IMSTYLE_COLOR( DockingPreview ) ) \
+	DGIMST_ENABLE_IF_DOCKING( D3_IMSTYLE_COLOR( DockingEmptyBg ) ) \
 	D3_IMSTYLE_COLOR( PlotLines             ) \
 	D3_IMSTYLE_COLOR( PlotLinesHovered      ) \
 	D3_IMSTYLE_COLOR( PlotHistogram         ) \
@@ -196,6 +205,7 @@ namespace DG {
 	D3_IMSTYLE_COLOR( TableBorderLight      ) \
 	D3_IMSTYLE_COLOR( TableRowBg            ) \
 	D3_IMSTYLE_COLOR( TableRowBgAlt         ) \
+	D3_IMSTYLE_COLOR( TextLink              ) \
 	D3_IMSTYLE_COLOR( TextSelectedBg        ) \
 	D3_IMSTYLE_COLOR( DragDropTarget        ) \
 	D3_IMSTYLE_COLOR( NavHighlight          ) \
@@ -291,6 +301,21 @@ static void parseBehaviorLine( ImGuiStyle& s, const char* line )
 #undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
 
+namespace {
+// for renamed colors
+struct ImGuiColorBackwardCompat {
+	const char* oldColorStr;
+	enum ImGuiCol_ newColorVal;
+};
+
+static struct ImGuiColorBackwardCompat backwardCompatColorMappings[] = {
+	{ "TabActive",                    ImGuiCol_TabSelected },
+	{ "TabUnfocused",                 ImGuiCol_TabDimmed },
+	{ "TabUnfocusedActive",           ImGuiCol_TabDimmedSelected },
+};
+
+} //anon namespace
+
 static void parseColorLine( ImGuiStyle& s, const char* line )
 {
 	ImVec4 c;
@@ -307,9 +332,18 @@ static void parseColorLine( ImGuiStyle& s, const char* line )
 
 	// NOTE: here backwards-compat is also possible, like
 	// if ( sscanf( line, "OldColorName = %f , %f , %f , %f", &c.x, &c.y, &c.z, &c.w) == 4 ) {
-	//     s.Colors[ ImGuiCol_NewColorName = c;
+	//     s.Colors[ ImGuiCol_NewColorName ] = c;
 	//     return;
 	// }
+	for( const ImGuiColorBackwardCompat& bc : backwardCompatColorMappings ) {
+		char matchString[64];
+		snprintf( matchString, sizeof(matchString), "%s = %%f , %%f , %%f , %%f", bc.oldColorStr );
+
+		if ( sscanf( line, matchString, &c.x, &c.y, &c.z, &c.w) == 4 ) {
+			s.Colors[ bc.newColorVal ] = c;
+			return;
+		}
+	}
 
 	warnPrintf( "Invalid line in ImGui style under [colors] section: '%s'\n", line );
 }
@@ -320,8 +354,8 @@ bool ReadImGuiStyle( ImGuiStyle& s, const char* filename )
 {
 	FILE* f = DG_IMSAVESTYLE_FOPEN( filename, "r" ); // TODO: "rt" on Windows?
 	if ( f == nullptr ) {
-		// DG: shut up this warning, user don't *have* to write their own style
-		//warnPrintf( "Couldn't open '%s' for reading\n", filename );
+		// Note: Turns out that printing warning here is annoying, there's nothing wrong with the
+		//  user not having saved a style yet.. just return false, the caller can log if appropriate
 		return false;
 	}
 
@@ -501,12 +535,28 @@ ImGuiTextBuffer WriteImGuiStyleToCode( const ImGuiStyle& s, const ImGuiStyle* re
 // check correctness of the X macro tables above (detect when something is added/removed/renamed in struct ImGuiStyle or enum ImGuiCol_)
 namespace {
 
-#define D3_IMSTYLE_COLOR(C) + 1
-// "0 D3_IMSTYLE_COLORS" is expanded to 0 + 1 + 1 ... for each D3_IMSTYLE_COLOR entry
-// => it should have the same value as the ImGuiCol_COUNT constant
-static_assert( ImGuiCol_COUNT == 0 D3_IMSTYLE_COLORS,
-		"something was added or removed in enum ImGuiCol_ => adjust D3_IMSTYLE_COLORS table above" );
+// recreate enum ImGuiCol_ from the D3_IMSTYLE_COLORS table to compare its members
+// so we can easily detect when (and where) one is added
+enum D3CHECK_ImguiCol_ {
+
+#define D3_IMSTYLE_COLOR( NAME )  D3CHECK_ImGuiCol_ ## NAME ,
+
+	D3_IMSTYLE_COLORS
+
 #undef D3_IMSTYLE_COLOR
+
+	D3CHECK_ImGuiCol_COUNT
+};
+
+#define D3_IMSTYLE_COLOR( NAME ) \
+	static_assert( (int) D3CHECK_ImGuiCol_ ## NAME == (int) ImGuiCol_ ## NAME, "Wrong value for ImGuiCol_" #NAME " - probably something was added to enum ImGuiCol_ before it? => => adjust D3_IMSTYLE_COLORS table above" );
+
+D3_IMSTYLE_COLORS
+
+#undef D3_IMSTYLE_COLOR
+
+// if the following is the only failing static_assert, the new color was probably added to the end
+static_assert( (int)D3CHECK_ImGuiCol_COUNT == (int)ImGuiCol_COUNT, "something was added or removed in enum ImGuiCol_ => adjust D3_IMSTYLE_COLORS table above" );
 
 // recreate struct ImGuiStyle from the tables above and see if they're identical
 // (this struct is only used for the static assertions below)
