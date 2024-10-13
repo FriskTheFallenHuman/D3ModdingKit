@@ -71,7 +71,7 @@
 
 #else // DG: use gl
 
-#include "renderer/OpenGL/qgl.h"
+#include "renderer/qgl.h"
 
 #endif // DG: use gl
 

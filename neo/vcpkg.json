@@ -10,7 +10,11 @@
 			"platform": "!windows"
 		},
 		"stb",
-		"freetype",
+		{
+			"name": "freetype",
+			"default-features": false,
+			"features": ["error-strings","subpixel-rendering"]
+		},
 		"glew"
 	]
 }
