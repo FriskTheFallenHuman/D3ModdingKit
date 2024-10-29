@@ -72,6 +72,10 @@ namespace DG {
 #endif
 
 #undef warnPrintf
+// DG: adjustment for dhewm3:
+#include "framework/Common.h"
+#undef strncmp // No, I don't want to use idStr::Cmpn() in this file.
+#undef snprintf
 // TODO: maybe use your own logging system instead of fprintf() to stderr
 #define warnPrintf(...)  fprintf( stderr, "Warning: " __VA_ARGS__ )
 
