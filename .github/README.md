@@ -19,6 +19,10 @@ This fork is base on Defunk's MD5 changes for D3Quest such has:
 - Mikktspace
 - ImGui
 
+# Know Issues
+
+- Sometimes the engine migth crash when loading a save game or loading to another map.
+
 # CHANGES
 
 Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mentioning are:
