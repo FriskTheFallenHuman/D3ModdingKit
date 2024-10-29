@@ -365,10 +365,12 @@ bool idRenderSystemLocal::RegisterFont( const char *fontName, fontInfoEx_t &font
 	glyphInfo_t *glyph;
 	const idMaterial *h;
 	float max;
-#endif // ID_BUILD_FREETYPE
 	void *faceData;
 	ID_TIME_T ftime;
 	int i, len, fontCount;
+#else
+	int fontCount;
+#endif // ID_BUILD_FREETYPE
 	idStr name;
 	float dpi = 72;
 	int pointSize = 12;
