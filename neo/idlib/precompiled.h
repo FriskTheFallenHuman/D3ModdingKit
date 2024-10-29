@@ -74,8 +74,8 @@ float Win_GetWindowScalingFactor(HWND window);
 // id lib
 #include "idlib/Lib.h"
 
-// SDL2
-#include <SDL_endian.h>
+// SDL2/SDL3
+#include "sys/sys_sdl.h"
 
 // framework
 #include "framework/BuildVersion.h"
