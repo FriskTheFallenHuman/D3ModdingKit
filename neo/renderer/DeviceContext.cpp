@@ -42,8 +42,8 @@ idVec4 idDeviceContext::colorWhite;
 idVec4 idDeviceContext::colorNone;
 
 
-idCVar gui_smallFontLimit( "gui_smallFontLimit", "0", CVAR_GUI | CVAR_ARCHIVE, "" );
-idCVar gui_mediumFontLimit( "gui_mediumFontLimit", "0", CVAR_GUI | CVAR_ARCHIVE, "" );
+idCVar gui_smallFontLimit( "gui_smallFontLimit", "0.0", CVAR_GUI | CVAR_ARCHIVE, "" );
+idCVar gui_mediumFontLimit( "gui_mediumFontLimit", "0.0", CVAR_GUI | CVAR_ARCHIVE, "" );
 
 
 idList<fontInfoEx_t> idDeviceContext::fonts;
@@ -97,7 +97,7 @@ void idDeviceContext::SetFont( int num ) {
 void idDeviceContext::Init() {
 	xScale = 0.0;
 	SetSize(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
-	whiteImage = declManager->FindMaterial("guis/assets/white.tga");
+	whiteImage = declManager->FindMaterial( "_white" );
 	whiteImage->SetSort( SS_GUI );
 	mbcs = false;
 	SetupFonts();
