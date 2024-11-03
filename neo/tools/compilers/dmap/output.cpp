@@ -650,10 +650,7 @@ void WriteOutputFile( void ) {
 		common->Error( "Error opening %s", qpath.c_str() );
 	}
 
-	// write file id and version
-	procFile->WriteFloatString( "%s \"%s\"\n\n", PROC_FILE_ID, PROC_FILEVERSION );
-	// write the proc file crc
-	procFile->WriteFloatString( "%u\n\n", dmapGlobals.dmapFile->GetGeometryCRC() );
+	procFile->WriteFloatString( "%s\n\n", PROC_FILE_ID );
 
 	// write the entity models and information, writing entities first
 	for ( i=dmapGlobals.num_entities - 1 ; i >= 0 ; i-- ) {

@@ -536,15 +536,6 @@ bool idRenderWorldLocal::InitFromMap( const char *name ) {
 		return false;
 	}
 
-	if ( !src->ReadToken( &token ) || token.Icmp( PROC_FILEVERSION ) ) {
-		common->Printf( "idRenderWorldLocal::InitFromMap: bad version '%s' instead of '%s'\n", token.c_str(), PROC_FILEVERSION );
-		delete src;
-		return false;
-	}
-
-	// TODO: Do something with the map checksum
-	src->ReadToken( &token );
-
 	// parse the file
 	while ( 1 ) {
 		if ( !src->ReadToken( &token ) ) {

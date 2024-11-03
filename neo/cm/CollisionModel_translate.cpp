@@ -761,7 +761,7 @@ idCollisionModelManagerLocal::Translation
 */
 void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &start, const idVec3 &end,
 										const idTraceModel *trm, const idMat3 &trmAxis, int contentMask,
-										idCollisionModel *model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+										cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 
 	int i, j;
 	float dist;
@@ -773,19 +773,24 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 	cm_trmVertex_t *vert;
 	ALIGN16( static cm_traceWork_t tw );
 
-	//assert( ((byte *)&start) < ((byte *)results) || ((byte *)&start) >= (((byte *)results) + sizeof( trace_t )) );
-	//assert( ((byte *)&end) < ((byte *)results) || ((byte *)&end) >= (((byte *)results) + sizeof( trace_t )) );
-	//assert( ((byte *)&trmAxis) < ((byte *)results) || ((byte *)&trmAxis) >= (((byte *)results) + sizeof( trace_t )) );
+	assert( ((byte *)&start) < ((byte *)results) || ((byte *)&start) >= (((byte *)results) + sizeof( trace_t )) );
+	assert( ((byte *)&end) < ((byte *)results) || ((byte *)&end) >= (((byte *)results) + sizeof( trace_t )) );
+	assert( ((byte *)&trmAxis) < ((byte *)results) || ((byte *)&trmAxis) >= (((byte *)results) + sizeof( trace_t )) );
 
 	memset( results, 0, sizeof( *results ) );
 
-	if ( model == NULL ) {
-		model = models[0];
+	if ( model < 0 || model > MAX_SUBMODELS || model > idCollisionModelManagerLocal::maxModels ) {
+		common->Printf("idCollisionModelManagerLocal::Translation: invalid model handle\n");
+		return;
+	}
+	if ( !idCollisionModelManagerLocal::models[model] ) {
+		common->Printf("idCollisionModelManagerLocal::Translation: invalid model\n");
+		return;
 	}
 
 	// if case special position test
 	if ( start[0] == end[0] && start[1] == end[1] && start[2] == end[2] ) {
-		idCollisionModelManagerLocal::ContentsTrm( results, start, trm, trmAxis, contentMask, (idCollisionModelLocal *)model, modelOrigin, modelAxis );
+		idCollisionModelManagerLocal::ContentsTrm( results, start, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
 		return;
 	}
 
@@ -794,7 +799,6 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 	tw.trace.fraction = 1.0f;
 	tw.trace.c.contents = 0;
 	tw.trace.c.type = CONTACT_NONE;
-	tw.trace.c.id = 0;
 	tw.contents = contentMask;
 	tw.isConvex = true;
 	tw.rotation = false;
@@ -804,7 +808,7 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 	tw.contacts = idCollisionModelManagerLocal::contacts;
 	tw.maxContacts = idCollisionModelManagerLocal::maxContacts;
 	tw.numContacts = 0;
-	tw.model = (idCollisionModelLocal *)model;
+	tw.model = idCollisionModelManagerLocal::models[model];
 	tw.start = start - modelOrigin;
 	tw.end = end - modelOrigin;
 	tw.dir = end - start;

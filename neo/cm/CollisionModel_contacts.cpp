@@ -54,14 +54,9 @@ idCollisionModelManagerLocal::Contacts
 */
 int idCollisionModelManagerLocal::Contacts( contactInfo_t *contacts, const int maxContacts, const idVec3 &start, const idVec6 &dir, const float depth,
 								const idTraceModel *trm, const idMat3 &trmAxis, int contentMask,
-								idCollisionModel *model, const idVec3 &origin, const idMat3 &modelAxis ) {
+								cmHandle_t model, const idVec3 &origin, const idMat3 &modelAxis ) {
 	trace_t results;
 	idVec3 end;
-
-	// If the model is NULL then assume we are checking the world model.
-	if ( model == NULL ) {
-		model = models[0];
-	}
 
 	// same as Translation but instead of storing the first collision we store all collisions as contacts
 	idCollisionModelManagerLocal::getContacts = true;

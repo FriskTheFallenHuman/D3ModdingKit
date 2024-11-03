@@ -131,32 +131,6 @@ float idMath::BitsToFloat( int i, int exponentBits, int mantissaBits ) {
 }
 
 /*
-========================
-idMath::Ftob
-========================
-*/
-byte idMath::Ftob( float f ) {
-#ifdef ID_WIN_X86_SSE_INTRIN
-	// If a converted result is negative the value (0) is returned and if the
-	// converted result is larger than the maximum byte the value (255) is returned.
-	__m128 x = _mm_load_ss( &f );
-	x = _mm_max_ss( x, SIMD_SP_zero );
-	x = _mm_min_ss( x, SIMD_SP_255 );
-	return static_cast<byte>( _mm_cvttss_si32( x ) );
-#else
-	// The converted result is clamped to the range [0,255].
-	int i = C_FLOAT_TO_INT(f);
-	if (i < 0) {
-		return 0;
-	}
-	else if (i > 255) {
-		return 255;
-	}
-	return static_cast<byte>(i);
-#endif
-}
-
-/*
 ================
 idMath::dBToScale
 ================

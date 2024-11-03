@@ -93,7 +93,7 @@ private:
 
 private:	// map loading
 	void					ParseProcNodes( idLexer *src );
-	bool					LoadProcBSP( const char *name, unsigned int mapFileCRC, ID_TIME_T minFileTime );
+	bool					LoadProcBSP( const char *name, ID_TIME_T minFileTime );
 	void					DeleteProcBSP( void );
 	bool					ChoppedAwayByProcBSP( int nodeNum, idFixedWinding *w, const idVec3 &normal, const idVec3 &origin, const float radius );
 	void					ClipBrushSidesWithProcBSP( idBrushList &brushList );

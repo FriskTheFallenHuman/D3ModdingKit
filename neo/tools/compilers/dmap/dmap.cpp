@@ -383,7 +383,7 @@ void Dmap( const idCmdArgs &args ) {
 			start = Sys_Milliseconds();
 
 			collisionModelManager->LoadMap( dmapGlobals.dmapFile );
-			collisionModelManager->FreeMap( CM_WORLD_MAP );
+			collisionModelManager->FreeMap();
 
 			end = Sys_Milliseconds();
 			common->Printf( "-------------------------------------\n" );

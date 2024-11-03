@@ -59,7 +59,7 @@ public:
 
 	void					AppendArg( const char *text );
 	void					Clear( void ) { argc = 0; }
-	const char * const *	GetArgs( int *argc );
+	const char **			GetArgs( int *argc );
 
 private:
 	static const int		MAX_COMMAND_ARGS = 64;

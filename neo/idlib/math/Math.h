@@ -50,9 +50,6 @@ If you have questions concerning this license or the applicable additional terms
 #undef FLT_EPSILON
 #endif
 
-#define C_FLOAT_TO_INT( x )		(int)(x)
-
-
 #define DEG2RAD(a)				( (a) * idMath::M_DEG2RAD )
 #define RAD2DEG(a)				( (a) * idMath::M_RAD2DEG )
 
@@ -187,7 +184,6 @@ public:
 	static int					FtoiFast( float f );		// fast float to int conversion but uses current FPU round mode (default round nearest)
 	static unsigned int			Ftol( float f );			// float to int conversion
 	static unsigned int			FtolFast( float );			// fast float to int conversion but uses current FPU round mode (default round nearest)
-	static byte					Ftob( float f );			// float to byte conversion, the result is clamped to the range [0-255]
 
 	static signed char			ClampChar( int i );
 	static signed short			ClampShort( int i );
@@ -942,10 +938,6 @@ template<typename T>
 ID_INLINE T idMath::Diff( T a, T b )
 {
 	return std::abs( a - b );
-}
-
-ID_INLINE byte CLAMP_BYTE( int x ) {
-	return ( ( x ) < 0 ? ( 0 ) : ( ( x ) > 255 ? 255 : (byte)( x ) ) );
 }
 
 #endif /* !__MATH_MATH_H__ */

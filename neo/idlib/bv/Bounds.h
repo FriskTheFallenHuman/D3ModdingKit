@@ -67,7 +67,6 @@ public:
 	float			GetRadius( const idVec3 &center ) const;		// returns the radius relative to the given center
 	float			GetVolume( void ) const;						// returns the volume of the bounds
 	bool			IsCleared( void ) const;						// returns true if bounds are inside out
-	float			GetMaxExtent( void ) const;						// Return max distance of any axis of bounds
 
 	bool			AddPoint( const idVec3 &v );					// add the point, returns true if the bounds expanded
 	bool			AddBounds( const idBounds &a );					// add the bounds, returns true if the bounds expanded
@@ -105,11 +104,6 @@ public:
 
 	void			AxisProjection( const idVec3 &dir, float &min, float &max ) const;
 	void			AxisProjection( const idVec3 &origin, const idMat3 &axis, const idVec3 &dir, float &min, float &max ) const;
-
-	const idVec3& GetMins(void) const;
-	idVec3& GetMins(void);
-	const idVec3& GetMaxs(void) const;
-	idVec3& GetMaxs(void);
 
 private:
 	idVec3			b[2];
@@ -410,22 +404,6 @@ ID_INLINE void idBounds::AxisProjection( const idVec3 &origin, const idMat3 &axi
 
 	min = d1 - d2;
 	max = d1 + d2;
-}
-
-ID_INLINE const idVec3& idBounds::GetMins(void) const {
-	return b[0];
-}
-
-ID_INLINE idVec3& idBounds::GetMins(void) {
-	return b[0];
-}
-
-ID_INLINE const idVec3& idBounds::GetMaxs(void) const {
-	return b[1];
-}
-
-ID_INLINE idVec3& idBounds::GetMaxs(void) {
-	return b[1];
 }
 
 #endif /* !__BV_BOUNDS_H__ */

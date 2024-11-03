@@ -343,7 +343,6 @@ public:
 	virtual const char *	BuildOSPath( const char *base, const char *game, const char *relativePath );
 	virtual void			CreateOSPath( const char *OSPath );
 	virtual bool			FileIsInPAK( const char *relativePath );
-	virtual bool			InProductionMode( void ) { return /*(resourceFiles.Num() > 0) |*/ ( com_productionMode.GetInteger() != 0 ); }
 	virtual void			UpdatePureServerChecksums( void );
 	virtual fsPureReply_t	SetPureServerChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int missingChecksums[ MAX_PURE_PAKS ] );
 	virtual void			GetPureServerChecksums( int checksums[ MAX_PURE_PAKS ] );

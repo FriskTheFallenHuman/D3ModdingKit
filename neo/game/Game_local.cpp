@@ -389,7 +389,7 @@ void idGameLocal::Shutdown( void ) {
 	mapFile = NULL;
 
 	// free the collision map
-	collisionModelManager->FreeMap( CM_WORLD_MAP );
+	collisionModelManager->FreeMap();
 
 	ShutdownConsoleCommands();
 
@@ -1713,7 +1713,7 @@ void idGameLocal::CacheDictionaryMedia( const idDict *dict ) {
 				// precache the render model
 				renderModelManager->FindModel( kv->GetValue() );
 				// precache .cm files only
-				collisionModelManager->LoadModel( CM_WORLD_MAP, kv->GetValue(), true );
+				collisionModelManager->LoadModel( kv->GetValue(), true );
 			}
 		}
 		kv = dict->MatchPrefix( "model", kv );
@@ -2580,7 +2580,7 @@ idGameLocal::GetLevelMap
 ================
 */
 idMapFile *idGameLocal::GetLevelMap( void ) {
-	if ( mapFile && mapFile->HasPrimitiveData() && !mapFile->HasBeenResloved() ) {
+	if ( mapFile && mapFile->HasPrimitiveData()) {
 		return mapFile;
 	}
 	if ( !mapFileName.Length() ) {
@@ -2791,7 +2791,7 @@ void idGameLocal::RunDebugInfo( void ) {
 	}
 
 	if ( g_showCollisionWorld.GetBool() ) {
-		collisionModelManager->DrawModel( 0, vec3_origin, mat3_identity, origin, mat3_identity, 128.0f );
+		collisionModelManager->DrawModel( 0, vec3_origin, mat3_identity, origin, 128.0f );
 	}
 
 	if ( g_showCollisionModels.GetBool() ) {

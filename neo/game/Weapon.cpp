@@ -157,7 +157,7 @@ void idWeapon::CacheWeapon( const char *weaponName ) {
 				clipModelName = brassDef->dict.GetString( "model" );		// use the visual model
 			}
 			// load the trace model
-			collisionModelManager->ModelFromTrm( CM_WORLD_MAP, clipModelName, trm, NULL );
+			collisionModelManager->TrmFromModel( clipModelName, trm );
 		}
 	}
 

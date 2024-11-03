@@ -975,21 +975,3 @@ bool idRenderSystemLocal::UploadImage( const char *imageName, const byte *data, 
 	image->SetImageFilterAndRepeat();
 	return true;
 }
-
-/*
-===============
-idRenderSystemLocal::WriteTGA
-===============
-*/
-void idRenderSystemLocal::WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical, const char *basePath ) {
-	R_WriteTGA(filename, data, width, height, flipVertical, basePath);
-}
-
-/*
-===============
-idRenderSystemLocal::WritePNG
-===============
-*/
-void idRenderSystemLocal::WritePNG( const char *filename, const byte *data, int bytesPerPixel, int width, int height, const char *basePath ) {
-	R_WritePNG( filename, data, bytesPerPixel, width, height, basePath );
-}

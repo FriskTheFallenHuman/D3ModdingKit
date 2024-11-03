@@ -58,12 +58,8 @@ public:
 	static void					ShutDown( void );
 
 	// wrapper to idCommon functions
-	static void       			Printf( VERIFY_FORMAT_STRING const char* fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
-	static void       			PrintfIf( const bool test, VERIFY_FORMAT_STRING const char* fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 2, 3 );
-	NO_RETURN static void       Error( VERIFY_FORMAT_STRING const char* fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
-	NO_RETURN static void       FatalError( VERIFY_FORMAT_STRING const char* fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
-	static void       			Warning( VERIFY_FORMAT_STRING const char* fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
-	static void       			WarningIf( const bool test, VERIFY_FORMAT_STRING const char* fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 2, 3 );
+	NO_RETURN static void       Error( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
+	static void       			Warning( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
 };
 
 
@@ -120,15 +116,6 @@ bool	Swap_IsBigEndian( void );
 void	SixtetsForInt( byte *out, int src);
 int		IntForSixtets( byte *in );
 
-#define MAX_TYPE( x )			( ( ( ( 1 << ( ( sizeof( x ) - 1 ) * 8 - 1 ) ) - 1 ) << 8 ) | 255 )
-#define MIN_TYPE( x )			( - MAX_TYPE( x ) - 1 )
-#define MAX_UNSIGNED_TYPE( x )	( ( ( ( 1U << ( ( sizeof( x ) - 1 ) * 8 ) ) - 1 ) << 8 ) | 255U )
-#define MIN_UNSIGNED_TYPE( x )	0
-
-template< typename _type_ >
-bool IsSignedType( const _type_ t ) {
-	return _type_( -1 ) < 0;
-}
 
 #ifdef _DEBUG
 void AssertFailed( const char *file, int line, const char *expression );
@@ -158,7 +145,6 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 
 // memory management and arrays
 #include "Heap.h"
-#include "containers/Sort.h"
 #include "containers/List.h"
 
 // math
@@ -183,7 +169,6 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 // bounding volumes
 #include "bv/Sphere.h"
 #include "bv/Bounds.h"
-#include "bv/Bounds2D.h"
 #include "bv/Box.h"
 #include "bv/Frustum.h"
 
@@ -224,10 +209,7 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 #include "containers/PlaneSet.h"
 
 // hashing
-#include "hashing/CRC8.h"
-#include "hashing/CRC16.h"
 #include "hashing/CRC32.h"
-#include "hashing/Honeyman.h"
 #include "hashing/MD4.h"
 #include "hashing/MD5.h"
 
@@ -237,15 +219,5 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 #include "BitMsg.h"
 #include "MapFile.h"
 #include "Timer.h"
-#include "Swap.h"
-
-// Image Decoders
-#include "decoders/BareDCTDecoder.h"
-#include "decoders/ColorSpace.h"
-#include "decoders/DXTDecoder.h"
-#include "encoders/DXTEncoder.h"
-
-#include "images/Filter.h"
-#include "images/MipMap.h"
 
 #endif	/* !__LIB_H__ */

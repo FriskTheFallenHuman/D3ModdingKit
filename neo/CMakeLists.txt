@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.20 )
+cmake_minimum_required( VERSION 3.27.8 )
 
 # Check if vcpkg exist in our source folder
 if ( EXISTS "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake" )
@@ -13,7 +13,7 @@ set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules" )
 
-project( D3ModdingKit CXX C)
+project( dhewm3 CXX C)
 
 # build type
 if( NOT CMAKE_BUILD_TYPE )
@@ -601,7 +601,6 @@ always_optimize_sourcefile(framework/minizip/unzip.cpp)
 add_globbed_headers(src_framework "framework")
 
 set(src_cm
-	cm/CollisionModel.cpp
 	cm/CollisionModel_contacts.cpp
 	cm/CollisionModel_contents.cpp
 	cm/CollisionModel_debug.cpp
@@ -705,15 +704,9 @@ add_globbed_headers(src_ui "ui")
 
 set(src_idlib
 	idlib/bv/Bounds.cpp
-	idlib/bv/Bounds2D.cpp
 	idlib/bv/Frustum.cpp
 	idlib/bv/Sphere.cpp
 	idlib/bv/Box.cpp
-	idlib/decoders/BareDCTDecoder.cpp
-	idlib/decoders/ColorSpace.cpp
-	idlib/decoders/DXTDecoder.cpp
-	idlib/decoders/IDCT_AP922.cpp
-	idlib/encoders/DXTEncoder.cpp
 	idlib/geometry/DrawVert.cpp
 	idlib/geometry/Winding2D.cpp
 	idlib/geometry/Surface_SweptSpline.cpp
@@ -722,14 +715,9 @@ set(src_idlib
 	idlib/geometry/Surface_Patch.cpp
 	idlib/geometry/TraceModel.cpp
 	idlib/geometry/JointTransform.cpp
-	idlib/hashing/CRC8.cpp
-	idlib/hashing/CRC16.cpp
 	idlib/hashing/CRC32.cpp
-	idlib/hashing/Honeyman.cpp
 	idlib/hashing/MD4.cpp
 	idlib/hashing/MD5.cpp
-	idlib/images/Filter.cpp
-	idlib/images/MipMap.cpp
 	idlib/math/Angles.cpp
 	idlib/math/Lcp.cpp
 	idlib/math/Math.cpp
@@ -758,7 +746,6 @@ set(src_idlib
 	idlib/precompiled.cpp
 	idlib/MapFile.cpp
 	idlib/CmdArgs.cpp
-	idlib/CommandLink.cpp
 	idlib/Token.cpp
 	idlib/Base64.cpp
 	idlib/Timer.cpp

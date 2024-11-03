@@ -2238,7 +2238,7 @@ void idDebris::Launch( void ) {
 	}
 
 	// load the trace model
-	if ( !collisionModelManager->ModelFromTrm( CM_WORLD_MAP, clipModelName, trm, NULL ) ) {
+	if ( !collisionModelManager->TrmFromModel( clipModelName, trm ) ) {
 		// default to a box
 		physicsObj.SetClipBox( renderEntity.bounds, 1.0f );
 	} else {

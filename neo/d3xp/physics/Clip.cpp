@@ -209,26 +209,6 @@ void idClipModel::RestoreTraceModels( idRestoreGame *savefile ) {
 
 /*
 ================
-idClipModel::FreeModel
-================
-*/
-void idClipModel::FreeModel( void ) {
-
-	if ( traceModelIndex != -1 ) {
-		FreeTraceModel( traceModelIndex );
-		traceModelIndex = -1;
-	}
-
-	if ( collisionModel != NULL ) {
-		collisionModelManager->FreeModel( collisionModel );
-		collisionModel = NULL;
-	}
-
-	renderModelHandle = -1;
-}
-
-/*
-================
 idClipModel::LoadModel
 ================
 */
@@ -238,10 +218,10 @@ bool idClipModel::LoadModel( const char *name ) {
 		FreeTraceModel( traceModelIndex );
 		traceModelIndex = -1;
 	}
-	collisionModel = collisionModelManager->LoadModel( CM_WORLD_MAP, name, false );
-	if ( collisionModel ) {
-		collisionModel->GetBounds( bounds );
-		collisionModel->GetContents( contents );
+	collisionModelHandle = collisionModelManager->LoadModel( name, false );
+	if ( collisionModelHandle ) {
+		collisionModelManager->GetModelBounds( collisionModelHandle, bounds );
+		collisionModelManager->GetModelContents( collisionModelHandle, contents );
 		return true;
 	} else {
 		bounds.Zero();
@@ -255,7 +235,7 @@ idClipModel::LoadModel
 ================
 */
 void idClipModel::LoadModel( const idTraceModel &trm ) {
-	FreeModel();
+	collisionModelHandle = 0;
 	renderModelHandle = -1;
 	if ( traceModelIndex != -1 ) {
 		FreeTraceModel( traceModelIndex );
@@ -270,7 +250,7 @@ idClipModel::LoadModel
 ================
 */
 void idClipModel::LoadModel( const int renderModelHandle ) {
-	FreeModel();
+	collisionModelHandle = 0;
 	this->renderModelHandle = renderModelHandle;
 	if ( renderModelHandle != -1 ) {
 		const renderEntity_t *renderEntity = gameRenderWorld->GetRenderEntity( renderModelHandle );
@@ -300,7 +280,7 @@ void idClipModel::Init( void ) {
 	absBounds.Zero();
 	material = NULL;
 	contents = CONTENTS_BODY;
-	collisionModel = nullptr;
+	collisionModelHandle = 0;
 	renderModelHandle = -1;
 	traceModelIndex = -1;
 	clipLinks = NULL;
@@ -363,7 +343,7 @@ idClipModel::idClipModel( const idClipModel *model ) {
 	absBounds = model->absBounds;
 	material = model->material;
 	contents = model->contents;
-	collisionModel = model->collisionModel;
+	collisionModelHandle = model->collisionModelHandle;
 	traceModelIndex = -1;
 	if ( model->traceModelIndex != -1 ) {
 		LoadModel( *GetCachedTraceModel( model->traceModelIndex ) );
@@ -402,8 +382,8 @@ void idClipModel::Save( idSaveGame *savefile ) const {
 	savefile->WriteBounds( absBounds );
 	savefile->WriteMaterial( material );
 	savefile->WriteInt( contents );
-	if ( collisionModel != nullptr ) {
-		savefile->WriteString( collisionModel->GetName() );
+	if ( collisionModelHandle >= 0 ) {
+		savefile->WriteString( collisionModelManager->GetModelName( collisionModelHandle ) );
 	} else {
 		savefile->WriteString( "" );
 	}
@@ -434,9 +414,9 @@ void idClipModel::Restore( idRestoreGame *savefile ) {
 	savefile->ReadInt( contents );
 	savefile->ReadString( collisionModelName );
 	if ( collisionModelName.Length() ) {
-		collisionModel = collisionModelManager->LoadModel( CM_WORLD_MAP, collisionModelName, false );
+		collisionModelHandle = collisionModelManager->LoadModel( collisionModelName, false );
 	} else {
-		collisionModel = nullptr;
+		collisionModelHandle = -1;
 	}
 	savefile->ReadInt( traceModelIndex );
 	if ( traceModelIndex >= 0 ) {
@@ -474,12 +454,12 @@ void idClipModel::SetPosition( const idVec3 &newOrigin, const idMat3 &newAxis ) 
 idClipModel::Handle
 ================
 */
-idCollisionModel *idClipModel::Handle( void ) const {
+cmHandle_t idClipModel::Handle( void ) const {
 	assert( renderModelHandle == -1 );
-	if ( collisionModel ) {
-		return collisionModel;
+	if ( collisionModelHandle ) {
+		return collisionModelHandle;
 	} else if ( traceModelIndex != -1 ) {
-		return collisionModelManager->ModelFromTrm( CM_WORLD_MAP, va( "traceModel%d", traceModelIndex ), *GetCachedTraceModel( traceModelIndex ), material );
+		return collisionModelManager->SetupTrmModel( *GetCachedTraceModel( traceModelIndex ), material );
 	} else {
 		// this happens in multiplayer on the combat models
 		gameLocal.Warning( "idClipModel::Handle: clip model %d on '%s' (%x) is not a collision or trace model", id, entity->name.c_str(), entity->entityNumber );
@@ -621,8 +601,8 @@ void idClipModel::Link( idClip &clp, idEntity *ent, int newId, const idVec3 &new
 idClipModel::CheckModel
 ============
 */
-idCollisionModel *idClipModel::CheckModel( const char *name ) {
-	return collisionModelManager->LoadModel( CM_WORLD_MAP, name, false );
+cmHandle_t idClipModel::CheckModel( const char *name ) {
+	return collisionModelManager->LoadModel( name, false );
 }
 
 
@@ -702,7 +682,7 @@ idClip::Init
 ===============
 */
 void idClip::Init( void ) {
-	idCollisionModel *h;
+	cmHandle_t h;
 	idVec3 size, maxSector = vec3_origin;
 
 	// clear clip sectors
@@ -711,8 +691,8 @@ void idClip::Init( void ) {
 	numClipSectors = 0;
 	touchCount = -1;
 	// get world map bounds
-	h = collisionModelManager->LoadModel( CM_WORLD_MAP, "worldMap", false );
-	h->GetBounds( worldBounds );
+	h = collisionModelManager->LoadModel( "worldMap", false );
+	collisionModelManager->GetModelBounds( h, worldBounds );
 	// create world sectors
 	CreateClipSectors_r( 0, worldBounds, maxSector );
 
@@ -983,8 +963,6 @@ idClip::TestHugeTranslation
 */
 ID_INLINE bool TestHugeTranslation( trace_t &results, const idClipModel *mdl, const idVec3 &start, const idVec3 &end, const idMat3 &trmAxis ) {
 	if ( mdl != NULL && ( end - start ).LengthSqr() > Square( CM_MAX_TRACE_DIST ) ) {
-		assert( 0 );
-
 		results.fraction = 0.0f;
 		results.endpos = start;
 		results.endAxis = trmAxis;
@@ -1099,19 +1077,6 @@ bool idClip::Translation( trace_t &results, const idVec3 &start, const idVec3 &e
 		results.c.entityNum = results.fraction != 1.0f ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 		if ( results.fraction == 0.0f ) {
 			return true;		// blocked immediately by the world
-		}
-
-		for ( int i = 0; i < collisionModelManager->GetNumInlinedProcClipModels(); i++ ) {
-			idCollisionModel* cm = collisionModelManager->GetCollisionModel(i + 1);
-			if ( cm == NULL ) {
-				continue;
-			}
-
-			collisionModelManager->Translation( &results, start, end, trm, trmAxis, contentMask, cm, vec3_origin, mat3_default );
-			results.c.entityNum = results.fraction != 1.0f ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
-			if ( results.fraction == 0.0f ) {
-				return true;		// blocked immediately by the world
-			}
 		}
 	} else {
 		memset( &results, 0, sizeof( results ) );
@@ -1405,15 +1370,6 @@ int idClip::Contacts( contactInfo_t *contacts, const int maxContacts, const idVe
 		// test world
 		idClip::numContacts++;
 		numContacts = collisionModelManager->Contacts( contacts, maxContacts, start, dir, depth, trm, trmAxis, contentMask, 0, vec3_origin, mat3_default );
-
-		for ( int i = 0; i < collisionModelManager->GetNumInlinedProcClipModels(); i++ ) {
-			idCollisionModel* cm = collisionModelManager->GetCollisionModel(i + 1);
-			if ( cm == NULL ) {
-				continue;
-			}
-
-			numContacts += collisionModelManager->Contacts( contacts, maxContacts, start, dir, depth, trm, trmAxis, contentMask, cm, vec3_origin, mat3_default );
-		}
 	} else {
 		numContacts = 0;
 	}
@@ -1484,18 +1440,6 @@ int idClip::Contents( const idVec3 &start, const idClipModel *mdl, const idMat3 
 		// test world
 		idClip::numContents++;
 		contents = collisionModelManager->Contents( start, trm, trmAxis, contentMask, 0, vec3_origin, mat3_default );
-
-		for ( int i = 0; i < collisionModelManager->GetNumInlinedProcClipModels(); i++ ) {
-			idCollisionModel* cm = collisionModelManager->GetCollisionModel(i + 1);
-			if ( cm == NULL ) {
-				continue;
-			}
-
-			int procMeshContents = collisionModelManager->Contents( start, trm, trmAxis, contentMask, cm, vec3_origin, mat3_default );
-			if ( procMeshContents ) {
-				contents |= (procMeshContents & contentMask);
-			}
-		}
 	} else {
 		contents = 0;
 	}
@@ -1550,7 +1494,7 @@ idClip::TranslationModel
 */
 void idClip::TranslationModel( trace_t &results, const idVec3 &start, const idVec3 &end,
 					const idClipModel *mdl, const idMat3 &trmAxis, int contentMask,
-					idCollisionModel *model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+					cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 	const idTraceModel *trm = TraceModelForClipModel( mdl );
 	idClip::numTranslations++;
 	collisionModelManager->Translation( &results, start, end, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
@@ -1563,7 +1507,7 @@ idClip::RotationModel
 */
 void idClip::RotationModel( trace_t &results, const idVec3 &start, const idRotation &rotation,
 					const idClipModel *mdl, const idMat3 &trmAxis, int contentMask,
-					idCollisionModel* model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+					cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 	const idTraceModel *trm = TraceModelForClipModel( mdl );
 	idClip::numRotations++;
 	collisionModelManager->Rotation( &results, start, rotation, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
@@ -1576,7 +1520,7 @@ idClip::ContactsModel
 */
 int idClip::ContactsModel( contactInfo_t *contacts, const int maxContacts, const idVec3 &start, const idVec6 &dir, const float depth,
 					const idClipModel *mdl, const idMat3 &trmAxis, int contentMask,
-					idCollisionModel* model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+					cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 	const idTraceModel *trm = TraceModelForClipModel( mdl );
 	idClip::numContacts++;
 	return collisionModelManager->Contacts( contacts, maxContacts, start, dir, depth, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
@@ -1589,7 +1533,7 @@ idClip::ContentsModel
 */
 int idClip::ContentsModel( const idVec3 &start,
 					const idClipModel *mdl, const idMat3 &trmAxis, int contentMask,
-					idCollisionModel* model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+					cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 	const idTraceModel *trm = TraceModelForClipModel( mdl );
 	idClip::numContents++;
 	return collisionModelManager->Contents( start, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
@@ -1602,10 +1546,10 @@ idClip::GetModelContactFeature
 */
 bool idClip::GetModelContactFeature( const contactInfo_t &contact, const idClipModel *clipModel, idFixedWinding &winding ) const {
 	int i;
-	idCollisionModel *handle;
+	cmHandle_t handle;
 	idVec3 start, end;
 
-	handle = nullptr;
+	handle = -1;
 	winding.Clear();
 
 	if ( clipModel == NULL ) {
@@ -1615,31 +1559,31 @@ bool idClip::GetModelContactFeature( const contactInfo_t &contact, const idClipM
 			winding += contact.point;
 			return true;
 		} else if ( clipModel->traceModelIndex != -1 ) {
-			handle = collisionModelManager->ModelFromTrm( CM_WORLD_MAP, va( "traceModel%d", clipModel->traceModelIndex), *idClipModel::GetCachedTraceModel( clipModel->traceModelIndex ), clipModel->material );
+			handle = collisionModelManager->SetupTrmModel( *idClipModel::GetCachedTraceModel( clipModel->traceModelIndex ), clipModel->material );
 		} else {
-			handle = clipModel->collisionModel;
+			handle = clipModel->collisionModelHandle;
 		}
 	}
 
 	// if contact with a collision model
-	if ( handle != nullptr ) {
+	if ( handle != -1 ) {
 		switch( contact.type ) {
 			case CONTACT_EDGE: {
 				// the model contact feature is a collision model edge
-				handle->GetEdge( contact.modelFeature, start, end );
+				collisionModelManager->GetModelEdge( handle, contact.modelFeature, start, end );
 				winding += start;
 				winding += end;
 				break;
 			}
 			case CONTACT_MODELVERTEX: {
 				// the model contact feature is a collision model vertex
-				handle->GetVertex( contact.modelFeature, start );
+				collisionModelManager->GetModelVertex( handle, contact.modelFeature, start );
 				winding += start;
 				break;
 			}
 			case CONTACT_TRMVERTEX: {
 				// the model contact feature is a collision model polygon
-				handle->GetPolygon( contact.modelFeature, winding );
+				collisionModelManager->GetModelPolygon( handle, contact.modelFeature, winding );
 				break;
 			}
 		}
@@ -1690,7 +1634,7 @@ void idClip::DrawClipModels( const idVec3 &eye, const float radius, const idEnti
 		if ( clipModel->renderModelHandle != -1 ) {
 			gameRenderWorld->DebugBounds( colorCyan, clipModel->GetAbsBounds() );
 		} else {
-			clipModel->Handle()->DrawModel( clipModel->GetOrigin(), clipModel->GetAxis(), eye, radius );
+			collisionModelManager->DrawModel( clipModel->Handle(), clipModel->GetOrigin(), clipModel->GetAxis(), eye, radius );
 		}
 	}
 }

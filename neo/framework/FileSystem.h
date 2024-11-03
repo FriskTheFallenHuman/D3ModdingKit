@@ -282,8 +282,6 @@ public:
 
 							// ignore case and seperator char distinctions
 	virtual bool			FilenameCompare( const char *s1, const char *s2 ) const = 0;
-
-	virtual bool			InProductionMode( void ) = 0;
 };
 
 extern idFileSystem *		fileSystem;

@@ -50,8 +50,6 @@ If you have questions concerning this license or the applicable additional terms
 	#include <fcntl.h>
 #endif // _WIN32
 
-idCVar com_productionMode( "com_productionMode", "0", CVAR_SYSTEM | CVAR_BOOL, "0 - no special behavior, 1 - building a production build, 2 - running a production build" );
-
 /*
 ==============================================================
 

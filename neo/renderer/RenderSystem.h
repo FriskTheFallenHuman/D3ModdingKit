@@ -245,12 +245,6 @@ public:
 	// if the pointers are not NULL, timing info will be returned
 	virtual void			EndFrame( int *frontEndMsec, int *backEndMsec ) = 0;
 
-	// Writes a TGA file to the filesystem.
-	virtual void			WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical, const char *basePath ) = 0;
-
-	// Writes a PNG file to the filesystem.
-	virtual void			WritePNG( const char *filename, const byte *data, int bytesPerPixel, int width, int height, const char *basePath  ) = 0;
-
 	// aviDemo uses this.
 	// Will automatically tile render large screen shots if necessary
 	// Samples is the number of jittered frames for anti-aliasing

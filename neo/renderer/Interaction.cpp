@@ -110,6 +110,127 @@ void R_FreeInteractionCullInfo( srfCullInfo_t &cullInfo ) {
 	}
 }
 
+#define	MAX_CLIPPED_POINTS	20
+typedef struct {
+	int		numVerts;
+	idVec3	verts[MAX_CLIPPED_POINTS];
+} clipTri_t;
+
+/*
+=============
+R_ChopWinding
+
+Clips a triangle from one buffer to another, setting edge flags
+The returned buffer may be the same as inNum if no clipping is done
+If entirely clipped away, clipTris[returned].numVerts == 0
+
+I have some worries about edge flag cases when polygons are clipped
+multiple times near the epsilon.
+=============
+*/
+static int R_ChopWinding( clipTri_t clipTris[2], int inNum, const idPlane plane ) {
+	clipTri_t	*in, *out;
+	float	dists[MAX_CLIPPED_POINTS];
+	int		sides[MAX_CLIPPED_POINTS];
+	int		counts[3];
+	float	dot;
+	int		i, j;
+	idVec3	mid;
+	bool	front;
+
+	in = &clipTris[inNum];
+	out = &clipTris[inNum^1];
+	counts[0] = counts[1] = counts[2] = 0;
+
+	// determine sides for each point
+	front = false;
+	for ( i = 0; i < in->numVerts; i++ ) {
+		dot = in->verts[i] * plane.Normal() + plane[3];
+		dists[i] = dot;
+		if ( dot < LIGHT_CLIP_EPSILON ) {	// slop onto the back
+			sides[i] = SIDE_BACK;
+		} else {
+			sides[i] = SIDE_FRONT;
+			if ( dot > LIGHT_CLIP_EPSILON ) {
+				front = true;
+			}
+		}
+		counts[sides[i]]++;
+	}
+
+	// if none in front, it is completely clipped away
+	if ( !front ) {
+		in->numVerts = 0;
+		return inNum;
+	}
+	if ( !counts[SIDE_BACK] ) {
+		return inNum;		// inout stays the same
+	}
+
+	// avoid wrapping checks by duplicating first value to end
+	sides[i] = sides[0];
+	dists[i] = dists[0];
+	in->verts[in->numVerts] = in->verts[0];
+
+	out->numVerts = 0;
+	for ( i = 0 ; i < in->numVerts ; i++ ) {
+		idVec3 &p1 = in->verts[i];
+
+		if ( sides[i] == SIDE_FRONT ) {
+			out->verts[out->numVerts] = p1;
+			out->numVerts++;
+		}
+
+		if ( sides[i+1] == sides[i] ) {
+			continue;
+		}
+
+		// generate a split point
+		idVec3 &p2 = in->verts[i+1];
+
+		dot = dists[i] / ( dists[i] - dists[i+1] );
+		for ( j = 0; j < 3; j++ ) {
+			mid[j] = p1[j] + dot * ( p2[j] - p1[j] );
+		}
+
+		out->verts[out->numVerts] = mid;
+
+		out->numVerts++;
+	}
+
+	return inNum ^ 1;
+}
+
+/*
+===================
+R_ClipTriangleToLight
+
+Returns false if nothing is left after clipping
+===================
+*/
+static bool	R_ClipTriangleToLight( const idVec3 &a, const idVec3 &b, const idVec3 &c, int planeBits, const idPlane frustum[6] ) {
+	int			i;
+	clipTri_t	pingPong[2];
+	int			p;
+
+	pingPong[0].numVerts = 3;
+	pingPong[0].verts[0] = a;
+	pingPong[0].verts[1] = b;
+	pingPong[0].verts[2] = c;
+
+	p = 0;
+	for ( i = 0 ; i < 6 ; i++ ) {
+		if ( planeBits & ( 1 << i ) ) {
+			p = R_ChopWinding( pingPong, p, frustum[i] );
+			if ( pingPong[p].numVerts < 1 ) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 /*
 ===============
 idInteraction::idInteraction

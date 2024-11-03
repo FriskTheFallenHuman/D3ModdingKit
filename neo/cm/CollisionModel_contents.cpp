@@ -393,7 +393,7 @@ bool idCollisionModelManagerLocal::TestTrmInPolygon( cm_traceWork_t *tw, cm_poly
 idCollisionModelManagerLocal::PointNode
 ================
 */
-cm_node_t *idCollisionModelManagerLocal::PointNode( const idVec3 &p, idCollisionModelLocal *model ) {
+cm_node_t *idCollisionModelManagerLocal::PointNode( const idVec3 &p, cm_model_t *model ) {
 	cm_node_t *node;
 
 	node = model->node;
@@ -415,7 +415,7 @@ cm_node_t *idCollisionModelManagerLocal::PointNode( const idVec3 &p, idCollision
 idCollisionModelManagerLocal::PointContents
 ================
 */
-int idCollisionModelManagerLocal::PointContents( const idVec3 p, idCollisionModel* model ) {
+int idCollisionModelManagerLocal::PointContents( const idVec3 p, cmHandle_t model ) {
 	int i;
 	float d;
 	cm_node_t *node;
@@ -423,12 +423,7 @@ int idCollisionModelManagerLocal::PointContents( const idVec3 p, idCollisionMode
 	cm_brush_t *b;
 	idPlane *plane;
 
-	// If model is NULL, assume we are wanting the world model.
-	if ( model == NULL ) {
-		model = models[0];
-	}
-
-	node = idCollisionModelManagerLocal::PointNode( p, (idCollisionModelLocal *)model );
+	node = idCollisionModelManagerLocal::PointNode( p, idCollisionModelManagerLocal::models[model] );
 	for ( bref = node->brushes; bref; bref = bref->next ) {
 		b = bref->b;
 		// test if the point is within the brush bounds
@@ -463,7 +458,7 @@ int idCollisionModelManagerLocal::PointContents( const idVec3 p, idCollisionMode
 idCollisionModelManagerLocal::TransformedPointContents
 ==================
 */
-int	idCollisionModelManagerLocal::TransformedPointContents( const idVec3 &p, idCollisionModel *model, const idVec3 &origin, const idMat3 &modelAxis ) {
+int	idCollisionModelManagerLocal::TransformedPointContents( const idVec3 &p, cmHandle_t model, const idVec3 &origin, const idMat3 &modelAxis ) {
 	idVec3 p_l;
 
 	// subtract origin offset
@@ -482,16 +477,12 @@ idCollisionModelManagerLocal::ContentsTrm
 */
 int idCollisionModelManagerLocal::ContentsTrm( trace_t *results, const idVec3 &start,
 									const idTraceModel *trm, const idMat3 &trmAxis, int contentMask,
-									idCollisionModelLocal *model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+									cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 	int i;
 	bool model_rotated, trm_rotated;
 	idMat3 invModelAxis, tmpAxis;
 	idVec3 dir;
 	ALIGN16( cm_traceWork_t tw );
-
-	if ( model == NULL ) {
-		model = models[0];
-	}
 
 	// fast point case
 	if ( !trm || ( trm->bounds[1][0] - trm->bounds[0][0] <= 0.0f &&
@@ -518,7 +509,7 @@ int idCollisionModelManagerLocal::ContentsTrm( trace_t *results, const idVec3 &s
 	tw.pointTrace = false;
 	tw.quickExit = false;
 	tw.numContacts = 0;
-	tw.model = model;
+	tw.model = idCollisionModelManagerLocal::models[model];
 	tw.start = start - modelOrigin;
 	tw.end = tw.start;
 
@@ -633,14 +624,18 @@ idCollisionModelManagerLocal::Contents
 ==================
 */
 int idCollisionModelManagerLocal::Contents( const idVec3 &start,
-											const idTraceModel *trm, const idMat3 &trmAxis, int contentMask,
-											idCollisionModel *model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
+									const idTraceModel *trm, const idMat3 &trmAxis, int contentMask,
+									cmHandle_t model, const idVec3 &modelOrigin, const idMat3 &modelAxis ) {
 	trace_t results;
 
-	// If the model is NULL then assume we are checking the world model.
-	if ( model == NULL ) {
-		model = models[0];
+	if ( model < 0 || model > idCollisionModelManagerLocal::maxModels || model > MAX_SUBMODELS ) {
+		common->Printf("idCollisionModelManagerLocal::Contents: invalid model handle\n");
+		return 0;
+	}
+	if ( !idCollisionModelManagerLocal::models || !idCollisionModelManagerLocal::models[model] ) {
+		common->Printf("idCollisionModelManagerLocal::Contents: invalid model\n");
+		return 0;
 	}
 
-	return ContentsTrm( &results, start, trm, trmAxis, contentMask, (idCollisionModelLocal *)model, modelOrigin, modelAxis );
+	return ContentsTrm( &results, start, trm, trmAxis, contentMask, model, modelOrigin, modelAxis );
 }

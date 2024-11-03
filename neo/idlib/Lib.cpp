@@ -112,9 +112,6 @@ void idLib::Init( void ) {
 
 	// initialize the dictionary string pools
 	idDict::Init();
-
-	// Init the decoder
-	IDCT_Init();
 }
 
 /*
@@ -250,22 +247,6 @@ void UnpackColor( const dword color, idVec3 &unpackedColor ) {
 
 /*
 ===============
-idLib::FatalError
-===============
-*/
-void idLib::FatalError( const char *fmt, ... ) {
-	va_list		argptr;
-	char		text[MAX_STRING_CHARS];
-
-	va_start( argptr, fmt );
-	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
-	va_end( argptr );
-
-	common->FatalError( "%s", text );
-}
-
-/*
-===============
 idLib::Error
 ===============
 */
@@ -299,56 +280,6 @@ void idLib::Warning( const char *fmt, ... ) {
 	va_end( argptr );
 
 	common->Warning( "%s", text );
-}
-
-/*
-===============
-idLib::WarningIf
-===============
-*/
-void idLib::WarningIf( const bool test, const char *fmt, ... ) {
-	if ( !test ) {
-		return;
-	}
-
-	va_list		argptr;
-	char		text[MAX_STRING_CHARS];
-
-	va_start( argptr, fmt );
-	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
-	va_end( argptr );
-
-	common->Warning( "%s", text );
-}
-
-/*
-===============
-idLib::Printf
-===============
-*/
-void idLib::Printf( const char *fmt, ... ) {
-	va_list		argptr;
-	va_start( argptr, fmt );
-	if ( common ) {
-		common->VPrintf( fmt, argptr );
-	}
-	va_end( argptr );
-}
-
-/*
-===============
-idLib::PrintfIf
-===============
-*/
-void idLib::PrintfIf( const bool test, const char *fmt, ... ) {
-	if ( !test ) {
-		return;
-	}
-
-	va_list		argptr;
-	va_start( argptr, fmt );
-	common->VPrintf( fmt, argptr );
-	va_end( argptr );
 }
 
 /*

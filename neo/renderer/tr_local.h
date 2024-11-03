@@ -729,8 +729,6 @@ public:
 	virtual void			DrawDemoPics();
 	virtual void			BeginFrame( int windowWidth, int windowHeight );
 	virtual void			EndFrame( int *frontEndMsec, int *backEndMsec );
-	virtual void			WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical, const char *basePath );
-	virtual void			WritePNG( const char *filename, const byte *data, int bytesPerPixel, int width, int height, const char *basePath );
 	virtual void			TakeScreenshot( int width, int height, const char *fileName, int downSample, renderView_t *ref );
 	virtual void			CropRenderSize( int width, int height, bool makePowerOfTwo = false, bool forceDimensions = false );
 	virtual void			CaptureRenderToImage( const char *imageName );
