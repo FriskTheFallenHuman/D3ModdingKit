@@ -69,6 +69,7 @@ private:
 class idGameBearShootWindow : public idWindow {
 public:
 	idGameBearShootWindow(idUserInterfaceLocal *gui);
+	idGameBearShootWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	~idGameBearShootWindow();
 
 	virtual void		WriteToSaveGame( idFile *savefile );

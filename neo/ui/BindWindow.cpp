@@ -39,6 +39,12 @@ void idBindWindow::CommonInit() {
 	waitingOnKey = false;
 }
 
+idBindWindow::idBindWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
+	dc = d;
+	gui = g;
+	CommonInit();
+}
+
 idBindWindow::idBindWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;
 	CommonInit();

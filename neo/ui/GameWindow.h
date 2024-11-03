@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 class idGameWindowProxy : public idWindow {
 public:
-				idGameWindowProxy( idUserInterfaceLocal *gui );
+				idGameWindowProxy( idDeviceContext *d, idUserInterfaceLocal *gui );
 	void		Draw( int time, float x, float y );
 };
 

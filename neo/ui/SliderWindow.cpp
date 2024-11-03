@@ -56,6 +56,12 @@ void idSliderWindow::CommonInit() {
 	verticalFlip = false;
 }
 
+idSliderWindow::idSliderWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
+	dc = d;
+	gui = g;
+	CommonInit();
+}
+
 idSliderWindow::idSliderWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;
 	CommonInit();

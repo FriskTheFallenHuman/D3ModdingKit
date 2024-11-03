@@ -29,22 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CONSOLE_H__
 #define __CONSOLE_H__
 
-enum justify_t {
-	JUSTIFY_LEFT,
-	JUSTIFY_RIGHT,
-	JUSTIFY_CENTER_LEFT,
-	JUSTIFY_CENTER_RIGHT
-};
-
-class idOverlayHandle {
-friend class idConsoleLocal;
-public:
-			idOverlayHandle() : index( -1 ), time( 0 ) {}
-private:
-	int		index;
-	int		time;
-};
-
 /*
 ===============================================================================
 
@@ -65,7 +49,10 @@ public:
 	virtual void	Init( void ) = 0;
 	virtual void	Shutdown( void ) = 0;
 
-	virtual bool	ProcessEvent( const sysEvent_t * event, bool forceAccept ) = 0;
+	// can't be combined with Init, because Init happens before renderer is started
+	virtual void	LoadGraphics() = 0;
+
+	virtual bool	ProcessEvent( const sysEvent_t *event, bool forceAccept ) = 0;
 
 	// the system code can release the mouse pointer when the console is active
 	virtual bool	Active( void ) = 0;
@@ -79,10 +66,8 @@ public:
 	virtual void	Draw( bool forceFullScreen ) = 0;
 	virtual void	Print( const char *text ) = 0;
 
-	virtual void	PrintOverlay( idOverlayHandle& handle, justify_t justify, VERIFY_FORMAT_STRING const char* text, ... ) = 0;
-
-	virtual idDebugGraph *	CreateGraph( int numItems ) = 0;
-	virtual void			DestroyGraph( idDebugGraph * graph ) = 0;
+	virtual void	SaveHistory() = 0;
+	virtual void	LoadHistory() = 0;
 };
 
 extern idConsole *	console;	// statically initialized to an idConsoleLocal

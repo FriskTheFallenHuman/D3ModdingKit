@@ -55,7 +55,6 @@ public:
 	virtual int				AnimationLength();
 	virtual void			Close();
 	virtual void			ResetTime(int time);
-	virtual int             GetStartTime(void);
 
 private:
 	size_t					mcomp[256];
@@ -241,15 +240,6 @@ void idCinematic::ResetTime(int milliseconds) {
 
 /*
 ==============
-idCinematic::GetStartTime
-==============
-*/
-int idCinematic::GetStartTime( void ) {
-	return -1;
-}
-
-/*
-==============
 idCinematicLocal::ImageForTime
 ==============
 */
@@ -386,15 +376,6 @@ idCinematicLocal::ResetTime
 void idCinematicLocal::ResetTime(int time) {
 	startTime = ( backEnd.viewDef ) ? 1000 * backEnd.viewDef->floatTime : -1;
 	status = FMV_PLAY;
-}
-
-/*
-==============
- idCinematicLocal::GetStartTime
-==============
-*/
-int idCinematicLocal::GetStartTime( void ) {
-	return startTime;
 }
 
 /*

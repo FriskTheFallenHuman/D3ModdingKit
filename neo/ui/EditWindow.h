@@ -39,7 +39,8 @@ class idSliderWindow;
 class idEditWindow : public idWindow {
 public:
 						idEditWindow(idUserInterfaceLocal *gui);
-	virtual 			~idEditWindow();
+						idEditWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
+	virtual				~idEditWindow();
 
 	virtual void		Draw( int time, float x, float y );
 	virtual const char *HandleEvent( const sysEvent_t *event, bool *updateVisuals );

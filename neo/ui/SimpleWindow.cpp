@@ -36,6 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 idSimpleWindow::idSimpleWindow(idWindow *win) {
 	gui = win->GetGui();
+	dc = win->dc;
 	drawRect = win->drawRect;
 	clientRect = win->clientRect;
 	textRect = win->textRect;

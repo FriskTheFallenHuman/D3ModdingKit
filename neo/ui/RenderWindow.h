@@ -32,6 +32,7 @@ class idUserInterfaceLocal;
 class idRenderWindow : public idWindow {
 public:
 	idRenderWindow(idUserInterfaceLocal *gui);
+	idRenderWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	virtual ~idRenderWindow();
 
 	virtual void PostParse();

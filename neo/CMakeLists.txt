@@ -550,12 +550,10 @@ endif()
 
 set(src_framework
 	framework/CVarSystem.cpp
-	framework/DebugGraph.cpp
 	framework/CmdSystem.cpp
 	framework/Common.cpp
 	framework/Compressor.cpp
 	framework/Console.cpp
-	framework/ConsoleHistory.cpp
 	framework/DemoFile.cpp
 	framework/DeclAF.cpp
 	framework/DeclEntityDef.cpp
@@ -855,6 +853,7 @@ set(src_game
 	game/ai/AI_pathing.cpp
 	game/ai/AI_script.cpp
 	game/ai/AI_Vagary.cpp
+	game/gamesys/DebugGraph.cpp
 	game/gamesys/Class.cpp
 	game/gamesys/Event.cpp
 	game/gamesys/SaveGame.cpp
@@ -942,6 +941,7 @@ set(src_d3xp
 	d3xp/ai/AI_pathing.cpp
 	d3xp/ai/AI_script.cpp
 	d3xp/ai/AI_Vagary.cpp
+	d3xp/gamesys/DebugGraph.cpp
 	d3xp/gamesys/Class.cpp
 	d3xp/gamesys/Event.cpp
 	d3xp/gamesys/SaveGame.cpp

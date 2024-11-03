@@ -57,8 +57,6 @@ bool idWindow::registerIsTemporary[MAX_EXPRESSION_REGISTERS];		// statics to ass
 idCVar idWindow::gui_debug( "gui_debug", "0", CVAR_GUI | CVAR_INTEGER, "" );
 idCVar idWindow::gui_edit( "gui_edit", "0", CVAR_GUI | CVAR_BOOL, "" );
 
-idCVar hud_titlesafe( "hud_titlesafe", "0.0", CVAR_GUI | CVAR_FLOAT, "fraction of the screen to leave around hud for titlesafe area" );
-
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
 extern idCVar r_scaleMenusTo43;
 
@@ -222,6 +220,18 @@ idWindow::idWindow
 ================
 */
 idWindow::idWindow(idUserInterfaceLocal *ui) {
+	dc = NULL;
+	gui = ui;
+	CommonInit();
+}
+
+/*
+================
+idWindow::idWindow
+================
+*/
+idWindow::idWindow(idDeviceContext *d, idUserInterfaceLocal *ui) {
+	dc = d;
 	gui = ui;
 	CommonInit();
 }
@@ -531,7 +541,7 @@ void idWindow::StateChanged( bool redraw ) {
 
 	if ( redraw ) {
 		if ( flags & WIN_DESKTOP ) {
-			Redraw( 0.0f, 0.0f, false );
+			Redraw( 0.0f, 0.0f );
 		}
 		if ( background && background->CinematicLength() ) {
 			background->UpdateCinematic( gui->GetTime() );
@@ -717,12 +727,7 @@ const char *idWindow::HandleEvent(const sysEvent_t *event, bool *updateVisuals) 
 		}
 		RunTimeEvents(gui->GetTime());
 		CalcRects(0,0);
-
-		if ( overChild != NULL ) {
-			dc->SetCursor( overChild->cursor );
-		} else {
-			dc->SetCursor( idDeviceContext::CURSOR_ARROW );
-		}
+		dc->SetCursor( idDeviceContext::CURSOR_ARROW );
 	}
 
 	if (visible && !noEvents) {
@@ -1069,9 +1074,6 @@ void idWindow::Time() {
 		}
 	}
 	if ( gui->Active() ) {
-		if ( gui->GetPendingCmd().Length() > 0 ) {
-			gui->GetPendingCmd() += ";";
-		}
 		gui->GetPendingCmd() += cmd;
 	}
 }
@@ -1196,7 +1198,7 @@ void idWindow::CalcRects(float x, float y) {
 idWindow::Redraw
 ================
 */
-void idWindow::Redraw(float x, float y, bool hud) {
+void idWindow::Redraw(float x, float y) {
 	idStr str;
 
 	if (r_skipGuiShaders.GetInteger() == 1 || dc == NULL ) {
@@ -1247,16 +1249,10 @@ void idWindow::Redraw(float x, float y, bool hud) {
 	CalcClientRect(0, 0);
 
 	SetFont();
-
-	if ( hud ) {
-		float tileSafeOffset = hud_titlesafe.GetFloat();
-		float tileSafeScale = 1.0f / ( 1.0f - hud_titlesafe.GetFloat() * 2.0f );
-		dc->SetSize( forceAspectWidth * tileSafeScale, forceAspectHeight * tileSafeScale );
-		dc->SetOffset( forceAspectWidth * tileSafeOffset, forceAspectHeight * tileSafeOffset );
-	} else {
-		dc->SetSize( forceAspectWidth, forceAspectHeight );
-		dc->SetOffset( 0.0f, 0.0f );
-	}
+	//if (flags & WIN_DESKTOP) {
+		// see if this window forces a new aspect ratio
+		dc->SetSize(forceAspectWidth, forceAspectHeight);
+	//}
 
 	//FIXME: go to screen coord tracking
 	drawRect.Offset(x, y);
@@ -1279,21 +1275,17 @@ void idWindow::Redraw(float x, float y, bool hud) {
 	}
 
 	if ( r_skipGuiShaders.GetInteger() < 5 ) {
-		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
-			Draw(time, x, y);
-		}
+		Draw(time, x, y);
 	}
 
 	if ( gui_debug.GetInteger() || gui_edit.GetBool() ) {
-		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
-			DebugDraw(time, x, y);
-		}
+		DebugDraw(time, x, y);
 	}
 
 	int c = drawWindows.Num();
 	for ( int i = 0; i < c; i++ ) {
 		if ( drawWindows[i].win ) {
-			drawWindows[i].win->Redraw( clientRect.x + xOffset, clientRect.y + yOffset, hud );
+			drawWindows[i].win->Redraw( clientRect.x + xOffset, clientRect.y + yOffset );
 		} else {
 			drawWindows[i].simp->Redraw( clientRect.x + xOffset, clientRect.y + yOffset );
 		}
@@ -1326,6 +1318,22 @@ void idWindow::Redraw(float x, float y, bool hud) {
 	drawRect.Offset(-x, -y);
 	clientRect.Offset(-x, -y);
 	textRect.Offset(-x, -y);
+}
+
+/*
+================
+idWindow::SetDC
+================
+*/
+void idWindow::SetDC(idDeviceContext *d) {
+	dc = d;
+	//if (flags & WIN_DESKTOP) {
+		dc->SetSize(forceAspectWidth, forceAspectHeight);
+	//}
+	int c = children.Num();
+	for (int i = 0; i < c; i++) {
+		children[i]->SetDC(d);
+	}
 }
 
 /*
@@ -2204,7 +2212,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 				dw->win->Parse(src, rebuild);
 				RestoreExpressionParseState();
 			} else {
-				idWindow *win = new idWindow(gui);
+				idWindow *win = new idWindow(dc, gui);
 				SaveExpressionParseState();
 				win->Parse(src, rebuild);
 				RestoreExpressionParseState();
@@ -2225,7 +2233,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			}
 		}
 		else if ( token == "editDef" ) {
-			idEditWindow *win = new idEditWindow(gui);
+			idEditWindow *win = new idEditWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2236,7 +2244,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "choiceDef" ) {
-			idChoiceWindow *win = new idChoiceWindow(gui);
+			idChoiceWindow *win = new idChoiceWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2247,7 +2255,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "sliderDef" ) {
-			idSliderWindow *win = new idSliderWindow(gui);
+			idSliderWindow *win = new idSliderWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2258,7 +2266,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "markerDef" ) {
-			idMarkerWindow *win = new idMarkerWindow(gui);
+			idMarkerWindow *win = new idMarkerWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2269,7 +2277,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "bindDef" ) {
-			idBindWindow *win = new idBindWindow(gui);
+			idBindWindow *win = new idBindWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2280,7 +2288,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "listDef" ) {
-			idListWindow *win = new idListWindow(gui);
+			idListWindow *win = new idListWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2291,7 +2299,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "fieldDef" ) {
-			idFieldWindow *win = new idFieldWindow(gui);
+			idFieldWindow *win = new idFieldWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2302,7 +2310,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "renderDef" ) {
-			idRenderWindow *win = new idRenderWindow(gui);
+			idRenderWindow *win = new idRenderWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2313,7 +2321,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "gameSSDDef" ) {
-			idGameSSDWindow *win = new idGameSSDWindow(gui);
+			idGameSSDWindow *win = new idGameSSDWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2324,7 +2332,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "gameBearShootDef" ) {
-			idGameBearShootWindow *win = new idGameBearShootWindow(gui);
+			idGameBearShootWindow *win = new idGameBearShootWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2335,7 +2343,7 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			drawWindows.Append(dwt);
 		}
 		else if ( token == "gameBustOutDef" ) {
-			idGameBustOutWindow *win = new idGameBustOutWindow(gui);
+			idGameBustOutWindow *win = new idGameBustOutWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -3597,11 +3605,6 @@ void idWindow::WriteToSaveGame( idFile *savefile ) {
 	// regList
 	regList.WriteToSaveGame( savefile );
 
-	if ( background ) {
-		savefile->WriteInt( background->GetCinematicStartTime() );
-	} else {
-		savefile->WriteInt( -1 );
-	}
 
 	// Save children
 	for ( i = 0; i < drawWindows.Num(); i++ ) {
@@ -3765,12 +3768,6 @@ void idWindow::ReadFromSaveGame( idFile *savefile ) {
 
 	// regList
 	regList.ReadFromSaveGame( savefile );
-
-	int cinematicStartTime = 0;
-	savefile->ReadInt( cinematicStartTime );
-	if ( background ) {
-		background->ResetCinematicTime( cinematicStartTime );
-	}
 
 	// Read children
 	for ( i = 0; i < drawWindows.Num(); i++ ) {

@@ -324,7 +324,7 @@ void rvGEWorkspace::Render ( HDC hdc )
 	idWindow::SetDebugDraw();
 
 	// Draw the gui
-	mInterface->Redraw ( 0, false ); // eventLoop->Milliseconds() );
+	mInterface->Redraw ( 0 ); // eventLoop->Milliseconds() );
 
 	// disable debug draw
 	idWindow::DisableDebugDraw();
@@ -1487,7 +1487,7 @@ Create a new window
 */
 idWindow* rvGEWorkspace::NewWindow ( idDict* state, rvGEWindowWrapper::EWindowType type )
 {
-	idWindow*			window = new idWindow ( mInterface );
+	idWindow*			window = new idWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
 	rvGEWindowWrapper*	wrapper;
 	int					count;
 	idStr				baseName;
@@ -1495,23 +1495,23 @@ idWindow* rvGEWorkspace::NewWindow ( idDict* state, rvGEWindowWrapper::EWindowTy
 	switch ( type )
 	{
 		case rvGEWindowWrapper::WT_NORMAL:
-			window = new idWindow ( mInterface );
+			window = new idWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_BIND:
-			window = new idBindWindow ( mInterface );
+			window = new idBindWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_RENDER:
-			window = new idRenderWindow ( mInterface );
+			window = new idRenderWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_CHOICE:
-			window = new idChoiceWindow ( mInterface );
+			window = new idChoiceWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_EDIT:
-			window = new idEditWindow ( mInterface );
+			window = new idEditWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
 			break;
 
 		default:

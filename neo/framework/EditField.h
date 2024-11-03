@@ -65,7 +65,7 @@ public:
 	void			KeyDownEvent( int key );
 	void			Paste( void );
 	char *			GetBuffer( void );
-	void			Draw( int x, int y, int width, bool showCursor );
+	void			Draw( int x, int y, int width, bool showCursor, const idMaterial *material );
 	void			SetBuffer( const char *buffer );
 
 private:

@@ -106,9 +106,15 @@ void idEditWindow::CommonInit() {
 	liveUpdate = true;
 	readonly = false;
 
-	scroller = new idSliderWindow(gui);
+	scroller = new idSliderWindow(dc, gui);
 }
 
+
+idEditWindow::idEditWindow( idDeviceContext *d, idUserInterfaceLocal *g ) : idWindow(d, g) {
+	dc = d;
+	gui = g;
+	CommonInit();
+}
 
 idEditWindow::idEditWindow( idUserInterfaceLocal *g ) : idWindow(g) {
 	gui = g;

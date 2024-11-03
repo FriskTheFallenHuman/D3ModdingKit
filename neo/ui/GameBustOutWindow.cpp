@@ -406,6 +406,12 @@ collideDir_t BOBrick::checkCollision( idVec2 pos, idVec2 vel ) {
 * idGameBustOutWindow
 ****************************************************************************
 */
+idGameBustOutWindow::idGameBustOutWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
+	dc = d;
+	gui = g;
+	CommonInit();
+}
+
 idGameBustOutWindow::idGameBustOutWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;
 	CommonInit();

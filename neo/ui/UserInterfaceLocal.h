@@ -43,7 +43,7 @@ public:
 	virtual bool				InitFromFile( const char *qpath, bool rebuild = true, bool cache = true );
 	virtual const char *		HandleEvent( const sysEvent_t *event, int time, bool *updateVisuals );
 	virtual void				HandleNamedEvent( const char* namedEvent );
-	virtual void				Redraw( int time, bool hud );
+	virtual void				Redraw( int time );
 	virtual void				DrawCursor();
 	virtual const idDict &		State() const;
 	virtual void				DeleteStateVar( const char *varName );
@@ -95,7 +95,6 @@ public:
 	idStr						&GetReturnCmd() { return returnCmd; };
 
 	virtual idRectangle			GetScreenRect( void ) { return desktop->drawRect; }
-
 private:
 	bool						active;
 	bool						loading;
@@ -126,7 +125,6 @@ class idUserInterfaceManagerLocal : public idUserInterfaceManager {
 public:
 	virtual void				Init();
 	virtual void				Shutdown();
-	virtual void				SetDrawingDC();
 	virtual void				Touch( const char *name );
 	virtual void				WritePrecacheCommands( idFile *f );
 	virtual void				SetSize( float width, float height );
@@ -144,16 +142,11 @@ public:
 
 private:
 	idRectangle					screenRect;
-	idDeviceContext				dcOld;
-	idDeviceContextOptimized	dcOptimized;
+	idDeviceContext				dc;
 
 	idList<idUserInterfaceLocal*> guis;
 	idList<idUserInterfaceLocal*> demoGuis;
 
 };
-
-// These used to be in every window, but they all pointed at the same one in idUserInterfaceManagerLocal.
-// Made a global so it can be switched out dynamically to test optimized versions.
-extern idDeviceContext *dc;
 
 #endif /* !__USERINTERFACE_LOCAL_H__ */

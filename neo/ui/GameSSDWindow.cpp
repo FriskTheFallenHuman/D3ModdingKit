@@ -796,7 +796,7 @@ void SSDPoints::Init(idGameSSDWindow* _game, SSDEntity* _ent, int _points, int _
 
 	float width = 0;
 	for(int i = 0; i < text.Length(); i++) {
-		width += dc->CharWidth(text[i], textScale);
+		width += game->GetDC()->CharWidth(text[i], textScale);
 	}
 
 	size.Set(0,0);
@@ -1197,6 +1197,12 @@ void SSDPowerup::ReadPowerups(idFile* savefile, idGameSSDWindow* _game) {
 */
 
 idRandom idGameSSDWindow::random;
+
+idGameSSDWindow::idGameSSDWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
+	dc = d;
+	gui = g;
+	CommonInit();
+}
 
 idGameSSDWindow::idGameSSDWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;

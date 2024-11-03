@@ -483,6 +483,7 @@ typedef struct {
 class idGameSSDWindow : public idWindow {
 public:
 	idGameSSDWindow(idUserInterfaceLocal *gui);
+	idGameSSDWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	~idGameSSDWindow();
 
 	virtual void	WriteToSaveGame( idFile *savefile );

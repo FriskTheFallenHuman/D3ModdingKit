@@ -197,6 +197,12 @@ void BSEntity::Draw(idDeviceContext *dc) {
 * idGameBearShootWindow
 ****************************************************************************
 */
+idGameBearShootWindow::idGameBearShootWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
+	dc = d;
+	gui = g;
+	CommonInit();
+}
+
 idGameBearShootWindow::idGameBearShootWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;
 	CommonInit();

@@ -2114,10 +2114,11 @@ void R_InitMaterials( void ) {
 	if ( !tr.defaultMaterial ) {
 		common->FatalError( "_default material not found" );
 	}
-	tr.defaultPointLight = declManager->FindMaterial( "lights/defaultPointLight" );
-	tr.defaultProjectedLight = declManager->FindMaterial( "lights/defaultProjectedLight" );
-	tr.whiteMaterial = declManager->FindMaterial( "_white" );
-	tr.charSetMaterial = declManager->FindMaterial( "textures/bigchars" );
+	declManager->FindMaterial( "_default", false );
+
+	// needed by R_DeriveLightData
+	declManager->FindMaterial( "lights/defaultPointLight" );
+	declManager->FindMaterial( "lights/defaultProjectedLight" );
 }
 
 
