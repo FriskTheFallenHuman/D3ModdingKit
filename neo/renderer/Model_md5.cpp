@@ -438,7 +438,8 @@ void idMD5Mesh::ParseMesh(idLexer &parser, int numJoints, const idJointMat *join
 		verts = (idDrawVert*)Mem_Alloc16(allocaSize);
 	}
 	#else
-	idDrawVert* verts = (idDrawVert*)_alloca16(texCoords.Num() * sizeof(idDrawVert));
+	bool onStack;
+	idDrawVert *verts = (idDrawVert*)Mem_MallocA( texCoords.Num()*sizeof(idDrawVert), onStack );
 	#endif
 
 	for ( i = 0; i < texCoords.Num(); i++ ) {
@@ -464,6 +465,8 @@ void idMD5Mesh::ParseMesh(idLexer &parser, int numJoints, const idJointMat *join
 	#if 0 // DEFUNKT I think this has already been fixed (by enlarging the stack size).
 	if (allocaSize >= 600000) Mem_Free16(verts);
 	#endif
+
+	Mem_FreeA( verts, onStack );
 
 	#if MD5_ENABLE_GIBS > 0 // HINTS
 	if (hintFaces) deformInfo->numHiddenTris = hintFaces * 3;
@@ -665,11 +668,14 @@ idMD5Mesh::CalcBounds
 */
 idBounds idMD5Mesh::CalcBounds( const idJointMat *entJoints ) {
 	idBounds	bounds;
-	idDrawVert *verts = (idDrawVert *) _alloca16( texCoords.Num() * sizeof( idDrawVert ) );
+	bool onStack;
+	idDrawVert *verts = (idDrawVert*)Mem_MallocA( texCoords.Num()*sizeof(idDrawVert), onStack );
 
 	TransformVerts( verts, entJoints );
 
 	SIMDProcessor->MinMax( bounds[0], bounds[1], verts, texCoords.Num() );
+
+	Mem_FreeA( verts, onStack );
 
 	return bounds;
 }

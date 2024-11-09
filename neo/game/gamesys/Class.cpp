@@ -460,10 +460,10 @@ idClass::new
 #endif
 
 void * idClass::operator new( size_t s ) {
-	int *p;
+	intptr_t *p;
 
-	s += sizeof( int );
-	p = (int *)Mem_Alloc( s );
+	s += sizeof( intptr_t );
+	p = (intptr_t *)Mem_Alloc( s );
 	*p = s;
 	memused += s;
 	numobjects++;
@@ -471,7 +471,7 @@ void * idClass::operator new( size_t s ) {
 #ifdef ID_DEBUG_UNINITIALIZED_MEMORY
 	unsigned int *ptr = (unsigned int *)p;
 	int size = s;
-	assert( ( size & 3 ) == 0 );
+	assert( ( size & (sizeof(intptr_t) - 1) ) == 0 );
 	size >>= 3;
 	for ( int i = 1; i < size; i++ ) {
 		ptr[i] = 0xcdcdcdcd;
@@ -482,10 +482,10 @@ void * idClass::operator new( size_t s ) {
 }
 
 void * idClass::operator new( size_t s, int, int, char *, int ) {
-	int *p;
+	intptr_t *p;
 
-	s += sizeof( int );
-	p = (int *)Mem_Alloc( s );
+	s += sizeof( intptr_t );
+	p = (intptr_t *)Mem_Alloc( s );
 	*p = s;
 	memused += s;
 	numobjects++;
@@ -493,7 +493,7 @@ void * idClass::operator new( size_t s, int, int, char *, int ) {
 #ifdef ID_DEBUG_UNINITIALIZED_MEMORY
 	unsigned int *ptr = (unsigned int *)p;
 	int size = s;
-	assert( ( size & 3 ) == 0 );
+	assert( ( size & (sizeof(intptr_t) - 1) ) == 0 );
 	size >>= 3;
 	for ( int i = 1; i < size; i++ ) {
 		ptr[i] = 0xcdcdcdcd;
@@ -513,10 +513,10 @@ idClass::delete
 ================
 */
 void idClass::operator delete( void *ptr ) {
-	int *p;
+	intptr_t *p;
 
 	if ( ptr ) {
-		p = ( ( int * )ptr ) - 1;
+		p = ( ( intptr_t * )ptr ) - 1;
 		memused -= *p;
 		numobjects--;
 		Mem_Free( p );
@@ -524,10 +524,10 @@ void idClass::operator delete( void *ptr ) {
 }
 
 void idClass::operator delete( void *ptr, int, int, char *, int ) {
-	int *p;
+	intptr_t *p;
 
 	if ( ptr ) {
-		p = ( ( int * )ptr ) - 1;
+		p = ( ( intptr_t * )ptr ) - 1;
 		memused -= *p;
 		numobjects--;
 		Mem_Free( p );
