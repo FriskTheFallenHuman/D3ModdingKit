@@ -254,6 +254,14 @@ idCVar r_screenshotJpgQuality("r_screenshotJpgQuality", "75", CVAR_RENDERER | CV
 idCVar r_screenshotPngCompression("r_screenshotPngCompression", "3", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "Compression level when using PNG screenshots (0-9). Higher levels generate smaller files, but take noticeably longer");
 // DG: allow freely resizing the window
 idCVar r_windowResizable("r_windowResizable", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Allow resizing (and maximizing) the window (needs SDL2; with 2.0.5 or newer it's applied immediately)" );
+idCVar r_vidRestartAlwaysFull( "r_vidRestartAlwaysFull", 0, CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Always do a full vid_restart (ignore 'partial' argument), e.g. when changing window size" );
+
+// DG: for soft particles (ported from TDM)
+idCVar r_enableDepthCapture( "r_enableDepthCapture", "-1", CVAR_RENDERER | CVAR_INTEGER,
+		"enable capturing depth buffer to texture. -1: enable automatically (if soft particles are enabled), 0: disable, 1: enable", -1, 1 ); // #3877
+idCVar r_useSoftParticles( "r_useSoftParticles", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Soften particle transitions when player walks through them or they cross solid geometry. Needs r_enableDepthCapture. Can slow down rendering!" ); // #3878
+
+idCVar r_glDebugContext( "r_glDebugContext", "0", CVAR_RENDERER | CVAR_BOOL, "Enable OpenGL Debug context - requires vid_restart, needs SDL2" );
 
 // define qgl functions
 #define QGLPROC(name, rettype, args) rettype (APIENTRYP q##name) args;
@@ -304,6 +312,9 @@ PFNGLDEPTHBOUNDSEXTPROC                 qglDepthBoundsEXT;
 // DG: couldn't find any extension for this, it's supported in GL2.0 and newer, incl OpenGL ES2.0
 PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 
+// GL_ARB_debug_output
+PFNGLDEBUGMESSAGECALLBACKARBPROC        qglDebugMessageCallbackARB;
+
 // eez: This is a slight hack for letting us select the desired screenshot format in other functions
 //  This is a hack to avoid adding another function parameter to idRenderSystem::TakeScreenshot(),
 //  which would break the API of the dhewm3 SDK for mods.
@@ -322,7 +333,7 @@ enum {
  */
 static void APIENTRY
 DebugCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-			  const GLchar *message, const void *userParam )
+              const GLchar *message, const void *userParam )
 {
 	const char* sourceStr = "Source: Unknown";
 	const char* typeStr = "Type: Unknown";
@@ -485,15 +496,15 @@ static void R_CheckPortableExtensions( void ) {
 		qglActiveStencilFaceEXT = (PFNGLACTIVESTENCILFACEEXTPROC)GLimp_ExtensionPointer( "glActiveStencilFaceEXT" );
 
 	if( glConfig.glVersion >= 2.0) {
-		common->Printf( "... got GL2.0+ glStencilOpSeparate()\n" );
+		common->Printf( "...got GL2.0+ glStencilOpSeparate()\n" );
 		qglStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC)GLimp_ExtensionPointer( "glStencilOpSeparate" );
 	} else if( R_CheckExtension( "GL_ATI_separate_stencil" ) ) {
-		common->Printf( "... got glStencilOpSeparateATI() (GL_ATI_separate_stencil)\n" );
+		common->Printf( "...got glStencilOpSeparateATI() (GL_ATI_separate_stencil)\n" );
 		// the ATI version of glStencilOpSeparate() has the same signature and should also
 		// behave identical to the GL2 version (in Mesa3D it's just an alias)
 		qglStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC)GLimp_ExtensionPointer( "glStencilOpSeparateATI" );
 	} else {
-		common->Printf( "... don't have glStencilOpSeparateATI() or (GL2.0+) glStencilOpSeparate()\n" );
+		common->Printf( "X..don't have glStencilOpSeparateATI() or (GL2.0+) glStencilOpSeparate()\n" );
 		qglStencilOpSeparate = NULL;
 	}
 
@@ -552,6 +563,37 @@ static void R_CheckPortableExtensions( void ) {
 		qglDepthBoundsEXT = (PFNGLDEPTHBOUNDSEXTPROC)GLimp_ExtensionPointer( "glDepthBoundsEXT" );
 	}
 
+	// GL_ARB_debug_output
+	glConfig.glDebugOutputAvailable = false;
+	if ( glConfig.haveDebugContext ) {
+		if ( strstr( glConfig.extensions_string, "GL_ARB_debug_output" ) ) {
+			glConfig.glDebugOutputAvailable = true;
+			qglDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC)GLimp_ExtensionPointer( "glDebugMessageCallbackARB" );
+			if ( r_glDebugContext.GetBool() ) {
+				common->Printf( "...using GL_ARB_debug_output (r_glDebugContext is set)\n" );
+				qglDebugMessageCallbackARB(DebugCallback, NULL);
+				qglEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+			} else {
+				common->Printf( "...found GL_ARB_debug_output, but not using it (r_glDebugContext is not set)\n" );
+			}
+		} else {
+			common->Printf( "X..GL_ARB_debug_output not found\n" );
+			qglDebugMessageCallbackARB = NULL;
+			if ( r_glDebugContext.GetBool() ) {
+				common->Warning( "r_glDebugContext is set, but can't be used because GL_ARB_debug_output is not supported" );
+			}
+		}
+	} else {
+		if ( strstr( glConfig.extensions_string, "GL_ARB_debug_output" ) ) {
+			if ( r_glDebugContext.GetBool() ) {
+				common->Printf( "...found GL_ARB_debug_output, but not using it (no debug context)\n" );
+			} else {
+				common->Printf( "...found GL_ARB_debug_output, but not using it (r_glDebugContext is not set)\n" );
+			}
+		} else {
+			common->Printf( "X..GL_ARB_debug_output not found\n" );
+		}
+	}
 }
 
 
@@ -1318,8 +1360,22 @@ void R_ReadTiledPixels( int width, int height, byte *buffer, renderView_t *ref =
 				h = height - yo;
 			}
 
-			qglReadBuffer( GL_FRONT );
-			qglReadPixels( 0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, temp );
+			if ( glConfig.isWayland ) {
+				// DG: Native Wayland (=> not XWayland) doesn't seem to support reading
+				//     from the front buffer - screenshot is black then..
+				//     So just read from the default (probably back-) buffer
+				qglReadPixels( 0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, temp );
+			} else {
+				// DG: It's probably better to restore the glReadBuffer mode after reading the pixels..
+				//     (at least with XWayland on GNOME changing resolutions is wonky when not doing this)
+				GLint oldReadBuf = GL_BACK;
+				qglGetIntegerv( GL_READ_BUFFER, &oldReadBuf );
+				qglReadBuffer( GL_FRONT );
+
+				qglReadPixels( 0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, temp );
+
+				qglReadBuffer( oldReadBuf );
+			}
 
 			int	row = ( w * 3 + 3 ) & ~3;		// OpenGL pads to dword boundaries
 
@@ -2032,6 +2088,13 @@ void R_VidRestart_f( const idCmdArgs &args ) {
 			forceWindow = true;
 			continue;
 		}
+	}
+
+	// DG: allow enforcing full vid restarts (when vid_restart is called from the menu or whatever)
+	//     to let users work around driver bugs or whatever, like
+	//     https://github.com/dhewm/dhewm3/issues/587#issuecomment-2206937752
+	if ( r_vidRestartAlwaysFull.GetBool() ) {
+		full = true;
 	}
 
 	// DG: in partial mode, try to just resize the window (and make it fullscreen or windowed)
