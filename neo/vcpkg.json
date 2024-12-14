@@ -9,7 +9,11 @@
 			"name": "libbacktrace",
 			"platform": "!windows"
 		},
-	"stb",
-	"freetype"
+		"stb",
+		{
+			"name": "freetype",
+			"default-features": false,
+			"features": ["error-strings","subpixel-rendering"]
+		}
 	]
 }
