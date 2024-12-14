@@ -2,7 +2,10 @@
 	"name": "d3moddingkit",
 	"version": "0.0.1",
 	"dependencies": [
-		"curl",
+		{
+			"name": "curl",
+			"platform": "!linux"
+		},
 		"openal-soft",
 		"sdl2",
 		{
@@ -13,7 +16,7 @@
 		{
 			"name": "freetype",
 			"default-features": false,
-			"features": ["error-strings","subpixel-rendering"]
+			"features": [ "error-strings", "subpixel-rendering" ]
 		}
 	]
 }
