@@ -680,14 +680,14 @@ void idSpring::Think( void ) {
 		spring.Evaluate( gameLocal.time );
 
 		start = p1;
-		if ( ent1->GetPhysics() ) {
+		if ( ent1 && ent1->GetPhysics() ) {
 			axis = ent1->GetPhysics()->GetAxis();
 			origin = ent1->GetPhysics()->GetOrigin();
 			start = origin + start * axis;
 		}
 
 		end = p2;
-		if ( ent2->GetPhysics() ) {
+		if ( ent2 && ent2->GetPhysics() ) {
 			axis = ent2->GetPhysics()->GetAxis();
 			origin = ent2->GetPhysics()->GetOrigin();
 			end = origin + p2 * axis;
@@ -754,6 +754,33 @@ void idSpring::Spawn( void ) {
 	ent1 = ent2 = NULL;
 
 	PostEventMS( &EV_PostSpawn, 0 );
+}
+
+/*
+================
+idSpring::Save
+================
+*/
+void idSpring::Save( idSaveGame *savefile ) const {
+	savefile->WriteInt ( id1 );
+	savefile->WriteInt ( id2 );
+	savefile->WriteVec3 ( p1 );
+	savefile->WriteVec3 ( p2 );
+	spring.Save ( savefile );
+}
+
+/*
+================
+idSpring::Restore
+================
+*/
+void idSpring::Restore( idRestoreGame *savefile ) {
+	savefile->ReadInt ( id1 );
+	savefile->ReadInt ( id2 );
+	savefile->ReadVec3 ( p1 );
+	savefile->ReadVec3 ( p2 );
+	spring.Restore ( savefile );
+	Event_LinkSpring ( );	
 }
 
 /*
@@ -1972,6 +1999,25 @@ void idTextEntity::Think( void ) {
 		BecomeInactive( TH_ALL );
 	}
 }
+
+/*
+================
+idTextEntity::Think
+================
+*/
+void idTextEntity::ClientPredictionThink( void ) {
+	if ( thinkFlags & TH_THINK ) {
+		gameRenderWorld->DrawText( text, GetPhysics()->GetOrigin(), 0.25, colorWhite, playerOriented ? gameLocal.GetLocalPlayer()->viewAngles.ToMat3() : GetPhysics()->GetAxis().Transpose(), 1 );
+		for ( int i = 0; i < targets.Num(); i++ ) {
+			if ( targets[i].GetEntity() ) {
+				gameRenderWorld->DebugArrow( colorBlue, GetPhysics()->GetOrigin(), targets[i].GetEntity()->GetPhysics()->GetOrigin(), 1 );
+			}
+		}
+	} else {
+		BecomeInactive( TH_ALL );
+	}
+}
+
 
 
 /*

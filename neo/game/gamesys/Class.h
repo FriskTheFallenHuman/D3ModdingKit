@@ -424,11 +424,11 @@ public:
 
 	idHierarchy<idTypeInfo>		node;
 
-	idTypeInfo( const char *classname, const char *superclass,
+								idTypeInfo( const char *classname, const char *superclass,
 												idEventFunc<idClass> *eventCallbacks, idClass *( *CreateInstance )( void ), void ( idClass::*Spawn )( void ),
 												idStateFunc<idClass>* stateCallbacks,
 												void ( idClass::*Save )( idSaveGame *savefile ) const, void	( idClass::*Restore )( idRestoreGame *savefile ) );
-	~idTypeInfo();
+								~idTypeInfo();
 
 	void						Init( void );
 	void						Shutdown( void );

@@ -835,11 +835,7 @@ idLight::ShowEditingDialog
 ===============
 */
 void idLight::ShowEditingDialog( void ) {
-	if ( g_editEntityMode.GetInteger() == 1 ) {
-		common->InitTool( EDITOR_LIGHT, &spawnArgs );
-	} else {
-		common->InitTool( EDITOR_SOUND, &spawnArgs );
-	}
+	common->InitTool( EDITOR_LIGHT, &spawnArgs );
 }
 
 /*

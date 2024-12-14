@@ -37,19 +37,91 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#define idQueue( type, next )		idQueueTemplate<type, (int)&(((type*)NULL)->next)>
+template< typename type >
+class idQueueNode {
+public:
+			idQueueNode( void ) { next = NULL; }
+
+	type *	GetNext( void ) const { return next; }
+	void	SetNext( type *next ) { this->next = next; }
+
+private:
+	type *	next;
+};
+
+template< typename type, idQueueNode<type> type::* nodePtr >
+class idQueue {
+public:
+			idQueue( void );
+
+	void	Add( type *element );
+	type *	RemoveFirst( void );
+
+	static void	Test( void );
+
+private:
+	type *	first;
+	type *	last;
+};
+
+template< typename type, idQueueNode<type> type::* nodePtr >
+idQueue<type, nodePtr>::idQueue( void ) {
+	first = last = NULL;
+}
+
+template< typename type, idQueueNode<type> type::* nodePtr >
+void idQueue<type, nodePtr>::Add( type *element ) {
+	(element->*nodePtr).SetNext( NULL );
+	if ( last ) {
+		(last->*nodePtr).SetNext( element );
+	} else {
+		first = element;
+	}
+	last = element;
+}
+
+template< typename type, idQueueNode<type> type::* nodePtr >
+type *idQueue<type, nodePtr>::RemoveFirst( void ) {
+	type *element;
+
+	element = first;
+	if ( element ) {
+		first = (first->*nodePtr).GetNext();
+		if ( last == element ) {
+			last = NULL;
+		}
+		(element->*nodePtr).SetNext(NULL);
+	}
+	return element;
+}
+
+template< typename type, idQueueNode<type> type::* nodePtr >
+void idQueue<type, nodePtr>::Test( void ) {
+
+	class idMyType {
+	public:
+		idQueueNode<idMyType> queueNode;
+	};
+
+	idQueue<idMyType, &idMyType::queueNode> myQueue;
+
+	idMyType *element = new idMyType;
+	myQueue.Add( element );
+	element = myQueue.RemoveFirst();
+	delete element;
+}
 
 template< class type, int nextOffset >
 class idQueueTemplate {
 public:
-							idQueueTemplate( void );
+				idQueueTemplate( void );
 
-	void					Add( type *element );
-	type *					Get( void );
+	void		Add( type *element );
+	type *		Get( void );
 
 private:
-	type *					first;
-	type *					last;
+	type *		first;
+	type *		last;
 };
 
 #define QUEUE_NEXT_PTR( element )		(*((type**)(((byte*)element)+nextOffset)))
@@ -61,9 +133,9 @@ idQueueTemplate<type,nextOffset>::idQueueTemplate( void ) {
 
 template< class type, int nextOffset >
 void idQueueTemplate<type,nextOffset>::Add( type *element ) {
-	QUEUE_NEXT_PTR(element) = NULL;
+	QUEUE_NEXT_PTR( element ) = NULL;
 	if ( last ) {
-		QUEUE_NEXT_PTR(last) = element;
+		QUEUE_NEXT_PTR( last ) = element;
 	} else {
 		first = element;
 	}
@@ -76,11 +148,11 @@ type *idQueueTemplate<type,nextOffset>::Get( void ) {
 
 	element = first;
 	if ( element ) {
-		first = QUEUE_NEXT_PTR(first);
+		first = QUEUE_NEXT_PTR( first );
 		if ( last == element ) {
 			last = NULL;
 		}
-		QUEUE_NEXT_PTR(element) = NULL;
+		QUEUE_NEXT_PTR( element ) = NULL;
 	}
 	return element;
 }

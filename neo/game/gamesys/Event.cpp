@@ -713,7 +713,7 @@ void idEvent::Restore( idRestoreGame *savefile ) {
 	idStr	name;
 	idEvent	*event;
 
-	savefile->ReadInt(num);
+	savefile->ReadInt( num );
 
 	for ( i = 0; i < num; i++ ) {
 		if ( FreeEvents.IsListEmpty() ) {

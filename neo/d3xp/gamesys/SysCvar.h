@@ -116,6 +116,8 @@ extern idCVar	g_blobSize;
 
 extern idCVar	g_testHealthVision;
 extern idCVar	g_editEntityMode;
+extern idCVar	g_editEntityDistance;
+extern idCVar	g_editEntityTextDistance;
 extern idCVar	g_dragEntity;
 extern idCVar	g_dragDamping;
 extern idCVar	g_dragShowSelection;

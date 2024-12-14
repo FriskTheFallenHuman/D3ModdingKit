@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include <SDL_endian.h>
-
 #include "Game_local.h"
 
 #ifdef GAME_DLL
@@ -2821,7 +2819,7 @@ idGameLocal::GetLevelMap
 ================
 */
 idMapFile *idGameLocal::GetLevelMap( void ) {
-	if ( mapFile && mapFile->HasPrimitiveData()) {
+	if ( mapFile && mapFile->HasPrimitiveData() ) {
 		return mapFile;
 	}
 	if ( !mapFileName.Length() ) {

@@ -187,6 +187,8 @@ idCVar g_editEntityMode(			"g_editEntityMode",			"0",			CVAR_GAME | CVAR_INTEGER
 																											"5 = monsters\n"
 																											"6 = entity names\n"
 																											"7 = entity models", 0, 7, idCmdSystem::ArgCompletion_Integer<0,7> );
+idCVar g_editEntityDistance(		"g_editEntityDistance",		"512",			CVAR_GAME | CVAR_ARCHIVE,	"range to display entities to edit" );
+idCVar g_editEntityTextDistance(	"g_editEntityTextDistance",	"256",			CVAR_GAME | CVAR_ARCHIVE,	"range to display entities to edit text information");
 idCVar g_dragEntity(				"g_dragEntity",				"0",			CVAR_GAME | CVAR_BOOL, "allows dragging physics objects around by placing the crosshair over them and holding the fire button" );
 idCVar g_dragDamping(				"g_dragDamping",			"0.5",			CVAR_GAME | CVAR_FLOAT, "" );
 idCVar g_dragShowSelection(			"g_dragShowSelection",		"0",			CVAR_GAME | CVAR_BOOL, "" );
