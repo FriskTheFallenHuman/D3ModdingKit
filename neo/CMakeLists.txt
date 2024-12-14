@@ -241,6 +241,7 @@ if( D3_COMPILER_IS_GCC_OR_CLANG )
 	set( CMAKE_CXX_FLAGS_PROFILE ${CMAKE_C_FLAGS_PROFILE} )
 
 	add_compile_options(-fno-strict-aliasing)
+	add_compile_options(-Wno-unknown-pragmas)
 
 	# dear idiot compilers, don't fuck up math code with useless FMA "optimizations"
 	# (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100839)

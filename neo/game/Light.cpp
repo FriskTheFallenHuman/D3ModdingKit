@@ -181,6 +181,8 @@ void idLight::UpdateChangeableSpawnArgs( const idDict *source ) {
 
 	gameEdit->ParseSpawnArgsToRenderLight( source ? source : &spawnArgs, &renderLight );
 
+	GetPhysics()->SetAxis( renderLight.axis );
+	
 	UpdateVisuals();
 }
 
