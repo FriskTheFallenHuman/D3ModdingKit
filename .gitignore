@@ -1051,8 +1051,8 @@ neo/libs/MayaSDKDevKit/*
 docs/html/*
 
 # Doom 3: Build directory & log directory
-buildlog/
-build*/
+build/
+output/*/*
 
 # Doom 3: Ignore PK4 & Keys
 config.spec
