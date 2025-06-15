@@ -1,6 +1,6 @@
 {
 	"name": "d3moddingkit",
-	"version": "0.0.1",
+	"version": "1.5.4",
 	"dependencies": [
 		{
 			"name": "curl",
@@ -12,7 +12,6 @@
 			"name": "libbacktrace",
 			"platform": "!windows"
 		},
-		"stb",
 		{
 			"name": "freetype",
 			"default-features": false,

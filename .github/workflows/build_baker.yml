@@ -16,7 +16,7 @@ jobs:
 
       - name: Download dependencies
         if: matrix.os == 'ubuntu-latest' 
-        run: sudo apt install build-essential pkgconf autoconf libtool libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libgl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev
+        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype-dev cmake ninja-build
 
       - name: Get latest CMake if possible
         uses: lukka/get-cmake@latest
