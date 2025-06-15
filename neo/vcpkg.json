@@ -8,6 +8,7 @@
 		},
 		"openal-soft",
 		"sdl2",
+		"sdl3",
 		{
 			"name": "libbacktrace",
 			"platform": "!windows"

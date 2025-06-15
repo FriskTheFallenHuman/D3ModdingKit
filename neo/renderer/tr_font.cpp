@@ -39,7 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 	#include FT_SYSTEM_H
 	#include FT_IMAGE_H
 	#include FT_OUTLINE_H
-	
+
 	#define _FLOOR(x)  ((x) & -64)
 	#define _CEIL(x)   (((x)+63) & -64)
 	#define _TRUNC(x)  ((x) >> 6)

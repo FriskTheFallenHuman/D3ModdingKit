@@ -3593,13 +3593,13 @@ void GLSphere(float r, int lats, int longs) {
 		float lat1 = idMath::PI * (-0.5 + (float) i / lats);
 		float z1 = sin(lat1);
 		float zr1 = cos(lat1);
-	
+
 		qglBegin(GL_QUAD_STRIP);
 		for(j = 0; j <= longs; j++) {
 			float lng = 2 * idMath::PI * (float) (j - 1) / longs;
 			float x = idMath::Cos(lng);
 			float y = idMath::Sin(lng);
-	
+
 			qglNormal3f(x * zr0, y * zr0, z0);
 			qglVertex3f(x * zr0, y * zr0, z0);
 			qglNormal3f(x * zr1, y * zr1, z1);

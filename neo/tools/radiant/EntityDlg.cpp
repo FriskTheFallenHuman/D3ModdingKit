@@ -475,7 +475,7 @@ void CEntityDlg::DelProp() {
 		for (idEditorBrush *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 			assert(b->owner);
 			b->owner->DeleteKey(key);
-			b->owner->UpdateCurveData();	
+			b->owner->UpdateCurveData();
 		}
 	} else {
 		editEntity->DeleteKey(key);

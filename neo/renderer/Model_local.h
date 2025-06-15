@@ -222,7 +222,7 @@ private:
 	idList<idMD5Joint>			joints;
 	idList<idJointQuat>			defaultPose;
 	idList<idMD5Mesh>			meshes;
-	
+
 	void						CalculateBounds( const idJointMat *joints );
 	void						GetFrameBounds( const renderEntity_t *ent, idBounds &bounds ) const;
 	void						DrawJoints( const renderEntity_t *ent, const struct viewDef_s *view ) const;

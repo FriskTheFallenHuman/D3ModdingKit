@@ -5142,7 +5142,7 @@ void idPlayer::UpdateAir( void ) {
 				// player is dropping below the surface of the water
 				PlaySwimmingSplashSound( "snd_decompress" );
 			} else {
-				StartSound( "snd_decompress", SND_CHANNEL_ANY, SSF_GLOBAL, false, NULL );			
+				StartSound( "snd_decompress", SND_CHANNEL_ANY, SSF_GLOBAL, false, NULL );
 			}
 			StartSound( "snd_noAir", SND_CHANNEL_BODY2, 0, false, NULL );
 			if ( hud ) {
@@ -5167,7 +5167,7 @@ void idPlayer::UpdateAir( void ) {
 				// player is dropping below the surface of the water
 				PlaySwimmingSplashSound( "snd_recompress" );
 			} else {
-				StartSound( "snd_recompress", SND_CHANNEL_ANY, SSF_GLOBAL, false, NULL );			
+				StartSound( "snd_recompress", SND_CHANNEL_ANY, SSF_GLOBAL, false, NULL );
 			}
 			StopSound( SND_CHANNEL_BODY2, false );
 			if ( hud ) {

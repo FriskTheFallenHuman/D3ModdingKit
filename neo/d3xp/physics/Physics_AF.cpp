@@ -4500,9 +4500,9 @@ float idAFBody::GetWaterLevel() const {
 ================
 idAFBody::SetWaterLevel
 	returns the percent of the body in water
-	0.0f if out of water 
-	
-	Note we use the liquid's gravity normal for 
+	0.0f if out of water
+
+	Note we use the liquid's gravity normal for
 	floating because the idPhysics_AF gravity normal
 	is really hard to get a hold of!
 ================
@@ -5033,7 +5033,7 @@ void idPhysics_AF::EvaluateBodies( float timeStep ) {
 			body->fl.spatialInertiaSparse = true;
 		} else {
 			idMat3 massMoment =bMass * SkewSymmetric( body->centerOfMass );
-			
+
 			// spatial inertia in world space
 			body->I.Set( bMass * mat3_identity, massMoment,
 								massMoment.Transpose(), axis * body->inertiaTensor * axis.Transpose() );
@@ -5506,7 +5506,7 @@ void idPhysics_AF::Evolve( float timeStep ) {
 		} else {
 			body->next->spatialVelocity.SubVec3(0) -= (body->linearFriction * (this->water->GetViscosity() + WATER_FRICTION) * waterLevel) * body->next->spatialVelocity.SubVec3(0);
 		}
-	
+
 		body->next->spatialVelocity.SubVec3(1) -= body->angularFriction * body->next->spatialVelocity.SubVec3(1);
 	}
 }
@@ -5731,7 +5731,7 @@ void idPhysics_AF::CheckForCollisions( float timeStep ) {
 				}
 			}
 
-		
+
 #ifdef TEST_COLLISION_DETECTION
 			if ( gameLocal.clip.Contents( body->next->worldOrigin, body->clipModel,
 														body->next->worldAxis, body->clipMask, passEntity ) ) {
@@ -5932,7 +5932,7 @@ void idPhysics_AF::AddGravity( void ) {
 				body->invLiquidMass = 1 / body->liquidMass;
 			}
 
-			// we float the body in water	
+			// we float the body in water
 			if( bodyBuoyancy ) {
 				body->current->externalForce.SubVec3( 0 ) += ( body->mass - ( body->volume * wDensity * waterLevel ) ) * gravityVector;
 			} else if( this->fixedDensityBuoyancy ) {
@@ -6340,7 +6340,7 @@ float idPhysics_AF::GetMass( int id ) const {
 		for ( i = 0; i < this->bodies.Num(); i++ ) {
 			waterMass += this->bodies[i]->liquidMass;
 		}
-	
+
 		return waterMass;
 	}
 
@@ -8291,7 +8291,7 @@ float idPhysics_AF::GetLiquidDensity() const {
 
 /*
 ================
-idPhysics_AF::SetFixedDensityBuoyancy	
+idPhysics_AF::SetFixedDensityBuoyancy
 	This will reset the liquid density to the default value depending on the mode.
 ================
 */

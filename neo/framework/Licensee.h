@@ -35,12 +35,12 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #define GAME_NAME						"dhewm 3"		// appears in errors
-#define ENGINE_VERSION					"dhewm3 1.5.4"	// printed in console, used for window title
+#define ENGINE_VERSION					"dhewm3 1.5.5pre"	// printed in console, used for window title
 
 #ifdef ID_REPRODUCIBLE_BUILD
 	// for reproducible builds we hardcode values that would otherwise come from __DATE__ and __TIME__
 	// NOTE: remember to update esp. the date for (pre-) releases and RCs and the like
-	#define ID__DATE__  "Aug 03 2024"
+	#define ID__DATE__  "Aug 15 2024"
 	#define ID__TIME__  "13:37:42"
 
 #else // not reproducible build, use __DATE__ and __TIME__ macros
@@ -87,7 +87,8 @@ If you have questions concerning this license or the applicable additional terms
 // NOTE: a seperate core savegame version and game savegame version could be useful
 // 16: Doom v1.1
 // 17: Doom v1.2 / D3XP. Can still read old v16 with defaults for new data
-#define SAVEGAME_VERSION				17
+// 18: dhewm3 with CstDoom3 anchored window support - can still read v16 and v17, unless gamedata changed
+#define SAVEGAME_VERSION				18
 
 // <= Doom v1.1: 1. no DS_VERSION token ( default )
 // Doom v1.2: 2

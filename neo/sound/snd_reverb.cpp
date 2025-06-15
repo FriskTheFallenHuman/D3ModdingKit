@@ -171,9 +171,9 @@ idMapReverb::LoadMap
 */
 int idMapReverb::LoadMap( const char *mapName, const char *filterName ) {
 	idStr filename = GetMapFileName( mapName, filterName );
-	
+
 	EFXprintf( "map EFX: load reverb file %s -> %s\n", mapName, filename.c_str() );
-	
+
 	if( LoadFile( filename ) ) {
 		return items.Num();
 	} else {

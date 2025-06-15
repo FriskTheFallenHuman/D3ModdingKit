@@ -48,7 +48,9 @@ idCVar	idSessionLocal::com_wipeSeconds( "com_wipeSeconds", "1", CVAR_SYSTEM, "" 
 idCVar	idSessionLocal::com_guid( "com_guid", "", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_ROM, "" );
 
 idCVar	idSessionLocal::com_numQuicksaves( "com_numQuicksaves", "4", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_INTEGER,
-										   "number of quicksaves to keep before overwriting the oldest", 1, 99 );
+                                           "number of quicksaves to keep before overwriting the oldest", 1, 99 );
+idCVar	idSessionLocal::com_disableAutoSaves( "com_disableAutoSaves", "0", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_BOOL,
+                                              "Don't create Autosaves when entering a new map" );
 
 idSessionLocal		sessLocal;
 idSession			*session = &sessLocal;
@@ -1237,8 +1239,8 @@ void idSessionLocal::MoveToNewMap( const char *mapName ) {
 
 	ExecuteMapChange();
 
-	if ( !mapSpawnData.serverInfo.GetBool("devmap") ) {
-		// Autosave at the beginning of the level
+	if ( !com_disableAutoSaves.GetBool() && !mapSpawnData.serverInfo.GetBool("devmap") ) {
+		// Autosave at the beginning of the level - DG: unless disabled with "com_disableAutoSaves 1"
 
 		// DG: set an explicit savename to avoid problems with autosave names
 		//     (they were translated which caused problems like all alpha labs parts
@@ -2052,8 +2054,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 	// check the version, if it doesn't match, cancel the loadgame,
 	// but still load the map with the persistant playerInfo from the header
 	// so that the player doesn't lose too much progress.
-	if ( savegameVersion != SAVEGAME_VERSION &&
-		 !( savegameVersion == 16 && SAVEGAME_VERSION == 17 ) ) {	// handle savegame v16 in v17
+	if ( savegameVersion < 16 || savegameVersion > SAVEGAME_VERSION ) { // dhewm3 supports savegames with v16 - v18
 		common->Warning( "Savegame Version mismatch: aborting loadgame and starting level with persistent data" );
 		loadingSaveGame = false;
 		fileSystem->CloseFile( savegameFile );

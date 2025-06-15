@@ -208,7 +208,7 @@ public:																	\
 	static	idClass							*CreateInstance( void );	\
 	static	idTypeInfo						&GetClassType( void );		\
 	virtual	idTypeInfo						*GetType( void ) const;		\
-	static	idEventFunc<nameofclass>		eventCallbacks[]			
+	static	idEventFunc<nameofclass>		eventCallbacks[]
 	//_Pragma(TOSTRING(message("REGISTER(" #nameofclass ")")))
 
 #else
@@ -220,7 +220,7 @@ public:																	\
 	static	idClass							*CreateInstance( void );	\
 	static	idTypeInfo						&GetClassType( void );		\
 	virtual	idTypeInfo						*GetType( void ) const;		\
-	static	idEventFunc<nameofclass>		eventCallbacks[]			
+	static	idEventFunc<nameofclass>		eventCallbacks[]
 	//_Pragma(TOSTRING(message("REGISTER(" #nameofclass ")")))
 #endif // USE_STATIC_CLASS_CONSTRUCTION
 

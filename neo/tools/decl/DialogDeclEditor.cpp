@@ -234,7 +234,7 @@ void DialogDeclEditor::LoadDecl( idDecl *decl ) {
 	}
 
 	SetWindowText( va( "Declaration Editor (%s, line %d)", decl->GetFileName(), decl->GetLineNum() ) );
-	
+
 	float scaling_factor = Win_GetWindowScalingFactor(GetSafeHwnd());
 
 	rect.left = initialRect.left;

@@ -114,7 +114,7 @@ bool rvDebuggerScript::Load ( const char* filename )
 
 	// Cleanup
 	fileSystem->FreeFile ( buffer );
-	
+
 	return true;
 }
 

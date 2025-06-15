@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifdef _WIN32
 #define _BOOL
 #include <maya/MStatus.h>
-#include <maya/MString.h> 
+#include <maya/MString.h>
 #include <maya/MFileIO.h>
 #include <maya/MLibrary.h>
 #include <maya/MPoint.h>

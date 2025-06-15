@@ -179,6 +179,11 @@ This can be configured with the following CVars:
 
 ## Other CVars added in dhewm3
 
+- `com_disableAutoSaves` if set to `1`, no Autosaves are created when starting a level, and when
+  restarting a level no attempt to load one will be made. Defaults to `0` (Autosaves *are* created)
+- `com_numQuicksaves` how many Quicksaves to keep - when creating a Quicksave, the oldest one gets
+  overwritten. Defaults to `4`
+
 - `g_hitEffect` if set to `1` (the default), mess up player camera when taking damage.
    Set to `0` if you don't like that effect.
 
@@ -220,8 +225,36 @@ This can be configured with the following CVars:
 - `r_useCarmacksReverse` Use Z-Fail ("Carmack's Reverse") when rendering shadows (default `1`)
 - `r_useStencilOpSeparate` Use glStencilOpSeparate() (if available) when rendering shadow (default `1`)
 - `r_scaleMenusTo43` Render full-screen menus in 4:3 by adding black bars on the left/right if necessary (default `1`)
+- `r_supportNoSpecular` Allow using the "nospecular" parm of lights under certain circumstances. If set to:
+    - `0` "nospecular" will always be ignored, as it's the case in Vanilla Doom3
+    - `1` "nospecular" is always used, even in old maps where it changes what they look like
+    - `-1` (the default) "nospecular" is only used in (new) maps that explicitly enable it
+      by setting `"allow_nospecular" "1"` in the worldspawn, existing maps continue to ignore it
 - `r_glDebugContext` Enable OpenGL debug context and printing warnings/errors from the graphics driver.  
   Changing that CVar requires a `vid_restart` (or set it as startup argument)
+
+- `image_usePrecompressedTextures` can now also be set to `2`.
+    - `1` Use precompressed textures (.dds files), no matter which format they're in
+    - `2` Only use precompressed textures if they're in BPTC (BC7) format, which has better quality
+      than the old ones shipped with Doom3 that use S3TC/DXT. If no BPTC/BC7 (or uncompressed) .dds file
+      is found, fall back to uncompressed .tga. Especially useful when using high-res texture
+      packs that use BC7 compression.
+    - `0` Don't use precompressed (.dds) textures but the uncompressed ones (.tga)
+- `image_useCompression` can now also be set to `2`.
+    - `1` When loading an uncompressed (.tga) texture, let the GPU (driver) compress it to S3TC/DXT
+      so it uses less VRAM (Video memory on the GPU) but doesn't look as good as leaving it
+      uncompressed or using precompressed textures, if available.  
+      **Note:** IMHO this only makes sense together with `image_usePrecompressedTextures 1`,
+      so .dds textures are preferred (they should have better encoding quality than what the GPU
+      driver produces on the fly *and* load faster) and only if a texture doesn't exist as .dds,
+      the uncompressed TGA is loaded and then compressed on upload.
+    - `2` When loading an uncompressed (.tga) texture, let the GPU (driver) compress it to BPTC/BC7
+      (if the GPU supports it). Has better quality than S3TC/DXT but loading textures might take longer.  
+      *Probably only makes sense with high-res texturing packs that don't use BPTC/BC7, because
+      if your GPU supports BPTC, it most probably has enough VRAM for the uncompressed original TGA
+      textures, which look at least as good, but for high resolution textures saving VRAM by
+      compressing on load can help)*.
+    - `0` Don't compress uncompressed textures when loading them - best quality, but uses more VRAM.
 
 - `s_alReverbGain` reduce strength of OpenAL (EAX-like) EFX reverb effects, `0.0` - `1.0` (default `0.5`)
 - `s_alHRTF` Enable [HRTF](https://en.wikipedia.org/w/index.php?title=Head-related_transfer_function)
@@ -233,7 +266,8 @@ This can be configured with the following CVars:
    including the current HRTF state (if supported by your OpenAL version).
 - `s_alOutputLimiter` Configure OpenAL's output-limiter which temporarily reduces the overall volume
   when too many too loud sounds play at once, to avoid issues like clipping. `0`: Disable, `1`: Enable, `-1`: Let OpenAL decide (default)
-- `s_scaleDownAndClamp` Clamp and reduce volume of all sounds to prevent clipping or temporary downscaling by OpenAL's output limiter (default `1`)
+- `s_scaleDownAndClamp` Clamp and reduce volume of all sounds to prevent clipping or temporary
+  downscaling by OpenAL's output limiter (default `1`)
 
 - `imgui_scale` Factor to scale ImGui menus by (especially relevant for HighDPI displays).
   Should be a positive factor like `1.5` or `2`; or `-1` (the default) to let dhewm3 automatically

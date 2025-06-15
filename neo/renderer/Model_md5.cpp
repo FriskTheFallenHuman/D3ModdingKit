@@ -438,7 +438,8 @@ void idMD5Mesh::ParseMesh(idLexer &parser, int numJoints, const idJointMat *join
 		verts = (idDrawVert*)Mem_Alloc16(allocaSize);
 	}
 	#else
-	idDrawVert* verts = (idDrawVert*)_alloca16(texCoords.Num() * sizeof(idDrawVert));
+	bool onStack;
+	idDrawVert *verts = (idDrawVert*)Mem_MallocA( texCoords.Num()*sizeof(idDrawVert), onStack );
 	#endif
 
 	for ( i = 0; i < texCoords.Num(); i++ ) {
@@ -450,14 +451,18 @@ void idMD5Mesh::ParseMesh(idLexer &parser, int numJoints, const idJointMat *join
 	#if MD5_ENABLE_GIBS > 0 // HINTS
 	#if MD5_BINARY_MESH > 1 // WRITE
 	deformInfo = R_BuildDeformInfo(texCoords.Num(), verts, tris.Num(), tris.Ptr(), (data_fd == NULL && shader->UseUnsmoothedTangents()) || (data_fd != NULL && shaderComment.Icmp("NoUnsmoothedTangents")), hintFaces);
+	Mem_FreeA( verts, onStack );
 	#else
 	deformInfo = R_BuildDeformInfo(texCoords.Num(), verts, tris.Num(), tris.Ptr(), shader->UseUnsmoothedTangents(), hintFaces);
+	Mem_FreeA( verts, onStack );
 	#endif
 	#else
 	#if MD5_BINARY_MESH > 1 // WRITE
 	deformInfo = R_BuildDeformInfo(texCoords.Num(), verts, tris.Num(), tris.Ptr(), (data_fd == NULL && shader->UseUnsmoothedTangents()) || (data_fd != NULL && shaderComment.Icmp("NoUnsmoothedTangents")));
+	Mem_FreeA( verts, onStack );
 	#else
 	deformInfo = R_BuildDeformInfo(texCoords.Num(), verts, tris.Num(), tris.Ptr(), shader->UseUnsmoothedTangents());
+	Mem_FreeA( verts, onStack );
 	#endif
 	#endif
 
@@ -516,7 +521,7 @@ idMD5Mesh::FetchData
 void idMD5Mesh::FetchData(idFile* data_fd) { if (deformInfo) return; // NB: Some unbinarized meshes might be expected.
 
 	deformInfo = R_AllocDeformInfo();
-	
+
 	data_fd->Read(deformInfo,       sizeof(int             ) * 8              );
 	data_fd->Read(texCoords.Ptr(),  sizeof(texCoords[0]    ) * texCoords.Num());
 
@@ -665,11 +670,14 @@ idMD5Mesh::CalcBounds
 */
 idBounds idMD5Mesh::CalcBounds( const idJointMat *entJoints ) {
 	idBounds	bounds;
-	idDrawVert *verts = (idDrawVert *) _alloca16( texCoords.Num() * sizeof( idDrawVert ) );
+	bool onStack;
+	idDrawVert *verts = (idDrawVert*)Mem_MallocA( texCoords.Num()*sizeof(idDrawVert), onStack );
 
 	TransformVerts( verts, entJoints );
 
 	SIMDProcessor->MinMax( bounds[0], bounds[1], verts, texCoords.Num() );
+
+	Mem_FreeA( verts, onStack );
 
 	return bounds;
 }

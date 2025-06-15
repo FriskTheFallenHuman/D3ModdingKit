@@ -478,7 +478,7 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc ( HWND wnd, UINT msg, WPARAM wp
 			// I think it looks nicer when the  line number background is white
 			SetBkColor( dc, RGB( 255, 255, 255 ) );
 			SetTextColor( dc, RGB( 0, 0, 255 ) );
-			
+
 			int lnrWidth = 8;
 			GetCharWidth32( dc, '9', '9', &lnrWidth );
 			lnrWidth *= 4; // we want enough width for 4 chars ("9999"), not just one
@@ -500,7 +500,7 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc ( HWND wnd, UINT msg, WPARAM wp
 				t.top = pos.y;
 				t.bottom = t.top + height;
 				t.right -= s4; // a little space between text and "border" to code part of window
-				
+
 				idStr lntxt( iFirstVisibleLine + i + 1);
 				DrawText( dc, lntxt, lntxt.Length(), &t, DT_RIGHT );
 			}
@@ -561,7 +561,7 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc ( HWND wnd, UINT msg, WPARAM wp
 			HPEN old = (HPEN)SelectObject ( dc, pen );
 			MoveToEx ( dc, rect.right, rect.top, NULL );
 			LineTo ( dc, rect.right, rect.bottom );
-			
+
 			SelectObject ( dc, old );
 			DeleteObject ( pen );
 			EndPaint ( wnd, &ps );
@@ -753,7 +753,7 @@ void rvDebuggerWindow::UpdateBreakpointList( void )
 		item.pszText = "";
 		item.iImage = 2; // breakpoint
 		ListView_InsertItem( mWndBreakList, &item );
-		
+
 		idStr lineStr( bp->GetLineNumber() );
 		ListView_SetItemText( mWndBreakList, item.iItem, 1, (LPSTR)bp->GetFilename() );
 		ListView_SetItemText( mWndBreakList, item.iItem, 2, (LPSTR)lineStr.c_str() );
@@ -1109,7 +1109,7 @@ int rvDebuggerWindow::HandleCreate ( WPARAM wparam, LPARAM lparam )
 	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENT), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
 	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_BREAKPOINT), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
 	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENTLINE), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
-	
+
 	int w, h;
 	ResizeImageList(w, h);
 	ListView_SetImageList ( mWndScriptList, mTmpImageList, LVSIL_SMALL );
@@ -1119,7 +1119,7 @@ int rvDebuggerWindow::HandleCreate ( WPARAM wparam, LPARAM lparam )
 
 	EnableWindows ( FALSE );
 	EnableWindow ( mWndScriptList, true );
-	
+
 	ListView_SetExtendedListViewStyle ( mWndCallstack, LVS_EX_FULLROWSELECT );
 	ListView_SetExtendedListViewStyle ( mWndThreads, LVS_EX_FULLROWSELECT );
 	ListView_SetExtendedListViewStyle ( mWndScriptList, LVS_EX_FULLROWSELECT );
@@ -1803,7 +1803,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc ( HWND wnd, UINT msg, WPARAM wparam, 
 
 						if (sel != -1)
 						{
-							LVITEM item = { 0 }; 
+							LVITEM item = { 0 };
 							char   temp[1024] = { 0 };
 							item.mask = LVIF_TEXT;
 							item.pszText = temp;

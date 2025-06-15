@@ -78,15 +78,15 @@ public:
 	CXYWnd* GetXYWnd() {
 		return m_pXYWnd;
 	};
-	
+
 	CXYWnd* GetXZWnd() {
 		return m_pXZWnd;
 	};
-	
+
 	CXYWnd* GetYZWnd() {
 		return m_pYZWnd;
 	};
-	
+
 	CCamWnd* GetCamera() {
 		return m_pCamWnd;
 	};
@@ -94,7 +94,7 @@ public:
 	CZWnd* GetZWnd() {
 		return m_pZWnd;
 	};
-	
+
 	CMFCStatusBar* GetStatusbarWnd() {
 		return &m_wndStatusBar;
 	};

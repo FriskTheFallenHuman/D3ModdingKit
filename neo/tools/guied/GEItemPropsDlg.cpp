@@ -973,7 +973,7 @@ bool rvGEItemPropsKeysPage::SetActive ( void )
 		{
 			const idKeyValue* key = mDict->GetKeyVal ( i );
 			assert ( key );
-	
+
 			// Add the item
 			LVITEM item;
 			ZeroMemory ( &item, sizeof(item) );
@@ -982,7 +982,7 @@ bool rvGEItemPropsKeysPage::SetActive ( void )
 			item.pszText = (LPSTR)key->GetKey().c_str ( );
 			item.lParam = (LONG_PTR) key;
 			int index = ListView_InsertItem ( list, &item );
-	
+
 			idStr value;
 			value = key->GetValue();
 			value.StripQuotes ( );
@@ -1085,7 +1085,7 @@ bool rvGEItemPropsGeneralPage::SetActive ( void )
 	{
 		return false;
 	}
-	
+
 	SetWindowText ( GetDlgItem ( mPage, IDC_GUIED_ITEMNAME ), idStr(mDict->GetString ( "name", "unnamed" )).StripQuotes ( ) );
 
 	enable = !IsExpression ( mDict->GetString ( "visible", "1" ) );
@@ -1129,7 +1129,7 @@ bool rvGEItemPropsGeneralPage::KillActive ( void )
 	{
 		return false;
 	}
-	
+
 	char temp[1024];
 
 	GetWindowText ( GetDlgItem(mPage,IDC_GUIED_ITEMNAME), temp, 1024 );

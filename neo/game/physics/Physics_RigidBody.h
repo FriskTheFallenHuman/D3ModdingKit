@@ -162,7 +162,7 @@ private:
 	float					angularFriction;			// rotational friction
 	float					contactFriction;			// friction with contact surfaces
 	float					bouncyness;					// bouncyness
-	float					volume;						// object volume 
+	float					volume;						// object volume
 	idClipModel *			clipModel;					// clip model used for collision detection
 
 	// derived properties

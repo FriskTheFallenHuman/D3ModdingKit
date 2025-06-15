@@ -329,8 +329,8 @@ idEvent *idEvent::Alloc( const idEventDef *evdef, int numargs, va_list args ) {
 			break;
 
 		// abahr: type checking change as per Jim D.
-		// jshepard: TODO FIXME HACK this never ever produces desired, positive results. Events should be built to prepare for null entities, especially when dealing with 
-		//							 script events. This will throw a warning, and events should be prepared to deal with null entities. 
+		// jshepard: TODO FIXME HACK this never ever produces desired, positive results. Events should be built to prepare for null entities, especially when dealing with
+		//							 script events. This will throw a warning, and events should be prepared to deal with null entities.
 		case D_EVENT_ENTITY :
 			if ( reinterpret_cast<idEntity *>( arg->value ) == NULL ) {
 				gameLocal.Warning( "idEvent::Alloc : NULL entity passed in to event function that expects a non-NULL pointer on arg # %d on '%s' event.", i, evdef->GetName() );

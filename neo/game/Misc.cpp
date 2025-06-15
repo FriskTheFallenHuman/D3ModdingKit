@@ -754,7 +754,7 @@ void idSpring::Restore( idRestoreGame *savefile ) {
 	savefile->ReadVec3 ( p1 );
 	savefile->ReadVec3 ( p2 );
 	spring.Restore ( savefile );
-	Event_LinkSpring ( );	
+	Event_LinkSpring ( );
 }
 
 /*
@@ -2386,7 +2386,7 @@ idLiquid::Restore
 ================
 */
 void idLiquid::Restore( idRestoreGame *savefile ) {
-	
+
 	int i;
 
 	savefile->ReadStaticObject( this->physicsObj );
@@ -2394,7 +2394,7 @@ void idLiquid::Restore( idRestoreGame *savefile ) {
 
 	for( i = 0; i < 3; i++ )
 		savefile->ReadParticle( this->splash[i] );
-	
+
 	savefile->ReadParticle( this->waves );
 }
 /*

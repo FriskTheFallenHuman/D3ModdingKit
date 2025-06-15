@@ -528,7 +528,7 @@ void RB_STD_FillDepthBuffer( drawSurf_t **drawSurfs, int numDrawSurfs ) {
 		globalImages->currentDepthImage->CopyDepthbuffer( backEnd.viewDef->viewport.x1,
 														  backEnd.viewDef->viewport.y1,
 														  backEnd.viewDef->viewport.x2 - backEnd.viewDef->viewport.x1 + 1,
-														  backEnd.viewDef->viewport.y2 - backEnd.viewDef->viewport.y1 + 1, 
+														  backEnd.viewDef->viewport.y2 - backEnd.viewDef->viewport.y1 + 1,
 														  true );
 		bool isPostProcess = false;
 		RB_SetProgramEnvironment( isPostProcess );
@@ -639,13 +639,13 @@ void RB_SetProgramEnvironment( bool isPostProcess ) {
 		qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, PP_GAMMA_BRIGHTNESS, parm );
 	}
 
-	// #3877: Allow shaders to access depth buffer. 
-	// Two useful ratios are packed into this parm: [0] and [1] hold the x,y multipliers you need to map a screen 
-	// coordinate (fragment position) to the depth image: those are simply the reciprocal of the depth 
+	// #3877: Allow shaders to access depth buffer.
+	// Two useful ratios are packed into this parm: [0] and [1] hold the x,y multipliers you need to map a screen
+	// coordinate (fragment position) to the depth image: those are simply the reciprocal of the depth
 	// image size, which has been rounded up to a power of two. Slots [3] and [4] hold the ratio of the depth image
-	// size to the current render image size. These sizes can differ if the game crops the render viewport temporarily 
-	// during post-processing effects. The depth render is smaller during the effect too, but the depth image doesn't 
-	// need to be downsized, whereas the current render image does get downsized when it's captured by the game after 
+	// size to the current render image size. These sizes can differ if the game crops the render viewport temporarily
+	// during post-processing effects. The depth render is smaller during the effect too, but the depth image doesn't
+	// need to be downsized, whereas the current render image does get downsized when it's captured by the game after
 	// the skybox render pass. The ratio is needed to map between the two render images.
 	parm[0] = 1.0f / globalImages->currentDepthImage->uploadWidth;
 	parm[1] = 1.0f / globalImages->currentDepthImage->uploadHeight;
@@ -756,7 +756,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 
 	// check whether we're drawing a soft particle surface #3878
 	const bool soft_particle = ( surf->dsFlags & DSF_SOFT_PARTICLE ) != 0;
-	
+
 	// get the expressions for conditionals / color / texcoords
 	regs = surf->shaderRegisters;
 
@@ -883,19 +883,19 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			qglDisableClientState( GL_NORMAL_ARRAY );
 			continue;
 		}
-		else if ( soft_particle 
-				 && surf->particle_radius > 0.0f 
-				 && ( src_blend == GLS_SRCBLEND_ONE || src_blend == GLS_SRCBLEND_SRC_ALPHA ) 
+		else if ( soft_particle
+				 && surf->particle_radius > 0.0f
+				 && ( src_blend == GLS_SRCBLEND_ONE || src_blend == GLS_SRCBLEND_SRC_ALPHA )
 				 && !r_skipNewAmbient.GetBool() )
 		{
-			// SteveL #3878. Particles are automatically softened by the engine, unless they have shader programs of 
+			// SteveL #3878. Particles are automatically softened by the engine, unless they have shader programs of
 			// their own (i.e. are "newstages" handled above). This section comes after the newstage part so that if a
 			// designer has specified their own shader programs, those will be used instead of the soft particle program.
 			if ( pStage->vertexColor == SVC_IGNORE )
 			{
 				// Ignoring vertexColor is not recommended for particles. The particle system uses vertexColor for fading.
-				// However, there are existing particle effects that don't use it, in which case we default to using the 
-				// rgb color modulation specified in the material like the "old stages" do below. 
+				// However, there are existing particle effects that don't use it, in which case we default to using the
+				// rgb color modulation specified in the material like the "old stages" do below.
 				color[0] = regs[pStage->color.registers[0]];
 				color[1] = regs[pStage->color.registers[1]];
 				color[2] = regs[pStage->color.registers[2]];
@@ -948,7 +948,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 				};
 				srcblendstr = blendModes[src_blend];
 			}
-			
+
 
 			int dst_blend = pStage->drawStateBits & GLS_DSTBLEND_BITS;
 			const char* dstblend = "???";
@@ -1003,7 +1003,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			float fadeRange = 1.0f;
 			// fadeRange is the particle diameter for alpha blends (like smoke), but the particle radius for additive
 			// blends (light glares), because additive effects work differently. Fog is half as apparent when a wall
-			// is in the middle of it. Light glares lose no visibility when they have something to reflect off. See 
+			// is in the middle of it. Light glares lose no visibility when they have something to reflect off. See
 			// The Dark Mod issue #3878 for diagram
 			if ( src_blend == GLS_SRCBLEND_SRC_ALPHA ) // an alpha blend material
 			{
@@ -1023,8 +1023,8 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, PP_PARTICLE_RADIUS, parm );
 
 			// program.env[24] is the color channel mask. It gets added to the fade multiplier, so adding 1
-			//    to a channel will make sure it doesn't get faded at all. Particles with additive blend 
-			//    need their RGB channels modifying to blend them out. Particles with an alpha blend need 
+			//    to a channel will make sure it doesn't get faded at all. Particles with additive blend
+			//    need their RGB channels modifying to blend them out. Particles with an alpha blend need
 			//    their alpha channel modifying.
 			if ( src_blend == GLS_SRCBLEND_SRC_ALPHA ) // an alpha blend material
 			{
@@ -1037,7 +1037,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 				parm[3] = 1.0f;						// leave the alpha channel at full strength
 			}
 			qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, PP_PARTICLE_COLCHAN_MASK, parm );
-			
+
 			// draw it
 			RB_DrawElementsWithCounters( tri );
 
@@ -1046,7 +1046,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			globalImages->BindNull();
 			GL_SelectTexture( 0 );
 			globalImages->BindNull();
-			
+
 			qglDisable( GL_VERTEX_PROGRAM_ARB );
 			qglDisable( GL_FRAGMENT_PROGRAM_ARB );
 

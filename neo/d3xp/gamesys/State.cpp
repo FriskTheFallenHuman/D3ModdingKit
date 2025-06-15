@@ -243,7 +243,7 @@ stateResult_t idStateThread::Execute( void ) {
 	int				historyStart;
 	int				historyEnd;
 
-	// If our main state loop is empty copy over any states in the interrupted state		
+	// If our main state loop is empty copy over any states in the interrupted state
 	if ( !states.Next() ) {
 		for ( call = interrupted.Next(); call; call = interrupted.Next() ) {
 			call->node.Remove();
@@ -312,7 +312,7 @@ stateResult_t idStateThread::Execute( void ) {
 		stateName = call->state->name;
 		stateStage = call->parms.stage;
 
-		// Actually call the state function 		
+		// Actually call the state function
 		lastResult = owner->ProcessState( call->state, call->parms );
 		switch ( lastResult ) {
 		case SRESULT_WAIT:

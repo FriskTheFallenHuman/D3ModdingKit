@@ -2,17 +2,32 @@
 #include "precompiled.h"
 #pragma hdrstop
 
-#include <SDL.h>
-
-#ifdef D3_SDL_X11
-#include <dlfcn.h>
-#include <SDL_syswm.h>
-//char *XGetDefault(Display* display, const char*	program, const char* option)
-typedef char* (*MY_XGETDEFAULTFUN)(Display*, const char*, const char*);
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+  // compat with SDL2
+  #define SDL_TEXTINPUT SDL_EVENT_TEXT_INPUT
+  #define SDL_CONTROLLERAXISMOTION SDL_EVENT_GAMEPAD_AXIS_MOTION
+  #define SDL_CONTROLLERBUTTONDOWN SDL_EVENT_GAMEPAD_BUTTON_DOWN
+  #define SDL_MOUSEBUTTONDOWN SDL_EVENT_MOUSE_BUTTON_DOWN
+  #define SDL_MOUSEMOTION SDL_EVENT_MOUSE_MOTION
+  #define SDL_MOUSEWHEEL SDL_EVENT_MOUSE_WHEEL
+  #define SDL_KEYDOWN SDL_EVENT_KEY_DOWN
 #endif
 
 #include "../libs/imgui/backends/imgui_impl_opengl2.h"
-#include "../libs/imgui/backends/imgui_impl_sdl2.h"
+
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+  #include "../libs/imgui/backends/imgui_impl_sdl3.h"
+  #define ImGui_ImplSDLx_InitForOpenGL ImGui_ImplSDL3_InitForOpenGL
+  #define ImGui_ImplSDLx_Shutdown ImGui_ImplSDL3_Shutdown
+  #define ImGui_ImplSDLx_NewFrame ImGui_ImplSDL3_NewFrame
+  #define ImGui_ImplSDLx_ProcessEvent ImGui_ImplSDL3_ProcessEvent
+#else
+  #include "../libs/imgui/backends/imgui_impl_sdl2.h"
+  #define ImGui_ImplSDLx_InitForOpenGL ImGui_ImplSDL2_InitForOpenGL
+  #define ImGui_ImplSDLx_Shutdown ImGui_ImplSDL2_Shutdown
+  #define ImGui_ImplSDLx_NewFrame ImGui_ImplSDL2_NewFrame
+  #define ImGui_ImplSDLx_ProcessEvent ImGui_ImplSDL2_ProcessEvent
+#endif
 
 #include "../framework/Session_local.h" // sessLocal.GetActiveMenu()
 #include "../renderer/tr_local.h" // glconfig
@@ -50,7 +65,14 @@ extern ImGuiTextBuffer WriteImGuiStyleToCode( const ImGuiStyle& style, const ImG
 namespace D3 {
 namespace ImGuiHooks {
 
-#include "proggyvector_font.h"
+#ifdef _MSC_VER
+  // Visual C++ (at least up to some 2019 version) doesn't support string literals
+  // with more than 65535 bytes, so the base85-encoded version won't work here..
+  // this alternative doesn't work with Big Endian, but that's not overly relevant for Windows.
+  #include "proggyvector_font.h"
+#else // proper compilers that support longer string literals
+  #include "proggyvector_font_base85.h"
+#endif
 
 static SDL_Window* sdlWindow = NULL;
 ImGuiContext* imguiCtx = NULL;
@@ -141,55 +163,25 @@ void ShowWarningOverlay( const char* text )
 	warningOverlayStartPos = ImGui::GetMousePos();
 }
 
-
-static float GetDefaultDPI()
-{
-	SDL_Window* win = sdlWindow;
-	float dpi = -1.0f;
-#ifdef D3_SDL_X11
-	SDL_SysWMinfo wmInfo = {};
-	SDL_VERSION(&wmInfo.version)
-	if(SDL_GetWindowWMInfo(win, &wmInfo) && wmInfo.subsystem == SDL_SYSWM_X11) {
-		Display* display = wmInfo.info.x11.display;
-
-		static void* libX11 = NULL;
-		if(libX11 == NULL) {
-			libX11 = dlopen("libX11.so.6", RTLD_LAZY);
-		}
-		if(libX11 == NULL) {
-			libX11 = dlopen("libX11.so", RTLD_LAZY);
-		}
-		if(libX11 != NULL) {
-			MY_XGETDEFAULTFUN my_xgetdefault = (MY_XGETDEFAULTFUN)dlsym(libX11, "XGetDefault");
-			if(my_xgetdefault != NULL) {
-				//char *XGetDefault(Display* display, const char*	program, const char* option)
-				const char* dpiStr = my_xgetdefault(display, "Xft", "dpi");
-				printf("XX dpistr = '%s'\n", dpiStr);
-				if(dpiStr != NULL) {
-					dpi = atof(dpiStr);
-				}
-			}
-		}
-	}
-	if (dpi == -1.0f)
-#endif
-	{
-		int winIdx = SDL_GetWindowDisplayIndex( win );
-		if (winIdx >= 0) {
-			SDL_GetDisplayDPI(winIdx, NULL, &dpi, NULL);
-		}
-	}
-	return dpi;
-}
-
 static float GetDefaultScale()
 {
 	if ( glConfig.winWidth != glConfig.vidWidth ) {
 		// in HighDPI mode, the font sizes are already scaled (to window coordinates), apparently
 		return 1.0f;
 	}
+
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+	float ret = SDL_GetWindowDisplayScale( sdlWindow );
+#else
+	float dpi = 0.0f;
+	int winIdx = SDL_GetWindowDisplayIndex( sdlWindow );
+	SDL_GetDisplayDPI((winIdx >= 0) ? winIdx : 0, NULL, &dpi, NULL);
 	// TODO: different reference DPI on mac? also, doesn't work that well on my laptop..
-	float ret = GetDefaultDPI() / 96.0f;
+	float ret = dpi / 96.0f;
+#endif
+	if ( ret <= 0.0f ) {
+		return 1.0f;
+	}
 	ret = round(ret*2.0)*0.5; // round to .0 or .5
 	return ret;
 }
@@ -246,7 +238,7 @@ bool Init(void* _sdlWindow, void* sdlGlContext)
 	imgui_scale.SetModified(); // so NewFrame() will load the scaled font
 
 	// Setup Platform/Renderer backends
-	if ( ! ImGui_ImplSDL2_InitForOpenGL( sdlWindow, sdlGlContext ) ) {
+	if ( ! ImGui_ImplSDLx_InitForOpenGL( sdlWindow, sdlGlContext ) ) {
 		ImGui::DestroyContext( imguiCtx );
 		imguiCtx = NULL;
 		common->Warning( "Failed to initialize ImGui SDL platform backend!\n" );
@@ -254,7 +246,7 @@ bool Init(void* _sdlWindow, void* sdlGlContext)
 	}
 
 	if ( ! ImGui_ImplOpenGL2_Init() ) {
-		ImGui_ImplSDL2_Shutdown();
+		ImGui_ImplSDLx_Shutdown();
 		ImGui::DestroyContext( imguiCtx );
 		imguiCtx = NULL;
 		common->Warning( "Failed to initialize ImGui OpenGL renderer backend!\n" );
@@ -298,7 +290,7 @@ void Shutdown()
 
 		// TODO: only if init was successful!
 		ImGui_ImplOpenGL2_Shutdown();
-		ImGui_ImplSDL2_Shutdown();
+		ImGui_ImplSDLx_Shutdown();
 		ImGui::DestroyContext( imguiCtx );
 		imgui_initialized = false;
 	}
@@ -308,6 +300,14 @@ void Shutdown()
 // => ProcessEvent() has already been called (probably multiple times)
 void NewFrame()
 {
+	// it can happen that NewFrame() is called without EndFrame() having been called
+	// after the last NewFrame() call, for example when D3Radiant is active and in
+	// idSessionLocal::UpdateScreen() Sys_IsWindowVisible() returns false.
+	// In that case, end the previous frame here so it's ended at all.
+	if ( haveNewFrame ) {
+		EndFrame();
+	}
+
 	// even if all windows are closed, still run a few frames
 	// so ImGui also recognizes internally that all windows are closed
 	// and e.g. ImGuiCond_Appearing works as intended
@@ -330,7 +330,14 @@ void NewFrame()
 		strcpy( fontCfg.Name, "ProggyVector" );
 		float fontSize = 18.0f * GetScale();
 		float fontSizeInt = roundf( fontSize ); // font sizes are supposed to be rounded to integers
-		ImFont* font = io.Fonts->AddFontFromMemoryCompressedTTF(ProggyVector_compressed_data, ProggyVector_compressed_size, fontSizeInt, nullptr);
+#ifdef _MSC_VER
+		// because Visual C++ (at least up to 2019) doesn't support the long string literal
+		// of the base85-encoded font, use the alternative compression instead
+		// (this is incompatible with Big Endian, so keep on using Base85 for other platforms)
+		io.Fonts->AddFontFromMemoryCompressedTTF(ProggyVector_compressed_data, ProggyVector_compressed_size, fontSizeInt, nullptr);
+#else // better compilers
+		io.Fonts->AddFontFromMemoryCompressedBase85TTF(ProggyVector_compressed_data_base85, fontSizeInt, &fontCfg);
+#endif
 	}
 
 	// Start the Dear ImGui frame
@@ -341,7 +348,7 @@ void NewFrame()
 	else
 		ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
-	ImGui_ImplSDL2_NewFrame();
+	ImGui_ImplSDLx_NewFrame();
 	ImGui::NewFrame();
 	haveNewFrame = true;
 
@@ -375,7 +382,7 @@ bool ProcessEvent(const void* sdlEvent)
 	//   - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
 	//   Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 
-	bool imguiUsedEvent = ImGui_ImplSDL2_ProcessEvent( ev );
+	bool imguiUsedEvent = ImGui_ImplSDLx_ProcessEvent( ev );
 	if ( keybindModeEnabled ) {
 		// in keybind mode, all input events are passed to Doom3 so it can translate them
 		// to internal events and we can access and use them to create a new binding
@@ -420,7 +427,11 @@ bool ProcessEvent(const void* sdlEvent)
 					return true;
 				case SDL_KEYDOWN:
 				//case SDL_KEYUP: NOTE: see above why key up events are passed to the engine
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+					if ( ev->key.key < SDLK_F1 || ev->key.key > SDLK_F12) {
+#else
 					if ( ev->key.keysym.sym < SDLK_F1 || ev->key.keysym.sym > SDLK_F12) {
+#endif
 						// F1 - F12 are passed to the engine so its shortcuts
 						// (like quickload or screenshot) still work
 						// Doom3's menu does the same
@@ -469,7 +480,7 @@ bool ShouldShowCursor()
 		}
 		// if scaling Doom3 menus to 4:3 is enabled and the cursor is currently
 		// in a black bar (Doom3 cursor is not drawn there), show the ImGui cursor
-		if ( r_scaleMenusTo43.GetBool() ) {
+		if ( idUserInterface::IsUserInterfaceScaledTo43( sessLocal.GetActiveMenu() ) ) {
 			ImVec2 mousePos = ImGui::GetMousePos();
 			float w = glConfig.winWidth;
 			float h = glConfig.winHeight;
@@ -628,7 +639,7 @@ void SetDhewm3StyleColors( ImGuiStyle* dst )
 	colors[ImGuiCol_TitleBgActive] = ImVec4(0.03f, 0.33f, 0.33f, 1.00f);
 	//colors[ImGuiCol_TitleBg]       = ImVec4(0.12f, 0.17f, 0.16f, 0.90f);
 	colors[ImGuiCol_TabHovered]    = ImVec4(0.42f, 0.69f, 1.00f, 0.80f);
-	colors[ImGuiCol_TabActive]     = ImVec4(0.24f, 0.51f, 0.83f, 1.00f);
+	colors[ImGuiCol_TabSelected]     = ImVec4(0.24f, 0.51f, 0.83f, 1.00f);
 }
 
 void SetUserStyleColors()

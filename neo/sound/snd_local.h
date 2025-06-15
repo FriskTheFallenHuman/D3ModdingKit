@@ -34,6 +34,9 @@ If you have questions concerning this license or the applicable additional terms
 // because the implemenations are in openal_stub.cpp
 // this is ensured by defining AL_LIBTYPE_STATIC before including the AL headers
 #define AL_LIBTYPE_STATIC
+// newer versions of openal-soft set the noexcept attribute to functions, older ones didn't
+// just disable that so the stub functions continue to match the prototypes in the header
+#define AL_DISABLE_NOEXCEPT
 #endif
 
 #include <AL/al.h>
@@ -336,6 +339,12 @@ class SoundFX_LowpassFast : public SoundFX {
 public:
 	virtual void		ProcessSample( float* in, float* out );
 	void				SetParms( float p1 = 0, float p2 = 0, float p3 = 0 );
+
+	void				Clear() {
+		freq = res = 0.0f;
+		a1 = a2 = a3 = 0.0f;
+		b1 = b2 = 0.0f;
+	}
 };
 
 class SoundFX_Comb : public SoundFX {

@@ -153,7 +153,7 @@ public:
 protected:
 
 	struct flags {
-		bool		stateCleared		: 1;		// State list was cleared 
+		bool		stateCleared		: 1;		// State list was cleared
 		bool		stateInterrupted	: 1;		// State list was interrupted
 		bool		executing			: 1;		// Execute is currently processing states
 	} fl;

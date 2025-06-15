@@ -29,7 +29,10 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include <SDL.h>
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+  // DG: compat with SDL2
+  #define SDL_setenv SDL_setenv_unsafe
+#endif
 
 #include "../renderer/Image.h"
 
@@ -57,13 +60,7 @@ typedef enum {
 #endif
 
 struct version_s {
-	version_s( void ) {
-#ifdef _MSC_VER
-		sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, D3_ARCH, ID__DATE__, ID__TIME__ );
-#else
-		sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, BUILD_CPU, ID__DATE__, ID__TIME__ );
-#endif // _MSC_VER
-	}
+			version_s( void ) { sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, D3_ARCH, ID__DATE__, ID__TIME__ ); }
 	char	string[256];
 } version;
 
@@ -402,7 +399,7 @@ void idCommonLocal::VPrintf( const char *fmt, va_list args ) {
 		if ( com_editors & EDITOR_DEBUGGER )
 			DebuggerServerPrint( msg );
 		else
-			// only echo to dedicated console and early console when debugger is not running so no 
+			// only echo to dedicated console and early console when debugger is not running so no
 			// deadlocks occur if engine functions called from the debuggerthread trace stuff..
 			Sys_Printf( "%s", msg );
 	} else {
@@ -582,7 +579,7 @@ void idCommonLocal::PrintWarnings( void ) {
 			if ( warningList.Num() > 1 ) {
 				Printf("----- %d warnings -----\n", warningList.Num() );
 			} else {
-				Printf("----- %d warning -----\n", warningList.Num() );			
+				Printf("----- %d warning -----\n", warningList.Num() );
 			}
 		}
 	}
@@ -1178,7 +1175,7 @@ Com_ScriptDebugger_f
 static void Com_ScriptDebugger_f( const idCmdArgs &args ) {
 	// Make sure it wasnt on the command line
 	if ( !( com_editors & EDITOR_DEBUGGER ) ) {
-		
+
 		//start debugger server if needed
 		if ( !com_enableDebuggerServer.GetBool() )
 			com_enableDebuggerServer.SetBool( true );
@@ -1442,6 +1439,7 @@ bool OSX_GetCPUIdentification( int& cpuId, bool& oldArchitecture );
 void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 	// DG: add an optional "nores" argument for "don't change the resolution" (r_mode)
 	bool nores = args.Argc() > 1 && idStr::Icmp( args.Argv(1), "nores" ) == 0;
+	cvarSystem->SetCVarInteger( "r_useSoftParticles", 0, CVAR_ARCHIVE ); // DG: disable soft particles for all but ultra
 	if ( com_machineSpec.GetInteger() == 3 ) { // ultra
 		//cvarSystem->SetCVarInteger( "image_anisotropy", 1, CVAR_ARCHIVE ); DG: redundant, set again below
 		cvarSystem->SetCVarInteger( "image_lodbias", 0, CVAR_ARCHIVE );
@@ -1464,6 +1462,7 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 			cvarSystem->SetCVarInteger( "r_mode", 5, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_useNormalCompression", 0, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "r_multiSamples", 0, CVAR_ARCHIVE );
+		cvarSystem->SetCVarInteger( "r_useSoftParticles", 1, CVAR_ARCHIVE ); // DG: enable soft particles for ultra preset
 	} else if ( com_machineSpec.GetInteger() == 2 ) { // high
 		cvarSystem->SetCVarString( "image_filter", "GL_LINEAR_MIPMAP_LINEAR", CVAR_ARCHIVE );
 		//cvarSystem->SetCVarInteger( "image_anisotropy", 1, CVAR_ARCHIVE ); DG: redundant, set again below
@@ -1484,7 +1483,7 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 		cvarSystem->SetCVarInteger( "s_maxSoundsPerShader", 0, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_useNormalCompression", 0, CVAR_ARCHIVE );
 		if ( !nores ) // DG: added optional "nores" argument
-			cvarSystem->SetCVarInteger( "", 4, CVAR_ARCHIVE );
+			cvarSystem->SetCVarInteger( "r_mode", 4, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "r_multiSamples", 0, CVAR_ARCHIVE );
 	} else if ( com_machineSpec.GetInteger() == 1 ) { // medium
 		cvarSystem->SetCVarString( "image_filter", "GL_LINEAR_MIPMAP_LINEAR", CVAR_ARCHIVE );
@@ -2694,7 +2693,6 @@ idCommonLocal::LoadGameDLL
 void idCommonLocal::LoadGameDLL( void ) {
 #ifdef __DOOM_DLL__
 	const char		*fs_game;
-	const char		*fs_base; // DEFUNKT
 	char			dll[MAX_OSPATH];
 	idStr			s;
 
@@ -2706,10 +2704,6 @@ void idCommonLocal::LoadGameDLL( void ) {
 	if (!fs_game || !fs_game[0])
 		fs_game = BASE_GAMEDIR;
 
-	fs_base = cvarSystem->GetCVarString("fs_game_base"); // DEFUNKT
-	if (!fs_base || !fs_base[0]) // DEFUNKT
-		fs_base = BASE_GAMEDIR; // DEFUNKT
-
 	gameDLL = 0;
 
 	sys->DLL_GetFileName(fs_game, dll, sizeof(dll));
@@ -2718,13 +2712,27 @@ void idCommonLocal::LoadGameDLL( void ) {
 	// there was no gamelib for this mod, use default one from base game
 	if (!gameDLL) {
 		common->Printf( "\n" );
-		common->Warning( "couldn't load mod-specific %s, defaulting to base game's library!\n", dll );
-		sys->DLL_GetFileName(fs_base, dll, sizeof(dll)); // DEFUNKT sys->DLL_GetFileName(BASE_GAMEDIR, dll, sizeof(dll));
-		LoadGameDLLbyName(dll, s);
+
+		const char *fs_base = cvarSystem->GetCVarString("fs_game_base");
+		if (fs_base && fs_base[0]) {
+			common->Warning( "couldn't load mod-specific %s, defaulting to library of fs_game_base (%s)!\n", dll, fs_base);
+			sys->DLL_GetFileName(fs_base, dll, sizeof(dll));
+			LoadGameDLLbyName(dll, s);
+			if ( !gameDLL ) {
+				common->Warning( "couldn't load fs_game_base lib %s either, defaulting to base game's library!\n", dll);
+			}
+		} else {
+			common->Warning( "couldn't load mod-specific %s, defaulting to base game's library!\n", dll );
+		}
+
+		if ( !gameDLL ) {
+			sys->DLL_GetFileName(BASE_GAMEDIR, dll, sizeof(dll));
+			LoadGameDLLbyName(dll, s);
+		}
 	}
 
 	if ( !gameDLL ) {
-		common->FatalError( "couldn't load game dynamic library" );
+		common->FatalError( "couldn't load game dynamic library '%s'", dll );
 		return;
 	}
 
@@ -2971,7 +2979,9 @@ void idCommonLocal::Init( int argc, char **argv ) {
 	// we want to use the SDL event queue for dedicated servers. That
 	// requires video to be initialized, so we just use the dummy
 	// driver for headless boxen
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+	SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "dummy");
+#elif SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
 #else
 	char dummy[] = "SDL_VIDEODRIVER=dummy\0";
@@ -2979,15 +2989,16 @@ void idCommonLocal::Init( int argc, char **argv ) {
 #endif
 #endif
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0)
-	{
-		if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) == 0) { // retry without joystick/gamecontroller if it failed
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+	if ( ! SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD ) ) {
+		if ( SDL_Init( SDL_INIT_VIDEO ) ) { // retry without joystick/gamepad if it failed
+			Sys_Printf( "WARNING: Couldn't get SDL gamepad support! Gamepads won't work!\n" );
+		} else
+#elif SDL_VERSION_ATLEAST(2, 0, 0)
+	if ( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER ) != 0 ) {
+		if ( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO) == 0 ) { // retry without joystick/gamecontroller if it failed
 			Sys_Printf( "WARNING: Couldn't get SDL gamecontroller support! Gamepads won't work!\n" );
 		} else
-#else
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) != 0) // no gamecontroller support in SDL1
-	{
 #endif
 		{
 			Sys_Error("Error while initializing SDL: %s", SDL_GetError());
@@ -3037,14 +3048,22 @@ void idCommonLocal::Init( int argc, char **argv ) {
 		idCVar::RegisterStaticVars();
 
 		// print engine version
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+		int sdlv = SDL_GetVersion();
+		int sdlvmaj = SDL_VERSIONNUM_MAJOR(sdlv);
+		int sdlvmin = SDL_VERSIONNUM_MINOR(sdlv);
+		int sdlvmicro = SDL_VERSIONNUM_MICRO(sdlv);
+		Printf( "%s using SDL v%d.%d.%d\n", version.string, sdlvmaj, sdlvmin, sdlvmicro );
+#else
+  #if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_version sdlv;
 		SDL_GetVersion(&sdlv);
-#else
+  #else
 		SDL_version sdlv = *SDL_Linked_Version();
-#endif
+  #endif
 		Printf( "%s using SDL v%u.%u.%u\n",
 				version.string, sdlv.major, sdlv.minor, sdlv.patch );
+#endif
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		Printf( "SDL video driver: %s\n", SDL_GetCurrentVideoDriver() );
@@ -3314,7 +3333,7 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	}
 
 	// shutdown the script debugger
-	if ( com_enableDebuggerServer.GetBool() )	
+	if ( com_enableDebuggerServer.GetBool() )
 		DebuggerServerShutdown();
 
 	idAsyncNetwork::client.Shutdown();
@@ -3412,7 +3431,7 @@ static bool isDemo( void )
 
 static bool updateDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer )
 {
-	if (com_editors & EDITOR_DEBUGGER) 
+	if (com_editors & EDITOR_DEBUGGER)
 	{
 		DebuggerServerCheckBreakpoint( interpreter, program, instructionPointer );
 		return true;

@@ -608,7 +608,7 @@ void idEditEntities::DisplayEntities( void ) {
 
 		bool drawArrows = false;
 		bool drawDirection = false;
- 
+
 		if ( ent->GetType() == &idAFEntity_Base::GetClassType() ) {
 			if ( !static_cast<idAFEntity_Base *>(ent)->IsActiveAF() ) {
 				continue;

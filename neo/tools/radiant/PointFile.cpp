@@ -113,10 +113,10 @@ void Pointfile_Check (void)
 		const int n = fscanf(f, "%f %f %f\n", &v[0], &v[1], &v[2]);
 		if ( n != 3  || s_num_points >= MAX_POINTFILE)
 			break;
-    
-		s_pointvecs[s_num_points] = v;      
+
+		s_pointvecs[s_num_points] = v;
 		s_num_points++;
-    
+
 	} while (1);
 
 	s_check_point = 0;

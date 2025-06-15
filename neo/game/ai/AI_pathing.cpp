@@ -606,7 +606,7 @@ pathNode_t *BuildPathTree( const obstacle_t *obstacles, int numObstacles, const 
 
 	root->delta = seekPos - root->pos;
 	root->numNodes = 0;
-	
+
 	pathNodeQueue.Add( root );
 
 	for ( node = pathNodeQueue.Get(); node && pathNodeAllocator.GetAllocCount() < MAX_PATH_NODES; node = pathNodeQueue.Get() ) {

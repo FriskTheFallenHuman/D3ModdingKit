@@ -132,7 +132,7 @@ bool rvDebuggerClient::ProcessMessages ( void )
 		}
 		command = msg.ReadShort ( );
 
-		// Is this what we are waiting for? 
+		// Is this what we are waiting for?
 		if ( command == mWaitFor )
 		{
 			mWaitFor = DBMSG_UNKNOWN;
@@ -292,7 +292,7 @@ is handled by adding the script entries to a list for later lookup.
 ================
 */
 void rvDebuggerClient::HandleInspectScripts( idBitMsg* msg )
-{	
+{
 	int totalScripts;
 
 	mServerScripts.Clear();

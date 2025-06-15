@@ -1,22 +1,30 @@
-name: Making a Build
-on: push
+name: Windows Auto-Builds
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
 
 jobs:
   job:
-    name: ${{ matrix.os }}-build
+    name: Windows Github Auto-Builds
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-
-      - name: Download dependencies
-        if: matrix.os == 'ubuntu-latest' 
-        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype-dev cmake ninja-build
 
       - name: Get latest CMake if possible
         uses: lukka/get-cmake@latest
@@ -35,31 +43,7 @@ jobs:
           configurePreset: 'ninja-multi-vcpkg'
           buildPreset: 'ninja-vcpkg-release'
 
-      - name: Lower case runner.os
-        if: matrix.os != 'windows-latest'
-        id: runner_os
-        uses: Entepotenz/change-string-case-action-min-dependencies@v1.1.0
-        with:
-          string: ${{runner.os}}
-
-      - name: Copy base files to ${{steps.runner_os.outputs.lowercase}}/
-        if: matrix.os != 'windows-latest'
-        shell: pwsh
-        run: |
-          cd ${{github.workspace}}
-          Copy-Item -Path "output/base" -Destination "output/${{steps.runner_os.outputs.lowercase}}/base" -Recurse
-          Copy-Item -Path "output/d3xp" -Destination "output/${{steps.runner_os.outputs.lowercase}}/d3xp" -Recurse
-          Copy-Item -Path "output/libs" -Destination "output/${{steps.runner_os.outputs.lowercase}}/libs" -Recurse
-          Copy-Item -Path "output/examples" -Destination "output/${{steps.runner_os.outputs.lowercase}}/examples" -Recurse
-          Copy-Item -Path "blender" -Destination "output/${{steps.runner_os.outputs.lowercase}}/blender" -Recurse
-          Copy-Item -Path ".github/CHANGELOG.md" -Destination "output/${{steps.runner_os.outputs.lowercase}}"
-          Copy-Item -Path ".github/CONFIGURATION.md" -Destination "output/${{steps.runner_os.outputs.lowercase}}"
-          Copy-Item -Path ".github/LICENSE.md" -Destination "output/${{steps.runner_os.outputs.lowercase}}"
-          Copy-Item -Path ".github/LICENSE_DOOM3.md" -Destination "output/${{steps.runner_os.outputs.lowercase}}"
-          Copy-Item -Path ".github/README.md" -Destination "output/${{steps.runner_os.outputs.lowercase}}"
-
-      - name: Copy windows only files ( hacky :( )
-        if: matrix.os == 'windows-latest'
+      - name: Copy base files to the output folder
         shell: pwsh
         run: |
           cd ${{github.workspace}}
@@ -84,16 +68,8 @@ jobs:
           Copy-Item -Path "output/scripteditor.bat" -Destination "output/windows"
           Copy-Item -Path "output/soundeditor.bat" -Destination "output/windows"
 
-      - name: Artifacts for Windows
-        if: matrix.os == 'windows-latest'
+      - name: Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: d3moddingkit-windows
           path: output/windows/
-
-      - name: Artifacts for Linux
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: d3moddingkit-linux
-          path: output/linux/

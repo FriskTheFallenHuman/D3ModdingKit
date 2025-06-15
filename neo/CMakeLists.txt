@@ -27,17 +27,21 @@ set(DHEWM3BINARY "D3ModdingKit")
 
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
+include(TestBigEndian)
 include(GitBranch)
 include(GlobbedHeaders)
 
 option(ENGINE						"Build the main executable." ON)
 option(DEDICATED					"Build the dedicated server executable." ON)
-option(TOOLS						"Build the include tools into the main executable." ON)
-option(MAYA_IMPORT					"Build the include maya import tool (Requires MayaSDK)." ON)
+if(MSVC)
+	option(TOOLS					"Build the tools game code (Visual Studio+SDL2/SDL3 only)" ON)
+	option(MAYA_IMPORT				"Build the include maya import tool (Requires MayaSDK)." OFF)
+endif()
 option(BASE						"Build the base game code" ON)
 option(D3XP						"Build the d3xp game code" ON)
 option(ONATIVE						"Optimize for the host CPU" OFF)
-option(IMGUI						"Build with Dear ImGui integration - requires SDL2 and C++11" ON)
+option(SDL3							"Use SDL3 instead of SDL2" OFF)
+option(IMGUI						"Build with Dear ImGui integration - requires SDL2/SDL3 and C++11" ON)
 option(REPRODUCIBLE_BUILD			"Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds." OFF)
 option(LINUX_RELEASE_BINS			"Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF)
 option(HARDLINK_GAME				"Compile gamecode into executable (no game DLLs)" OFF)
@@ -87,17 +91,27 @@ find_package(OpenAL REQUIRED)
 include_directories(${OPENAL_INCLUDE_DIR})
 list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
-if(UNIX)
-	pkg_check_modules(SDL2 REQUIRED sdl2)
-	include_directories(${SDL2_INCLUDE_DIRS})
-	link_directories(${SDL2_LIBRARY_DIRS})
-	set(SDL2_LIBRARY ${SDL2_LIBRARIES})
+if (SDL3)
+	# 1. Look for a SDL3 package,
+	# 2. look for the SDL3-shared component, and
+	# 3. fail if the shared component cannot be found.
+	find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+	# TODO: include dirs?
+	set(SDLX_LIBRARY SDL3::SDL3)
+	add_definitions(-DD3_SDL3=1)
 else()
-	find_package(SDL2 REQUIRED)
-	include_directories(${SDL2_INCLUDE_DIR})
-	set(SDL2_LIBRARY SDL2::SDL2)
+	if(UNIX)
+		pkg_check_modules(SDL2 REQUIRED sdl2)
+		include_directories(${SDL2_INCLUDE_DIRS})
+		link_directories(${SDL2_LIBRARY_DIRS})
+		set(SDLX_LIBRARY ${SDL2_LIBRARIES})
+	else()
+		find_package(SDL2 REQUIRED)
+		include_directories(${SDL2_INCLUDE_DIR})
+		set(SDLX_LIBRARY SDL2::SDL2)
+	endif()
 endif()
-list(APPEND sys_thirdparty_libs ${SDL2_LIBRARY})
+list(APPEND sys_thirdparty_libs ${SDLX_LIBRARY})
 
 if (FREETYPE)
 	find_package(Freetype REQUIRED)
@@ -225,6 +239,15 @@ if(NOT MSVC)
 	endif()
 	unset(compiler_id_lower)
 endif() # not MSVC
+
+TEST_BIG_ENDIAN(is_big_endian)
+if(is_big_endian)
+	message(STATUS "Detected Big Endian architecture, setting -DD3_IS_BIG_ENDIAN=1")
+	add_definitions(-DD3_IS_BIG_ENDIAN=1)
+else()
+	message(STATUS "Detected Little Endian architecture, setting -DD3_IS_BIG_ENDIAN=0")
+	add_definitions(-DD3_IS_BIG_ENDIAN=0)
+endif()
 
 # compiler specific flags
 if(D3_COMPILER_IS_GCC_OR_CLANG)
@@ -776,8 +799,18 @@ set_source_files_properties(
 add_globbed_headers(src_mikktspace "mikktspace")
 
 if(IMGUI)
+	if(SDL3)
+		set(src_imgui
+			libs/imgui/backends/imgui_impl_sdl3.cpp
+		)
+	else()
+		set(src_imgui
+			libs/imgui/backends/imgui_impl_sdl2.cpp
+		)
+	endif()
+
 	set(src_imgui
-		libs/imgui/backends/imgui_impl_sdl2.cpp
+		${src_imgui}
 		libs/imgui/backends/imgui_impl_opengl2.cpp
 		
 		libs/imgui/imgui.h
@@ -796,6 +829,7 @@ if(IMGUI)
 	# Don't use precompiled headers for imgui sources.
 	set_source_files_properties(
 		libs/imgui/backends/imgui_impl_sdl2.cpp
+		libs/imgui/backends/imgui_impl_sdl3.cpp
 		libs/imgui/backends/imgui_impl_opengl2.cpp
 		libs/imgui/imgui.cpp
 		libs/imgui/imgui_draw.cpp
@@ -1148,15 +1182,6 @@ elseif(WIN32)
 		sys/win32/win_net.cpp
 		sys/win32/win_shared.cpp
 		sys/win32/win_syscon.cpp
-		sys/win32/SDL_win32_main.c
-	)
-	
-	# Don't use precompiled headers for our SDL Win32 c sources.
-	set_source_files_properties(
-		sys/win32/SDL_win32_main.c
-		PROPERTIES
-		SKIP_PRECOMPILE_HEADERS ON
-		LANGUAGE C
 	)
 
 	# adding the few relevant headers in sys/ manually..
@@ -1215,6 +1240,9 @@ include_directories(${CMAKE_SOURCE_DIR})
 # ================================= Idlib ======================================
 
 add_library(idlib STATIC ${src_idlib})
+if(SDL3)
+	target_link_libraries(idlib SDL3::Headers) # so it can use SDL_Endian.h
+endif()
 if(D3_COMPILER_IS_GCC_OR_CLANG AND NOT MINGW)
 	set_target_properties(idlib PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()

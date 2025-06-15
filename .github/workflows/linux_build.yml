@@ -1,0 +1,57 @@
+name: Linux Auto-Builds
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
+
+jobs:
+  job:
+    name: Linux Github Auto-Builds
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Download dependencies
+        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Build the engine
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DDEDICATED=ON ../neo/
+          ninja
+
+      - name: Copy base files to linux/
+        shell: pwsh
+        run: |
+          cd ${{github.workspace}}
+          Copy-Item -Path "output/base" -Destination "output/linux/base" -Recurse
+          Copy-Item -Path "output/d3xp" -Destination "output/linux/d3xp" -Recurse
+          Copy-Item -Path "output/libs" -Destination "output/linux/libs" -Recurse
+          Copy-Item -Path "output/examples" -Destination "output/linux/examples" -Recurse
+          Copy-Item -Path "blender" -Destination "output/linux/blender" -Recurse
+          Copy-Item -Path ".github/CHANGELOG.md" -Destination "output/linux"
+          Copy-Item -Path ".github/CONFIGURATION.md" -Destination "output/linux"
+          Copy-Item -Path ".github/LICENSE.md" -Destination "output/linux"
+          Copy-Item -Path ".github/LICENSE_DOOM3.md" -Destination "output/linux"
+          Copy-Item -Path ".github/README.md" -Destination "output/linux"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: d3moddingkit-linux
+          path: output/linux/

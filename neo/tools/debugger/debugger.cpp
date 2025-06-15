@@ -67,7 +67,7 @@ void DebuggerClientInit( const char *cmdline )
 	{
 		goto DebuggerClientInitDone;
 	}
-	
+
 	// hide the doom window by default
 	::ShowWindow( win32.hWnd, SW_HIDE );
 
@@ -158,7 +158,7 @@ bool DebuggerServerInit ( void )
 	}
 
 	// Dont do this if we are in the debugger already
-	if ( gDebuggerServer != NULL 
+	if ( gDebuggerServer != NULL
 		|| ( com_editors & EDITOR_DEBUGGER ) )
 	{
 		return false;
@@ -178,7 +178,7 @@ bool DebuggerServerInit ( void )
 		gDebuggerServer = NULL;
 		return false;
 	}
-	
+
 	// Start the debugger server thread
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	gDebuggerServerThread = SDL_CreateThread( DebuggerServerThread, "DebuggerServer", NULL );

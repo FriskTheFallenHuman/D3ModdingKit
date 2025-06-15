@@ -213,7 +213,7 @@ void CPropTree::ResizeChildWindows(int cx, int cy)
 void CPropTree::InitGlobalResources()
 {
 	float scaling_factor = Win_GetWindowScalingFactor(GetSafeHwnd());
-	
+
 
 	NONCLIENTMETRICS info;
 	info.cbSize = sizeof(info);

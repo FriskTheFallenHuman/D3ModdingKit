@@ -43,7 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "posix_public.h"
 
-#include <SDL.h> // clipboard
+// SDL.h for clipboard:
+#include "sys/sys_sdl.h"
+
 
 #define					COMMAND_HISTORY 64
 
@@ -852,7 +854,9 @@ void tty_Show() {
 	input_hide--;
 	if ( input_hide == 0 ) {
 		char *buf = input_field.GetBuffer();
-		size_t len = strlen(buf);
+		// DG: it happened (not sure how) that len became very big,
+		//     most likely because of an overflow (underflow?) so I made it signed
+		int len = strlen(buf);
 		if ( len < 1 )
 			return;
 

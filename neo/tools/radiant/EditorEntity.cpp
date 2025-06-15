@@ -354,7 +354,7 @@ bool idEditorEntity::GetVectorForKey( const char *key, idVec3 &vec ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool idEditorEntity::GetVector4ForKey( const char *key, idVec4 &vec ) {	
+bool idEditorEntity::GetVector4ForKey( const char *key, idVec4 &vec ) {
 	const char* k = ValueForKey( key );
 	if (k && strlen(k) > 0) {
 		sscanf(k, "%f %f %f %f", &vec[0], &vec[1], &vec[2], &vec[3]);
@@ -386,7 +386,7 @@ bool idEditorEntity::GetFloatForKey( const char *key, float *f ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool idEditorEntity::GetMatrixForKey( const char *key, idMat3 &mat ) {	
+bool idEditorEntity::GetMatrixForKey( const char *key, idMat3 &mat ) {
 	const char* k = ValueForKey( key );
 	if (k && strlen(k) > 0) {
 		sscanf
@@ -574,7 +574,7 @@ bool idEditorEntity::HasModel() const {
 	idEditorEntity::idEditorEntity()
  =======================================================================================================================
  */
-idEditorEntity::idEditorEntity() {	
+idEditorEntity::idEditorEntity() {
 	prev = next = NULL;
 	brushes.prev = brushes.next = NULL;
 	brushes.oprev = brushes.onext = NULL;
@@ -606,7 +606,7 @@ void idEditorEntity::UpdateCurveData() {
 	}
 
 	const idKeyValue *kv = this->epairs.MatchPrefix( CURVE_TAG );
-	if ( kv == NULL ) { 
+	if ( kv == NULL ) {
 		if ( this->curve ) {
 			delete this->curve;
 			this->curve = NULL;
@@ -726,7 +726,7 @@ void idEditorEntity::PostParse(idEditorBrush *pList) {
 		}
 	}
 	idStr str;
-	
+
 	if (e->defArgs.GetString("model", "", str) && e->entityModel == NULL) {
 		e->entityModel = gameEdit->ANIM_GetModelFromEntityDef( &e->defArgs );
 	}
@@ -1001,7 +1001,7 @@ bool IsBrushSelected(const idEditorBrush *bSel) {
 // =======================================================================================================================
 //
 void idEditorEntity::WriteSelected(FILE *file) {
-	const idEditorBrush *b;		
+	const idEditorBrush *b;
 
 	for (b = brushes.onext; b != &brushes; b = b->onext) {
 		if (IsBrushSelected(b)) {
@@ -1018,14 +1018,14 @@ void idEditorEntity::WriteSelected(FILE *file) {
 		idVec3	origin;
 
 		if (!GetVectorForKey("origin", origin)) {
-			char text[128];	
+			char text[128];
 			VectorSubtract(brushes.onext->mins, eclass->mins, origin);
 			sprintf(text, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
 			SetKeyValue("origin", text);
 		}
 	}
 
-	fprintf(file, "{\n");	
+	fprintf(file, "{\n");
 
 	for (int j = 0; j < epairs.GetNumKeyVals(); j++) {
 		fprintf(file, "\"%s\" \"%s\"\n", epairs.GetKeyVal(j)->GetKey().c_str(), epairs.GetKeyVal(j)->GetValue().c_str());
@@ -1364,7 +1364,7 @@ void idEditorEntity::UpdateSoundEmitter() {
 
 	// if an entity doesn't have any brushes at all, don't do anything
 	// if the brush isn't displayed (filtered or culled), don't do anything
-	if ( g_pParentWnd->GetCamera()->GetSoundMode() 
+	if ( g_pParentWnd->GetCamera()->GetSoundMode()
 		&& this->brushes.onext != &this->brushes && !FilterBrush(this->brushes.onext) ) {
 		// check for sounds
 		const char *v = ValueForKey( "s_shader" );

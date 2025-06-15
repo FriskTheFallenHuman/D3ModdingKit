@@ -2191,7 +2191,7 @@ const idMaterial *R_RemapShaderBySkin(const idMaterial* shader, const idDeclSkin
 	if ( !skin || !shader ) {
 		return const_cast<idMaterial *>(shader);
 	}
-	
+
 	#if MD5_ENABLE_GIBS > 1 // SKINS
 	if (model == NULL || model->gibParts == 0) {
 		return skin->RemapShaderBySkin(shader);

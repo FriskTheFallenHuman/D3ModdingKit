@@ -110,7 +110,7 @@ public:	// common physics interface
 
 protected:
 	virtual void		SetWaterLevel( bool updateWaterLevelChanged );
-	waterLevel_t		waterLevel;	
+	waterLevel_t		waterLevel;
 	waterLevel_t		previousWaterLevel;			// greebo: The water level of the previous frame
 	int					waterType;
 	int					submerseFrame;				// greebo: The frame in which we submersed (above WATERLEVEL_HEAD)

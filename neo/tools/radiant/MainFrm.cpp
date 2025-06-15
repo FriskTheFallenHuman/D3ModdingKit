@@ -5763,7 +5763,7 @@ void CMainFrame::OnShowLightvolumes() {
  =======================================================================================================================
  */
 void CMainFrame::OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized) {
-	CFrameWndEx::OnActivate(nState, pWndOther, bMinimized);	
+	CFrameWndEx::OnActivate(nState, pWndOther, bMinimized);
 	if ( nState != WA_INACTIVE ) {
 		common->ActivateTool(true);
 		if (::IsWindowVisible(win32.hWnd)) {

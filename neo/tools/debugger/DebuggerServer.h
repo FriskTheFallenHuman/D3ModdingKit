@@ -28,8 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef DEBUGGERSERVER_H_
 #define DEBUGGERSERVER_H_
 
-#include <SDL.h>
-
 #ifndef DEBUGGERMESSAGES_H_
 #include "DebuggerMessages.h"
 #endif
@@ -41,6 +39,12 @@ If you have questions concerning this license or the applicable additional terms
 #include "../framework/Game.h"
 class idInterpreter;
 class idProgram;
+
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+  // backwards-compat with SDL <= 2
+  #define SDL_mutex SDL_Mutex
+  #define SDL_cond SDL_Condition
+#endif
 
 class function_t;
 typedef struct prstack_s prstack_t;

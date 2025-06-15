@@ -419,8 +419,12 @@ static void R_CheckPortableExtensions( void ) {
 		glConfig.textureCompressionAvailable = true;
 		qglCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)GLimp_ExtensionPointer( "glCompressedTexImage2DARB" );
 		qglGetCompressedTexImageARB = (PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)GLimp_ExtensionPointer( "glGetCompressedTexImageARB" );
+		if ( R_CheckExtension( "GL_ARB_texture_compression_bptc" ) ) {
+			glConfig.bptcTextureCompressionAvailable = true;
+		}
 	} else {
 		glConfig.textureCompressionAvailable = false;
+		glConfig.bptcTextureCompressionAvailable = false;
 	}
 
 	// GL_EXT_texture_filter_anisotropic
@@ -1448,7 +1452,7 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fil
 		memcpy(line1, line2, lineSize);
 		memcpy(line2, swapBuffer, lineSize);
 	}
-	
+
 	idFile* f;
 	if (strstr(fileName, "viewnote")) {
 		f = fileSystem->OpenFileWrite( fileName, "fs_cdpath" );
@@ -1539,7 +1543,7 @@ void R_ScreenshotFilename( int &lastNumber, const char *base, idStr &fileName ) 
 				sprintf(fileName, "%s%i%i%i%i%i.jpg", base, a, b, c, d, e);
 				break;
 		}
-		
+
 		if ( lastNumber == 99999 ) {
 			break;
 		}

@@ -44,7 +44,7 @@ void InspectorsDockingCallback ( bool docked, int ID, CWnd* wnd ) {
 }
 
 // CInspectorDialog dialog
-// 
+//
 //IMPLEMENT_DYNAMIC(CInspectorDialog,CTabsDlg)
 
 CInspectorDialog::CInspectorDialog( CWnd *pParent )
@@ -134,7 +134,7 @@ void CInspectorDialog::OnSize(UINT nType, int cx, int cy) {
 	DockedWindowInfo* info = NULL;
 	POSITION pos;
 	WORD wID;
-	
+
 	float scaling_factor = Win_GetWindowScalingFactor(GetSafeHwnd());
 	int s5 = int(5 * scaling_factor);
 	int s4 = int(4 * scaling_factor);

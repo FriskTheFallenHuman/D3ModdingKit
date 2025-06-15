@@ -36,7 +36,7 @@ rvGEStateModifier::rvGEStateModifier ( const char* name, idWindow* window, idDic
 	rvGEModifier ( name, window ),
 	mDict ( dict )
 {
-	//Ross T 1/6/2015 - commented out this mDict copy because it seems completely 
+	//Ross T 1/6/2015 - commented out this mDict copy because it seems completely
 	//redundant (copy constructor happens two lines above) and was causing a bug with adding keys
 	//mDict.Copy ( dict );
 

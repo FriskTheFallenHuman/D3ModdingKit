@@ -444,7 +444,7 @@ void idGLDrawableMaterial::draw(int x, int y, int w, int h) {
 		}
 
 		renderView_t	refdef;
-		
+
 		// render it
 		renderSystem->BeginFrame(w, h);
 		memset( &refdef, 0, sizeof( refdef ) );

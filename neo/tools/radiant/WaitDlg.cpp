@@ -82,7 +82,7 @@ void CWaitDlg::SetText( const char *msg, float percent, bool append ) {
 		waitStr = msg;
 		text = msg;
 	}
-	
+
 	m_progress.SetRange(0, 100);
 	m_progress.SetPos(percent * 100);
 

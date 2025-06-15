@@ -3194,8 +3194,8 @@ void DrawPathLines(void) {
 
 			VectorSubtract(mid1, mid, dir);
 			len = dir.Normalize();
-			s1.x = -dir.y * 8 + dir.x * 8;			
-			s1.y = dir.x * 8 + dir.y * 8;      
+			s1.x = -dir.y * 8 + dir.x * 8;
+			s1.y = dir.x * 8 + dir.y * 8;
 			s1.z = dir.z * 8;
 
 			s2.x = dir.y * 8 + dir.x * 8;
@@ -3392,7 +3392,7 @@ void CXYWnd::XY_Draw() {
 	const int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 
 	idVec2		mins, maxs; //2D view port mins/max
-	idBounds viewBounds; //3D world space bounds	
+	idBounds viewBounds; //3D world space bounds
 	if ( m_nViewType == ViewType::XY ) {
 		viewBounds[0].x = m_vOrigin.x - w;
 		viewBounds[1].x = m_vOrigin.x + w;

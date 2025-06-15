@@ -41,6 +41,14 @@ If you have questions concerning this license or the applicable additional terms
 const int MAX_MSGLEN = 8600;
 #endif
 
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+  // compat with SDL2
+  #define SDL_CreateCond SDL_CreateCondition
+  #define SDL_DestroyCond SDL_DestroyCondition
+  #define SDL_CondWait SDL_WaitCondition
+  #define SDL_CondSignal SDL_SignalCondition
+#endif
+
 /*
 ================
 rvDebuggerServer::rvDebuggerServer
@@ -174,7 +182,7 @@ bool rvDebuggerServer::ProcessMessages ( void )
 		msg.Init(buffer, sizeof(buffer));
 		msg.SetSize(msgSize);
 		msg.BeginReading();
-		
+
 		if ( adrFrom.type != NA_LOOPBACK ) {
 			// Only accept packets from the debugger server for security reasons
 			if ( !Sys_CompareNetAdrBase( adrFrom, mClientAdr ) )
@@ -309,7 +317,7 @@ void rvDebuggerServer::HandleAddBreakpoint ( idBitMsg* msg )
 
 	msg->ReadString ( filename, sizeof(filename) );
 
-	//check for statement on requested breakpoint location 
+	//check for statement on requested breakpoint location
 	if (!((idGameEditExt*) gameEdit)->IsLineCode(filename, lineNumber))
 	{
 		idBitMsg	msgOut;
@@ -530,7 +538,7 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 		return;
 	}
 
-	
+
 	// Grab the current statement and the filename that it came from
 	filename = ((idGameEditExt*) gameEdit)->GetFilenameForStatement(program, instructionPointer);
 	int linenumber = ((idGameEditExt*) gameEdit)->GetLineNumberForStatement(program, instructionPointer);
@@ -540,7 +548,7 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 	{
 		return;
 	}
-	
+
 	// Save the last visited line and file so we can prevent
 	// double breaks on lines with more than one statement
 	mLastStatementFile = idStr(filename);

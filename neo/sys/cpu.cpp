@@ -31,7 +31,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <float.h>
 
-#include <SDL_cpuinfo.h>
+#ifdef D3_SDL3
+  #include <SDL3/SDL_cpuinfo.h>
+#else // SDL2
+  #include <SDL_cpuinfo.h>
+#endif
 
 // MSVC header intrin.h uses strcmp and errors out when not set
 #define IDSTR_NO_REDIRECT

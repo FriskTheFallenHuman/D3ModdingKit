@@ -96,7 +96,9 @@ void R_CreateVertexProgramShadowCache( srfTriangles_t *tri ) {
 		return;
 	}
 
-	shadowCache_t *temp = (shadowCache_t *)_alloca16( tri->numVerts * 2 * sizeof( shadowCache_t ) );
+	// DG: use Mem_MallocA() instead of _alloca16() to avoid stack overflows with big models
+	bool tempOnStack;
+	shadowCache_t *temp = (shadowCache_t *)Mem_MallocA( tri->numVerts * 2 * sizeof( shadowCache_t ), tempOnStack );
 
 #if 1
 
@@ -121,6 +123,7 @@ void R_CreateVertexProgramShadowCache( srfTriangles_t *tri ) {
 #endif
 
 	vertexCache.Alloc( temp, tri->numVerts * 2 * sizeof( shadowCache_t ), &tri->shadowCache );
+	Mem_FreeA( temp, tempOnStack );
 }
 
 /*
@@ -1397,7 +1400,7 @@ void R_AddModelSurfaces( void ) {
 			continue;
 		}
 
-		// Don't let particle entities re-instantiate their dynamic model during non-visible 
+		// Don't let particle entities re-instantiate their dynamic model during non-visible
 		// views (in TDM, the light gem render) -- SteveL #3970
 		if ( tr.viewDef->renderView.viewID < 0
 			&& dynamic_cast<const idRenderModelPrt*>( vEntity->entityDef->parms.hModel ) != NULL ) // yuck.
