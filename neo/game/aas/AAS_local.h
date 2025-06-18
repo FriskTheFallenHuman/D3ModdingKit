@@ -29,8 +29,9 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __AAS_LOCAL_H__
 #define __AAS_LOCAL_H__
 
-#include "aas/AAS.h"
-#include "Pvs.h"
+#include "AAS.h"
+#include "../Pvs.h"
+
 
 class idRoutingCache {
 	friend class idAASLocal;
