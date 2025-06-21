@@ -143,7 +143,6 @@ void idMarkerWindow::PostParse() {
 
 static const int HEALTH_MAX = 100;
 static const int COMBAT_MAX = 100;
-static const int RATE_MAX = 125;
 static const int STAMINA_MAX = 12;
 void idMarkerWindow::Draw(int time, float x, float y) {
 	float pct;
@@ -287,9 +286,6 @@ void idMarkerWindow::Activate(bool activate, idStr &act) {
 					if (loggedStats[i].stamina < 0) {
 						loggedStats[i].stamina = 0;
 					}
-					if (loggedStats[i].heartRate < 0) {
-						loggedStats[i].heartRate = 0;
-					}
 					if (loggedStats[i].combat < 0) {
 						loggedStats[i].combat = 0;
 					}
@@ -324,9 +320,6 @@ void idMarkerWindow::Activate(bool activate, idStr &act) {
 				x2 = x1 + step;
 				y1 = 63 * ((float)loggedStats[i].health / HEALTH_MAX);
 				y2 = 63 * ((float)loggedStats[i+1].health / HEALTH_MAX);
-				Line(x1, y1, x2, y2, imageBuff, 0xff0000ff);
-				y1 = 63 * ((float)loggedStats[i].heartRate / RATE_MAX);
-				y2 = 63 * ((float)loggedStats[i+1].heartRate / RATE_MAX);
 				Line(x1, y1, x2, y2, imageBuff, 0xff00ff00);
 				// stamina not quite as high on graph so health does not get obscured with both at 100%
 				y1 = 62 * ((float)loggedStats[i].stamina / STAMINA_MAX);

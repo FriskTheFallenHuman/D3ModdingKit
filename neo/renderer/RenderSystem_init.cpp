@@ -363,11 +363,11 @@ R_CheckExtension
 */
 bool R_CheckExtension( const char *name ) {
 	if ( !strstr( glConfig.extensions_string, name ) ) {
-		common->Printf( "X..%s not found\n", name );
+		common->Printf( S_COLOR_RED "[ FAILED ]" S_COLOR_DEFAULT " %s\n", name );
 		return false;
 	}
 
-	common->Printf( "...using %s\n", name );
+	common->Printf( S_COLOR_GREEN "[   OK   ]" S_COLOR_DEFAULT " %s\n", name );
 	return true;
 }
 
@@ -431,7 +431,7 @@ static void R_CheckPortableExtensions( void ) {
 	glConfig.anisotropicAvailable = R_CheckExtension( "GL_EXT_texture_filter_anisotropic" );
 	if ( glConfig.anisotropicAvailable ) {
 		qglGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &glConfig.maxTextureAnisotropy );
-		common->Printf( "   maxTextureAnisotropy: %g\n", glConfig.maxTextureAnisotropy );
+		common->DPrintf( "..maxTextureAnisotropy: %g\n", glConfig.maxTextureAnisotropy );
 	} else {
 		glConfig.maxTextureAnisotropy = 1;
 	}
@@ -440,10 +440,10 @@ static void R_CheckPortableExtensions( void ) {
 	// The actual extension is broken as specificed, storing the state in the texture unit instead
 	// of the texture object.  The behavior in GL 1.4 is the behavior we use.
 	if ( glConfig.glVersion >= 1.4 || R_CheckExtension( "GL_EXT_texture_lod" ) ) {
-		common->Printf( "...using %s\n", "GL_1.4_texture_lod_bias" );
+		common->DPrintf( "...using %s\n", "GL_1.4_texture_lod_bias" );
 		glConfig.textureLODBiasAvailable = true;
 	} else {
-		common->Printf( "X..%s not found\n", "GL_1.4_texture_lod_bias" );
+		common->DPrintf( "X..%s not found\n", "GL_1.4_texture_lod_bias" );
 		glConfig.textureLODBiasAvailable = false;
 	}
 
@@ -479,15 +479,15 @@ static void R_CheckPortableExtensions( void ) {
 		qglActiveStencilFaceEXT = (PFNGLACTIVESTENCILFACEEXTPROC)GLimp_ExtensionPointer( "glActiveStencilFaceEXT" );
 
 	if( glConfig.glVersion >= 2.0) {
-		common->Printf( "...got GL2.0+ glStencilOpSeparate()\n" );
+		common->DPrintf( "...got GL2.0+ glStencilOpSeparate()\n" );
 		qglStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC)GLimp_ExtensionPointer( "glStencilOpSeparate" );
 	} else if( R_CheckExtension( "GL_ATI_separate_stencil" ) ) {
-		common->Printf( "...got glStencilOpSeparateATI() (GL_ATI_separate_stencil)\n" );
+		common->DPrintf( "...got glStencilOpSeparateATI() (GL_ATI_separate_stencil)\n" );
 		// the ATI version of glStencilOpSeparate() has the same signature and should also
 		// behave identical to the GL2 version (in Mesa3D it's just an alias)
 		qglStencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC)GLimp_ExtensionPointer( "glStencilOpSeparateATI" );
 	} else {
-		common->Printf( "X..don't have glStencilOpSeparateATI() or (GL2.0+) glStencilOpSeparate()\n" );
+		common->DPrintf( "X..don't have glStencilOpSeparateATI() or (GL2.0+) glStencilOpSeparate()\n" );
 		qglStencilOpSeparate = NULL;
 	}
 
@@ -553,14 +553,14 @@ static void R_CheckPortableExtensions( void ) {
 			glConfig.glDebugOutputAvailable = true;
 			qglDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC)GLimp_ExtensionPointer( "glDebugMessageCallbackARB" );
 			if ( r_glDebugContext.GetBool() ) {
-				common->Printf( "...using GL_ARB_debug_output (r_glDebugContext is set)\n" );
+				common->DPrintf( "...using GL_ARB_debug_output (r_glDebugContext is set)\n" );
 				qglDebugMessageCallbackARB(DebugCallback, NULL);
 				qglEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 			} else {
-				common->Printf( "...found GL_ARB_debug_output, but not using it (r_glDebugContext is not set)\n" );
+				common->DPrintf( "...found GL_ARB_debug_output, but not using it (r_glDebugContext is not set)\n" );
 			}
 		} else {
-			common->Printf( "X..GL_ARB_debug_output not found\n" );
+			common->DPrintf( "X..GL_ARB_debug_output not found\n" );
 			qglDebugMessageCallbackARB = NULL;
 			if ( r_glDebugContext.GetBool() ) {
 				common->Warning( "r_glDebugContext is set, but can't be used because GL_ARB_debug_output is not supported" );
@@ -569,12 +569,12 @@ static void R_CheckPortableExtensions( void ) {
 	} else {
 		if ( strstr( glConfig.extensions_string, "GL_ARB_debug_output" ) ) {
 			if ( r_glDebugContext.GetBool() ) {
-				common->Printf( "...found GL_ARB_debug_output, but not using it (no debug context)\n" );
+				common->DPrintf( "...found GL_ARB_debug_output, but not using it (no debug context)\n" );
 			} else {
-				common->Printf( "...found GL_ARB_debug_output, but not using it (r_glDebugContext is not set)\n" );
+				common->DPrintf( "...found GL_ARB_debug_output, but not using it (r_glDebugContext is not set)\n" );
 			}
 		} else {
-			common->Printf( "X..GL_ARB_debug_output not found\n" );
+			common->DPrintf( "X..GL_ARB_debug_output not found\n" );
 		}
 	}
 }

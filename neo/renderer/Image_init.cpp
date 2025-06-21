@@ -1040,7 +1040,7 @@ idImage::Reload
 void idImage::Reload( bool checkPrecompressed, bool force ) {
 	// always regenerate functional images
 	if ( generatorFunction ) {
-		common->DPrintf( "regenerating" S_COLOR_GREEN " %s.\n", imgName.c_str() );
+		common->DPrintf( "..regenerating" S_COLOR_WHITE " '%s'.\n", imgName.c_str() );
 		generatorFunction( this );
 		return;
 	}
@@ -1060,7 +1060,7 @@ void idImage::Reload( bool checkPrecompressed, bool force ) {
 		}
 	}
 
-	common->DPrintf( "reloading" S_COLOR_GREEN " %s.\n", imgName.c_str() );
+	common->DPrintf( "...reloading" S_COLOR_WHITE " '%s'.\n", imgName.c_str() );
 
 	PurgeImage();
 

@@ -382,34 +382,6 @@ private:
 	void				Event_Activate( idEntity *activator );
 };
 
-
-/*
-===============================================================================
-
-idTarget_Tip
-
-===============================================================================
-*/
-
-class idTarget_Tip : public idTarget {
-public:
-	CLASS_PROTOTYPE( idTarget_Tip );
-
-						idTarget_Tip( void );
-
-	void				Spawn( void );
-
-	void				Save( idSaveGame *savefile ) const;
-	void				Restore( idRestoreGame *savefile );
-
-private:
-	idVec3				playerPos;
-
-	void				Event_Activate( idEntity *activator );
-	void				Event_TipOff( void );
-	void				Event_GetPlayerPos( void );
-};
-
 /*
 ===============================================================================
 

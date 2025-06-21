@@ -1209,7 +1209,6 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idTarget_LockDoor)
 	REGISTER(idTarget_CallObjectFunction)
 	REGISTER(idTarget_EnableLevelWeapons)
-	REGISTER(idTarget_Tip)
 	REGISTER(idTarget_RemoveWeapons)
 	REGISTER(idTarget_LevelTrigger)
 	REGISTER(idTarget_EnableStamina)

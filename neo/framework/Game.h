@@ -49,7 +49,6 @@ typedef struct {
 	char		sessionCommand[MAX_STRING_CHARS];	// "map", "disconnect", "victory", etc
 	int			consistencyHash;					// used to check for network game divergence
 	int			health;
-	int			heartRate;
 	int			stamina;
 	int			combat;
 	bool		syncNextGameFrame;					// used when cinematics are skipped to prevent session from simulating several game frames to

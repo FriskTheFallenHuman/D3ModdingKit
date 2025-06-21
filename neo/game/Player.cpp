@@ -71,7 +71,6 @@ const idEventDef EV_Player_GetPreviousWeapon( "getPreviousWeapon", NULL, 's' );
 const idEventDef EV_Player_SelectWeapon( "selectWeapon", "s" );
 const idEventDef EV_Player_GetWeaponEntity( "getWeaponEntity", NULL, 'e' );
 const idEventDef EV_Player_ExitTeleporter( "exitTeleporter" );
-const idEventDef EV_Player_HideTip( "hideTip" );
 const idEventDef EV_Player_LevelTrigger( "levelTrigger" );
 const idEventDef EV_SpectatorTouch( "spectatorTouch", "et" );
 #ifdef _D3XP
@@ -97,7 +96,6 @@ CLASS_DECLARATION( idActor, idPlayer )
 	EVENT( EV_Player_SelectWeapon,			idPlayer::Event_SelectWeapon )
 	EVENT( EV_Player_GetWeaponEntity,		idPlayer::Event_GetWeaponEntity )
 	EVENT( EV_Player_ExitTeleporter,		idPlayer::Event_ExitTeleporter )
-	EVENT( EV_Player_HideTip,				idPlayer::Event_HideTip )
 	EVENT( EV_Player_LevelTrigger,			idPlayer::Event_LevelTrigger )
 	EVENT( EV_Gibbed,						idPlayer::Event_Gibbed )
 #ifdef _D3XP
@@ -348,12 +346,7 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 
 	// weapons are stored as a number for persistant data, but as strings in the entityDef
 	weapons	= dict.GetInt( "weapon_bits", "0" );
-
-	if ( g_skill.GetInteger() >= 3 ) {
-		Give( owner, dict, "weapon", dict.GetString( "weapon_nightmare" ), NULL, false );
-	} else {
-		Give( owner, dict, "weapon", dict.GetString( "weapon" ), NULL, false );
-	}
+	Give( owner, dict, "weapon", dict.GetString( "weapon" ), NULL, false );
 
 	num = dict.GetInt( "levelTriggers" );
 	for ( i = 0; i < num; i++ ) {
@@ -1016,10 +1009,6 @@ idPlayer::idPlayer() {
 	enviroSuitLight			= NULL;
 #endif
 
-	heartRate				= BASE_HEARTRATE;
-	heartInfo.Init( 0, 0, 0, 0 );
-	lastHeartAdjust			= 0;
-	lastHeartBeat			= 0;
 	lastDmgTime				= 0;
 	deathClearContentsTime	= 0;
 	lastArmorPulse			= -10000;
@@ -1146,7 +1135,6 @@ idPlayer::idPlayer() {
 	lastSpectateTeleport	= 0;
 	tourneyLine				= 0;
 	hiddenWeapon			= false;
-	tipUp					= false;
 	teleportEntity			= NULL;
 	teleportKiller			= -1;
 	respawning				= false;
@@ -1259,9 +1247,6 @@ void idPlayer::Init( void ) {
 
 	lastDmgTime				= 0;
 	lastArmorPulse			= -10000;
-	lastHeartAdjust			= 0;
-	lastHeartBeat			= 0;
-	heartInfo.Init( 0, 0, 0, 0 );
 
 	bobCycle				= 0;
 	bobFrac					= 0.0f;
@@ -1324,9 +1309,6 @@ void idPlayer::Init( void ) {
 	SetupWeaponEntity();
 	currentWeapon = -1;
 	previousWeapon = -1;
-
-	heartRate = BASE_HEARTRATE;
-	AdjustHeartRate( BASE_HEARTRATE, 0.0f, 0.0f, true );
 
 	idealLegsYaw = 0.0f;
 	legsYaw = 0.0f;
@@ -1444,7 +1426,6 @@ void idPlayer::Init( void ) {
 	lastTeleFX			= -9999;
 
 	hiddenWeapon		= false;
-	tipUp				= false;
 	teleportEntity		= NULL;
 	teleportKiller		= -1;
 	leader				= false;
@@ -1617,8 +1598,6 @@ void idPlayer::Spawn( void ) {
 		hud->StateChanged( gameLocal.time );
 	}
 
-	tipUp = false;
-
 	if ( inventory.levelTriggers.Num() ) {
 		PostEventMS( &EV_Player_LevelTrigger, 0 );
 	}
@@ -1742,15 +1721,6 @@ void idPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteInt( hudPowerupDuration );
 #endif
 
-	savefile->WriteInt( heartRate );
-
-	savefile->WriteFloat( heartInfo.GetStartTime() );
-	savefile->WriteFloat( heartInfo.GetDuration() );
-	savefile->WriteFloat( heartInfo.GetStartValue() );
-	savefile->WriteFloat( heartInfo.GetEndValue() );
-
-	savefile->WriteInt( lastHeartAdjust );
-	savefile->WriteInt( lastHeartBeat );
 	savefile->WriteInt( lastDmgTime );
 	savefile->WriteInt( deathClearContentsTime );
 	savefile->WriteBool( doingDeathSkin );
@@ -1883,8 +1853,6 @@ void idPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteInt( oldMouseX );
 	savefile->WriteInt( oldMouseY );
 
-	savefile->WriteBool( tipUp );
-
 	savefile->WriteInt( lastDamageDef );
 	savefile->WriteVec3( lastDamageDir );
 	savefile->WriteInt( lastDamageLocation );
@@ -1975,19 +1943,6 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 	savefile->ReadInt( hudPowerupDuration );
 #endif
 
-	savefile->ReadInt( heartRate );
-
-	savefile->ReadFloat( set );
-	heartInfo.SetStartTime( set );
-	savefile->ReadFloat( set );
-	heartInfo.SetDuration( set );
-	savefile->ReadFloat( set );
-	heartInfo.SetStartValue( set );
-	savefile->ReadFloat( set );
-	heartInfo.SetEndValue( set );
-
-	savefile->ReadInt( lastHeartAdjust );
-	savefile->ReadInt( lastHeartBeat );
 	savefile->ReadInt( lastDmgTime );
 	savefile->ReadInt( deathClearContentsTime );
 	savefile->ReadBool( doingDeathSkin );
@@ -2139,8 +2094,6 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 
 	savefile->ReadInt( oldMouseX );
 	savefile->ReadInt( oldMouseY );
-
-	savefile->ReadBool( tipUp );
 
 	savefile->ReadInt( lastDamageDef );
 	savefile->ReadVec3( lastDamageDir );
@@ -2709,7 +2662,6 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 	_hud->SetStateInt( "player_health", health );
 	_hud->SetStateInt( "player_stamina", staminapercentage );
 	_hud->SetStateInt( "player_armor", inventory.armor );
-	_hud->SetStateInt( "player_hr", heartRate );
 	_hud->SetStateInt( "player_nostamina", ( max_stamina == 0 ) ? 1 : 0 );
 
 	_hud->HandleNamedEvent( "updateArmorHealthAir" );
@@ -3002,12 +2954,6 @@ void idPlayer::FireWeapon( void ) {
 			NextBestWeapon();
 		}
 	}
-
-	if ( hud ) {
-		if ( tipUp ) {
-			HideTip();
-		}
-	}
 }
 
 /*
@@ -3071,13 +3017,6 @@ bool idPlayer::Give( const char *statname, const char *value ) {
 		if ( stamina > 100 ) {
 			stamina = 100;
 		}
-
-	} else if ( !idStr::Icmp( statname, "heartRate" ) ) {
-		heartRate += atoi( value );
-		if ( heartRate > MAX_HEARTRATE ) {
-			heartRate = MAX_HEARTRATE;
-		}
-
 	} else if ( !idStr::Icmp( statname, "air" ) ) {
 		if ( airTics >= pm_airTics.GetInteger() ) {
 			return false;
@@ -4349,10 +4288,6 @@ void idPlayer::UpdateWeapon( void ) {
 		}
 	}
 
-	if ( hiddenWeapon && tipUp && usercmd.buttons & BUTTON_ATTACK ) {
-		HideTip();
-	}
-
 	if ( g_dragEntity.GetBool() ) {
 		StopFiring();
 		weapon.GetEntity()->LowerWeapon();
@@ -5183,116 +5118,6 @@ void idPlayer::UpdateViewAngles( void ) {
 
 	// save in the log for analyzing weapon angle offsets
 	loggedViewAngles[ gameLocal.framenum & (NUM_LOGGED_VIEW_ANGLES-1) ] = viewAngles;
-}
-
-/*
-==============
-idPlayer::AdjustHeartRate
-
-Player heartrate works as follows
-
-DEF_HEARTRATE is resting heartrate
-
-Taking damage when health is above 75 adjusts heart rate by 1 beat per second
-Taking damage when health is below 75 adjusts heart rate by 5 beats per second
-Maximum heartrate from damage is MAX_HEARTRATE
-
-Firing a weapon adds 1 beat per second up to a maximum of COMBAT_HEARTRATE
-
-Being at less than 25% stamina adds 5 beats per second up to ZEROSTAMINA_HEARTRATE
-
-All heartrates are target rates.. the heart rate will start falling as soon as there have been no adjustments for 5 seconds
-Once it starts falling it always tries to get to DEF_HEARTRATE
-
-The exception to the above rule is upon death at which point the rate is set to DYING_HEARTRATE and starts falling
-immediately to zero
-
-Heart rate volumes go from zero ( -40 db for DEF_HEARTRATE to 5 db for MAX_HEARTRATE ) the volume is
-scaled linearly based on the actual rate
-
-Exception to the above rule is once the player is dead, the dying heart rate starts at either the current volume if
-it is audible or -10db and scales to 8db on the last few beats
-==============
-*/
-void idPlayer::AdjustHeartRate( int target, float timeInSecs, float delay, bool force ) {
-
-	if ( heartInfo.GetEndValue() == target ) {
-		return;
-	}
-
-	if ( AI_DEAD && !force ) {
-		return;
-	}
-
-	lastHeartAdjust = gameLocal.time;
-
-	heartInfo.Init( gameLocal.time + delay * 1000, timeInSecs * 1000, heartRate, target );
-}
-
-/*
-==============
-idPlayer::GetBaseHeartRate
-==============
-*/
-int idPlayer::GetBaseHeartRate( void ) {
-	int base = idMath::FtoiFast( ( BASE_HEARTRATE + LOWHEALTH_HEARTRATE_ADJ ) - ( (float)health / 100.0f ) * LOWHEALTH_HEARTRATE_ADJ );
-	int rate = idMath::FtoiFast( base + ( ZEROSTAMINA_HEARTRATE - base ) * ( 1.0f - stamina / pm_stamina.GetFloat() ) );
-	int diff = ( lastDmgTime ) ? gameLocal.time - lastDmgTime : 99999;
-	rate += ( diff < 5000 ) ? ( diff < 2500 ) ? ( diff < 1000 ) ? 15 : 10 : 5 : 0;
-	return rate;
-}
-
-/*
-==============
-idPlayer::SetCurrentHeartRate
-==============
-*/
-void idPlayer::SetCurrentHeartRate( void ) {
-
-	int base = idMath::FtoiFast( ( BASE_HEARTRATE + LOWHEALTH_HEARTRATE_ADJ ) - ( (float) health / 100.0f ) * LOWHEALTH_HEARTRATE_ADJ );
-
-	if ( PowerUpActive( ADRENALINE )) {
-		heartRate = 135;
-	} else {
-		heartRate = idMath::FtoiFast( heartInfo.GetCurrentValue( gameLocal.time ) );
-		int currentRate = GetBaseHeartRate();
-		if ( health >= 0 && gameLocal.time > lastHeartAdjust + 2500 ) {
-			AdjustHeartRate( currentRate, 2.5f, 0.0f, false );
-		}
-	}
-
-	int bps = idMath::FtoiFast( 60.0f / heartRate * 1000.0f );
-	if ( gameLocal.time - lastHeartBeat > bps ) {
-		int dmgVol = DMG_VOLUME;
-		int deathVol = DEATH_VOLUME;
-		int zeroVol = ZERO_VOLUME;
-		float pct = 0.0;
-		if ( heartRate > BASE_HEARTRATE && health > 0 ) {
-			pct = (float)(heartRate - base) / (MAX_HEARTRATE - base);
-			pct *= ((float)dmgVol - (float)zeroVol);
-		} else if ( health <= 0 ) {
-			pct = (float)(heartRate - DYING_HEARTRATE) / (BASE_HEARTRATE - DYING_HEARTRATE);
-			if ( pct > 1.0f ) {
-				pct = 1.0f;
-			} else if (pct < 0.0f) {
-				pct = 0.0f;
-			}
-			pct *= ((float)deathVol - (float)zeroVol);
-		}
-
-		pct += (float)zeroVol;
-
-		if ( pct != zeroVol ) {
-			StartSound( "snd_heartbeat", SND_CHANNEL_HEART, SSF_PRIVATE_SOUND, false, NULL );
-			// modify just this channel to a custom volume
-			soundShaderParms_t	parms;
-			memset( &parms, 0, sizeof( parms ) );
-			parms.volume = pct;
-			refSound.referenceSound->ModifySound( SND_CHANNEL_HEART, &parms );
-		}
-
-		lastHeartBeat = gameLocal.time;
-	}
 }
 
 /*
@@ -6386,7 +6211,6 @@ void idPlayer::Think( void ) {
 
 		// not done on clients for various reasons. don't do it on server and save the sound channel for other things
 		if ( !gameLocal.isMultiplayer ) {
-			SetCurrentHeartRate();
 #ifdef _D3XP
 			float scale = new_g_damageScale;
 #else
@@ -6612,10 +6436,6 @@ bool idPlayer::CanGive( const char *statname, const char *value ) {
 			return false;
 		}
 		return true;
-
-	} else if ( !idStr::Icmp( statname, "heartRate" ) ) {
-		return true;
-
 	} else if ( !idStr::Icmp( statname, "air" ) ) {
 		if ( airTics >= pm_airTics.GetInteger() ) {
 			return false;
@@ -6755,9 +6575,6 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 		AI_PAIN = true;
 		return;
 	}
-
-	heartInfo.Init( 0, 0, 0, BASE_HEARTRATE );
-	AdjustHeartRate( DEAD_HEARTRATE, 10.0f, 0.0f, true );
 
 	if ( !g_testDeath.GetBool() ) {
 		playerView.Fade( colorBlack, 12000 );
@@ -8749,43 +8566,6 @@ void idPlayer::Show( void ) {
 	if ( weap ) {
 		weap->ShowWorldModel();
 	}
-}
-
-/*
-===============
-idPlayer::ShowTip
-===============
-*/
-void idPlayer::ShowTip( const char *title, const char *tip, bool autoHide ) {
-	if ( tipUp ) {
-		return;
-	}
-	hud->SetStateString( "tip", tip );
-	hud->SetStateString( "tiptitle", title );
-	hud->HandleNamedEvent( "tipWindowUp" );
-	if ( autoHide ) {
-		PostEventSec( &EV_Player_HideTip, 5.0f );
-	}
-	tipUp = true;
-}
-
-/*
-===============
-idPlayer::HideTip
-===============
-*/
-void idPlayer::HideTip( void ) {
-	hud->HandleNamedEvent( "tipWindowDown" );
-	tipUp = false;
-}
-
-/*
-===============
-idPlayer::Event_HideTip
-===============
-*/
-void idPlayer::Event_HideTip( void ) {
-	HideTip();
 }
 
 /*

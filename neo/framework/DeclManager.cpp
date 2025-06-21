@@ -635,10 +635,10 @@ int idDeclFile::LoadAndParse() {
 	idStr finalPreprocessedBuffer;
 
 	// load the text
-	common->DPrintf( "Loading " S_COLOR_GREEN "'%s'\n", fileName.c_str() );
+	common->DPrintf( "..loading " S_COLOR_WHITE "'%s'\n", fileName.c_str() );
 	length = fileSystem->ReadFile( fileName, (void **)&buffer, &timestamp );
 	if ( length == -1 ) {
-		common->FatalError( "couldn't load " S_COLOR_GREEN "%s", fileName.c_str() );
+		common->FatalError( "couldn't load " S_COLOR_WHITE "%s", fileName.c_str() );
 		return 0;
 	}
 

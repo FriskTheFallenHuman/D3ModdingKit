@@ -495,7 +495,7 @@ void idCommonLocal::DPrintf( const char *fmt, ... ) {
 	bool temp = com_refreshOnPrint;
 	com_refreshOnPrint = false;
 
-	Printf( S_COLOR_CYAN "[INFO]: " S_COLOR_WHITE "%s", msg );
+	Printf( S_COLOR_GRAY "%s", msg );
 
 	com_refreshOnPrint = temp;
 }

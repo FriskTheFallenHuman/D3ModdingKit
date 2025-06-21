@@ -2547,7 +2547,6 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 
 		if ( !isMultiplayer && player ) {
 			ret.health = player->health;
-			ret.heartRate = player->heartRate;
 			ret.stamina = idMath::FtoiFast( player->stamina );
 			// combat is a 0-100 value based on lastHitTime and lastDmgTime
 			// each make up 50% of the time spread over 10 seconds

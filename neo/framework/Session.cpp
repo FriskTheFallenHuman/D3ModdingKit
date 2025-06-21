@@ -2666,7 +2666,6 @@ void idSessionLocal::RunGameTic() {
 		loggedUsercmds[logIndex].consistencyHash = ret.consistencyHash;
 		if (logIndex % 30 == 0 && statIndex < MAX_LOGGED_STATS) {
 			loggedStats[statIndex].health = ret.health;
-			loggedStats[statIndex].heartRate = ret.heartRate;
 			loggedStats[statIndex].stamina = ret.stamina;
 			loggedStats[statIndex].combat = ret.combat;
 			statIndex++;

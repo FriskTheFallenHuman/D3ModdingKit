@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 // needed by the gui system for the load game menu
 typedef struct {
 	short		health;
-	short		heartRate;
 	short		stamina;
 	short		combat;
 } logStats_t;

@@ -58,12 +58,6 @@ const int MAX_WEAPONS = 32;
 const int MAX_WEAPONS = 16;
 #endif
 
-const int DEAD_HEARTRATE = 0;			// fall to as you die
-const int LOWHEALTH_HEARTRATE_ADJ = 20; //
-const int DYING_HEARTRATE = 30;			// used for volumen calc when dying/dead
-const int BASE_HEARTRATE = 70;			// default
-const int ZEROSTAMINA_HEARTRATE = 115;  // no stamina
-const int MAX_HEARTRATE = 130;			// maximum
 const int ZERO_VOLUME = -40;			// volume at zero
 const int DMG_VOLUME = 5;				// volume when taking damage
 const int DEATH_VOLUME = 15;			// volume at death
@@ -275,10 +269,6 @@ public:
 
 	int						weapon_fists;
 
-	int						heartRate;
-	idInterpolate<float>	heartInfo;
-	int						lastHeartAdjust;
-	int						lastHeartBeat;
 	int						lastDmgTime;
 	int						deathClearContentsTime;
 	bool					doingDeathSkin;
@@ -466,9 +456,6 @@ public:
 
 	void					AddAIKill( void ) {}
 
-	void					AdjustHeartRate( int target, float timeInSecs, float delay, bool force );
-	void					SetCurrentHeartRate( void );
-	int						GetBaseHeartRate( void );
 	void					UpdateAir( void );
 	void					PlaySwimmingSplashSound( const char *soundName );
 
@@ -494,9 +481,6 @@ public:
 	void					UpdateHudWeapon( bool flashWeapon = true );
 	void					UpdateHudStats( idUserInterface *hud );
 	void					UpdateHudAmmo( idUserInterface *hud );
-	void					ShowTip( const char *title, const char *tip, bool autoHide );
-	void					HideTip( void );
-	bool					IsTipVisible( void ) { return tipUp; };
 
 	virtual void			ClientPredictionThink( void );
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
@@ -635,8 +619,6 @@ private:
 	int						oldMouseX;
 	int						oldMouseY;
 
-	bool					tipUp;
-
 	int						lastDamageDef;
 	idVec3					lastDamageDir;
 	int						lastDamageLocation;
@@ -723,7 +705,6 @@ private:
 	void					Event_SelectWeapon( const char *weaponName );
 	void					Event_GetWeaponEntity( void );
 	void					Event_ExitTeleporter( void );
-	void					Event_HideTip( void );
 	void					Event_LevelTrigger( void );
 	void					Event_Gibbed( void );
 

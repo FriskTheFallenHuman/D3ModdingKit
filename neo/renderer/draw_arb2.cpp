@@ -501,7 +501,7 @@ void R_LoadARBProgram( int progIndex ) {
 #if D3_INTEGRATE_SOFTPART_SHADERS
 	if ( progs[progIndex].ident == VPROG_SOFT_PARTICLE || progs[progIndex].ident == FPROG_SOFT_PARTICLE ) {
 		// these shaders are loaded directly from a string
-		common->Printf( "<internal> %s", progs[progIndex].name );
+		common->Printf( "<internal> ...loading '%s'", progs[progIndex].name );
 		const char* srcstr = (progs[progIndex].ident == VPROG_SOFT_PARTICLE) ? softpartVShader : softpartFShader;
 
 		// copy to stack memory
@@ -514,7 +514,7 @@ void R_LoadARBProgram( int progIndex ) {
 		idStr	fullPath = "glprogs/";
 		fullPath += progs[progIndex].name;
 		char	*fileBuffer;
-		common->Printf( "%s", fullPath.c_str() );
+		common->DPrintf( "...loading shader" S_COLOR_WHITE " '%s'", fullPath.c_str() );
 
 		// load the program even if we don't support it, so
 		// fs_copyfiles can generate cross-platform data dumps

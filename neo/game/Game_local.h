@@ -704,9 +704,7 @@ typedef enum {
 	SND_CHANNEL_BODY3,
 	SND_CHANNEL_WEAPON,
 	SND_CHANNEL_ITEM,
-	SND_CHANNEL_HEART,
 	SND_CHANNEL_DEMONIC,
-	SND_CHANNEL_RADIO,
 
 	// internal use only.  not exposed to script or framecommands.
 	SND_CHANNEL_AMBIENT,
