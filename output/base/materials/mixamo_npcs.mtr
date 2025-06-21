@@ -1,0 +1,46 @@
+Mixamo/SpecOpsA
+{
+	noSelfShadow
+	flesh
+
+	diffusemap		models/players/base/textures/specops/SpecOpsA_D.tga
+	bumpmap			models/players/base/textures/specops/SpecOpsA_N.tga
+	specularmap		models/players/base/textures/specops/SpecOpsA_S.tga
+}
+
+Mixamo/SpecOpsB
+{
+	noSelfShadow
+	flesh
+
+	diffusemap		models/players/base/textures/specops/SpecOpsB_D.tga
+	bumpmap			models/players/base/textures/specops/SpecOpsB_N.tga
+	specularmap		models/players/base/textures/specops/SpecOpsB_S.tga
+}
+
+Mixamo/SpecOpsC
+{
+	noSelfShadow
+	flesh
+
+	diffusemap		models/players/base/textures/specops/SpecOpsB_D.tga
+	bumpmap			models/players/base/textures/specops/SpecOpsB_N.tga
+	specularmap		models/players/base/textures/specops/SpecOpsB_S.tga
+}
+
+Mixamo/Bot
+{
+	noSelfShadow
+	metal
+
+	diffusemap		models/players/base/textures/bot/CHR_R_maximRed_MAT_baseColor.tga
+	bumpmap			models/players/base/textures/bot/CHR_R_maximRed_MAT_normal.tga
+	specularmap		models/players/base/textures/bot/CHR_R_maximRed_MAT_spec.tga
+}
+
+
+
+
+
+
+

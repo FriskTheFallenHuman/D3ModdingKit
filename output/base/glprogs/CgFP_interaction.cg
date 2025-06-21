@@ -1,0 +1,41 @@
+
+// Doom3 interaction fragment shader
+// Cass Everitt
+
+void main( 
+           float4      primaryColor       : COLOR0,
+	   float3      lightVector        : TEXCOORD0,
+	   float2      bumpST   	  : TEXCOORD1,
+           float2      lightFalloff       : TEXCOORD2,
+	   float3      lightProjection    : TEXCOORD3,
+	   float2      diffuseST	  : TEXCOORD4,
+	   float2      specularST	  : TEXCOORD5,
+	   float3      halfAngleVector    : TEXCOORD6,
+           uniform float4 diffuse,
+	   uniform float4 specular,
+	   uniform sampler2D   bumpImage,
+	   uniform sampler2D   lightFalloffImage,
+	   uniform sampler2D   lightImage,
+	   uniform sampler2D   diffuseImage,
+	   uniform sampler2D   specularImage,
+	   uniform samplerCUBE normalCubeMapImage,
+	   uniform sampler2D   specularTableImage,
+           out float4  color : COLOR)
+{
+   float3 L = texCUBE( normalCubeMapImage, lightVector ).xyz * 2 - 1;
+   float3 N = tex2D( bumpImage, bumpST ).xyz * 2 - 1;
+   float  NdotL = clamp( dot( N, L ), 0, 1 );
+
+   float4 Cd = diffuse * tex2D( diffuseImage, diffuseST );
+
+   float3 H = texCUBE( normalCubeMapImage, halfAngleVector ).xyz * 2 - 1;
+   float3 NdotH = clamp( dot( N, H ), 0, 1 );
+
+   float4 spec = specular * tex2D( specularTableImage, NdotH ).x;
+
+   float4 Cl = tex2Dproj( lightImage, lightProjection ) *
+               tex2D( lightFalloffImage, lightFalloff);
+
+   color = primaryColor * Cl * NdotL * ( Cd + spec * 2 * tex2D( specularImage, specularST ) );
+}
+

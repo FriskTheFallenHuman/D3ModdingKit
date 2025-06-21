@@ -1,0 +1,34 @@
+/***********************************************************************
+
+game_main.script
+
+This is the main script that is loaded before any level scripts load.
+
+***********************************************************************/
+
+// base defines and util functions
+#include "script/game_defs.script"
+#include "script/game_events.script"
+#include "script/game_util.script"
+#include "script/weapon_base.script"
+#include "script/ai_base.script"
+
+// weapons
+#include "script/weapon_unarmed.script"
+
+// ai
+#include "script/ai_character.script"
+#include "script/ai_player.script"
+
+// test scripts
+#include "script/ai_follower.script"
+
+void game_main() {
+	sys.print( "Entering game_main()\n");
+
+	//
+	// Do any script setup here
+	//
+
+	sys.print( "Exiting game_main()\n" );
+}

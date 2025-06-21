@@ -32,18 +32,18 @@ If you have questions concerning this license or the applicable additional terms
 /*
 ===============================================================================
 
-	Physics object for a liquid.  This class contains physics properties for a
+	Physics object for a liquid.  This class contains physics properties for a 
 	given liquid.  Note: Liquid does not necessarily imply water.
 
 	This class does very little functionally as it relies on the other physics
 	classes to do the bouoyancy calculations.  It simply holds information and
 	allows the other object to deal with that information however they please.
 
-	As a side note, the difference between minSplashVelocity and
-	minWaveVelocity is that min splash is the minimum amount of velocity
+	As a side note, the difference between minSplashVelocity and 
+	minWaveVelocity is that min splash is the minimum amount of velocity 
 	before the liquid spawns a splash particle.  minWaveVelocity is to generate
-	a wave on the surface, not a splash.  It should be lower than min splash
-	velocity.  It's the reason some things won't splash but will still cause
+	a wave on the surface, not a splash.  It should be lower than min splash 
+	velocity.  It's the reason some things won't splash but will still cause 
 	ripples in the water (especially when surfacing)
 ===============================================================================
 */

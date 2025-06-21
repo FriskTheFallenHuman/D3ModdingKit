@@ -52,7 +52,11 @@ const int	LAND_RETURN_TIME = 300;
 const int	FOCUS_TIME = 300;
 const int	FOCUS_GUI_TIME = 500;
 
+#ifdef _D3XP
+const int MAX_WEAPONS = 32;
+#else
 const int MAX_WEAPONS = 16;
+#endif
 
 const int DEAD_HEARTRATE = 0;			// fall to as you die
 const int LOWHEALTH_HEARTRATE_ADJ = 20; //
@@ -74,12 +78,6 @@ struct idItemInfo {
 	idStr icon;
 };
 
-struct idObjectiveInfo {
-	idStr title;
-	idStr text;
-	idStr screenshot;
-};
-
 struct idLevelTriggerInfo {
 	idStr levelName;
 	idStr triggerName;
@@ -91,6 +89,13 @@ enum {
 	INVISIBILITY,
 	MEGAHEALTH,
 	ADRENALINE,
+#ifdef _D3XP
+	INVULNERABILITY,
+	HELLTIME,
+	ENVIROSUIT,
+	//HASTE,
+	ENVIROTIME,
+#endif
 	MAX_POWERUPS
 };
 
@@ -110,6 +115,19 @@ enum {
 	INFLUENCE_LEVEL3,			// slow player movement
 };
 
+#ifdef _D3XP
+typedef struct {
+	int ammo;
+	int rechargeTime;
+	char ammoName[128];
+} RechargeAmmo_t;
+
+typedef struct {
+	char		name[64];
+	idList<int>	toggleList;
+} WeaponToggle_t;
+#endif
+
 class idInventory {
 public:
 	int						maxHealth;
@@ -121,6 +139,10 @@ public:
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ MAX_POWERUPS ];
 
+#ifdef _D3XP
+	RechargeAmmo_t			rechargeAmmo[ AMMO_NUMTYPES ];
+#endif
+
 	// mp
 	int						ammoPredictTime;
 
@@ -129,19 +151,7 @@ public:
 	int						deplete_ammount;
 	int						nextArmorDepleteTime;
 
-	int						pdasViewed[4]; // 128 bit flags for indicating if a pda has been viewed
-
-	int						selPDA;
-	int						selEMail;
-	int						selVideo;
-	int						selAudio;
-	bool					pdaOpened;
-	bool					turkeyScore;
 	idList<idDict *>		items;
-	idStrList				pdas;
-	idStrList				pdaSecurity;
-	idStrList				videos;
-	idStrList				emails;
 
 	bool					ammoPulse;
 	bool					weaponPulse;
@@ -169,11 +179,15 @@ public:
 	int						WeaponIndexForAmmoClass( const idDict & spawnArgs, const char *ammo_classname ) const;
 	ammo_t					AmmoIndexForWeaponClass( const char *weapon_classname, int *ammoRequired );
 	const char *			AmmoPickupNameForIndex( ammo_t ammonum ) const;
-	void					AddPickupName( const char *name, const char *icon );
+	void					AddPickupName( const char *name, const char *icon, idPlayer* owner ); //_D3XP
 
 	int						HasAmmo( ammo_t type, int amount );
 	bool					UseAmmo( ammo_t type, int amount );
-	int						HasAmmo( const char *weapon_classname );			// looks up the ammo information for the weapon class first
+	int						HasAmmo( const char *weapon_classname, bool includeClip = false, idPlayer* owner = NULL );			// _D3XP
+
+#ifdef _D3XP
+	bool					HasEmptyClipCannotRefill(const char *weapon_classname, idPlayer* owner);
+#endif
 
 	void					UpdateArmor( void );
 
@@ -181,7 +195,12 @@ public:
 	int						nextItemNum;
 	int						onePickupTime;
 	idList<idItemInfo>		pickupItemNames;
-	idList<idObjectiveInfo>	objectiveNames;
+
+#ifdef _D3XP
+	void					InitRechargeAmmo(idPlayer *owner);
+	void					RechargeAmmo(idPlayer *owner);
+	bool					CanGive( idPlayer *owner, const idDict &spawnArgs, const char *statname, const char *value, int *idealWeapon );
+#endif
 };
 
 typedef struct {
@@ -202,6 +221,9 @@ public:
 		EVENT_ABORT_TELEPORTER,
 		EVENT_POWERUP,
 		EVENT_SPECTATE,
+#ifdef _D3XP
+		EVENT_PICKUPNAME,
+#endif
 		EVENT_MAXEVENTS
 	};
 
@@ -250,11 +272,7 @@ public:
 
 	idEntityPtr<idWeapon>	weapon;
 	idUserInterface *		hud;				// MP: is NULL if not local player
-	idUserInterface *		objectiveSystem;
-	bool					objectiveSystemOpen;
 
-	int						weapon_soulcube;
-	int						weapon_pda;
 	int						weapon_fists;
 
 	int						heartRate;
@@ -274,10 +292,14 @@ public:
 
 
 	bool					hiddenWeapon;		// if the weapon is hidden ( in noWeapons maps )
-	idEntityPtr<idProjectile> soulCubeProjectile;
 
 	// mp stuff
+#ifdef _D3XP
+	static idVec3			colorBarTable[ 8 ];
+#else
 	static idVec3			colorBarTable[ 5 ];
+#endif
+
 	int						spectator;
 	idVec3					colorBar;			// used for scoreboard and hud display
 	int						colorBarIndex;
@@ -295,6 +317,10 @@ public:
 	int						tourneyRank;		// for tourney cycling - the higher, the more likely to play next - server
 	int						tourneyLine;		// client side - our spot in the wait line. 0 means no info.
 	int						spawnedTime;		// when client first enters the game
+
+#ifdef CTF
+	bool					carryingFlag;		// is the player carrying the flag?
+#endif
 
 	idEntityPtr<idEntity>	teleportEntity;		// while being teleported, this is set to the entity we'll use for exit
 	int						teleportKiller;		// entity number of an entity killing us at teleporter exit
@@ -314,6 +340,17 @@ public:
 	idMat3					firstPersonViewAxis;
 
 	idDragEntity			dragEntity;
+
+#ifdef _D3XP
+	idFuncMountedObject	*	mountedObject;
+	idEntityPtr<idLight>	enviroSuitLight;
+
+	bool					healthRecharge;
+	int						lastHealthRechargeTime;
+	int						rechargeSpeed;
+
+	float					new_g_damageScale;
+#endif
 
 public:
 	CLASS_PROTOTYPE( idPlayer );
@@ -404,13 +441,6 @@ public:
 	void					RemoveInventoryItem( const char *name );
 	idDict *				FindInventoryItem( const char *name );
 
-	void					GivePDA( const char *pdaName, idDict *item );
-	void					GiveVideo( const char *videoName, idDict *item );
-	void					GiveEmail( const char *emailName );
-	void					GiveSecurity( const char *security );
-	void					GiveObjective( const char *title, const char *text, const char *screenshot );
-	void					CompleteObjective( const char *title );
-
 	bool					GivePowerUp( int powerup, int time );
 	void					ClearPowerUps( void );
 	bool					PowerUpActive( int powerup ) const;
@@ -434,8 +464,7 @@ public:
 	void					RemoveWeapon( const char *weap );
 	bool					CanShowWeaponViewmodel( void ) const;
 
-	void					AddAIKill( void );
-	void					SetSoulCubeProjectile( idProjectile *projectile );
+	void					AddAIKill( void ) {}
 
 	void					AdjustHeartRate( int target, float timeInSecs, float delay, bool force );
 	void					SetCurrentHeartRate( void );
@@ -443,17 +472,18 @@ public:
 	void					UpdateAir( void );
 	void					PlaySwimmingSplashSound( const char *soundName );
 
+#ifdef _D3XP
+	void					UpdatePowerupHud();
+#endif
+
 	virtual bool			HandleSingleGuiCommand( idEntity *entityGui, idLexer *src );
 	bool					GuiActive( void ) { return focusGUIent != NULL; }
 
 	void					PerformImpulse( int impulse );
 	void					Spectate( bool spectate );
-	void					TogglePDA( void );
 	void					ToggleScoreboard( void );
 	void					RouteGuiMouse( idUserInterface *gui );
 	void					UpdateHud( void );
-	const idDeclPDA *		GetPDA( void ) const;
-	const idDeclVideo *		GetVideo( int index );
 	void					SetInfluenceFov( float fov );
 	void					SetInfluenceView( const char *mtr, const char *skinname, float radius, idEntity *ent );
 	void					SetInfluenceLevel( int level );
@@ -464,14 +494,9 @@ public:
 	void					UpdateHudWeapon( bool flashWeapon = true );
 	void					UpdateHudStats( idUserInterface *hud );
 	void					UpdateHudAmmo( idUserInterface *hud );
-	void					Event_StopAudioLog( void );
-	void					StartAudioLog( void );
-	void					StopAudioLog( void );
 	void					ShowTip( const char *title, const char *tip, bool autoHide );
 	void					HideTip( void );
 	bool					IsTipVisible( void ) { return tipUp; };
-	void					ShowObjective( const char *obj );
-	void					HideObjective( void );
 
 	virtual void			ClientPredictionThink( void );
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
@@ -509,6 +534,24 @@ public:
 	virtual	void			DrawPlayerIcons( void );
 	virtual	void			HidePlayerIcons( void );
 	bool					NeedsIcon( void );
+
+#ifdef _D3XP
+	void					StartHealthRecharge(int speed);
+	void					StopHealthRecharge();
+
+	idStr					GetCurrentWeapon();
+
+	bool					CanGive( const char *statname, const char *value );
+
+	void					StopHelltime( bool quick = true );
+	void					PlayHelltimeStopSound();
+#endif
+
+#ifdef CTF
+	void					DropFlag( void );	// drop CTF item
+	void					ReturnFlag();
+	virtual void			FreeModelDef( void );
+#endif
 
 	bool					SelfSmooth( void );
 	void					SetSelfSmooth( bool b );
@@ -592,12 +635,7 @@ private:
 	int						oldMouseX;
 	int						oldMouseY;
 
-	idStr					pdaAudio;
-	idStr					pdaVideo;
-	idStr					pdaVideoWave;
-
 	bool					tipUp;
-	bool					objectiveUp;
 
 	int						lastDamageDef;
 	idVec3					lastDamageDir;
@@ -606,6 +644,14 @@ private:
 	bool					smoothedOriginUpdated;
 	idVec3					smoothedOrigin;
 	idAngles				smoothedAngles;
+
+#ifdef _D3XP
+	idHashTable<WeaponToggle_t>	weaponToggles;
+
+	int						hudPowerup;
+	int						lastHudPowerup;
+	int						hudPowerupDuration;
+#endif
 
 	// mp
 	bool					ready;					// from userInfo
@@ -658,11 +704,11 @@ private:
 	void					ClearFocus( void );
 	void					UpdateFocus( void );
 	void					UpdateLocation( void );
-	idUserInterface *		ActiveGui( void );
-	void					UpdatePDAInfo( bool updatePDASel );
-	int						AddGuiPDAData( const declType_t dataType, const char *listName, const idDeclPDA *src, idUserInterface *gui );
-	void					ExtractEmailInfo( const idStr &email, const char *scan, idStr &out );
-	void					UpdateObjectiveInfo( void );
+	idUserInterface *		ActiveGui( void ) { return focusUI; }
+
+#ifdef _D3XP
+	bool					WeaponAvailable( const char* name );
+#endif
 
 	void					UseVehicle( void );
 
@@ -676,14 +722,22 @@ private:
 	void					Event_GetPreviousWeapon( void );
 	void					Event_SelectWeapon( const char *weaponName );
 	void					Event_GetWeaponEntity( void );
-	void					Event_OpenPDA( void );
-	void					Event_PDAAvailable( void );
-	void					Event_InPDA( void );
 	void					Event_ExitTeleporter( void );
 	void					Event_HideTip( void );
 	void					Event_LevelTrigger( void );
 	void					Event_Gibbed( void );
+
+#ifdef _D3XP //BSM: Event to remove inventory items. Useful with powercells.
+	void					Event_GiveInventoryItem( const char* name );
+	void					Event_RemoveInventoryItem( const char* name );
+
 	void					Event_GetIdealWeapon( void );
+	void					Event_WeaponAvailable( const char* name );
+	void					Event_SetPowerupTime( int powerup, int time );
+	void					Event_IsPowerupActive( int powerup );
+	void					Event_StartWarp();
+	void					Event_StopHelltime( int mode );
+#endif
 };
 
 ID_INLINE bool idPlayer::IsReady( void ) {

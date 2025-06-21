@@ -116,6 +116,9 @@ public:
 	static bool					EventIsPosted( const idClass *obj, const idEventDef *evdef );
 	static void					ClearEventList( void );
 	static void					ServiceEvents( void );
+#ifdef _D3XP
+	static void					ServiceFastEvents();
+#endif
 	static void					Init( void );
 	static void					Shutdown( void );
 

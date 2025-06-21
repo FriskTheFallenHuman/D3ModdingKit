@@ -831,14 +831,6 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, newStage->vertexProgram );
 			qglEnable( GL_VERTEX_PROGRAM_ARB );
 
-			// megaTextures bind a lot of images and set a lot of parameters
-			if ( newStage->megaTexture ) {
-				newStage->megaTexture->SetMappingForSurface( tri );
-				idVec3	localViewer;
-				R_GlobalPointToLocal( surf->space->modelMatrix, backEnd.viewDef->renderView.vieworg, localViewer );
-				newStage->megaTexture->BindForViewOrigin( localViewer );
-			}
-
 			for ( int i = 0 ; i < newStage->numVertexParms ; i++ ) {
 				float	parm[4];
 				parm[0] = regs[ newStage->vertexParms[i][0] ];
@@ -865,9 +857,6 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 					GL_SelectTexture( i );
 					globalImages->BindNull();
 				}
-			}
-			if ( newStage->megaTexture ) {
-				newStage->megaTexture->Unbind();
 			}
 
 			GL_SelectTexture( 0 );

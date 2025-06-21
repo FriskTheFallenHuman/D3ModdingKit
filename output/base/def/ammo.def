@@ -1,0 +1,4 @@
+entityDef ammo_types
+{
+	"ammo_none"				"0"
+}

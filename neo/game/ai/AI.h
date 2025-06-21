@@ -146,6 +146,12 @@ extern const idEventDef AI_MuzzleFlash;
 extern const idEventDef AI_CreateMissile;
 extern const idEventDef AI_AttackMissile;
 extern const idEventDef AI_FireMissileAtTarget;
+#ifdef _D3XP
+extern const idEventDef AI_LaunchProjectile;
+extern const idEventDef AI_TriggerFX;
+extern const idEventDef AI_StartEmitter;
+extern const idEventDef AI_StopEmitter;
+#endif
 extern const idEventDef AI_AttackMelee;
 extern const idEventDef AI_DirectDamage;
 extern const idEventDef AI_JumpFrame;
@@ -168,6 +174,14 @@ typedef struct particleEmitter_s {
 	int					time;
 	jointHandle_t		joint;
 } particleEmitter_t;
+
+#ifdef _D3XP
+typedef struct funcEmitter_s {
+	char				name[64];
+	idFuncEmitter*		particle;
+	jointHandle_t		joint;
+} funcEmitter_t;
+#endif
 
 class idMoveState {
 public:
@@ -394,6 +408,12 @@ protected:
 	idVec3					lastReachableEnemyPos;
 	bool					wakeOnFlashlight;
 
+#ifdef _D3XP
+	bool					spawnClearMoveables;
+
+	idHashTable<funcEmitter_t> funcEmitters;
+#endif
+
 	// script variables
 	idScriptBool			AI_TALK;
 	idScriptBool			AI_DAMAGE;
@@ -524,6 +544,13 @@ protected:
 	void					UpdateParticles( void );
 	void					TriggerParticles( const char *jointName );
 
+#ifdef _D3XP
+	void					TriggerFX( const char* joint, const char* fx );
+	idEntity*				StartEmitter( const char* name, const char* joint, const char* particle );
+	idEntity*				GetEmitter( const char* name );
+	void					StopEmitter( const char* name );
+#endif
+
 	// AI script state management
 	void					LinkScriptVariables( void );
 	void					UpdateAIScript( void );
@@ -545,6 +572,7 @@ public:
 	idProjectile *			AttackMissile( const char *jointname );
 	idProjectile *			FireMissileAtTarget( const char *jointname, const char *targetname );
 	idEntity *				LaunchMissile( const idVec3 &org, const idAngles& ang );
+	void					LaunchProjectile( const char *entityDefName );
 	void					DirectDamage( idEntity *damageTarget, const char *damageDefName );
 	void					RadiusDamageFromJoint( const char *jointname, const char *damageDefName );
 	idPathCorner *			RandomPath( void );
@@ -592,9 +620,6 @@ public:
 	bool					TestMoveToPosition(const idVec3 &position );
 	bool					TestMeleeAttack( void );
 	bool					TestAnimAttack( const char *animname );
-	void					PreBurn( void );
-	void					Burn( void );
-	void					ClearBurn( void );
 	void					SetSmokeVisibility( int num, int on );
 	int						NumSmokeEmitters( void );
 	void					StopThinking( void );
@@ -643,6 +668,10 @@ public:
 	bool					CanReachEntity( idEntity *ent );
 	bool					CanReachEnemy( void );
 	idVec3					GetReachableEntityPosition( idEntity *ent );
+#ifdef _D3XP
+	void					MoveToPositionDirect( const idVec3 &pos );
+	void					AvoidObstacles( int ignore );
+#endif
 
 protected:
 
@@ -663,6 +692,9 @@ protected:
 	void					Script_AttackMissile( const char *jointname );
 	void					Script_FireMissileAtTarget( const char *jointname, const char *targetname );
 	void					Script_LaunchMissile( const idVec3& org, const idAngles& ang );
+#ifdef _D3XP
+	void					Script_LaunchProjectile( const char *entityDefName );
+#endif
 	void					Script_AttackMelee( const char *meleeDefName );
 	void					Script_DirectDamage( idEntity *damageTarget, const char *damageDefName );
 	void					Script_RadiusDamageFromJoint( const char *jointname, const char *damageDefName );
@@ -725,9 +757,6 @@ protected:
 	void					Script_TestMeleeAttack( void );
 	void					Script_TestAnimAttack( const char *animname );
 	void					Script_Shrivel( float shrivel_time );
-	void					Script_PreBurn( void );
-	void					Script_Burn( void );
-	void					Script_ClearBurn( void );
 	void					Script_SetSmokeVisibility( int num, int on );
 	void					Script_NumSmokeEmitters( void );
 	void					Script_StopThinking( void );
@@ -777,6 +806,15 @@ protected:
 	void					Script_CanReachEntity( idEntity *ent );
 	void					Script_CanReachEnemy( void );
 	void					Script_GetReachableEntityPosition( idEntity *ent );
+#ifdef _D3XP
+	void					Script_MoveToPositionDirect( const idVec3 &pos );
+	void					Script_AvoidObstacles( int ignore );
+	void					Script_TriggerFX( const char *joint, const char *fx );
+
+	void					Script_StartEmitter( const char *name, const char *joint, const char *particle );
+	void					Script_GetEmitter( const char *name );
+	void					Script_StopEmitter( const char *name );
+#endif
 };
 
 class idCombatNode : public idEntity {

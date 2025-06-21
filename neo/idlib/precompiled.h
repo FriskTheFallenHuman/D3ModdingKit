@@ -76,9 +76,6 @@ float Win_GetWindowScalingFactor(HWND window);
 #include "idlib/Lib.h"
 
 // framework
-#include "framework/BuildVersion.h"
-#include "framework/BuildDefines.h"
-#include "framework/Licensee.h"
 #include "framework/CmdSystem.h"
 #include "framework/CVarSystem.h"
 #include "framework/Common.h"
@@ -94,7 +91,6 @@ float Win_GetWindowScalingFactor(HWND window);
 #include "framework/DeclFX.h"
 #include "framework/DeclParticle.h"
 #include "framework/DeclAF.h"
-#include "framework/DeclPDA.h"
 
 // We have expression parsing and evaluation code in multiple places:
 // materials, sound shaders, and guis. We should unify them.
@@ -142,15 +138,9 @@ const int MAX_EXPRESSION_REGISTERS = 4096;
 
 #ifdef GAME_DLL
 
-#if defined(_D3XP)
-#include "d3xp/Game_local.h"
-#else
 #include "game/Game_local.h"
-#endif
 
 #else
-
-#include "framework/DemoChecksum.h"
 
 // framework
 #include "framework/Compressor.h"

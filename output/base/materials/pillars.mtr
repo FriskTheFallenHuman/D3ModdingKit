@@ -1,0 +1,45 @@
+models/pillars/pillar01
+{
+	stone
+
+	bumpmap addnormals(models/pillars/pillar01_local, heightmap(models/pillars/pillar01_h, 1))
+	diffusemap models/pillars/pillar01_d
+	specularmap models/pillars/pillar01_s
+}
+
+models/pillars/pillar_broken01
+{
+	stone
+
+	bumpmap addnormals(models/pillars/pillar_broken01_local, heightmap(models/pillars/pillar_broken01_h, 1))
+	diffusemap models/pillars/pillar_broken01_d
+	specularmap models/pillars/pillar_broken01_s
+}
+
+models/pillars/pillar_broken02
+{
+	stone
+
+	bumpmap addnormals(models/pillars/pillar_broken02_local, heightmap(models/pillars/pillar_broken02_h, 1))
+	diffusemap models/pillars/pillar_broken02_d
+	specularmap models/pillars/pillar_broken02_s
+}
+
+models/pillars/pillar_broken03
+{
+	stone
+
+	bumpmap addnormals(models/pillars/pillar_broken03_local, heightmap(models/pillars/pillar_broken03_h, 1))
+	diffusemap models/pillars/pillar_broken03_d
+	specularmap models/pillars/pillar_broken03_s
+}
+
+
+models/pillars/pillar_base01
+{
+	stone
+
+	bumpmap addnormals(models/pillars/pillar_base01_local, heightmap(models/pillars/pillar_base01_h, 1))
+	diffusemap models/pillars/pillar_base01_d
+	specularmap models/pillars/pillar_base01_s
+}

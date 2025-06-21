@@ -1,21 +1,235 @@
 #ifndef _CONFIG_H__
 #define _CONFIG_H__
 
+/*
+===============================================================================
+	Definitions for information that is related to a licensee's game name and location.
+	It includes some settings for the engine has well has other settings
+===============================================================================
+*/
+
+#define BUILD_NAME 				"@GAME_CONFG_NAME@"
+#define BUILD_ENGINE_VERSION	"@GAME_CONFG_NAME@ (v1.5.5pre)"
+const int BUILD_NUMBER			= 1305;
+#define BUILD_URL				"@GAME_CONFG_URL@"
+
 #define BUILD_OS				"@os@"
 #define BUILD_CPU				"@cpu@"
 #define BUILD_BRANCH			"@branch@"
+
+#if defined( _DEBUG )
+	#define	BUILD_TYPE			"-debug"
+#else
+	#define	BUILD_TYPE			"-release"
+#endif
 
 #define BUILD_LIBRARY_SUFFIX	"@CMAKE_SHARED_LIBRARY_SUFFIX@"
 
 #define BUILD_LIBDIR			"@libdir@"
 #define BUILD_DATADIR			"@datadir@"
 
-#cmakedefine HAVE_JPEG_MEM_SRC
+#ifdef ID_REPRODUCIBLE_BUILD
+	// for reproducible builds we hardcode values that would otherwise come from __DATE__ and __TIME__
+	// NOTE: remember to update esp. the date for (pre-) releases and RCs and the like
+	#define ID__DATE__  "Aug 15 2024"
+	#define ID__TIME__  "13:37:42"
+#else // not reproducible build, use __DATE__ and __TIME__ macros
+	#define ID__DATE__  __DATE__
+	#define ID__TIME__  __TIME__
+#endif
 
+/*!
+	The name of the game (path) whe're building.
+*/
+#define	BASE_GAMEDIR	"@GAME_CONFG_FOLDER@"
+
+/*!
+	The name of the file that gets written into.
+*/
+#define	CONFIG_FILE		"@GAME_CONFG_FILE@"
+
+/*!
+	Base folder where the source code lives.
+	This is only use for TypeInfo.
+*/
+#define SOURCE_CODE_BASE_FOLDER	"neo"
+
+/*!
+	The default master servers host address.
+*/
+#define MASTERSERVER_HOST_1	"shadowmavericks.com"
+#define MASTERSERVER_HOST_2	"master.333networks.com"
+#define MASTERSERVER_HOST_3	"master.frag-net.com"
+
+/*!
+	The default master server port that the game listens to.
+*/
+#define MASTERSERVER_PORT	"27900" // was 27650
+
+/*!
+	The default network server port that the game listens to.
+*/
+#define PORT_SERVER		27666
+
+/*!
+	Broadcast scan this many ports after PORT_SERVER so a single machine can run multiple servers.
+*/
+#define NUM_SERVER_PORTS	4
+
+/*!
+	see ASYNC_PROTOCOL_VERSION, use a different major for each game.
+*/
+#define ASYNC_PROTOCOL_MAJOR	1
+
+/*!
+	Savegame Version
+	Update when you can no longer maintain compatibility with previous savegames.
+	NOTE: a seperate core savegame version and game savegame version could be useful.
+*/
+#define SAVEGAME_VERSION	18
+
+/*!
+	Use a different major for each game, this is for rendering demos.
+*/
+#define RENDERDEMO_VERSION	1
+
+/*!
+	Information related to the engine tools.
+*/
+#ifdef _WIN32
+	// editor registry info
+	#define EDITOR_REGISTRY_KEY				"idStudio"
+
+	// editor info
+	#define EDITOR_WINDOWTEXT				"idStudio"
+
+	// win32 info classes
+	#define WIN32_CONSOLE_CLASS				"Game WinConsole"
+	#define DEBUGGER_WINDOW_CLASS			"Debugger Windows Class"
+#endif // _WIN32
+
+#define CONFIG_SPEC	"config.spec"
+
+/*
+===============================================================================
+	Engine definitions, this is used for building purposes.
+===============================================================================
+*/
+
+/*!
+	Enables debug version of idHeap.
+	All allocations via Mem_Alloc and the like are tagged with FILE/LINE data.
+	It allows to:
+		1. "memoryDump" or "memoryDumpCompressed" --- dump all memory blocks used to file
+		2. after exit --- writes memory leaks to memorydump.txt
+	NOTE: has additional effect when used with ID_REDIRECT_NEWDELETE (see below)
+*/
+//#define ID_DEBUG_MEMORY
+
+/*!
+	Redirects standard C++ new/delete to Mem_Alloc and the like (which used idHeap).
+	Defines global operator new/delete, so that normal allocations like "new CGrabber" go through idHeap too.
+	NOTE: if both ID_REDIRECT_NEWDELETE and ID_DEBUG_MEMORY are defined,
+	then "new" keyword is redefined with macro (needed to capture FILE/LINE info).
+*/
+//#define ID_REDIRECT_NEWDELETE
+
+/*!
+	Enables debug guards against using uninitialized data.
+	It does the following:
+		1. fills all idHeap-allocated memory with 0xCD trash
+		2. tries to detect which members of game objects (inherited from idClass) are not initialized properly.
+*/
+//#define ID_DEBUG_UNINITIALIZED_MEMORY
+
+/*!
+	Allows to use GameTypeInfo.h generated from game headers by TypeInfo parser.
+	This makes functions declared in gamesys/TypeInfo.h work properly, and as the result:
+		1. text representation of game state is dumped to file when game is saved (and compared on load)
+		2. messages about uninitialized members show member names
+*/
+//#define ID_USE_TYPEINFO
+
+/*!
+	If enabled, the console won't toggle upon ~, unless you start the binary with +set com_allowConsole 1
+	Ctrl+Alt+~ will always toggle the console no matter what
+*/
+#ifndef ID_CONSOLE_LOCK
+	#define ID_CONSOLE_LOCK 0
+#endif
+
+/*!
+	Useful for network debugging, turns off 'LAN' checks, all IPs are classified 'internet'
+*/
+#ifndef ID_NOLANADDRESS
+	#define ID_NOLANADDRESS 0
+#endif
+
+/*!
+	Let .dds be loaded from FS without altering pure state. only for developement.
+*/
+#ifndef ID_PURE_ALLOWDDS
+	#define ID_PURE_ALLOWDDS 0
+#endif
+
+/*!
+	build an exe with no CVAR_CHEAT controls.
+*/
+#ifndef ID_ALLOW_CHEATS
+	#define ID_ALLOW_CHEATS 0
+#endif
+
+/*!
+	verify checksums in clientinfo traffic
+	NOTE: this makes the network protocol incompatible
+*/
+#ifndef ID_CLIENTINFO_TAGS
+	#define ID_CLIENTINFO_TAGS 0
+#endif
+
+/*!
+	MayaImport doesn't use Curl
+*/
 #ifndef ID_MAYA_IMPORT
 	#cmakedefine ID_ENABLE_CURL
 #endif
 
+/*!
+	MayaImport: Set the maximun supported version
+*/
 #define MAYA_DLL_VERSION 		@MAYA_VERSION@
+
+// async network
+#define ASYNC_PROTOCOL_MINOR	(42)
+#define ASYNC_PROTOCOL_VERSION	(( ASYNC_PROTOCOL_MAJOR << 16 ) + ASYNC_PROTOCOL_MINOR)
+
+#define MAX_ASYNC_CLIENTS		(32)
+
+#define MAX_USERCMD_BACKUP		(256)
+#define MAX_USERCMD_DUPLICATION	(25)
+#define MAX_USERCMD_RELAY		(10)
+
+/*!
+	index 0 is hardcoded to be the idnet master
+	which leaves 4 to user customization.
+*/
+#define MAX_MASTER_SERVERS		(5)
+
+#define MAX_NICKLEN				(32)
+
+/*!
+	Max number of servers that will be scanned for at a single IP address.
+*/
+#define MAX_SERVER_PORTS		(8)
+
+// special game init ids
+#define GAME_INIT_ID_INVALID	(-1)
+#define GAME_INIT_ID_MAP_LOAD	(-2)
+
+// threads
+
+#define MAX_THREADS				(10)
+
+#cmakedefine HAVE_JPEG_MEM_SRC
 
 #endif

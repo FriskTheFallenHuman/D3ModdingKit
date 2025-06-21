@@ -53,6 +53,10 @@ extern const idEventDef AI_AnimDone;
 extern const idEventDef AI_SetBlendFrames;
 extern const idEventDef AI_GetBlendFrames;
 
+#ifdef _D3XP
+extern const idEventDef AI_SetState;
+#endif
+
 class idDeclParticle;
 
 class idAttachInfo {
@@ -172,6 +176,10 @@ public:
 	#endif
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
+#ifdef _D3XP
+	idEntity *				GetHeadEntity( void ) { return head.GetEntity(); };
+#endif
+
 protected:
 	friend class			idAnimState;
 
@@ -242,11 +250,14 @@ protected:
 
 	bool					allowPain;
 	bool					allowEyeFocus;
-	bool					finalBoss;
 
 	int						painTime;
 
 	idList<idAttachInfo>	attachments;
+
+#ifdef _D3XP
+	int						damageCap;
+#endif
 
 	virtual void			Gib( const idVec3 &dir, const char *damageDefName );
 
@@ -303,6 +314,14 @@ private:
 	void					Script_SetState( const char *name );
 	void					Script_GetState( void );
 	void					Script_GetHead( void );
+#ifdef _D3XP
+	void					Script_SetDamageGroupScale( const char* groupName, float scale);
+	void					Script_SetDamageGroupScaleAll( float scale );
+	void					Script_GetDamageGroupScale( const char* groupName );
+	void					Script_SetDamageCap( float _damageCap );
+	void					Script_SetWaitState( const char* waitState);
+	void					Script_GetWaitState( void );
+#endif
 
 public:
 	void					EnableEyeFocus( void );
@@ -339,6 +358,13 @@ public:
 	void					ScriptSetState( const char *name );
 	const char *			GetState( void );
 	idEntity *				GetHead( void );
+#ifdef _D3XP
+	void					SetDamageGroupScale( const char *groupName, float scale );
+	void					SetDamageGroupScaleAll( float scale );
+	float					GetDamageGroupScale( const char *groupName );
+	void					SetDamageCap( float _damageCap );
+	const char *			GetWaitState( void );
+#endif
 };
 
 #endif /* !__GAME_ACTOR_H__ */

@@ -68,7 +68,7 @@ public:
 	dword			Msize( void *p );				// return size of data block
 	void			Dump( void  );
 
-	void			AllocDefragBlock( void );		// hack for huge renderbumps
+	void			AllocDefragBlock( void );		// hack for huge normals
 
 private:
 

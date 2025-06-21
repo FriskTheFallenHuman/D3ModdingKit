@@ -71,6 +71,14 @@ const idEventDef AI_SetNextState( "setNextState", "s" );
 const idEventDef AI_SetState( "setState", "s" );
 const idEventDef AI_GetState( "getState", NULL, 's' );
 const idEventDef AI_GetHead( "getHead", NULL, 'e' );
+#ifdef _D3XP
+const idEventDef EV_SetDamageGroupScale( "setDamageGroupScale", "sf" );
+const idEventDef EV_SetDamageGroupScaleAll( "setDamageGroupScaleAll", "f" );
+const idEventDef EV_GetDamageGroupScale( "getDamageGroupScale", "s", 'f' );
+const idEventDef EV_SetDamageCap( "setDamageCap", "f" );
+const idEventDef EV_SetWaitState( "setWaitState" , "s" );
+const idEventDef EV_GetWaitState( "getWaitState", NULL, 's' );
+#endif
 
 CLASS_DECLARATION( idAFEntity_Gibbable, idActor )
 	EVENT( AI_EnableEyeFocus,			idActor::Script_EnableEyeFocus )
@@ -114,6 +122,14 @@ CLASS_DECLARATION( idAFEntity_Gibbable, idActor )
 	EVENT( AI_SetState,					idActor::Script_SetState )
 	EVENT( AI_GetState,					idActor::Script_GetState )
 	EVENT( AI_GetHead,					idActor::Script_GetHead )
+#ifdef _D3XP
+	EVENT( EV_SetDamageGroupScale,		idActor::Script_SetDamageGroupScale )
+	EVENT( EV_SetDamageGroupScaleAll,	idActor::Script_SetDamageGroupScaleAll )
+	EVENT( EV_GetDamageGroupScale,		idActor::Script_GetDamageGroupScale )
+	EVENT( EV_SetDamageCap,				idActor::Script_SetDamageCap )
+	EVENT( EV_SetWaitState,				idActor::Script_SetWaitState )
+	EVENT( EV_GetWaitState,				idActor::Script_GetWaitState )
+#endif
 END_CLASS
 
 /*
@@ -461,3 +477,59 @@ idActor::Script_GetHead
 void idActor::Script_GetHead( void ) {
 	idThread::ReturnEntity( GetHead() );
 }
+
+#ifdef _D3XP
+/*
+================
+idActor::Script_SetDamageGroupScale
+================
+*/
+void idActor::Script_SetDamageGroupScale( const char *groupName, float scale ) {
+	SetDamageGroupScale( groupName, scale );
+}
+
+/*
+================
+idActor::Script_SetDamageGroupScaleAll
+================
+*/
+void idActor::Script_SetDamageGroupScaleAll( float scale ) {
+	SetDamageGroupScaleAll( scale );
+}
+
+/*
+================
+idActor::Script_GetDamageGroupScale
+================
+*/
+void idActor::Script_GetDamageGroupScale( const char *groupName ) {
+	idThread::ReturnFloat( GetDamageGroupScale( groupName ) );
+}
+
+/*
+================
+idActor::Script_SetDamageCap
+================
+*/
+void idActor::Script_SetDamageCap( float _damageCap ) {
+	SetDamageCap( _damageCap );
+}
+
+/*
+================
+idActor::Script_SetWaitState
+================
+*/
+void idActor::Script_SetWaitState( const char *waitState ) {
+	SetWaitState( waitState );
+}
+
+/*
+================
+idActor::Script_GetWaitState
+================
+*/
+void idActor::Script_GetWaitState( void ) {
+	idThread::ReturnString( GetWaitState() );
+}
+#endif

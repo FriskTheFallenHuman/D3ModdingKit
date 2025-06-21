@@ -1,0 +1,44 @@
+// NOTE:  THIS FILE IS WAS GENERATE BY THE ENGINE
+// MANUAL EDITING MAY BE REQUIERED
+
+textures/concrete/concrete01
+{
+	diffusemap textures/concrete/concrete01_d
+	bumpmap addnormals ( textures/concrete/concrete01_local, heightmap ( textures/concrete/concrete01_h, 4 ) )
+	specularmap textures/concrete/concrete01_spec
+}
+
+textures/concrete/concrete02
+{
+	diffusemap textures/concrete/concrete02_d
+	bumpmap addnormals ( textures/concrete/concrete02_local, heightmap ( textures/concrete/concrete02_h, 4 ) )
+	specularmap textures/concrete/concrete02_spec
+}
+
+textures/concrete/concretetile01
+{
+	diffusemap textures/concrete/concretetile01_d
+	bumpmap addnormals ( textures/concrete/concretetile01_local, heightmap ( textures/concrete/concretetile01_h, 4 ) )
+	specularmap textures/concrete/concretetile01_spec
+}
+
+textures/concrete/concretetile02
+{
+	diffusemap textures/concrete/concretetile02_d
+	bumpmap addnormals ( textures/concrete/concretetile02_local, heightmap ( textures/concrete/concretetile02_h, 4 ) )
+	specularmap textures/concrete/concretetile02_spec
+}
+
+textures/concrete/concretewall01
+{
+	diffusemap textures/concrete/concretewall01_d
+	bumpmap addnormals ( textures/concrete/concretewall01_local, heightmap ( textures/concrete/concretewall01_h, 4 ) )
+	specularmap textures/concrete/concretewall01_spec
+}
+
+textures/concrete/concretewall02
+{
+	diffusemap textures/concrete/concretewall02_d
+	bumpmap addnormals ( textures/concrete/concretewall02_local, heightmap ( textures/concrete/concretewall02_h, 4 ) )
+	specularmap textures/concrete/concretewall02_spec
+}

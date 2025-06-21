@@ -1,0 +1,145 @@
+//==================================================
+// default footsteps
+//	these are used when the actor doesn't deserve a specific type
+//==================================================
+player_footstep_metal {
+	mindistance	1
+	maxdistance	22
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/metal/stepmetal_0.wav
+	sound/player/footsteps/metal/stepmetal_1.wav
+	sound/player/footsteps/metal/stepmetal_2.wav
+	sound/player/footsteps/metal/stepmetal_3.wav
+}
+
+player_footstep_metal2 {
+	mindistance	1
+	maxdistance	22
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/metal/stepmetal_4.wav
+	sound/player/footsteps/metal/stepmetal_5.wav
+	sound/player/footsteps/metal/stepmetal_6.wav
+	sound/player/footsteps/metal/stepmetal_7.wav
+}
+
+player_footstep_flesh {
+	mindistance	1
+	maxdistance	22
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/flesh/footflesh01.wav
+	sound/player/footsteps/flesh/footflesh02.wav
+	sound/player/footsteps/flesh/footflesh03.wav
+	sound/player/footsteps/flesh/footflesh04.wav
+	sound/player/footsteps/flesh/footflesh05.wav
+	sound/player/footsteps/flesh/footflesh06.wav
+}
+
+player_footstep_stone {
+	mindistance	1
+	maxdistance	14
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/stone/stepstone_1.wav
+	sound/player/footsteps/stone/stepstone_2.wav
+	sound/player/footsteps/stone/stepstone_3.wav
+	sound/player/footsteps/stone/stepstone_4.wav
+	sound/player/footsteps/stone/stepstone_5.wav
+	sound/player/footsteps/stone/stepstone_6.wav
+	sound/player/footsteps/stone/stepstone_7.wav
+	sound/player/footsteps/stone/stepstone_8.wav
+
+}
+
+player_footstep_grass {
+	mindistance	1
+	maxdistance	14
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/grass/stepgrass_0.wav
+	sound/player/footsteps/grass/stepgrass_1.wav
+	sound/player/footsteps/grass/stepgrass_2.wav
+	sound/player/footsteps/grass/stepgrass_3.wav
+	sound/player/footsteps/grass/stepgrass_4.wav
+	sound/player/footsteps/grass/stepgrass_5.wav
+	sound/player/footsteps/grass/stepgrass_6.wav
+	sound/player/footsteps/grass/stepgrass_7.wav
+	sound/player/footsteps/grass/stepgrass_8.wav
+
+}
+
+player_footstep_dirt {
+	mindistance	1
+	maxdistance	14
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/stone/stepdirt_1.wav
+	sound/player/footsteps/stone/stepdirt_2.wav
+	sound/player/footsteps/stone/stepdirt_3.wav
+	sound/player/footsteps/stone/stepdirt_4.wav
+	sound/player/footsteps/stone/stepdirt_5.wav
+	sound/player/footsteps/stone/stepdirt_6.wav
+	sound/player/footsteps/stone/stepdirt_7.wav
+	sound/player/footsteps/stone/stepdirt_8.wav
+
+}
+
+player_footstep_wood {
+	mindistance	1
+	maxdistance	22
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/wood/stepwood_1.wav
+	sound/player/footsteps/wood/stepwood_2.wav
+}
+
+player_footstep_tile {
+	mindistance	1
+	maxdistance	14
+	volume		-1
+	no_dups
+
+	sound/player/footsteps/stone/stepstone_1.wav
+	sound/player/footsteps/stone/stepstone_2.wav
+	sound/player/footsteps/stone/stepstone_3.wav
+	sound/player/footsteps/stone/stepstone_4.wav
+	sound/player/footsteps/stone/stepstone_5.wav
+}
+
+player_footstep_glass {
+	mindistance	1
+	maxdistance	22
+	volume		-12
+	no_dups
+
+	sound/player/footsteps/glass/footglass01.wav
+	sound/player/footsteps/glass/footglass02.wav
+	sound/player/footsteps/glass/footglass03.wav
+	sound/player/footsteps/glass/footglass04.wav
+	sound/player/footsteps/glass/footglass05.wav
+	sound/player/footsteps/glass/footglass06.wav
+	sound/player/footsteps/glass/footglass07.wav
+	sound/player/footsteps/glass/footglass08.wav
+	sound/player/footsteps/glass/footglass09.wav
+	sound/player/footsteps/glass/footglass10.wav
+
+}
+
+player_footstep_liquid {
+	mindistance	1
+	maxdistance	22
+	volume		-1
+	no_dups
+	
+	sound/player/footsteps/liquid/stepwater_1.wav
+	sound/player/footsteps/liquid/stepwater_2.wav
+}

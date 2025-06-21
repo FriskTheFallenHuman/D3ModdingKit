@@ -1,0 +1,96 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+TEMP	R0, R1, R2;
+MOV		result.texcoord[0], vertex.texcoord[0];
+MOV		result.color, program.local[1];
+END
+
+#======================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# registers
+TEMP	R0, R1, R2;
+
+# temps
+TEMP	TEMP_color;
+TEMP	TEMP_adjustedTC;
+TEMP	TEMP_unadjustedTC;
+TEMP	TEMP_warpFactor;
+
+# default parms
+PARAM	PARM_pointFive	= { 0.5, 0.5, 0.5, 0.5 };
+PARAM	PARM_one		= { 1, 1, 1, 1 };
+PARAM	PARM_default	= { 0, 0, 0, 1 };
+
+# program params
+PARAM	PARM_scale		= { 1, 0.9, 0.8, 1 };
+
+
+
+
+# =======================================
+# COMPUTE UNADJUSTED/ADJUSTED TEXCOORDS
+# =======================================
+MUL		TEMP_unadjustedTC, fragment.position, program.env[1];
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL		R0, fragment.position, program.env[1];
+
+# scale by the screen non-power-of-two-adjust
+MUL		R0, R0, program.env[0];
+
+
+
+
+
+# =======================================
+# COMPUTE WARP FACTOR
+# =======================================
+TXP		R0, TEMP_unadjustedTC, texture[1], 2D;
+MUL		R0, R0, fragment.color;
+MOV		R0.x, R0.z;
+SUB		TEMP_warpFactor, PARM_one, R0;
+
+# MOV		TEMP_color, R0;
+
+
+
+# =======================================
+# COMPUTE PRETURBED COORDS
+# =======================================
+MOV		R0, TEMP_unadjustedTC;
+
+MOV		R1, R0;
+RCP		R1.w, R1.w;
+MOV		R0.w, PARM_default;
+MUL		R0.xy, R0, R1.wwww;
+
+SUB		R0.xy, R0, PARM_pointFive;
+MUL		R0.xy, R0, TEMP_warpFactor;
+ADD		R0.xy, R0, PARM_pointFive;
+
+MUL		R0, R0, program.env[0];				# scale by the screen non-power-of-two-adjust
+
+
+
+# =======================================
+# FX CODE
+# =======================================
+TXP		TEMP_color, R0, texture[0], 2D;
+MUL		TEMP_color, TEMP_color, PARM_scale;
+
+
+
+
+# =======================================
+# FINAL DUMP
+# =======================================
+MOV		result.color.xyz, TEMP_color;
+
+
+
+
+
+END

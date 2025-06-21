@@ -143,6 +143,26 @@ void Cmd_ReloadScript_f( const idCmdArgs &args ) {
 	// recompile the scripts
 	gameLocal.program.Startup( SCRIPT_DEFAULT );
 
+#ifdef _D3XP
+	// loads a game specific main script file
+	idStr gamedir;
+	int i;
+	for ( i = 0; i < 2; i++ ) {
+		if ( i == 0 ) {
+			gamedir = cvarSystem->GetCVarString( "fs_game_base" );
+		} else if ( i == 1 ) {
+			gamedir = cvarSystem->GetCVarString( "fs_game" );
+		}
+		if ( gamedir.Length() > 0 ) {
+			idStr scriptFile = va( "script/%s_main.script", gamedir.c_str() );
+			if ( fileSystem->ReadFile(scriptFile.c_str(), NULL) > 0 ) {
+				gameLocal.program.CompileFile( scriptFile.c_str() );
+				gameLocal.program.FinishCompilation();
+			}
+		}
+	}
+#endif
+
 	// error out so that the user can rerun the scripts
 	gameLocal.Error( "Exiting map to reload scripts" );
 }
@@ -313,7 +333,7 @@ void Cmd_Give_f( const idCmdArgs &args ) {
 	}
 
 	if ( give_all || idStr::Icmp( name, "weapons" ) == 0 ) {
-		player->inventory.weapons = BIT( MAX_WEAPONS ) - 1;
+		player->inventory.weapons = 0xffffffff >> ( 32 - MAX_WEAPONS );
 		player->CacheWeapons();
 
 		if ( !give_all ) {
@@ -347,15 +367,37 @@ void Cmd_Give_f( const idCmdArgs &args ) {
 		return;
 	}
 
-	if ( idStr::Icmp( name, "pda" ) == 0 ) {
-		player->GivePDA( args.Argv(2), NULL );
+#ifdef _D3XP
+	if ( idStr::Icmp( name, "invulnerability" ) == 0 ) {
+		if ( args.Argc() > 2 ) {
+			player->GivePowerUp( INVULNERABILITY, atoi( args.Argv( 2 ) ) );
+		}
+		else {
+			player->GivePowerUp( INVULNERABILITY, 30000 );
+		}
 		return;
 	}
 
-	if ( idStr::Icmp( name, "video" ) == 0 ) {
-		player->GiveVideo( args.Argv(2), NULL );
+	if ( idStr::Icmp( name, "helltime" ) == 0 ) {
+		if ( args.Argc() > 2 ) {
+			player->GivePowerUp( HELLTIME, atoi( args.Argv( 2 ) ) );
+		}
+		else {
+			player->GivePowerUp( HELLTIME, 30000 );
+		}
 		return;
 	}
+
+	if ( idStr::Icmp( name, "envirosuit" ) == 0 ) {
+		if ( args.Argc() > 2 ) {
+			player->GivePowerUp( ENVIROSUIT, atoi( args.Argv( 2 ) ) );
+		}
+		else {
+			player->GivePowerUp( ENVIROSUIT, 30000 );
+		}
+		return;
+	}
+#endif
 
 	if ( !give_all && !player->Give( args.Argv(1), args.Argv(2) ) ) {
 		gameLocal.Printf( "unknown item\n" );
@@ -568,6 +610,24 @@ static void Cmd_Say( bool team, const idCmdArgs &args ) {
 		if ( player ) {
 			name = player->GetUserInfo()->GetString( "ui_name", "player" );
 		}
+
+#ifdef CTF
+		// Append the player's location to team chat messages in CTF
+		if ( gameLocal.mpGame.IsGametypeFlagBased() && team && player ) {
+			idLocationEntity *locationEntity = gameLocal.LocationForPoint( player->GetEyePosition() );
+
+			if ( locationEntity ) {
+				idStr temp = "[";
+				temp += locationEntity->GetLocation();
+				temp += "] ";
+				temp += text;
+				text = temp;
+			}
+
+		}
+#endif
+
+
 	} else {
 		name = "server";
 	}
@@ -1991,113 +2051,6 @@ static void Cmd_TestSave_f( const idCmdArgs &args ) {
 }
 
 /*
-==================
-Cmd_RecordViewNotes_f
-==================
-*/
-static void Cmd_RecordViewNotes_f( const idCmdArgs &args ) {
-	idPlayer *player;
-	idVec3 origin;
-	idMat3 axis;
-
-	if ( args.Argc() <= 3 ) {
-		return;
-	}
-
-	player = gameLocal.GetLocalPlayer();
-	if ( !player ) {
-		return;
-	}
-
-	player->GetViewPos( origin, axis );
-
-	// Argv(1) = filename for map (viewnotes/mapname/person)
-	// Argv(2) = note number (person0001)
-	// Argv(3) = comments
-
-	idStr str = args.Argv(1);
-	str.SetFileExtension( ".txt" );
-	idFile *file = fileSystem->OpenFileAppend( str );
-	if ( file ) {
-		file->WriteFloatString( "\"view\"\t( %s )\t( %s )\r\n", origin.ToString(), axis.ToString() );
-		file->WriteFloatString( "\"comments\"\t\"%s: %s\"\r\n\r\n", args.Argv(2), args.Argv(3) );
-		fileSystem->CloseFile( file );
-	}
-
-	idStr viewComments = args.Argv(1);
-	viewComments.StripLeading("viewnotes/");
-	viewComments += " -- Loc: ";
-	viewComments += origin.ToString();
-	viewComments += "\n";
-	viewComments += args.Argv(3);
-	player->hud->SetStateString( "viewcomments", viewComments );
-	player->hud->HandleNamedEvent( "showViewComments" );
-}
-
-/*
-==================
-Cmd_CloseViewNotes_f
-==================
-*/
-static void Cmd_CloseViewNotes_f( const idCmdArgs &args ) {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-
-	if ( !player ) {
-		return;
-	}
-
-	player->hud->SetStateString( "viewcomments", "" );
-	player->hud->HandleNamedEvent( "hideViewComments" );
-}
-
-/*
-==================
-Cmd_ShowViewNotes_f
-==================
-*/
-static void Cmd_ShowViewNotes_f( const idCmdArgs &args ) {
-	static idLexer parser( LEXFL_ALLOWPATHNAMES | LEXFL_NOSTRINGESCAPECHARS | LEXFL_NOSTRINGCONCAT | LEXFL_NOFATALERRORS );
-	idToken	token;
-	idPlayer *player;
-	idVec3 origin;
-	idMat3 axis;
-
-	player = gameLocal.GetLocalPlayer();
-
-	if ( !player ) {
-		return;
-	}
-
-	if ( !parser.IsLoaded() ) {
-		idStr str = "viewnotes/";
-		str += gameLocal.GetMapName();
-		str.StripFileExtension();
-		str += "/";
-		if ( args.Argc() > 1 ) {
-			str += args.Argv( 1 );
-		} else {
-			str += "comments";
-		}
-		str.SetFileExtension( ".txt" );
-		if ( !parser.LoadFile( str ) ) {
-			gameLocal.Printf( "No view notes for %s\n", gameLocal.GetMapName() );
-			return;
-		}
-	}
-
-	if ( parser.ExpectTokenString( "view" ) && parser.Parse1DMatrix( 3, origin.ToFloatPtr() ) &&
-		parser.Parse1DMatrix( 9, axis.ToFloatPtr() ) && parser.ExpectTokenString( "comments" ) && parser.ReadToken( &token ) ) {
-		player->hud->SetStateString( "viewcomments", token );
-		player->hud->HandleNamedEvent( "showViewComments" );
-		player->Teleport( origin, axis.ToAngles(), NULL );
-	} else {
-		parser.FreeSource();
-		player->hud->HandleNamedEvent( "hideViewComments" );
-		return;
-	}
-}
-
-/*
 =================
 FindEntityGUIs
 
@@ -2257,6 +2210,32 @@ void Cmd_NextGUI_f( const idCmdArgs &args ) {
 	player->Teleport( origin, angles, NULL );
 }
 
+#ifdef _D3XP
+void Cmd_SetActorState_f( const idCmdArgs &args ) {
+
+	if ( args.Argc() != 3 ) {
+		common->Printf( "usage: setActorState <entity name> <state>\n" );
+		return;
+	}
+
+	idEntity* ent;
+	ent = gameLocal.FindEntity( args.Argv( 1 ) );
+	if ( !ent ) {
+		gameLocal.Printf( "entity not found\n" );
+		return;
+	}
+
+
+	if(!ent->IsType(idActor::GetClassType())) {
+		gameLocal.Printf( "entity not an actor\n" );
+		return;
+	}
+
+	idActor* actor = (idActor*)ent;
+	actor->PostEventMS(&AI_SetState, 0, args.Argv(2));
+}
+#endif
+
 static void ArgCompletion_DefFile( const idCmdArgs &args, void(*callback)( const char *s ) ) {
 	cmdSystem->ArgCompletion_FolderExtension( args, callback, "def/", true, ".def", NULL );
 }
@@ -2369,9 +2348,6 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "gameError",				Cmd_GameError_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"causes a game error" );
 
 	cmdSystem->AddCommand( "disasmScript",			Cmd_DisasmScript_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"disassembles script" );
-	cmdSystem->AddCommand( "recordViewNotes",		Cmd_RecordViewNotes_f,		CMD_FL_GAME|CMD_FL_CHEAT,	"record the current view position with notes" );
-	cmdSystem->AddCommand( "showViewNotes",			Cmd_ShowViewNotes_f,		CMD_FL_GAME|CMD_FL_CHEAT,	"show any view notes for the current map, successive calls will cycle to the next note" );
-	cmdSystem->AddCommand( "closeViewNotes",		Cmd_CloseViewNotes_f,		CMD_FL_GAME|CMD_FL_CHEAT,	"close the view showing any notes for this map" );
 #ifdef ID_MAYA_IMPORT_TOOL
 	cmdSystem->AddCommand( "exportmodels",			Cmd_ExportModels_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"exports models", ArgCompletion_DefFile );
 #endif
@@ -2393,6 +2369,10 @@ void idGameLocal::InitConsoleCommands( void ) {
 	// localization help commands
 	cmdSystem->AddCommand( "nextGUI",				Cmd_NextGUI_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"teleport the player to the next func_static with a gui" );
 	cmdSystem->AddCommand( "testid",				Cmd_TestId_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"output the string for the specified id." );
+
+#ifdef _D3XP
+	cmdSystem->AddCommand( "setActorState",			Cmd_SetActorState_f,		CMD_FL_GAME|CMD_FL_CHEAT,	"Manually sets an actors script state", idGameLocal::ArgCompletion_EntityName );
+#endif
 }
 
 /*

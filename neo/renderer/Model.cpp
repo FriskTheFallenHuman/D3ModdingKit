@@ -293,9 +293,6 @@ void idRenderModelStatic::InitFromFile( const char *fileName ) {
 	} else if ( extension.Icmp( "lwo" ) == 0 ) {
 		loaded		= LoadLWO( name );
 		reloadable	= true;
-	} else if ( extension.Icmp( "flt" ) == 0 ) {
-		loaded		= LoadFLT( name );
-		reloadable	= true;
 #ifdef ID_MAYA_IMPORT_TOOL
 	} else if ( extension.Icmp( "ma" ) == 0 ) {
 		loaded		= LoadMA( name );
@@ -598,7 +595,6 @@ void idRenderModelStatic::FinishSurfaces() {
 		return;
 	}
 
-	// renderBump doesn't care about most of this
 	if ( fastLoad ) {
 		bounds.Zero();
 		for ( i = 0 ; i < surfaces.Num() ; i++ ) {
@@ -660,7 +656,7 @@ void idRenderModelStatic::FinishSurfaces() {
 	for ( i = 0 ; i < surfaces.Num() ; i++ ) {
 		const modelSurface_t	*surf = &surfaces[i];
 
-		R_CleanupTriangles( surf->geometry, surf->geometry->generateNormals, true, surf->shader->UseUnsmoothedTangents(), surf->shader->UseMikkTSpace()); // RBMIKKT_TANGENT
+		R_CleanupTriangles( surf->geometry, surf->geometry->generateNormals, true, surf->shader->UseUnsmoothedTangents() );
 		if ( surf->shader->SurfaceCastsShadow() ) {
 			totalVerts += surf->geometry->numVerts;
 			totalIndexes += surf->geometry->numIndexes;
@@ -824,13 +820,6 @@ bool idRenderModelStatic::ConvertASEToModelSurfaces( const struct aseModel_s *as
 
 		bool normalsParsed = mesh->normalsParsed;
 
-		// completely ignore any explict normals on surfaces with a renderbump command
-		// which will guarantee the best contours and least vertexes.
-		const char *rb = im1->GetRenderBump();
-		if ( rb && rb[0] ) {
-			normalsParsed = false;
-		}
-
 		// It seems like the tools our artists are using often generate
 		// verts and texcoords slightly separated that should be merged
 		// note that we really should combine the surfaces with common materials
@@ -840,7 +829,6 @@ bool idRenderModelStatic::ConvertASEToModelSurfaces( const struct aseModel_s *as
 		vRemap = (int *)R_StaticAlloc( mesh->numVertexes * sizeof( vRemap[0] ) );
 
 		if ( fastLoad ) {
-			// renderbump doesn't care about vertex count
 			for ( j = 0; j < mesh->numVertexes; j++ ) {
 				vRemap[j] = j;
 			}
@@ -861,7 +849,6 @@ bool idRenderModelStatic::ConvertASEToModelSurfaces( const struct aseModel_s *as
 		tvRemap = (int *)R_StaticAlloc( mesh->numTVertexes * sizeof( tvRemap[0] ) );
 
 		if ( fastLoad ) {
-			// renderbump doesn't care about vertex count
 			for ( j = 0; j < mesh->numTVertexes; j++ ) {
 				tvRemap[j] = j;
 			}
@@ -1171,7 +1158,6 @@ bool idRenderModelStatic::ConvertLWOToModelSurfaces( const struct st_lwObject *l
 	vRemap = (int *)R_StaticAlloc( layer->point.count * sizeof( vRemap[0] ) );
 
 	if ( fastLoad ) {
-		// renderbump doesn't care about vertex count
 		for ( j = 0; j < layer->point.count; j++ ) {
 			vRemap[j] = j;
 		}
@@ -1192,7 +1178,6 @@ bool idRenderModelStatic::ConvertLWOToModelSurfaces( const struct st_lwObject *l
 	tvRemap = (int *)R_StaticAlloc( numTVertexes * sizeof( tvRemap[0] ) );
 
 	if ( fastLoad ) {
-		// renderbump doesn't care about vertex count
 		for ( j = 0; j < numTVertexes; j++ ) {
 			tvRemap[j] = j;
 		}
@@ -1215,13 +1200,6 @@ bool idRenderModelStatic::ConvertLWOToModelSurfaces( const struct st_lwObject *l
 		im1 = declManager->FindMaterial( lwoSurf->name );
 
 		bool normalsParsed = true;
-
-		// completely ignore any explict normals on surfaces with a renderbump command
-		// which will guarantee the best contours and least vertexes.
-		const char *rb = im1->GetRenderBump();
-		if ( rb && rb[0] ) {
-			normalsParsed = false;
-		}
 
 		// we need to find out how many unique vertex / texcoord combinations there are
 
@@ -1990,168 +1968,6 @@ bool idRenderModelStatic::LoadMA( const char *fileName ) {
 	return true;
 }
 #endif
-
-/*
-=================
-idRenderModelStatic::LoadFLT
-
-USGS height map data for megaTexture experiments
-=================
-*/
-bool idRenderModelStatic::LoadFLT( const char *fileName ) {
-	float	*data;
-	int		len;
-
-	len = fileSystem->ReadFile( fileName, (void **)&data );
-	if ( len <= 0 ) {
-		return false;
-	}
-	int	size = sqrt( len / 4.0f );
-
-	// bound the altitudes
-	float min = 9999999;
-	float max = -9999999;
-	for ( int i = 0 ; i < len/4 ; i++ ) {
-	data[i] = BigFloat( data[i] );
-	if ( data[i] == -9999 ) {
-		data[i] = 0;		// unscanned areas
-	}
-
-		if ( data[i] < min ) {
-			min = data[i];
-		}
-		if ( data[i] > max ) {
-			max = data[i];
-		}
-	}
-#if 1
-	// write out a gray scale height map
-	byte	*image = (byte *)R_StaticAlloc( len );
-	byte	*image_p = image;
-	for ( int i = 0 ; i < len/4 ; i++ ) {
-		float v = ( data[i] - min ) / ( max - min );
-		image_p[0] =
-		image_p[1] =
-		image_p[2] = v * 255;
-		image_p[3] = 255;
-		image_p += 4;
-	}
-	idStr	tgaName = fileName;
-	tgaName.StripFileExtension();
-	tgaName += ".tga";
-	R_WriteTGA( tgaName.c_str(), image, size, size, false );
-	R_StaticFree( image );
-//return false;
-#endif
-
-	// find the island above sea level
-	int	minX, maxX, minY, maxY;
-	{
-		int	i;
-		for ( minX = 0 ; minX < size ; minX++ ) {
-			for ( i = 0 ; i < size ; i++ ) {
-				if ( data[i*size + minX] > 1.0 ) {
-					break;
-				}
-			}
-			if ( i != size ) {
-				break;
-			}
-		}
-
-		for ( maxX = size-1 ; maxX > 0 ; maxX-- ) {
-			for ( i = 0 ; i < size ; i++ ) {
-				if ( data[i*size + maxX] > 1.0 ) {
-					break;
-				}
-			}
-			if ( i != size ) {
-				break;
-			}
-		}
-
-		for ( minY = 0 ; minY < size ; minY++ ) {
-			for ( i = 0 ; i < size ; i++ ) {
-				if ( data[minY*size + i] > 1.0 ) {
-					break;
-				}
-			}
-			if ( i != size ) {
-				break;
-			}
-		}
-
-		for ( maxY = size-1 ; maxY < size ; maxY-- ) {
-			for ( i = 0 ; i < size ; i++ ) {
-				if ( data[maxY*size + i] > 1.0 ) {
-					break;
-				}
-			}
-			if ( i != size ) {
-				break;
-			}
-		}
-	}
-
-	int	width = maxX - minX + 1;
-	int height = maxY - minY + 1;
-
-//width /= 2;
-	// allocate triangle surface
-	srfTriangles_t *tri = R_AllocStaticTriSurf();
-	tri->numVerts = width * height;
-	tri->numIndexes = (width-1) * (height-1) * 6;
-
-	fastLoad = true;		// don't do all the sil processing
-
-	R_AllocStaticTriSurfIndexes( tri, tri->numIndexes );
-	R_AllocStaticTriSurfVerts( tri, tri->numVerts );
-
-	for ( int i = 0 ; i < height ; i++ ) {
-		for ( int j = 0; j < width ; j++ ) {
-			int		v = i * width + j;
-			tri->verts[ v ].Clear();
-			tri->verts[ v ].xyz[0] = j * 10;	// each sample is 10 meters
-			tri->verts[ v ].xyz[1] = -i * 10;
-			tri->verts[ v ].xyz[2] = data[(minY+i)*size+minX+j];	// height is in meters
-			tri->verts[ v ].st[0] = (float) j / (width-1);
-			tri->verts[ v ].st[1] = 1.0 - ( (float) i / (height-1) );
-		}
-	}
-
-	for ( int i = 0 ; i < height-1 ; i++ ) {
-		for ( int j = 0; j < width-1 ; j++ ) {
-			int	v = ( i * (width-1) + j ) * 6;
-#if 0
-			tri->indexes[ v + 0 ] = i * width + j;
-			tri->indexes[ v + 1 ] = (i+1) * width + j;
-			tri->indexes[ v + 2 ] = (i+1) * width + j + 1;
-			tri->indexes[ v + 3 ] = i * width + j;
-			tri->indexes[ v + 4 ] = (i+1) * width + j + 1;
-			tri->indexes[ v + 5 ] = i * width + j + 1;
-#else
-			tri->indexes[ v + 0 ] = i * width + j;
-			tri->indexes[ v + 1 ] = i * width + j + 1;
-			tri->indexes[ v + 2 ] = (i+1) * width + j + 1;
-			tri->indexes[ v + 3 ] = i * width + j;
-			tri->indexes[ v + 4 ] = (i+1) * width + j + 1;
-			tri->indexes[ v + 5 ] = (i+1) * width + j;
-#endif
-		}
-	}
-
-	fileSystem->FreeFile( data );
-
-	modelSurface_t	surface;
-
-	surface.geometry = tri;
-	surface.id = 0;
-	surface.shader = tr.defaultMaterial; // declManager->FindMaterial( "shaderDemos/megaTexture" );
-
-	this->AddSurface( surface );
-
-	return true;
-}
 
 /*
 =================

@@ -49,6 +49,9 @@ const idEventDef AI_CreateMissile( "createMissile", "s", 'e' );
 const idEventDef AI_AttackMissile( "attackMissile", "s", 'e' );
 const idEventDef AI_FireMissileAtTarget( "fireMissileAtTarget", "ss", 'e' );
 const idEventDef AI_LaunchMissile( "launchMissile", "vv", 'e' );
+#ifdef _D3XP
+const idEventDef AI_LaunchProjectile( "launchProjectile", "s" );
+#endif
 const idEventDef AI_AttackMelee( "attackMelee", "s", 'd' );
 const idEventDef AI_DirectDamage( "directDamage", "es" );
 const idEventDef AI_RadiusDamageFromJoint( "radiusDamageFromJoint", "ss" );
@@ -109,9 +112,6 @@ const idEventDef AI_TestAnimMove( "testAnimMove", "s", 'd' );
 const idEventDef AI_TestMeleeAttack( "testMeleeAttack", NULL, 'd' );
 const idEventDef AI_TestAnimAttack( "testAnimAttack", "s", 'd' );
 const idEventDef AI_Shrivel( "shrivel", "f" );
-const idEventDef AI_Burn( "burn" );
-const idEventDef AI_ClearBurn( "clearBurn" );
-const idEventDef AI_PreBurn( "preBurn" );
 const idEventDef AI_SetSmokeVisibility( "setSmokeVisibility", "dd" );
 const idEventDef AI_NumSmokeEmitters( "numSmokeEmitters", NULL, 'd' );
 const idEventDef AI_WaitAction( "waitAction", "s" );
@@ -160,6 +160,14 @@ const idEventDef AI_CanReachPosition( "canReachPosition", "v", 'd' );
 const idEventDef AI_CanReachEntity( "canReachEntity", "E", 'd' );
 const idEventDef AI_CanReachEnemy( "canReachEnemy", NULL, 'd' );
 const idEventDef AI_GetReachableEntityPosition( "getReachableEntityPosition", "e", 'v' );
+#ifdef _D3XP
+const idEventDef AI_MoveToPositionDirect( "moveToPositionDirect", "v" );
+const idEventDef AI_AvoidObstacles( "avoidObstacles", "d" );
+const idEventDef AI_TriggerFX( "triggerFX", "ss" );
+const idEventDef AI_StartEmitter( "startEmitter", "sss", 'e' );
+const idEventDef AI_GetEmitter( "getEmitter", "s", 'e' );
+const idEventDef AI_StopEmitter( "stopEmitter", "s" );
+#endif
 
 CLASS_DECLARATION( idActor, idAI )
 	EVENT( EV_Activate,							idAI::Script_Activate )
@@ -176,6 +184,9 @@ CLASS_DECLARATION( idActor, idAI )
 	EVENT( AI_AttackMissile,					idAI::Script_AttackMissile )
 	EVENT( AI_FireMissileAtTarget,				idAI::Script_FireMissileAtTarget )
 	EVENT( AI_LaunchMissile,					idAI::Script_LaunchMissile )
+#ifdef _D3XP
+	EVENT( AI_LaunchProjectile,					idAI::Script_LaunchProjectile )
+#endif
 	EVENT( AI_AttackMelee,						idAI::Script_AttackMelee )
 	EVENT( AI_DirectDamage,						idAI::Script_DirectDamage )
 	EVENT( AI_RadiusDamageFromJoint,			idAI::Script_RadiusDamageFromJoint )
@@ -238,11 +249,8 @@ CLASS_DECLARATION( idActor, idAI )
 	EVENT( AI_TestMeleeAttack,					idAI::Script_TestMeleeAttack )
 	EVENT( AI_TestAnimAttack,					idAI::Script_TestAnimAttack )
 	EVENT( AI_Shrivel,							idAI::Script_Shrivel )
-	EVENT( AI_Burn,								idAI::Script_Burn )
-	EVENT( AI_PreBurn,							idAI::Script_PreBurn )
 	EVENT( AI_SetSmokeVisibility,				idAI::Script_SetSmokeVisibility )
 	EVENT( AI_NumSmokeEmitters,					idAI::Script_NumSmokeEmitters )
-	EVENT( AI_ClearBurn,						idAI::Script_ClearBurn )
 	EVENT( AI_StopThinking,						idAI::Script_StopThinking )
 	EVENT( AI_GetTurnDelta,						idAI::Script_GetTurnDelta )
 	EVENT( AI_GetMoveType,						idAI::Script_GetMoveType )
@@ -290,6 +298,14 @@ CLASS_DECLARATION( idActor, idAI )
 	EVENT( AI_CanReachEntity,					idAI::Script_CanReachEntity )
 	EVENT( AI_CanReachEnemy,					idAI::Script_CanReachEnemy )
 	EVENT( AI_GetReachableEntityPosition,		idAI::Script_GetReachableEntityPosition )
+#ifdef _D3XP
+	EVENT( AI_MoveToPositionDirect,				idAI::Script_MoveToPositionDirect )
+	EVENT( AI_AvoidObstacles,					idAI::Script_AvoidObstacles )
+	EVENT( AI_TriggerFX,						idAI::Script_TriggerFX )
+	EVENT( AI_StartEmitter,						idAI::Script_StartEmitter )
+	EVENT( AI_GetEmitter,						idAI::Script_GetEmitter )
+	EVENT( AI_StopEmitter,						idAI::Script_StopEmitter )
+#endif
 END_CLASS
 
 /*
@@ -426,6 +442,17 @@ void idAI::Script_LaunchMissile( const idVec3 &org, const idAngles &ang ) {
 	idEntity *result = LaunchMissile( org, ang );
 	idThread::ReturnEntity( result );
 }
+
+#ifdef _D3XP
+/*
+=====================
+idAI::Script_LaunchProjectile
+=====================
+*/
+void idAI::Script_LaunchProjectile( const char *entityDefName ) {
+	LaunchProjectile( entityDefName );
+}
+#endif
 
 /*
 =====================
@@ -1050,33 +1077,6 @@ void idAI::Script_Shrivel( float shrivel_time ) {
 
 /*
 =====================
-idAI::Script_PreBurn
-=====================
-*/
-void idAI::Script_PreBurn( void ) {
-	PreBurn();
-}
-
-/*
-=====================
-idAI::Script_Burn
-=====================
-*/
-void idAI::Script_Burn( void ) {
-	Burn();
-}
-
-/*
-=====================
-idAI::Script_ClearBurn
-=====================
-*/
-void idAI::Script_ClearBurn( void ) {
-	ClearBurn();
-}
-
-/*
-=====================
 idAI::Script_SetSmokeVisibility
 =====================
 */
@@ -1533,3 +1533,60 @@ void idAI::Script_GetReachableEntityPosition( idEntity *ent ) {
 	idVec3 result = GetReachableEntityPosition( ent );
 	idThread::ReturnVector( result );
 }
+
+#ifdef _D3XP
+/*
+================
+idAI::Script_MoveToPositionDirect
+================
+*/
+void idAI::Script_MoveToPositionDirect( const idVec3 &pos ) {
+	MoveToPositionDirect( pos );
+}
+
+/*
+================
+idAI::Script_AvoidObstacles
+================
+*/
+void idAI::Script_AvoidObstacles( int ignore ) {
+	AvoidObstacles( ignore );
+}
+
+/*
+================
+idAI::Script_TriggerFX
+================
+*/
+void idAI::Script_TriggerFX( const char *joint, const char *fx ) {
+	TriggerFX( joint, fx );
+}
+
+/*
+================
+idAI::Script_StartEmitter
+================
+*/
+void idAI::Script_StartEmitter( const char* name, const char *joint, const char *particle ) {
+	idEntity *ent = StartEmitter( name, joint, particle );
+	idThread::ReturnEntity( ent );
+}
+
+/*
+================
+idAI::Script_GetEmitter
+================
+*/
+void idAI::Script_GetEmitter( const char *name ) {
+	idThread::ReturnEntity( GetEmitter( name ) );
+}
+
+/*
+================
+idAI::Script_StopEmitter
+================
+*/
+void idAI::Script_StopEmitter( const char *name ) {
+	StopEmitter( name );
+}
+#endif

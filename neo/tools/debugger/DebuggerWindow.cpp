@@ -36,7 +36,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "DebuggerQuickWatchDlg.h"
 #include "DebuggerFindDlg.h"
 
-#define DEBUGGERWINDOWCLASS		"DHEWM3_DEBUGGER_WINDOW"
 #define ID_DBG_WINDOWMIN		18900
 #define ID_DBG_WINDOWMAX		19900
 
@@ -181,7 +180,7 @@ bool rvDebuggerWindow::RegisterClass ( void )
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_APPWORKSPACE+1);
 	wcex.lpszMenuName	= MAKEINTRESOURCE(IDR_DBG_MAIN);
-	wcex.lpszClassName	= DEBUGGERWINDOWCLASS;
+	wcex.lpszClassName	= DEBUGGER_WINDOW_CLASS;
 	wcex.hIconSm		= NULL;
 
 	return RegisterClassEx(&wcex) ? true : false;
@@ -207,7 +206,7 @@ bool rvDebuggerWindow::Create ( HINSTANCE instance )
 	mClient = &gDebuggerApp.GetClient();
 
 	// Create the debugger window
-	mWnd = CreateWindow( DEBUGGERWINDOWCLASS, "",
+	mWnd = CreateWindow( DEBUGGER_WINDOW_CLASS, "",
 						 WS_OVERLAPPEDWINDOW,
 						 CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, mInstance, this);
 
@@ -1928,7 +1927,7 @@ bool rvDebuggerWindow::Activate ( void )
 {
 	HWND find;
 
-	find = FindWindow ( DEBUGGERWINDOWCLASS, NULL );
+	find = FindWindow ( DEBUGGER_WINDOW_CLASS, NULL );
 	if ( !find )
 	{
 		return false;

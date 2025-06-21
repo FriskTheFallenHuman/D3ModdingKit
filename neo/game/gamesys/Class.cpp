@@ -973,6 +973,15 @@ bool idClass::ProcessEventArgPtr( const idEventDef *ev, intptr_t *data ) {
 	assert( ev );
 	assert( idEvent::initialized );
 
+#ifdef _D3XP
+	SetTimeState ts;
+
+	if ( IsType( idEntity::GetClassType() ) ) {
+		idEntity *ent = (idEntity*)this;
+		ts.PushState( ent->timeGroup );
+	}
+#endif
+
 	// jnewquist: Use accessor for static class type
 	if ( g_debugTriggers.GetBool() && ( ev == &EV_Activate ) && IsType( idEntity::GetClassType() ) ) {
 		const idEntity *ent = *reinterpret_cast<idEntity **>( data );
@@ -1117,6 +1126,7 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idAFEntity_Gibbable)
 	REGISTER(idAFEntity_Generic)
 	REGISTER(idAFEntity_WithAttachedHead)
+	REGISTER(idShockwave)
 	REGISTER(idAFEntity_Vehicle)
 	REGISTER(idAFEntity_VehicleSimple)
 	REGISTER(idAFEntity_VehicleFourWheels)
@@ -1148,26 +1158,20 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idFuncPortal)
 	REGISTER(idFuncAASPortal)
 	REGISTER(idFuncAASObstacle)
-	REGISTER(idFuncRadioChatter)
-	REGISTER(idPhantomObjects)
+	REGISTER(idFuncMountedObject)
+	REGISTER(idFuncMountedWeapon)
+	REGISTER(idPortalSky)
 	REGISTER(idActor)
 	REGISTER(idProjectile)
-	REGISTER(idGuidedProjectile)
-	REGISTER(idSoulCubeMissile)
-	REGISTER(idBFGProjectile)
 	REGISTER(idDebris)
 	REGISTER(idWeapon)
 	REGISTER(idLight)
 	REGISTER(idWorldspawn)
 	REGISTER(idItem)
 	REGISTER(idItemPowerup)
-	REGISTER(idObjective)
-	REGISTER(idVideoCDItem)
-	REGISTER(idPDAItem)
+	REGISTER(idItemTeam)
 	REGISTER(idMoveableItem)
-	REGISTER(idMoveablePDAItem)
 	REGISTER(idItemRemover)
-	REGISTER(idObjectiveComplete)
 	REGISTER(idPlayer)
 	REGISTER(idMover)
 	REGISTER(idSplinePath)
@@ -1199,17 +1203,13 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idTarget_LightFadeIn)
 	REGISTER(idTarget_LightFadeOut)
 	REGISTER(idTarget_Give)
-	REGISTER(idTarget_GiveEmail)
 	REGISTER(idTarget_SetModel)
-	REGISTER(idTarget_SetInfluence)
 	REGISTER(idTarget_SetKeyVal)
 	REGISTER(idTarget_SetFov)
-	REGISTER(idTarget_SetPrimaryObjective)
 	REGISTER(idTarget_LockDoor)
 	REGISTER(idTarget_CallObjectFunction)
 	REGISTER(idTarget_EnableLevelWeapons)
 	REGISTER(idTarget_Tip)
-	REGISTER(idTarget_GiveSecurity)
 	REGISTER(idTarget_RemoveWeapons)
 	REGISTER(idTarget_LevelTrigger)
 	REGISTER(idTarget_EnableStamina)
@@ -1222,6 +1222,7 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idTrigger_Hurt)
 	REGISTER(idTrigger_Fade)
 	REGISTER(idTrigger_Touch)
+	REGISTER(idTrigger_Flag)
 	REGISTER(idSound)
 	REGISTER(idEntityFx)
 	REGISTER(idTeleporter)
@@ -1231,6 +1232,5 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idCombatNode)
 	REGISTER(idTestModel)
 	REGISTER(idThread)
-	REGISTER(idAI_Vagary)
 #undef REGISTER
 }

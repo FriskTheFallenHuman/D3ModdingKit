@@ -1,0 +1,13 @@
+textures/guis/lagometer
+{
+	translucent
+	noShadows
+	
+	{
+		nearest
+		nopicmip
+		colored
+		blend add
+		map textures/guis/lag_meter.tga
+	}
+}

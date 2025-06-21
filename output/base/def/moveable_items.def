@@ -1,0 +1,10 @@
+
+
+//Moveable Items
+
+
+entityDef moveable_item_default
+{
+	"inherit"					"item_default"
+	"spawnclass"				"idMoveableItem"
+}

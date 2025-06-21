@@ -275,25 +275,6 @@ private:
 	void				Event_Activate( idEntity *activator );
 };
 
-
-/*
-===============================================================================
-
-idTarget_GiveEmail
-
-===============================================================================
-*/
-
-class idTarget_GiveEmail : public idTarget {
-public:
-	CLASS_PROTOTYPE( idTarget_GiveEmail );
-
-	void				Spawn( void );
-
-private:
-	void				Event_Activate( idEntity *activator );
-};
-
 /*
 ===============================================================================
 
@@ -311,50 +292,6 @@ public:
 private:
 	void				Event_Activate( idEntity *activator );
 };
-
-
-/*
-===============================================================================
-
-idTarget_SetInfluence
-
-===============================================================================
-*/
-
-class idTarget_SetInfluence : public idTarget {
-public:
-	CLASS_PROTOTYPE( idTarget_SetInfluence );
-
-						idTarget_SetInfluence( void );
-
-	void				Save( idSaveGame *savefile ) const;
-	void				Restore( idRestoreGame *savefile );
-
-	void				Spawn( void );
-
-private:
-	void				Event_Activate( idEntity *activator );
-	void				Event_RestoreInfluence();
-	void				Event_GatherEntities();
-	void				Event_Flash( float flash, int out );
-	void				Event_ClearFlash( float flash );
-	void				Think( void );
-
-	idList<int>			lightList;
-	idList<int>			guiList;
-	idList<int>			soundList;
-	idList<int>			genericList;
-	float				flashIn;
-	float				flashOut;
-	float				delay;
-	idStr				flashInSound;
-	idStr				flashOutSound;
-	idEntity *			switchToCamera;
-	idInterpolate<float>fovSetting;
-	bool				soundFaded;
-	bool				restoreOnTrigger;
-};
-
 
 /*
 ===============================================================================
@@ -396,23 +333,6 @@ private:
 	void				Event_Activate( idEntity *activator );
 };
 
-
-/*
-===============================================================================
-
-idTarget_SetPrimaryObjective
-
-===============================================================================
-*/
-
-class idTarget_SetPrimaryObjective : public idTarget {
-public:
-	CLASS_PROTOTYPE( idTarget_SetPrimaryObjective );
-
-private:
-	void				Event_Activate( idEntity *activator );
-};
-
 /*
 ===============================================================================
 
@@ -449,7 +369,7 @@ private:
 /*
 ===============================================================================
 
-idTarget_LockDoor
+idTarget_EnableLevelWeapons
 
 ===============================================================================
 */
@@ -489,21 +409,6 @@ private:
 	void				Event_TipOff( void );
 	void				Event_GetPlayerPos( void );
 };
-
-/*
-===============================================================================
-
-idTarget_GiveSecurity
-
-===============================================================================
-*/
-class idTarget_GiveSecurity : public idTarget {
-public:
-	CLASS_PROTOTYPE( idTarget_GiveSecurity );
-private:
-	void				Event_Activate( idEntity *activator );
-};
-
 
 /*
 ===============================================================================

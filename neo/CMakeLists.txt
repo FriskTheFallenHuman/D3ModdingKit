@@ -16,14 +16,15 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules")
 
-project(dhewm3 CXX C)
+project(Game CXX C)
 
 # build type
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
-set(DHEWM3BINARY "D3ModdingKit")
+set(ENGINE_BINARY "Engine")
+set(SERVER_BINARY "DedicatedServer")
 
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
@@ -37,8 +38,7 @@ if(MSVC)
 	option(TOOLS					"Build the tools game code (Visual Studio+SDL2/SDL3 only)" ON)
 	option(MAYA_IMPORT				"Build the include maya import tool (Requires MayaSDK)." OFF)
 endif()
-option(BASE						"Build the base game code" ON)
-option(D3XP						"Build the d3xp game code" ON)
+option(GAME						"Build the game code" ON)
 option(ONATIVE						"Optimize for the host CPU" OFF)
 option(SDL3							"Use SDL3 instead of SDL2" OFF)
 option(IMGUI						"Build with Dear ImGui integration - requires SDL2/SDL3 and C++11" ON)
@@ -56,6 +56,13 @@ if(NOT MSVC) # GCC/clang or compatible, hopefully
 		set(HARDLINK_GAME ON)
 	endif()
 endif()
+
+set(GAME_CONFG_NAME "My Game" CACHE STRING "The name of the game (path) whe're building.")
+set(GAME_CONFG_FOLDER "base" CACHE STRING "The name of the game (path) whe're building.")
+set(GAME_DATA_FOLDER "mygame" CACHE STRING "The name of the data whe're building.")
+set(GAME_CONFG_FILE "config.cfg" CACHE STRING "The name of the file that gets written into.")
+set(GAME_CONFG_URL "https://github.com/FriskTheFallenHuman/D3ModdingKit" CACHE STRING "The url on where the game can be downloaded.")
+
 
 if (LINUX_RELEASE_BINS)
 	message(STATUS "Setting RPATH to \$ORIGIN/libs/ so you can put dependencies in there")
@@ -465,8 +472,8 @@ else()
 endif()
 
 set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
-set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}/dhewm3")
-set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/dhewm3")
+set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}/${GAME_DATA_FOLDER}")
+set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/${GAME_DATA_FOLDER}")
 
 configure_file(
 	"${CMAKE_SOURCE_DIR}/config.h.in"
@@ -503,7 +510,6 @@ set(src_renderer
 	renderer/Image_program.cpp
 	renderer/Interaction.cpp
 	renderer/Material.cpp
-	renderer/MegaTexture.cpp
 	renderer/Model.cpp
 	renderer/ModelDecal.cpp
 	renderer/ModelManager.cpp
@@ -536,6 +542,7 @@ set(src_renderer
 	renderer/tr_light.cpp
 	renderer/tr_lightrun.cpp
 	renderer/tr_main.cpp
+	renderer/tr_normals.cpp
 	renderer/tr_orderIndexes.cpp
 	renderer/tr_polytope.cpp
 	renderer/tr_render.cpp
@@ -579,7 +586,6 @@ set(src_framework
 	framework/DeclFX.cpp
 	framework/DeclManager.cpp
 	framework/DeclParticle.cpp
-	framework/DeclPDA.cpp
 	framework/DeclSkin.cpp
 	framework/DeclTable.cpp
 	framework/Dhewm3SettingsMenu.cpp
@@ -670,12 +676,6 @@ set(src_roq
 
 add_globbed_headers(src_roq "tools/compilers/roqvq")
 
-set(src_renderbump
-	tools/compilers/renderbump/renderbump.cpp
-)
-
-add_globbed_headers(src_renderbump "tools/compilers/renderbump")
-
 set(src_matbuild
 	tools/compilers/matbuild/matbuild.cpp
 )
@@ -713,9 +713,6 @@ set(src_ui
 	ui/DeviceContext.cpp
 	ui/EditWindow.cpp
 	ui/FieldWindow.cpp
-	ui/GameBearShootWindow.cpp
-	ui/GameBustOutWindow.cpp
-	ui/GameSSDWindow.cpp
 	ui/GuiScript.cpp
 	ui/ListGUI.cpp
 	ui/ListWindow.cpp
@@ -888,7 +885,6 @@ set(src_game
 	game/ai/AI_events.cpp
 	game/ai/AI_pathing.cpp
 	game/ai/AI_script.cpp
-	game/ai/AI_Vagary.cpp
 	game/gamesys/DebugGraph.cpp
 	game/gamesys/Class.cpp
 	game/gamesys/Event.cpp
@@ -933,96 +929,6 @@ if (NOT MAYA_IMPORT)
 	)
 endif()
 
-set(src_d3xp
-	d3xp/AF.cpp
-	d3xp/AFEntity.cpp
-	d3xp/AnimatedEntity.cpp
-	d3xp/AnimState.cpp
-	d3xp/Actor.cpp
-	d3xp/Actor_script.cpp
-	d3xp/Camera.cpp
-	d3xp/Entity.cpp
-	d3xp/Entity_script.cpp
-	d3xp/BrittleFracture.cpp
-	d3xp/Fx.cpp
-	d3xp/GameEdit.cpp
-	d3xp/Game_local.cpp
-	d3xp/Game_network.cpp
-	d3xp/Item.cpp
-	d3xp/IK.cpp
-	d3xp/Light.cpp
-	d3xp/Misc.cpp
-	d3xp/Mover.cpp
-	d3xp/Moveable.cpp
-	d3xp/MultiplayerGame.cpp
-	d3xp/Player.cpp
-	d3xp/PlayerIcon.cpp
-	d3xp/PlayerView.cpp
-	d3xp/Projectile.cpp
-	d3xp/Pvs.cpp
-	d3xp/SecurityCamera.cpp
-	d3xp/SmokeParticles.cpp
-	d3xp/Sound.cpp
-	d3xp/Target.cpp
-	d3xp/Trigger.cpp
-	d3xp/Weapon.cpp
-	d3xp/Weapon_script.cpp
-	d3xp/WorldSpawn.cpp
-	d3xp/aas/AAS.cpp
-	d3xp/aas/AAS_debug.cpp
-	d3xp/aas/AAS_pathing.cpp
-	d3xp/aas/AAS_routing.cpp
-	d3xp/ai/AI.cpp
-	d3xp/ai/AI_events.cpp
-	d3xp/ai/AI_pathing.cpp
-	d3xp/ai/AI_script.cpp
-	d3xp/ai/AI_Vagary.cpp
-	d3xp/gamesys/DebugGraph.cpp
-	d3xp/gamesys/Class.cpp
-	d3xp/gamesys/Event.cpp
-	d3xp/gamesys/SaveGame.cpp
-	d3xp/gamesys/State.cpp
-	d3xp/gamesys/SysCmds.cpp
-	d3xp/gamesys/SysCvar.cpp
-	d3xp/anim/Anim.cpp
-	d3xp/anim/Anim_Blend.cpp
-	d3xp/anim/Anim_Import.cpp
-	d3xp/anim/Anim_Testmodel.cpp
-	d3xp/script/Script_Compiler.cpp
-	d3xp/script/Script_Interpreter.cpp
-	d3xp/script/Script_Program.cpp
-	d3xp/script/Script_Thread.cpp
-	d3xp/physics/Clip.cpp
-	d3xp/physics/Force.cpp
-	d3xp/physics/Force_Constant.cpp
-	d3xp/physics/Force_Drag.cpp
-	d3xp/physics/Force_Field.cpp
-	d3xp/physics/Force_Spring.cpp
-	d3xp/physics/Physics.cpp
-	d3xp/physics/Physics_AF.cpp
-	d3xp/physics/Physics_Actor.cpp
-	d3xp/physics/Physics_Base.cpp
-	d3xp/physics/Physics_Monster.cpp
-	d3xp/physics/Physics_Liquid.cpp
-	d3xp/physics/Physics_Parametric.cpp
-	d3xp/physics/Physics_Player.cpp
-	d3xp/physics/Physics_RigidBody.cpp
-	d3xp/physics/Physics_Static.cpp
-	d3xp/physics/Physics_StaticMulti.cpp
-	d3xp/physics/Push.cpp
-	d3xp/Grabber.cpp
-	d3xp/physics/Force_Grab.cpp
-)
-
-add_globbed_headers(src_d3xp "d3xp")
-
-if (NOT MAYA_IMPORT)
-	list(REMOVE_ITEM src_d3xp
-		d3xp/anim/Anim_Import.cpp
-		d3xp/anim/Anim_Import.h
-	)
-endif()
-
 set(src_debuggerServer
 	tools/debugger/DebuggerBreakpoint.h
 	tools/debugger/DebuggerBreakpoint.cpp
@@ -1043,7 +949,6 @@ set(src_core
 	${src_dmap}
 	${src_aas}
 	${src_roq}
-	${src_renderbump}
 	${src_matbuild}
 	${src_snd}
 	${src_ui}
@@ -1070,7 +975,6 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 	add_globbed_headers(src_tools_common "tools/common")
 
 	#Compilers.
-	# DG: this is always added, why add it again? file(GLOB src_compiler_renderbump "neo/tools/compilers/renderbump/*.cpp")
 	file(GLOB src_compiler_roqvq	  "tools/compilers/roqvq/*.cpp") # FIXME: some of those were added before
 	add_globbed_headers(src_compiler_roqvq "tools/compilers/roqvq")
 	#tools
@@ -1089,9 +993,6 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 	# Particle Editor
 	file(GLOB src_particleeditor "tools/particle/*.cpp")
 	add_globbed_headers(src_particleeditor "tools/particle")
-	# PDA editor
-	file(GLOB src_pdaeditor "tools/pda/*.cpp")
-	add_globbed_headers(src_pdaeditor "tools/pda")
 	# Radiant (Map editor)
 	file(GLOB src_map_editor "tools/radiant/*.cpp")
 	add_globbed_headers(src_map_editor "tools/radiant")
@@ -1124,13 +1025,11 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 	list(APPEND src_editor_tools
 		${src_comafx}
 		${src_tools_common}
-		${src_compiler_renderbump}
 		${src_afeditor}
 		${src_decleditor}
 		${src_gui_editor}
 		${src_materialeditor}
 		${src_particleeditor}
-		${src_pdaeditor}
 		${src_map_editor}
 		${src_script_editor}
 		${src_sound_editor}
@@ -1204,7 +1103,7 @@ elseif(WIN32)
 		set(src_sys_core
 			${src_sys_core}
 			${src_sys_tools_images}
-			"sys/win32/rc/doom.rc"
+			"sys/win32/rc/launcher_tools.rc"
 			"sys/win32/rc/resource.h"
 		)
 	else()
@@ -1212,9 +1111,9 @@ elseif(WIN32)
 		# and doom.rc also contains that (+icons for editor etc, AFAIK), so this is fine
 		set(src_sys_core
 			${src_sys_core}
-			"sys/win32/rc/res/doom3.ico"
-			"sys/win32/rc/dhewm3.rc"
-			"sys/win32/rc/dhewm3_resource.h"
+			"sys/win32/rc/res/launcher.ico"
+			"sys/win32/rc/launcher.rc"
+			"sys/win32/rc/launcher_resource.h"
 		)
 	endif()
 
@@ -1260,20 +1159,14 @@ set_target_properties(idlib PROPERTIES FOLDER "libs")
 # ================================= Engine ======================================
 
 if(HARDLINK_GAME)
-	if(BASE)
+	if(GAME)
 		set(src_core ${src_core} ${src_game})
 		set(game_includes "${CMAKE_SOURCE_DIR}/game")
-		if(D3XP)
-			message(WARNING "hardlinking the base game, d3xp will not be supported (disable BASE for D3XP support with HARDLINK_GAME)")
-		endif()	
-	elseif(D3XP)
-		set(src_core ${src_core} ${src_d3xp})
-		set(game_includes "${CMAKE_SOURCE_DIR}/d3xp")
 	endif()
 endif()
 
 if(ENGINE)
-	add_executable(${DHEWM3BINARY} WIN32 MACOSX_BUNDLE
+	add_executable(${ENGINE_BINARY} WIN32 MACOSX_BUNDLE
 		${src_core}
 		${src_sys_base}
 		${src_sys_core}
@@ -1283,47 +1176,47 @@ if(ENGINE)
 	
 	if(MSVC)
 		# set MSVC default debug directory on executable	
-		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_STARTUP_PROJECT ${DHEWM3BINARY})
-		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${DHEWM3BINARY}.exe")
-		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
-		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set developer 1")
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_STARTUP_PROJECT ${ENGINE_BINARY})
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${ENGINE_BINARY}.exe")
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set developer 1")
 
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_imgui} ${src_editor_tools})
 	endif()
 
-	target_precompile_headers(${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories(${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" "${CMAKE_SOURCE_DIR}/libs/imgui")
+	target_include_directories(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" "${CMAKE_SOURCE_DIR}/libs/imgui")
 
 	if(HARDLINK_GAME)
-		set_target_properties(${DHEWM3BINARY} PROPERTIES COMPILE_DEFINITIONS "${TOOLS_DEFINES}")
-		target_include_directories(${DHEWM3BINARY} PRIVATE ${game_includes})
+		set_target_properties(${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "${TOOLS_DEFINES}")
+		target_include_directories(${ENGINE_BINARY} PRIVATE ${game_includes})
 	
 		# Hack to get .natvis added
 		if (MSVC)
-			target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/game.natvis")
+			target_sources(${ENGINE_BINARY} PRIVATE "sys/win32/natvis/game.natvis")
 		endif()
 	else()
-		set_target_properties(${DHEWM3BINARY} PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__;${TOOLS_DEFINES}")
+		set_target_properties(${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "__DOOM_DLL__;${TOOLS_DEFINES}")
 	endif()
 
 	if (MSVC)
-		target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/engine.natvis")
+		target_sources(${ENGINE_BINARY} PRIVATE "sys/win32/natvis/engine.natvis")
 	endif()
 
-	set_target_properties(${DHEWM3BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(${DHEWM3BINARY} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/sys/osx/Info.plist)
-	set_target_properties(${DHEWM3BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
-	set_target_properties(${DHEWM3BINARY} PROPERTIES FOLDER "exes")
+	set_target_properties(${ENGINE_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(${ENGINE_BINARY} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/sys/osx/Info.plist)
+	set_target_properties(${ENGINE_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(${ENGINE_BINARY} PROPERTIES FOLDER "exes")
 
-	target_link_libraries(${DHEWM3BINARY}
+	target_link_libraries(${ENGINE_BINARY}
 		idlib
 		${sys_thirdparty_libs}
 		${sys_libs}
 	)
 
 	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS ${DHEWM3BINARY}
+		install(TARGETS ${ENGINE_BINARY}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
@@ -1334,7 +1227,7 @@ endif()
 # ============================== Dedicate Server ================================
 
 if(DEDICATED)
-	add_executable(${DHEWM3BINARY}ded WIN32 MACOSX_BUNDLE
+	add_executable(${SERVER_BINARY} WIN32 MACOSX_BUNDLE
 		${src_core}
 		${src_stub_openal}
 		${src_stub_gl}
@@ -1346,40 +1239,40 @@ if(DEDICATED)
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer})
 	endif()
 	
-	target_precompile_headers(${DHEWM3BINARY}ded PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(${SERVER_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories(${DHEWM3BINARY}ded PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(${SERVER_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
-		set_target_properties(${DHEWM3BINARY}ded PROPERTIES COMPILE_DEFINITIONS "IMGUI_DISABLE;ID_DEDICATED")
-		target_include_directories(${DHEWM3BINARY}ded PRIVATE ${game_includes})
+		set_target_properties(${SERVER_BINARY} PROPERTIES COMPILE_DEFINITIONS "IMGUI_DISABLE;ID_DEDICATED")
+		target_include_directories(${SERVER_BINARY} PRIVATE ${game_includes})
 	
 		# Hack to get .natvis added
 		if (MSVC)
-			target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/game.natvis")
+			target_sources(${SERVER_BINARY} PRIVATE "sys/win32/natvis/game.natvis")
 		endif()
 	else()
-		set_target_properties(${DHEWM3BINARY}ded PROPERTIES COMPILE_DEFINITIONS "IMGUI_DISABLE;ID_DEDICATED;__DOOM_DLL__")
+		set_target_properties(${SERVER_BINARY} PROPERTIES COMPILE_DEFINITIONS "IMGUI_DISABLE;ID_DEDICATED;__DOOM_DLL__")
 	endif()
 
 	if (MSVC)
-		target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/engine.natvis")
+		target_sources(${SERVER_BINARY} PRIVATE "sys/win32/natvis/engine.natvis")
 	endif()
 
-	set_target_properties(${DHEWM3BINARY}ded PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(${DHEWM3BINARY}ded PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
-	set_target_properties(${DHEWM3BINARY}ded PROPERTIES FOLDER "exes")
+	set_target_properties(${SERVER_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(${SERVER_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(${SERVER_BINARY} PROPERTIES FOLDER "exes")
 	
 	list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
 
-	target_link_libraries(${DHEWM3BINARY}ded
+	target_link_libraries(${SERVER_BINARY}
 		idlib
 		${sys_thirdparty_libs}
 		${sys_libs}
 	)
 
 	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS ${DHEWM3BINARY}ded
+		install(TARGETS ${SERVER_BINARY}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
@@ -1459,9 +1352,9 @@ if(TOOLS AND MAYA_IMPORT)
 	endif()
 endif()
 
-# ============================== Doom 3 ================================
+# ============================== Quake ================================
 
-if(BASE AND NOT HARDLINK_GAME)
+if(GAME AND NOT HARDLINK_GAME)
 	add_library(base SHARED ${src_game})
 	
 	if (MSVC)
@@ -1474,7 +1367,7 @@ if(BASE AND NOT HARDLINK_GAME)
 	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 	
 	set_target_properties(base PROPERTIES PREFIX "")
-	set_target_properties(base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
+	set_target_properties(base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
 	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/game")
 	set_target_properties(base PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(base PROPERTIES INSTALL_NAME_DIR "@executable_path")
@@ -1484,38 +1377,6 @@ if(BASE AND NOT HARDLINK_GAME)
 
 	if(NOT APPLE AND NOT WIN32)
 		install(TARGETS base
-				RUNTIME DESTINATION "${bindir}"
-				LIBRARY DESTINATION "${libdir}"
-				ARCHIVE DESTINATION "${libdir}"
-		)
-	endif()
-endif()
-
-# ============================== Doom 3: RoE ================================
-
-if(D3XP AND NOT HARDLINK_GAME)
-	add_library(d3xp SHARED ${src_d3xp})
-
-	if (MSVC)
-		target_sources(d3xp PRIVATE "sys/win32/natvis/game.natvis")
-		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_d3xp})
-	endif()
-
-	target_precompile_headers(d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
-	target_include_directories(d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
-
-	set_target_properties(d3xp PROPERTIES PREFIX "")
-	set_target_properties(d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
-	target_include_directories(d3xp PRIVATE "${CMAKE_SOURCE_DIR}/d3xp")
-	set_target_properties(d3xp PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(d3xp PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(d3xp idlib)
-	set_target_properties(d3xp PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
-	set_target_properties(d3xp PROPERTIES FOLDER "dlls")
-
-	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS d3xp
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"

@@ -1122,9 +1122,9 @@ void idConsoleLocal::DrawSolidConsole( float frac ) {
 
 	// draw the version number
 #ifdef _MSC_VER
-	idStr version = va("%s.%i %s-%s", ENGINE_VERSION, BUILD_NUMBER, BUILD_OS, D3_ARCH);
+	idStr version = va("%s.%i %s-%s", BUILD_ENGINE_VERSION, BUILD_NUMBER, BUILD_OS, D3_ARCH);
 #else
-	idStr version = va("%s.%i %s-%s", ENGINE_VERSION, BUILD_NUMBER, BUILD_OS, BUILD_CPU);
+	idStr version = va("%s.%i %s-%s", BUILD_ENGINE_VERSION, BUILD_NUMBER, BUILD_OS, BUILD_CPU);
 #endif // _MSC_VER
 	i = version.Length();
 

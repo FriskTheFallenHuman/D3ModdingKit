@@ -50,7 +50,7 @@ If you have questions concerning this license or the applicable additional terms
 #undef strcmp // get rid of "#define strcmp idStr::Cmp", it conflicts with SDL headers
 
 #ifdef D3_SDL3
-  #define SDL_MAIN_HANDLED // dhewm3 implements WinMain() itself
+  #define SDL_MAIN_HANDLED // engine implements WinMain() itself
   #include <SDL3/SDL_main.h>
 #else // SDL2
   #include <SDL_main.h>
@@ -402,7 +402,7 @@ static int WPath2A(char *dst, size_t size, const WCHAR *src) {
 
 /*
 ==============
-Returns "My Documents"/My Games/dhewm3 directory (or equivalent - "CSIDL_PERSONAL").
+Returns "My Documents"/My Games/MyGame directory (or equivalent - "CSIDL_PERSONAL").
 To be used with Sys_GetPath(PATH_SAVE), so savegames, screenshots etc will be
 saved to the users files instead of systemwide.
 
@@ -424,7 +424,7 @@ extern "C" { // DG: I need this in SDL_win32_main.c
 		if (len == 0)
 			return 0;
 
-		idStr::Append(dst, size, "/My Games/dhewm3");
+		idStr::Append(dst, size, "/My Games/" BUILD_NAME);
 
 		return len;
 	}
@@ -465,47 +465,21 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 	switch(type) {
 	case PATH_BASE:
 		// try <path to exe>/base first
-		if (Sys_GetPath(PATH_EXE, path)) {
+		if ( Sys_GetPath( PATH_EXE, path ) ) {
 			path.StripFilename();
 
 			s = path;
-			s.AppendPath(BASE_GAMEDIR);
-			if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFDIR)) {
+			s.AppendPath( BASE_GAMEDIR );
+
+			if ( _stat( s.c_str(), &st ) != -1 && ( st.st_mode & _S_IFDIR ) ) {
 #ifdef _DEBUG
 				common->Warning( "using path of executable: %s", path.c_str() );
 #endif // _DEBUG
 				return true;
-			} else {
-				s = path + "/demo/demo00.pk4";
-				if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFREG)) {
-#ifdef _DEBUG
-					common->Warning("using path of executable (seems to contain demo game data): %s ", path.c_str());
-#endif // _DEBUG
-					return true;
-				}
 			}
 
-			common->Warning("base path '%s' does not exist", s.c_str());
+			common->Warning( "base path '%s' does not exist", s.c_str() );
 		}
-
-		// Note: apparently there is no registry entry for the Doom 3 Demo
-
-		// fallback to vanilla doom3 cd install
-		if (GetRegistryPath(buf, sizeof(buf), L"SOFTWARE\\id\\Doom 3", L"InstallPath") > 0) {
-			path = buf;
-			return true;
-		}
-
-		// fallback to steam doom3 install
-		if (GetRegistryPath(buf, sizeof(buf), L"SOFTWARE\\Valve\\Steam", L"InstallPath") > 0) {
-			path = buf;
-			path.AppendPath("steamapps\\common\\doom 3");
-
-			if (_stat(path.c_str(), &st) != -1 && st.st_mode & _S_IFDIR)
-				return true;
-		}
-
-		common->Warning("vanilla doom3 path not found either");
 
 		return false;
 
@@ -680,7 +654,7 @@ uintptr_t Sys_DLL_Load( const char *dllName ) {
 			// "[193 (0xC1)] is not a valid Win32 application"
 			// probably going to be common. Lets try to be less cryptic.
 			common->Warning( "LoadLibrary( \"%s\" ) Failed ! [%i (0x%X)]\tprobably the DLL is of the wrong architecture, "
-			                 "like x64 instead of x86 (this build of dhewm3 expects %s)",
+			                 "like x64 instead of x86 (this build of the engine expects %s)",
 			                 dllName, e, e, D3_ARCH );
 			return 0;
 		}
@@ -786,7 +760,7 @@ void Sys_Init( void ) {
 	{
 		idStr savepath;
 		Sys_GetPath( PATH_SAVE, savepath );
-		common->Printf( "Logging console output to %s/dhewm3log.txt\n", savepath.c_str() );
+		common->Printf( "Logging console output to %s/enginelog.txt\n", savepath.c_str() );
 	}
 
 	//
@@ -798,10 +772,10 @@ void Sys_Init( void ) {
 		Sys_Error( "Couldn't get OS info" );
 
 	if ( win32.osversion.dwMajorVersion < 4 ) {
-		Sys_Error( GAME_NAME " requires Windows version 4 (NT) or greater" );
+		Sys_Error( BUILD_NAME " requires Windows version 4 (NT) or greater" );
 	}
 	if ( win32.osversion.dwPlatformId == VER_PLATFORM_WIN32s ) {
-		Sys_Error( GAME_NAME " doesn't run on Win32s" );
+		Sys_Error( BUILD_NAME " doesn't run on Win32s" );
 	}
 
 	common->Printf( "%d MB System Memory\n", Sys_GetSystemRam() );
@@ -980,7 +954,7 @@ static void loadWGLpointers() {
 		// Load OpenGL DLL.
 		hOpenGL_DLL = LoadLibrary("opengl32.dll");
 		if (hOpenGL_DLL == NULL) {
-			Sys_Error(GAME_NAME " Cannot Load opengl32.dll - Disabling TOOLS");
+			Sys_Error(BUILD_NAME " Cannot Load opengl32.dll - Disabling TOOLS");
 			return;
 		}
 	}
@@ -1039,7 +1013,7 @@ int Win_ChoosePixelFormat(HDC hdc)
 // stdout/stderr redirection, originally from SDL_win32_main.c
 
 /* The standard output files */
-#define STDOUT_FILE	TEXT("dhewm3log.txt") /* DG: renamed this */
+#define STDOUT_FILE	TEXT("enginelog.txt") /* DG: renamed this */
 #define STDERR_FILE	TEXT("stderr.txt")
 
 /* Set a variable to tell if the stdio redirect has been enabled. */
@@ -1092,12 +1066,12 @@ static void redirect_output(void)
 	char path[MAX_PATH];
 	struct _stat st;
 
-	/* DG: use "My Documents/My Games/dhewm3" to write stdout.txt and stderr.txt
+	/* DG: use "My Documents/My Games/mygame" to write stdout.txt and stderr.txt
 	*     instead of the binary, which might not be writable */
 	Win_GetHomeDir(path, sizeof(path));
 
 	if (_stat(path, &st) == -1) {
-		/* oops, "My Documents/My Games/dhewm3" doesn't exist - does My Games/ at least exist? */
+		/* oops, "My Documents/My Games/mygame" doesn't exist - does My Games/ at least exist? */
 		char myGamesPath[MAX_PATH];
 		char* lastslash;
 		memcpy(myGamesPath, path, MAX_PATH);
@@ -1115,12 +1089,12 @@ static void redirect_output(void)
 				exit(1);
 			}
 		}
-		/* create My Documents/My Games/dhewm3/ */
+		/* create My Documents/My Games/mygame/ */
 		if( _mkdir(path) != 0 && errno != EEXIST ) {
 			char msg[2048];
 			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s'\n(for savegames, configs and logs),\n error number is %d (%s)\nIs Documents/My Games/ write protected?",
 			                path, errno, strerror(errno) );
-			MessageBox( NULL, msg, "Can't create 'My Games/dhewm3' directory!", MB_OK | MB_ICONERROR );
+			MessageBox( NULL, msg, "Can't create 'My Games/'" BUILD_NAME " directory!", MB_OK | MB_ICONERROR );
 			exit(1);
 		}
 	}
@@ -1142,7 +1116,7 @@ static void redirect_output(void)
 	{ /* DG: rename old stdout log */
 		char stdoutPathBK[MAX_PATH];
 		SDL_strlcpy( stdoutPathBK, path, SDL_arraysize(stdoutPath) );
-		SDL_strlcat( stdoutPathBK, DIR_SEPERATOR TEXT("dhewm3log-old.txt"), SDL_arraysize(stdoutPath) );
+		SDL_strlcat( stdoutPathBK, DIR_SEPERATOR TEXT("enginelog-old.txt"), SDL_arraysize(stdoutPath) );
 		rename( stdoutPath, stdoutPathBK );
 	} /* DG end */
 
@@ -1158,9 +1132,9 @@ static void redirect_output(void)
 			*stdout = *newfp;
 		} else {
 			char msg[2048];
-			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/dhewm3/\n or dhewm3log.txt write protected?",
+			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/" BUILD_NAME "/ \n or enginelog.txt write protected ? ",
 			                stdoutPath, errno, strerror(errno) );
-			MessageBox( NULL, msg, "Can't create dhewm3log.txt!", MB_OK | MB_ICONERROR );
+			MessageBox( NULL, msg, "Can't create enginelog.txt!", MB_OK | MB_ICONERROR );
 			exit(1);
 		}
 #endif
@@ -1179,7 +1153,7 @@ static void redirect_output(void)
 			*stderr = *newfp;
 		} else {
 			char msg[2048];
-			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/dhewm3/ write protected?",
+			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/" BUILD_NAME "/ write protected?",
 			                stderrPath, errno, strerror(errno) );
 			MessageBox( NULL, msg, "Can't create stderr.txt!", MB_OK | MB_ICONERROR );
 			exit(1);
@@ -1201,12 +1175,12 @@ NOTE: Currently argv[] are ANSI strings, not UTF-8 strings as usual in SDL2 and 
 ==================
 */
 int SDL_main(int argc, char *argv[]) {
-	// as the very first thing, redirect stdout to dhewm3log.txt (and stderr to stderr.txt)
+	// as the very first thing, redirect stdout to enginelog.txt (and stderr to stderr.txt)
 	// so we can log
 	redirect_output();
 	atexit(cleanup_output);
 
-	// now that stdout is redirected to dhewm3log.txt,
+	// now that stdout is redirected to enginelog.txt,
 	// log its (approx.) creation time before anything else is logged:
 	{
 		time_t tt = time(NULL);
@@ -1327,10 +1301,6 @@ int SDL_main(int argc, char *argv[]) {
 					// in-game Script Editor
 					ScriptEditorRun();
 				}
-				if ( com_editors & EDITOR_PDA ) {
-					// in-game PDA Editor
-					PDAEditorRun();
-				}
 			}
 		}
 #endif
@@ -1402,7 +1372,7 @@ void idSysLocal::StartProcess( const char *exePath, bool doexit ) {
 
 // the actual WinMain(), based on SDL2_main and SDL3's SDL_main_impl.h + SDL_RunApp()
 // but modified to pass ANSI strings to SDL_main() instead of UTF-8,
-// because dhewm3 doesn't use Unicode internally (except for Dear ImGui,
+// because the engine doesn't use Unicode internally (except for Dear ImGui,
 // which doesn't use commandline arguments)
 // for SDL1.2, SDL_win32_main.c is still used instead
 #if SDL_VERSION_ATLEAST(2, 0, 0)

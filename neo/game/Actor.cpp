@@ -90,12 +90,14 @@ idActor::idActor( void ) {
 	blink_min			= 0;
 	blink_max			= 0;
 
-	finalBoss			= false;
-
 	attachments.SetGranularity( 1 );
 
 	enemyNode.SetOwner( this );
 	enemyList.SetOwner( this );
+
+#ifdef _D3XP
+	damageCap = -1;
+#endif
 }
 
 /*
@@ -274,8 +276,6 @@ void idActor::Spawn( void ) {
 		}
 	}
 
-	finalBoss = spawnArgs.GetBool( "finalBoss" );
-
 	FinishSetup();
 }
 
@@ -351,10 +351,23 @@ void idActor::SetupHead( void ) {
 			sndKV = spawnArgs.MatchPrefix( "snd_", sndKV );
 		}
 
+#ifdef _D3XP
+		// copy slowmo param to the head
+		args.SetBool( "slowmo", spawnArgs.GetBool( "slowmo", "1" ) );
+#endif
+
 		headEnt = static_cast<idAFAttachment *>( gameLocal.SpawnEntityType( idAFAttachment::GetClassType(), &args ) );
 		headEnt->SetName( va( "%s_head", name.c_str() ) );
 		headEnt->SetBody( this, headModel, damageJoint );
 		head = headEnt;
+
+#ifdef _D3XP
+		idStr xSkin;
+		if ( spawnArgs.GetString( "skin_head_xray", "", xSkin ) ) {
+			headEnt->xraySkin = declManager->FindSkin( xSkin.c_str() );
+			headEnt->UpdateModel();
+		}
+#endif
 
 		idVec3		origin;
 		idMat3		axis;
@@ -521,8 +534,6 @@ void idActor::Save( idSaveGame *savefile ) const {
 		savefile->WriteInt( attachments[i].channel );
 	}
 
-	savefile->WriteBool( finalBoss );
-
 	idToken token;
 
 	//FIXME: this is unneccesary
@@ -549,6 +560,10 @@ void idActor::Save( idSaveGame *savefile ) const {
 	} else {
 		savefile->WriteString( "" );
 	}
+
+#ifdef _D3XP
+	savefile->WriteInt( damageCap );
+#endif
 
 }
 
@@ -665,8 +680,6 @@ void idActor::Restore( idRestoreGame *savefile ) {
 		savefile->ReadInt( attach.channel );
 	}
 
-	savefile->ReadBool( finalBoss );
-
 	idStr statename;
 
 	savefile->ReadString( statename );
@@ -678,6 +691,10 @@ void idActor::Restore( idRestoreGame *savefile ) {
 	if ( statename.Length() > 0 ) {
 		idealState = GetScriptFunction( statename );
 	}
+
+#ifdef _D3XP
+	savefile->ReadInt( damageCap );
+#endif
 }
 
 /*
@@ -724,7 +741,11 @@ void idActor::Show( void ) {
 		if ( ent->GetBindMaster() == this ) {
 			ent->Show();
 			if ( ent->IsType( idLight::GetClassType() ) ) {
-				static_cast<idLight *>( ent )->On();
+#ifdef _D3XP
+				if ( !spawnArgs.GetBool( "lights_off", "0" ) ) {
+					static_cast<idLight *>( ent )->On();
+				}
+#endif
 			}
 		}
 	}
@@ -1886,9 +1907,9 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 		attacker = gameLocal.world;
 	}
 
-	if ( finalBoss && !inflictor->IsType( idSoulCubeMissile::GetClassType() ) ) {
-		return;
-	}
+#ifdef _D3XP
+	SetTimeState ts( timeGroup );
+#endif
 
 	const idDict *damageDef = gameLocal.FindEntityDefDict( damageDefName );
 	if ( !damageDef ) {
@@ -1938,6 +1959,14 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 		}
 		#endif
 		health -= damage;
+
+#ifdef _D3XP
+		//Check the health against any damage cap that is currently set
+		if ( damageCap >= 0 && health < damageCap ) {
+			health = damageCap;
+		}
+#endif
+
 		if ( health <= 0 ) {
 			if ( health < -999 ) {
 				health = -999;
@@ -3153,3 +3182,87 @@ idActor::Event_GetHead
 idEntity* idActor::GetHead( void ) {
 	return head.GetEntity();
 }
+
+#ifdef _D3XP
+/*
+================
+idActor::Event_SetDamageGroupScale
+================
+*/
+void idActor::SetDamageGroupScale( const char *groupName, float scale ) {
+#if MD5_ENABLE_GIBS > 0
+	for ( int i = 0; i < damageZonesName.Num(); i++ ) {
+		if ( damageZonesName[ i ] == groupName ) {
+			damageZonesRate[ i ] = scale;
+		}
+	}
+#else
+	for ( int i = 0; i < damageScales.Num(); i++ ) {
+		if ( damageGroups[ i ] == groupName ) {
+			damageScales[ i ] = scale;
+		}
+	}
+#endif
+}
+
+/*
+================
+idActor::Event_SetDamageGroupScaleAll
+================
+*/
+void idActor::SetDamageGroupScaleAll( float scale ) {
+#if MD5_ENABLE_GIBS > 0
+	for ( int i = 0; i < damageZonesRate.Num(); i++ ) {
+		damageZonesRate[ i ] = scale;
+	}
+#else
+	for ( int i = 0; i < damageScales.Num(); i++ ) {
+		damageScales[ i ] = scale;
+	}
+#endif
+}
+
+/*
+================
+idActor::Event_GetDamageGroupScale
+================
+*/
+float idActor::GetDamageGroupScale( const char *groupName ) {
+#if MD5_ENABLE_GIBS > 0
+	for ( int i = 0; i < damageZonesName.Num(); i++ ) {
+		if ( damageZonesName[ i ] == groupName ) {
+			return damageZonesRate[ i ];
+		}
+	}
+#else
+	for( int i = 0; i < damageScales.Num(); i++ ) {
+		if ( damageGroups[ i ] == groupName ) {
+			return damageScales[ i ];
+		}
+	}
+#endif
+	return 0.0f;
+}
+
+/*
+================
+idActor::Event_SetDamageCap
+================
+*/
+void idActor::SetDamageCap( float _damageCap ) {
+	damageCap = _damageCap;
+}
+
+/*
+================
+idActor::Event_GetWaitState
+================
+*/
+const char *idActor::GetWaitState( void ) {
+	if( WaitState() ) {
+		return WaitState();
+	} else {
+		return "";
+	}
+}
+#endif

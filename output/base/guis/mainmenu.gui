@@ -1,0 +1,72 @@
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0,0,0,1
+	menugui	1
+	visible	1
+
+	onESC {
+		set "cmd" "close" ;
+	}
+
+	windowDef title
+	{
+		rect	21,255,201,50
+		visible	1
+		text	"My Game"
+		textalign	0
+		textscale	0.7
+		forecolor	1,1,1,1
+	}
+	windowDef startbutton
+	{
+		rect	20,320,120,33
+		visible	1
+		text	"start"
+		textscale	0.5
+		forecolor	1,1,1,1
+
+		onMouseEnter {
+			set "startbutton::backcolor"	"1 .6 0 1" ;
+		}
+
+		onAction {
+			set "cmd" "startgame devtest" ;
+		}
+
+	}
+	windowDef optionsbutton
+	{
+		rect	21,358,119,29
+		visible	1
+		forecolor	1,1,1,1
+		text	"Options"
+		textscale	0.5
+
+		onMouseEnter {
+			set "optionsbutton::backcolor"	"1 .6 0 1" ;
+		}
+
+		onAction {
+			set "cmd" "options" ;
+		}
+
+	}
+	windowDef quitbutton
+	{
+		rect	21,390,100,28
+		visible	1
+		forecolor	1,1,1,1
+		text	"Quit"
+		textscale	0.5
+
+		onMouseEnter {
+			set "quitbutton::backcolor"	"1 .6 0 1" ;
+		}
+
+		onAction {
+			set "cmd" "quit" ;
+		}
+
+	}
+}

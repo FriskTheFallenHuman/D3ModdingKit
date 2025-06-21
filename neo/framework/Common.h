@@ -48,9 +48,8 @@ typedef enum {
 	EDITOR_DECL					= BIT(7),
 	EDITOR_AF					= BIT(8),
 	EDITOR_PARTICLE				= BIT(9),
-	EDITOR_PDA					= BIT(10),
-	EDITOR_AAS					= BIT(11),
-	EDITOR_MATERIAL				= BIT(12)
+	EDITOR_AAS					= BIT(10),
+	EDITOR_MATERIAL				= BIT(11)
 } toolFlag_t;
 
 #define STRTABLE_ID				"#str_"
@@ -266,15 +265,11 @@ public:
 	virtual bool				SetCallback(CallbackType cbt, FunctionPointer cb, void* userArg) = 0;
 
 	enum FunctionType {
-		// the function's signature is bool fn(void) - no arguments.
-		// it returns true if we're currently running the doom3 demo
-		// not relevant for mods, only for game/ aka base.dll/base.so/...
-		FT_IsDemo = 1,
 		// the function's signature is bool fn(idInterpreter,idProgram,int) with arguments:
 		// idInterpreter *interpreter, idProgram *program, int instructionPointer
 		// it returns true if the game debugger is active.
 		// relevant for mods.
-		FT_UpdateDebugger,
+		FT_UpdateDebugger = 1,
 	};
 
 	// returns true if that function is available in this version of dhewm3

@@ -210,6 +210,9 @@ const idEventDef *idEventDef::FindEvent( const char *name ) {
 
 static idLinkList<idEvent> FreeEvents;
 static idLinkList<idEvent> EventQueue;
+#ifdef _D3XP
+static idLinkList<idEvent> FastEventQueue;
+#endif
 static idEvent EventPool[ MAX_EVENTS ];
 
 bool idEvent::initialized = false;
@@ -326,8 +329,8 @@ idEvent *idEvent::Alloc( const idEventDef *evdef, int numargs, va_list args ) {
 			break;
 
 		// abahr: type checking change as per Jim D.
-		// jshepard: TODO FIXME HACK this never ever produces desired, positive results. Events should be built to prepare for null entities, especially when dealing with
-		//							 script events. This will throw a warning, and events should be prepared to deal with null entities.
+		// jshepard: TODO FIXME HACK this never ever produces desired, positive results. Events should be built to prepare for null entities, especially when dealing with 
+		//							 script events. This will throw a warning, and events should be prepared to deal with null entities. 
 		case D_EVENT_ENTITY :
 			if ( reinterpret_cast<idEntity *>( arg->value ) == NULL ) {
 				gameLocal.Warning( "idEvent::Alloc : NULL entity passed in to event function that expects a non-NULL pointer on arg # %d on '%s' event.", i, evdef->GetName() );
@@ -442,6 +445,25 @@ void idEvent::Schedule( idClass *obj, const idTypeInfo *type, int time ) {
 
 	eventNode.Remove();
 
+#ifdef _D3XP
+	if ( obj->IsType( idEntity::GetClassType() ) && ( ( (idEntity*)(obj) )->timeGroup == TIME_GROUP2 ) ) {
+		event = FastEventQueue.Next();
+		while( ( event != NULL ) && ( this->time >= event->time ) ) {
+			event = event->eventNode.Next();
+		}
+
+		if ( event ) {
+			eventNode.InsertBefore( event->eventNode );
+		} else {
+			eventNode.AddToEnd( FastEventQueue );
+		}
+
+		return;
+	} else {
+		this->time = gameLocal.slow.time + time;
+	}
+#endif
+
 	event = EventQueue.Next();
 	while( ( event != NULL ) && ( this->time >= event->time ) ) {
 		event = event->eventNode.Next();
@@ -475,6 +497,17 @@ void idEvent::CancelEvents( const idClass *obj, const idEventDef *evdef ) {
 			}
 		}
 	}
+
+#ifdef _D3XP
+	for( event = FastEventQueue.Next(); event != NULL; event = next ) {
+		next = event->eventNode.Next();
+		if ( event->object == obj ) {
+			if ( !evdef || ( evdef == event->eventdef ) ) {
+				event->Free();
+			}
+		}
+	}
+#endif
 }
 
 /*
@@ -623,6 +656,109 @@ void idEvent::ServiceEvents( void ) {
 	}
 }
 
+#ifdef _D3XP
+/*
+================
+idEvent::ServiceFastEvents
+================
+*/
+void idEvent::ServiceFastEvents() {
+	idEvent	*event;
+	int		num;
+	intptr_t	args[ D_EVENT_MAXARGS ];
+	int			offset;
+	int			i;
+	int			numargs;
+	const char	*formatspec;
+	trace_t		**tracePtr;
+	const idEventDef *ev;
+	byte		*data;
+	const char  *materialName;
+
+	num = 0;
+	while( !FastEventQueue.IsListEmpty() ) {
+		event = FastEventQueue.Next();
+		assert( event );
+
+		if ( event->time > gameLocal.fast.time ) {
+			break;
+		}
+
+		// copy the data into the local args array and set up pointers
+		ev = event->eventdef;
+		formatspec = ev->GetArgFormat();
+		numargs = ev->GetNumArgs();
+		for( i = 0; i < numargs; i++ ) {
+			offset = ev->GetArgOffset( i );
+			data = event->data;
+			switch( formatspec[ i ] ) {
+			case D_EVENT_FLOAT :
+			case D_EVENT_INTEGER :
+				args[ i ] = *reinterpret_cast<int *>( &data[ offset ] );
+				break;
+
+			case D_EVENT_VECTOR :
+				*reinterpret_cast<idVec3 **>( &args[ i ] ) = reinterpret_cast<idVec3 *>( &data[ offset ] );
+				break;
+
+			case D_EVENT_STRING :
+				*reinterpret_cast<const char **>( &args[ i ] ) = reinterpret_cast<const char *>( &data[ offset ] );
+				break;
+
+			// abahr: type checking change as per Jim D.
+			case D_EVENT_ENTITY :
+				*reinterpret_cast<idEntity **>( &args[ i ] ) = reinterpret_cast< idEntityPtr<idEntity> * >( &data[ offset ] )->GetEntity();
+				if ( *reinterpret_cast<idEntity ** >( &args[ i ] ) == NULL ) {
+					gameLocal.Warning( "idEvent::ServiceEvents : NULL entity passed in to event function that expects a non-NULL pointer on arg # %d on '%s' event.", i, ev->GetName() );
+				}
+				break;
+
+			case D_EVENT_ENTITY_NULL :
+				*reinterpret_cast<idEntity **>( &args[ i ] ) = reinterpret_cast< idEntityPtr<idEntity> * >( &data[ offset ] )->GetEntity();
+				break;
+
+			case D_EVENT_TRACE :
+				tracePtr = reinterpret_cast<trace_t **>( &args[ i ] );
+				if ( *reinterpret_cast<bool *>( &data[ offset ] ) ) {
+					*tracePtr = reinterpret_cast<trace_t *>( &data[ offset + sizeof( bool ) ] );
+
+					if ( ( *tracePtr )->c.material != NULL ) {
+						// look up the material name to get the material pointer
+						materialName = reinterpret_cast<const char *>( &data[ offset + sizeof( bool ) + sizeof( trace_t ) ] );
+						( *tracePtr )->c.material = declManager->FindMaterial( materialName, true );
+					}
+				} else {
+					*tracePtr = NULL;
+				}
+				break;
+
+			default:
+				gameLocal.Error( "idEvent::ServiceFastEvents : Invalid arg format '%s' string for '%s' event.", formatspec, ev->GetName() );
+			}
+		}
+
+		// the event is removed from its list so that if then object
+		// is deleted, the event won't be freed twice
+		event->eventNode.Remove();
+		assert( event->object );
+		// savegames can trash the object, so do this for safety
+		if ( event->object ) {
+			event->object->ProcessEventArgPtr( ev, args );
+		}
+
+		// return the event to the free list
+		event->Free();
+
+		// Don't allow ourselves to stay in here too long.  An abnormally high number
+		// of events being processed is evidence of an infinite loop of events.
+		num++;
+		if ( num > MAX_EVENTSPERFRAME ) {
+			gameLocal.Error( "Event overflow.  Possible infinite loop in script." );
+		}
+	}
+}
+#endif
+
 /*
 ================
 idEvent::Init
@@ -699,6 +835,23 @@ void idEvent::Save( idSaveGame *savefile ) {
 
 		event = event->eventNode.Next();
 	}
+
+#ifdef _D3XP
+	// Save the Fast EventQueue
+	savefile->WriteInt( FastEventQueue.Num() );
+
+	event = FastEventQueue.Next();
+	while( event != NULL ) {
+		savefile->WriteInt( event->time );
+		savefile->WriteString( event->eventdef->GetName() );
+		savefile->WriteString( event->typeinfo->classname );
+		savefile->WriteObject( event->object );
+		savefile->WriteInt( event->eventdef->GetArgSize() );
+		savefile->Write( event->data, event->eventdef->GetArgSize() );
+
+		event = event->eventNode.Next();
+	}
+#endif
 }
 
 /*
@@ -755,6 +908,51 @@ void idEvent::Restore( idRestoreGame *savefile ) {
 			event->data = NULL;
 		}
 	}
+
+#ifdef _D3XP
+	// Restore the Fast EventQueue
+	savefile->ReadInt( num );
+
+	for ( i = 0; i < num; i++ ) {
+		if ( FreeEvents.IsListEmpty() ) {
+			gameLocal.Error( "idEvent::Restore : No more free events" );
+		}
+
+		event = FreeEvents.Next();
+		event->eventNode.Remove();
+		event->eventNode.AddToEnd( FastEventQueue );
+
+		savefile->ReadInt( event->time );
+
+		// read the event name
+		savefile->ReadString( name );
+		event->eventdef = idEventDef::FindEvent( name );
+		if ( !event->eventdef ) {
+			savefile->Error( "idEvent::Restore: unknown event '%s'", name.c_str() );
+		}
+
+		// read the classtype
+		savefile->ReadString( name );
+		event->typeinfo = idClass::GetClass( name );
+		if ( !event->typeinfo ) {
+			savefile->Error( "idEvent::Restore: unknown class '%s' on event '%s'", name.c_str(), event->eventdef->GetName() );
+		}
+
+		savefile->ReadObject( event->object );
+
+		// read the args
+		savefile->ReadInt( argsize );
+		if ( argsize != event->eventdef->GetArgSize() ) {
+			savefile->Error( "idEvent::Restore: arg size (%zd) doesn't match saved arg size(%d) on event '%s'", event->eventdef->GetArgSize(), argsize, event->eventdef->GetName() );
+		}
+		if ( argsize ) {
+			event->data = eventDataAllocator.Alloc( argsize );
+			savefile->Read( event->data, argsize );
+		} else {
+			event->data = NULL;
+		}
+	}
+#endif
 }
 
 #ifdef CREATE_EVENT_CODE

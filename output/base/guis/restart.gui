@@ -1,0 +1,23 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	windowDef title
+	{
+		rect	124,126,367,68
+		visible	1
+		noevents	1
+		forecolor	0.50196081,0,0,1
+		text	"YOU DIED"
+		textscale	1
+		textalign	1
+	}
+	windowDef retrybutton
+	{
+		rect	237,250,160,50
+		visible	1
+		forecolor	1,1,1,1
+		text	"Retry"
+		textscale	0.7
+		textalign	1
+	}
+}

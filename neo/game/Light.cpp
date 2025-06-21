@@ -310,7 +310,6 @@ idLight::Spawn
 void idLight::Spawn( void ) {
 	bool start_off;
 	bool needBroken;
-	const char *demonic_shader;
 
 	// do the parsing the same way dmap and the editor do
 	gameEdit->ParseSpawnArgsToRenderLight( &spawnArgs, &renderLight );
@@ -327,11 +326,6 @@ void idLight::Spawn( void ) {
 	currentLevel = levels;
 	if ( levels <= 0 ) {
 		gameLocal.Error( "Invalid light level set on entity #%d(%s)", entityNumber, name.c_str() );
-	}
-
-	// make sure the demonic shader is cached
-	if ( spawnArgs.GetString( "mat_demonic", NULL, &demonic_shader ) ) {
-		declManager->FindType( DECL_MATERIAL, demonic_shader );
 	}
 
 	// game specific functionality, not mirrored in
@@ -357,6 +351,13 @@ void idLight::Spawn( void ) {
 	if ( start_off ) {
 		Off();
 	}
+
+#ifdef CTF
+	// Midnight CTF
+	if ( gameLocal.mpGame.IsGametypeFlagBased() && gameLocal.serverInfo.GetBool( "si_midnight" ) && !spawnArgs.GetBool( "midnight_override" ) ) {
+		Off();
+	}
+#endif
 
 	health = spawnArgs.GetInt( "health", "0" );
 	spawnArgs.GetString( "broken", "", brokenModel );

@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "idlib/BitMsg.h"
-#include "idlib/Dict.h"
-#include "idlib/containers/StrList.h"
-#include "framework/UsercmdGen.h"
-#include "renderer/RenderWorld.h"
-#include "sound/sound.h"
-
 class idAASFileManager;
 class idCollisionModelManager;
 class idRenderSystem;

@@ -1,0 +1,410 @@
+// when gui surfaces are placed on an entity to allow them to be
+// interactive, use this surface for the view screen and place
+// a "gui" key containing the gui file, like "guis/mainmenu.gui"
+// on the entity
+textures/editor/entityGui
+{
+	qer_editorimage	textures/editor/entityGui.tga
+	discrete
+	playerclip
+	guiSurf	entity
+}
+
+// when gui surfaces are placed on an entity to allow them to be
+// interactive, use this surface for the view screen and place
+// a "gui" key containing the gui file, like "guis/mainmenu.gui"
+// on the entity
+textures/editor/entityGui2
+{
+	qer_editorimage	textures/editor/entityGui2.tga
+	discrete
+	playerclip
+	guiSurf	entity2
+}
+
+// when gui surfaces are placed on an entity to allow them to be
+// interactive, use this surface for the view screen and place
+// a "gui" key containing the gui file, like "guis/mainmenu.gui"
+// on the entity
+textures/editor/entityGui3
+{
+	qer_editorimage	textures/editor/entityGui3.tga
+	discrete
+	guiSurf	entity3
+	playerclip
+}
+
+// visportal brushes stop the area flood fills in dmap and
+// define portals, separating the world into areas
+textures/editor/visportal
+{
+	qer_editorimage	textures/editor/visportal.tga
+	areaportal
+	noshadows
+}
+
+// aassolid brushes create solid space in AAS files
+textures/editor/aassolid
+{
+	qer_editorimage textures/editor/aas_solid.tga
+	noShadows
+	aassolid
+	nonsolid
+	qer_nocarve
+}
+
+// aasobstacle brushes are used to compile obstacles into AAS
+// that can be enabled/disabled
+textures/editor/aasobstacle
+{
+	qer_editorimage textures/editor/aas_obstacle.tga
+	noShadows
+	aasobstacle
+	nonsolid
+	qer_nocarve
+}
+
+// a caulk brush will behave as a normal solid surface
+// for collision detection and utility flood filling, and
+// should be used whenever you know the area isn't going to
+// be visible, but it needs to be closed off for things to
+// work right.  Curves and models don't stop the utility
+// flood filling, so you need to have solid brushes behind
+// them.  Setting the faces that won't ever be seen to
+// caulk will save some rendering time and data space.
+textures/editor/caulk
+{
+	qer_editorimage textures/editor/caulk.tga
+	noshadows
+	forceOpaque			// will still seal levels
+}
+
+textures/editor/portal_sky
+{
+	qer_editorimage				textures/editor/portal_sky.tga
+	forceOpaque					// will still seal levels
+	noshadows
+	noimpact
+	sort						portalSky
+
+	{
+		map						_currentRender
+
+		clamp
+		screen
+
+		// fix up the projection based on the screen coords
+		translate				global4 * 0.5, global5 * 0.5
+		scale					global4 * 0.5, global5 * 0.5
+	}
+}
+
+// nodraw is used for surfaces that don't have any automatic
+// interaction with anything
+textures/editor/nodraw
+{
+	qer_editorimage textures/editor/nodraw.tga
+	nonsolid
+	noshadows
+}
+
+// nodraw solid is used for surfaces that are not visible but are used to collide with
+textures/editor/nodrawsolid
+{
+	qer_editorimage textures/editor/nodrawsolid.tga
+	noshadows
+}
+
+// This is an invisible brush that should cast a shadow
+textures/editor/shadow
+{
+	qer_editorimage textures/editor/shadow.tga
+	nonsolid
+	forceshadows
+}
+
+// Invisible Shadow 2
+textures/editor/shadow2
+{
+	qer_editorimage textures/editor/shadow.tga
+	nonsolid
+	forceshadows
+	noselfshadow
+}
+
+// trigger entities use this material
+textures/editor/trigger
+{
+	qer_editorimage textures/editor/trigger.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigmulti
+{
+	qer_editorimage textures/editor/trigmulti.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigonce
+{
+	qer_editorimage textures/editor/trigonce.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigtimer
+{
+	qer_editorimage textures/editor/trigtimer.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigrelay
+{
+	qer_editorimage textures/editor/trigger_relay.tga
+	noShadows
+	trigger
+	qer_nocarve
+}
+
+// trigger entities use this material
+textures/editor/trighurt
+{
+	qer_editorimage textures/editor/trighurt.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigfade
+{
+	qer_editorimage textures/editor/trigfade.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/triggui
+{
+	qer_editorimage textures/editor/triggui.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigair
+{
+	qer_editorimage textures/editor/trigair.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigentityname
+{
+	qer_editorimage textures/editor/trigentityname.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/editor/trigentityname_once
+{
+	qer_editorimage textures/editor/trigentityname_once.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// nodrop is a volume modifier that is tested
+// before dropping items, used to keep items
+// from cluttering up death pits
+textures/editor/nodrop
+{
+	qer_editorimage textures/editor/nodrop.tga
+	qer_nocarve
+	nodrop
+	nonsolid
+	noshadows
+}
+
+// a clip brush is solid to players and monsters, but not missiles
+textures/editor/clip
+{
+	qer_editorimage textures/editor/clip.tga
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+}
+
+// flashlight trigger entities use this material
+textures/editor/trigflashlight
+{
+	qer_editorimage textures/editor/trigflashlight.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	flashlight_trigger
+}
+
+// 
+textures/editor/clip_plusmovables
+{
+	qer_editorimage textures/editor/clipplus.tga
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	moveableclip 
+	noshadows
+}
+
+// full clip is just like a solid brush, clipping missiles, monsters, and players
+textures/editor/full_clip
+{
+	qer_editorimage textures/editor/full_clip.tga
+	monsterclip
+	playerclip
+	moveableclip
+	noshadows
+}
+
+// a player clip brush is solid to players only, not monsters or anything else
+textures/editor/player_clip
+{
+	qer_editorimage textures/editor/player_clip.tga
+	noimpact
+	nonsolid
+	playerclip
+	noshadows
+}
+
+// a monster clip brush is solid to monsters only
+textures/editor/monster_clip
+{
+	qer_editorimage textures/editor/monster_clip.tga
+	nonsolid
+	monsterclip
+	noshadows
+}
+
+// a moveable clip brush is solid only to moveables like rigid bodies and articulated figures
+textures/editor/moveable_clip
+{
+	qer_editorimage textures/editor/moveable_clip.tga
+	nonsolid
+	moveableclip
+	noshadows
+}
+
+// a IK clip brush is solid only to IK collision testing
+textures/editor/ik_clip
+{
+	qer_editorimage textures/editor/ikclip.tga
+	nonsolid
+	ikclip
+	noshadows
+}
+
+// a cushion is an invisible surface that is
+// solid to movement, but will never give falling
+// damage.  Put a thin sliver brush over jump pads, etc.
+textures/editor/cushion
+{
+	qer_editorimage textures/editor/cushion.tga
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+}
+
+// slick is an invisible surface that should be
+// used as a thin sliver brush over floors to cause sliding
+textures/editor/slick
+{
+	qer_editorimage textures/editor/slick.tga
+	slick
+	noshadows
+}
+
+// noimpact can be used as a thin sliver
+// brush over surfaces that you want missiles to
+// just dissapear into, instead of exploding on
+textures/editor/noimpact
+{
+	qer_editorimage textures/editor/noimpact.tga
+	noimpact
+	noshadows
+}
+
+// subviews are for perfect mirrors or portals
+// without any extra surface drawing
+textures/editor/mirror
+{
+	discrete		// never merge with other surfaces
+	qer_editorimage textures/editor/qer_mirror.tga
+	solid
+	mirror
+	{
+		blend add
+		map textures/editor/qer_mirror.tga
+	}
+}
+
+// this is used during dmap development for some things
+invisible
+{
+	noshadows
+}
+
+// a ladder brush is solid to players and monsters, but not missiles (11/06/01)
+// players can climb ladder brushes
+textures/editor/ladder
+{
+	qer_editorimage textures/editor/ladder.tga
+	nonsolid
+	monsterclip
+	playerclip
+	noimpact
+	ladder
+	noshadows
+}
+
+// if an ASE/LWO model has a surface that uses this material that surface will
+// be used for collision detection instead of the visual surface(s)
+textures/editor/collision
+{
+	qer_editorimage textures/editor/collision.tga
+	noshadows
+	collision
+}
+
+
+textures/editor/speaker
+{
+	qer_editorimage textures/editor/speaker.tga
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+}
+
+textures/editor/moveableclipmodel
+{
+	qer_editorimage textures/editor/clip.tga
+	noshadows
+}

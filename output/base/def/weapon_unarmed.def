@@ -1,0 +1,29 @@
+entityDef weapon_unarmed
+{
+	//"model_view" 				""
+
+	"inv_name"					"Unarmed"
+	"inv_weapon"				"weapon_unarmed"
+	"icon"						"guis/assets/hud/no_icon"
+
+	"weapon_scriptobject"		"weapon_unarmed"
+	"def_melee"					"damage_generic"
+	"melee_distance"			"40"
+	"ammoType"					"ammo_none"
+	"ammoRequired"				"0"
+	"clipSize"					"0"
+	"mtr_flashShader"			""
+	"flashColor"				""
+	"flashRadius"				"0"
+	"silent_fire"				"1"
+
+	"hide_time"					"0.3"
+	"hide_distance"				"-15"		
+
+	"impact_damage_effect"		"1"
+
+	"snd_acquire"				"no_sound"
+	"skin_invisible"			"skins/no_skin"
+	
+	"stealing"					"1"	
+}

@@ -37,7 +37,7 @@
 #endif /* main */
 
 /* The standard output files */
-#define STDOUT_FILE	TEXT("dhewm3log.txt") /* DG: renamed this */
+#define STDOUT_FILE	TEXT("enginelog.txt") /* DG: renamed this */
 #define STDERR_FILE	TEXT("stderr.txt")
 
 /* Set a variable to tell if the stdio redirect has been enabled. */

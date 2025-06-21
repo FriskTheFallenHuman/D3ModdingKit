@@ -1,0 +1,41 @@
+
+
+//Items
+
+
+entityDef item_default
+{
+	"editor_color"			".3 .3 1"
+	"editor_mins"			"-16 -16 0"
+	"editor_maxs"			"16 16 32"
+	"editor_rotatable"		"1"
+	
+	"inv_item"				"1"
+	"snd_acquire"			""
+	"snd_respawn"			""
+	
+	"editor_bool inv_item"			"if set to 1, show item acquisition gui when picked up"
+	"editor_var inv_name"			"name referenced for triggers etc.. requiring this to be in inventory to work"
+	"editor_var inv_icon"			"icon name for hud graphics"
+	"editor_bool inv_carry"			"if set to 1, is carried as opposed to instant use"
+	"editor_bool no_touch"			"trigger to give to player instead of picking up"
+	"editor_bool not_easy"			"set to 1 and item will not spawn in easy mode"
+	"editor_bool not_medium"		"set to 1 and item will not spawn in medium mode"
+	"editor_bool not_hard"			"set to 1 and item will not spawn in hard mode"
+	"editor_model model"				"visual model"
+	"editor_var triggersize"		"amount to expand the pickup trigger by"
+	"editor_var inv_id"				"id number as defined in guis/itemdefs.h"
+	"editor_copy3"			"inv_name"
+	"editor_copy4"			"inv_item"
+	"editor_copy5"			"inv_objective"
+	"editor_copy6"			"inv_icon"
+
+	"spawnclass"			"idItem"
+}
+
+entityDef item_generic
+{
+	"inherit"				"item_default"
+	"inv_item"				"1"
+	"inv_name"				"Item"
+}

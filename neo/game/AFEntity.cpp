@@ -1133,6 +1133,7 @@ void idAFEntity_Gibbable::SpawnGibs( const idVec3 &dir, const char *damageDefNam
 			velocity += ( i & 1 ) ? dir : -dir;
 			list[i]->GetPhysics()->SetLinearVelocity( velocity * 75.0f );
 		}
+
 		list[i]->GetRenderEntity()->noShadow = true;
 		list[i]->GetRenderEntity()->shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
 		list[i]->PostEventSec( &EV_Remove, 4.0f );
@@ -1417,6 +1418,13 @@ void idAFEntity_WithAttachedHead::SetupHead( void ) {
 		headEnt->SetCombatModel();
 		head = headEnt;
 
+#ifdef _D3XP
+		idStr xSkin;
+		if ( spawnArgs.GetString( "skin_head_xray", "", xSkin ) ) {
+			headEnt->xraySkin = declManager->FindSkin( xSkin.c_str() );
+			headEnt->UpdateModel();
+		}
+#endif
 		animator.GetJointTransform( joint, gameLocal.time, origin, axis );
 		origin = renderEntity.origin + origin * renderEntity.axis;
 		headEnt->SetOrigin( origin );
@@ -2042,7 +2050,7 @@ void idAFEntity_VehicleFourWheels::Think( void ) {
 			for ( i = 0; i < 4; i++ ) {
 				numContacts = af.GetPhysics()->GetBodyContactConstraints( wheels[i]->GetClipModel()->GetId(), contacts, 2 );
 				for ( int j = 0; j < numContacts; j++ ) {
-					gameLocal.smokeParticles->EmitSmoke( dustSmoke, gameLocal.time, gameLocal.random.RandomFloat(), contacts[j]->GetContact().point, contacts[j]->GetContact().normal.ToMat3() );
+					gameLocal.smokeParticles->EmitSmoke( dustSmoke, gameLocal.time, gameLocal.random.RandomFloat(), contacts[j]->GetContact().point, contacts[j]->GetContact().normal.ToMat3(), timeGroup /* D3XP */ );
 				}
 			}
 		}
@@ -2159,7 +2167,9 @@ idAFEntity_VehicleSixWheels::Think
 */
 void idAFEntity_VehicleSixWheels::Think( void ) {
 	int i;
+#ifndef _D3XP
 	float force = 0.0f, velocity = 0.0f, steerAngle = 0.0f;
+#endif
 	idVec3 origin;
 	idMat3 axis;
 	idRotation rotation;
@@ -2232,7 +2242,7 @@ void idAFEntity_VehicleSixWheels::Think( void ) {
 			for ( i = 0; i < 6; i++ ) {
 				numContacts = af.GetPhysics()->GetBodyContactConstraints( wheels[i]->GetClipModel()->GetId(), contacts, 2 );
 				for ( int j = 0; j < numContacts; j++ ) {
-					gameLocal.smokeParticles->EmitSmoke( dustSmoke, gameLocal.time, gameLocal.random.RandomFloat(), contacts[j]->GetContact().point, contacts[j]->GetContact().normal.ToMat3() );
+					gameLocal.smokeParticles->EmitSmoke( dustSmoke, gameLocal.time, gameLocal.random.RandomFloat(), contacts[j]->GetContact().point, contacts[j]->GetContact().normal.ToMat3(), timeGroup /* D3XP */ );
 				}
 			}
 		}

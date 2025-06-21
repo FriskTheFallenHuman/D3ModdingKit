@@ -163,9 +163,6 @@ public:
 	static idCVar			idleServer;						// serverinfo reply, indicates all clients are idle
 	static idCVar			clientDownload;					// preferred download policy
 
-	// same message used for offline check and network reply
-	static void				BuildInvalidKeyMsg( idStr &msg, bool valid[ 2 ] );
-
 private:
 	static int				realTime;
 	static master_t			masters[ MAX_MASTER_SERVERS];	// master1 etc.

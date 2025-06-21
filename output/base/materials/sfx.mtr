@@ -1,0 +1,368 @@
+table tunnelVisionSolidAlpha { clamp { 1, 0 } }
+
+//	Dentomod's Bloom
+
+textures/AFX/AFXweight 
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{	
+		vertexProgram 	afxweight.vfp
+		fragmentProgram	afxweight.vfp
+
+		fragmentMap 0 _currentRender
+		fragmentMap 1 _afxweight
+	}
+}
+
+textures/AFX/AFXmodulate
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{	
+		rgba 1
+		vertexProgram 	afxmodulate.vfp
+		vertexParm		0 parm0
+		vertexParm		1 parm1
+		fragmentProgram	afxmodulate.vfp
+
+		fragmentMap 0 _fsfx_input
+		fragmentMap 1 _afxweight
+	}
+}
+
+textures/AFX/AFXmodulate2
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{	
+		rgba 1
+		vertexProgram 	afxmodulate2.vfp
+		fragmentProgram	afxmodulate2.vfp
+
+		fragmentMap 0 _fsfx_input
+		fragmentMap 1 _afxweight
+	}
+}
+
+textures/AFX/AFXadd
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	
+	{	
+		rgba 1
+		vertexProgram 	afxadd.vfp
+		vertexParm		0 parm0
+		vertexParm		1 parm1
+		fragmentProgram	afxadd.vfp
+
+		fragmentMap 0 _currentRender 
+		fragmentMap 1 _fsfx_input
+	}
+
+}
+
+textures/fsfx/blur
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		vertexProgram blur.vfp
+		fragmentProgram	blur.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+
+textures/fsfx/blurx1024
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blurx1024.vfp
+		fragmentProgram	blurx1024.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blury512
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blury0512.vfp
+		fragmentProgram	blury0512.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blurx512
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blurx0512.vfp
+		fragmentProgram	blurx0512.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blury256
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blury0256.vfp
+		fragmentProgram	blury0256.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blurx256
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blurx0256.vfp
+		fragmentProgram	blurx0256.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blury128
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blury0128.vfp
+		fragmentProgram	blury0128.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blurx128
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blurx0128.vfp
+		fragmentProgram	blurx0128.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blury64
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blury0064.vfp
+		fragmentProgram	blury0064.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blurx64
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blurx0064.vfp
+		fragmentProgram	blurx0064.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+textures/fsfx/blury32
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		if (fragmentPrograms == 1)
+		rgba 1
+		vertexProgram blury0032.vfp
+		fragmentProgram	blury0032.vfp
+		fragmentMap 0 _fsfx_input
+	}
+	{
+		if (fragmentPrograms == 0)
+		map _fsfx_input
+	}
+}
+
+
+textures/fsfx/blend_add
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		colored
+		map _fsfx_input
+		blend add
+	}
+}
+
+textures/fsfx/current_blend_add
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		colored
+		map _currentRender
+		blend add
+	}
+}
+
+textures/fsfx/blend_modulate
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		map _fsfx_input
+		blend modulate
+	}
+}
+
+textures/fsfx/blend_modulate_2x
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		map _fsfx_input
+		blend gl_dst_color, gl_src_color
+	}
+}
+
+textures/fsfx/invert_dst
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		colored
+		map _white
+		blend gl_one_minus_dst_color, gl_zero
+	}
+}
+
+textures/fsfx/add_color
+{
+	noshadows
+	noimpact
+	sort	postProcess
+	{
+		colored
+		map _white
+		blend add
+	}
+}
+
+// Normal view effects
+
+/*
+	Player tunel vision aka Damage view effect.
+	parm3 will range from 0.0 to 1.0 based on health, 1.0 is full health
+	parm0 will be the time that damage was last taken, allowing an accentuation and fade out
+	
+	when health is near 0, the density will be greater
+*/
+textures/decals/tunnel
+{
+	noshadows
+	translucent
+	{
+		alpha		tunnelVisionSolidAlpha[ parm3 ] - (time-parm0)*0.25
+		blend		blend
+		centerscale	0.65+0.05*sinTable[time], 0.65+0.05*sinTable[time]
+		rotate		time * -.01
+		map			textures/sfx/tunnel.tga
+		clamp
+	}
+	{
+		alpha		tunnelVisionSolidAlpha[ parm3 ] - (time-parm0)*0.25
+		blend		blend
+		centerscale	0.65+0.05*sinTable[time], 0.65+0.05*sinTable[time]
+		rotate 		time * .006
+		map			textures/sfx/tunnel.tga
+		clamp
+	}
+}

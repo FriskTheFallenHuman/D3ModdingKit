@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 class idImage;
 class idCinematic;
 class idUserInterface;
-class idMegaTexture;
 
 // moved from image.h for default parm
 typedef enum {
@@ -196,8 +195,6 @@ typedef struct {
 	int					fragmentProgram;
 	int					numFragmentProgramImages;
 	idImage *			fragmentProgramImages[MAX_FRAGMENT_IMAGES];
-
-	idMegaTexture		*megaTexture;		// handles all the binding and parameter setting
 } newShaderStage_t;
 
 typedef struct {
@@ -333,7 +330,7 @@ typedef enum {
 	SURF_NOSTEPS				= BIT(9),	// no footstep sounds
 	SURF_DISCRETE				= BIT(10),	// not clipped or merged by utilities
 	SURF_NOFRAGMENT				= BIT(11),	// dmap won't cut surface at each bsp boundary
-	SURF_NULLNORMAL				= BIT(12)	// renderbump will draw this surface as 0x80 0x80 0x80, which
+	SURF_NULLNORMAL				= BIT(12)	// normals will draw this surface as 0x80 0x80 0x80, which
 											// won't collect light from any angle
 } surfaceFlags_t;
 
@@ -411,17 +408,10 @@ public:
 						// with apropriate order reversal.
 	bool				ShouldCreateBackSides( void ) const { return shouldCreateBackSides; }
 
-						// characters and models that are created by a complete renderbump can use a faster
+						// characters and models that has already baked normals can use a faster
 						// method of tangent and normal vector generation than surfaces which have a flat
-						// renderbump wrapped over them.
+						// normal wrapped over them.
 	bool				UseUnsmoothedTangents( void ) const { return unsmoothedTangents; }
-
-	// RBMIKKT_TANGENT...
-	// characters and models that baked in Blender or Substance designer use the newer
-	// Mikkelsen tangent space standard.
-	// see: https://bgolus.medium.com/generating-perfect-normal-maps-for-unity-f929e673fc57
-	bool				UseMikkTSpace() const { return mikktspace; }
-	// ...RBMIKKT_TANGENT
 
 						// by default, monsters can have blood overlays placed on them, but this can
 						// be overrided on a per-material basis with the "noOverlays" material command.
@@ -487,9 +477,6 @@ public:
 	idImage	*			LightFalloffImage() const { return lightFalloffImage; }
 
 	//------------------------------------------------------------------
-
-						// returns the renderbump command line for this shader, or an empty string if not present
-	const char *		GetRenderBump() const { return renderBump; };
 
 						// set specific material flag(s)
 	void				SetMaterialFlag( const int flag ) const { materialFlags |= flag; }
@@ -562,6 +549,8 @@ public:
 
 	void				ResetCinematicTime( int time ) const;
 
+	int					GetCinematicStartTime( void ) const;
+
 	void				UpdateCinematic( int time ) const;
 
 	//------------------------------------------------------------------
@@ -625,7 +614,6 @@ private:
 
 private:
 	idStr				desc;				// description
-	idStr				renderBump;			// renderbump command options, without the "renderbump" at the start
 
 	idImage	*			lightFalloffImage;
 
@@ -661,7 +649,6 @@ private:
 	bool				blendLight;
 	bool				ambientLight;
 	bool				unsmoothedTangents;
-	bool				mikktspace;			 // RBMIKKT_TANGENT use Mikkelsen tangent space standard for normal mapping
 	bool				hasSubview;			// mirror, remote render, etc
 	bool				allowOverlays;
 

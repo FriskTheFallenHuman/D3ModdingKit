@@ -45,62 +45,65 @@ const char* OSX_GetLocalizedString( const char* );
 // names not in this list can either be lowercase ascii, or '0xnn' hex sequences
 static const keyname_t keynames[] =
 {
-	{"TAB",				K_TAB,				"#str_07018"},
-	{"ENTER",			K_ENTER,			"#str_07019"},
-	{"ESCAPE",			K_ESCAPE,			"#str_07020"},
-	{"SPACE",			K_SPACE,			"#str_07021"},
-	{"BACKSPACE",		K_BACKSPACE,		"#str_07022"},
-	{"UPARROW",			K_UPARROW,			"#str_07023"},
-	{"DOWNARROW",		K_DOWNARROW,		"#str_07024"},
-	{"LEFTARROW",		K_LEFTARROW,		"#str_07025"},
-	{"RIGHTARROW",		K_RIGHTARROW,		"#str_07026"},
+	{"TAB",				K_TAB,				"#str_key_tab"},
+	{"ENTER",			K_ENTER,			"#str_key_enter"},
+	{"ESCAPE",			K_ESCAPE,			"#str_key_escape"},
+	{"SPACE",			K_SPACE,			"#str_key_space"},
+	{"BACKSPACE",		K_BACKSPACE,		"#str_key_backspace"},
+	{"UPARROW",			K_UPARROW,			"#str_key_uparrow"},
+	{"DOWNARROW",		K_DOWNARROW,		"#str_key_downarrow"},
+	{"LEFTARROW",		K_LEFTARROW,		"#str_key_leftarrow"},
+	{"RIGHTARROW",		K_RIGHTARROW,		"#str_key_rigtharrow"},
 
-	{"ALT",				K_ALT,				"#str_07027"},
+	{"ALT",				K_ALT,				"#str_key_left_alt"},
 	//{"RIGHTALT",		K_RIGHT_ALT,		"#str_07027"}, // DG: renamed this, see below
-	{"CTRL",			K_CTRL,				"#str_07028"},
-	{"SHIFT",			K_SHIFT,			"#str_07029"},
+	{"CTRL",			K_CTRL,				"#str_key_left_ctrl"},
+	{"SHIFT",			K_SHIFT,			"#str_key_left_shift"},
 
-	{"LWIN",			K_LWIN,				"#str_07030"},
-	{"RWIN",			K_RWIN,				"#str_07031"},
-	{"MENU",			K_MENU,				"#str_07032"},
+	{"LWIN",			K_LWIN,				"#str_key_left_winkey"},
+	{"RWIN",			K_RWIN,				"#str_key_rigth_winkey"},
+	{"MENU",			K_MENU,				"#str_key_menu"},
 
-	{"COMMAND",			K_COMMAND,			"#str_07033"},
+	{"COMMAND",			K_COMMAND,			"#str_key_command"},
 
-	{"CAPSLOCK",		K_CAPSLOCK,			"#str_07034"},
-	{"SCROLL",			K_SCROLL,			"#str_07035"},
-	{"PRINTSCREEN",		K_PRINT_SCR,		"#str_07179"},
+	{"CAPSLOCK",		K_CAPSLOCK,			"#str_key_capslock"},
+	{"SCROLL",			K_SCROLL,			"#str_key_scroll"},
+	{"PRINTSCREEN",		K_PRINT_SCR,		"#str_key_print_screen"},
 
-	{"F1",				K_F1,				"#str_07036"},
-	{"F2",				K_F2,				"#str_07037"},
-	{"F3",				K_F3,				"#str_07038"},
-	{"F4",				K_F4,				"#str_07039"},
-	{"F5",				K_F5,				"#str_07040"},
-	{"F6",				K_F6,				"#str_07041"},
-	{"F7",				K_F7,				"#str_07042"},
-	{"F8",				K_F8,				"#str_07043"},
-	{"F9",				K_F9,				"#str_07044"},
-	{"F10",				K_F10,				"#str_07045"},
-	{"F11",				K_F11,				"#str_07046"},
-	{"F12",				K_F12,				"#str_07047"},
+	{"F1",				K_F1,				"#str_key_f1"},
+	{"F2",				K_F2,				"#str_key_f2"},
+	{"F3",				K_F3,				"#str_key_f3"},
+	{"F4",				K_F4,				"#str_key_f4"},
+	{"F5",				K_F5,				"#str_key_f5"},
+	{"F6",				K_F6,				"#str_key_f6"},
+	{"F7",				K_F7,				"#str_key_f7"},
+	{"F8",				K_F8,				"#str_key_f8"},
+	{"F9",				K_F9,				"#str_key_f9"},
+	{"F10",				K_F10,				"#str_key_f10"},
+	{"F11",				K_F11,				"#str_key_f11"},
+	{"F12",				K_F12,				"#str_key_f12"},
+	{"F13",				K_F13,				"#str_key_f13"},
+	{"F14",				K_F14,				"#str_key_f14"},
+	{"F15",				K_F15,				"#str_key_f15"},
 
-	{"INS",				K_INS,				"#str_07048"},
-	{"DEL",				K_DEL,				"#str_07049"},
-	{"PGDN",			K_PGDN,				"#str_07050"},
-	{"PGUP",			K_PGUP,				"#str_07051"},
-	{"HOME",			K_HOME,				"#str_07052"},
-	{"END",				K_END,				"#str_07053"},
+	{"INS",				K_INS,				"#str_key_insert"},
+	{"DEL",				K_DEL,				"#str_key_delete"},
+	{"PGDN",			K_PGDN,				"#str_key_page_down"},
+	{"PGUP",			K_PGUP,				"#str_key_page_up"},
+	{"HOME",			K_HOME,				"#str_key_home"},
+	{"END",				K_END,				"#str_key_end"},
 
-	{"MOUSE1",			K_MOUSE1,			"#str_07054"},
-	{"MOUSE2",			K_MOUSE2,			"#str_07055"},
-	{"MOUSE3",			K_MOUSE3,			"#str_07056"},
-	{"MOUSE4",			K_MOUSE4,			"#str_07057"},
-	{"MOUSE5",			K_MOUSE5,			"#str_07058"},
-	{"MOUSE6",			K_MOUSE6,			"#str_07059"},
-	{"MOUSE7",			K_MOUSE7,			"#str_07060"},
-	{"MOUSE8",			K_MOUSE8,			"#str_07061"},
+	{"MOUSE1",			K_MOUSE1,			"#str_mouse_button_1"},
+	{"MOUSE2",			K_MOUSE2,			"#str_mouse_button_2"},
+	{"MOUSE3",			K_MOUSE3,			"#str_mouse_button_3"},
+	{"MOUSE4",			K_MOUSE4,			"#str_mouse_button_4"},
+	{"MOUSE5",			K_MOUSE5,			"#str_mouse_button_5"},
+	{"MOUSE6",			K_MOUSE6,			"#str_mouse_button_6"},
+	{"MOUSE7",			K_MOUSE7,			"#str_mouse_button_7"},
+	{"MOUSE8",			K_MOUSE8,			"#str_mouse_button_8"},
 
-	{"MWHEELUP",		K_MWHEELUP,			"#str_07131"},
-	{"MWHEELDOWN",		K_MWHEELDOWN,		"#str_07132"},
+	{"MWHEELUP",		K_MWHEELUP,			"#str_mouse_wheel_up"},
+	{"MWHEELDOWN",		K_MWHEELDOWN,		"#str_mouse_wheel_down"},
 
 	// Note: for localized gamepad key names, we use Sys_GetLocalizedJoyKeyName()
 	//       so the last column is just NULL
@@ -138,51 +141,51 @@ static const keyname_t keynames[] =
 	{"JOY_TRIGGER1", 		K_JOY_TRIGGER1, 		NULL},
 	{"JOY_TRIGGER2", 		K_JOY_TRIGGER2, 		NULL},
 
-	{"AUX1",			K_AUX1,				"#str_07094"},
-	{"AUX2",			K_AUX2,				"#str_07095"},
-	{"AUX3",			K_AUX3,				"#str_07096"},
-	{"AUX4",			K_AUX4,				"#str_07097"},
-	{"AUX5",			K_AUX5,				"#str_07098"},
-	{"AUX6",			K_AUX6,				"#str_07099"},
-	{"AUX7",			K_AUX7,				"#str_07100"},
-	{"AUX8",			K_AUX8,				"#str_07101"},
-	{"AUX9",			K_AUX9,				"#str_07102"},
-	{"AUX10",			K_AUX10,			"#str_07103"},
-	{"AUX11",			K_AUX11,			"#str_07104"},
-	{"AUX12",			K_AUX12,			"#str_07105"},
-	{"AUX13",			K_AUX13,			"#str_07106"},
-	{"AUX14",			K_AUX14,			"#str_07107"},
-	{"AUX15",			K_AUX15,			"#str_07108"},
-	{"AUX16",			K_AUX16,			"#str_07109"},
+	{"AUX1",			K_AUX1,				"#str_aux_1"},
+	{"AUX2",			K_AUX2,				"#str_aux_2"},
+	{"AUX3",			K_AUX3,				"#str_aux_3"},
+	{"AUX4",			K_AUX4,				"#str_aux_4"},
+	{"AUX5",			K_AUX5,				"#str_aux_5"},
+	{"AUX6",			K_AUX6,				"#str_aux_6"},
+	{"AUX7",			K_AUX7,				"#str_aux_7"},
+	{"AUX8",			K_AUX8,				"#str_aux_8"},
+	{"AUX9",			K_AUX9,				"#str_aux_9"},
+	{"AUX10",			K_AUX10,			"#str_aux_10"},
+	{"AUX11",			K_AUX11,			"#str_aux_11"},
+	{"AUX12",			K_AUX12,			"#str_aux_12"},
+	{"AUX13",			K_AUX13,			"#str_aux_13"},
+	{"AUX14",			K_AUX14,			"#str_aux_14"},
+	{"AUX15",			K_AUX15,			"#str_aux_15"},
+	{"AUX16",			K_AUX16,			"#str_aux_16"},
 
-	{"KP_HOME",			K_KP_HOME,			"#str_07110"},
-	{"KP_UPARROW",		K_KP_UPARROW,		"#str_07111"},
-	{"KP_PGUP",			K_KP_PGUP,			"#str_07112"},
-	{"KP_LEFTARROW",	K_KP_LEFTARROW,		"#str_07113"},
-	{"KP_5",			K_KP_5,				"#str_07114"},
-	{"KP_RIGHTARROW",	K_KP_RIGHTARROW,	"#str_07115"},
-	{"KP_END",			K_KP_END,			"#str_07116"},
-	{"KP_DOWNARROW",	K_KP_DOWNARROW,		"#str_07117"},
-	{"KP_PGDN",			K_KP_PGDN,			"#str_07118"},
-	{"KP_ENTER",		K_KP_ENTER,			"#str_07119"},
-	{"KP_INS",			K_KP_INS,			"#str_07120"},
-	{"KP_DEL",			K_KP_DEL,			"#str_07121"},
-	{"KP_SLASH",		K_KP_SLASH,			"#str_07122"},
-	{"KP_MINUS",		K_KP_MINUS,			"#str_07123"},
-	{"KP_PLUS",			K_KP_PLUS,			"#str_07124"},
-	{"KP_NUMLOCK",		K_KP_NUMLOCK,		"#str_07125"},
-	{"KP_STAR",			K_KP_STAR,			"#str_07126"},
-	{"KP_EQUALS",		K_KP_EQUALS,		"#str_07127"},
+	{"KP_HOME",			K_KP_HOME,			"#str_kp_home"},
+	{"KP_UPARROW",		K_KP_UPARROW,		"#str_kp_up_arrow"},
+	{"KP_PGUP",			K_KP_PGUP,			"#str_kp_page_up"},
+	{"KP_LEFTARROW",	K_KP_LEFTARROW,		"#str_kp_left_arrow"},
+	{"KP_5",			K_KP_5,				"#str_kp_5"},
+	{"KP_RIGHTARROW",	K_KP_RIGHTARROW,	"#str_kp_rigth_arrow"},
+	{"KP_END",			K_KP_END,			"#str_kp_end"},
+	{"KP_DOWNARROW",	K_KP_DOWNARROW,		"#str_kp_down_arrow"},
+	{"KP_PGDN",			K_KP_PGDN,			"#str_kp_page_down"},
+	{"KP_ENTER",		K_KP_ENTER,			"#str_kp_enter"},
+	{"KP_INS",			K_KP_INS,			"#str_kp_instert"},
+	{"KP_DEL",			K_KP_DEL,			"#str_kp_delete"},
+	{"KP_SLASH",		K_KP_SLASH,			"#str_kp_slash"},
+	{"KP_MINUS",		K_KP_MINUS,			"#str_kp_minus"},
+	{"KP_PLUS",			K_KP_PLUS,			"#str_kp_plus"},
+	{"KP_NUMLOCK",		K_KP_NUMLOCK,		"#str_kp_numlock"},
+	{"KP_STAR",			K_KP_STAR,			"#str_kp_star"},
+	{"KP_EQUALS",		K_KP_EQUALS,		"#str_kp_equals"},
 
-	{"PAUSE",			K_PAUSE,			"#str_07128"},
+	{"PAUSE",			K_PAUSE,			"#str_key_pause"},
 
-	{"SEMICOLON",		';',				"#str_07129"},	// because a raw semicolon separates commands
-	{"APOSTROPHE",		'\'',				"#str_07130"},	// because a raw apostrophe messes with parsing
-	{"QUOTE",			'"',				""}, // DG: raw quote can't be good either
+	{"SEMICOLON",		';',				"#str_key_semi_colon"},	// because a raw semicolon separates commands
+	{"APOSTROPHE",		'\'',				"#str_key_apostrophe"},	// because a raw apostrophe messes with parsing
+	{"QUOTE",			'"',				"#str_key_qoute"}, // DG: raw quote can't be good either
 
-	{"R_ALT",			K_RIGHT_ALT,		""}, // DG: renamed this from RIGHTALT so it's shorter (but discernible) in the menu
-	{"R_CTRL",			K_RIGHT_CTRL, 		""}, // DG: added this one
-	{"R_SHIFT",			K_RIGHT_SHIFT,		""}, // DG: added this one
+	{"R_ALT",			K_RIGHT_ALT,		"str_key_right_alt"}, // DG: renamed this from RIGHTALT so it's shorter (but discernible) in the menu
+	{"R_CTRL",			K_RIGHT_CTRL, 		"str_key_right_ctrl"}, // DG: added this one
+	{"R_SHIFT",			K_RIGHT_SHIFT,		"str_key_right_shift"}, // DG: added this one
 
 	// TODO: controller stuff
 
@@ -204,38 +207,6 @@ public:
 
 bool		key_overstrikeMode = false;
 idKey *		keys = NULL;
-
-#define ID_DOOM_LEGACY
-
-#ifdef ID_DOOM_LEGACY
-
-static const char *		cheatCodes[] = {
-	"iddqd",		// Invincibility
-	"idkfa",		// All weapons, keys, ammo, and 200% armor
-	"idfa",			// Reset ammunition
-	"idspispopd",	// Walk through walls
-	"idclip",		// Walk through walls
-	"idchoppers",	// Chainsaw
-/*
-	"idbeholds",	// Berserker strength
-	"idbeholdv",	// Temporary invincibility
-	"idbeholdi",	// Temporary invisibility
-	"idbeholda",	// Full automap
-	"idbeholdr",	// Anti-radiation suit
-	"idbeholdl",	// Light amplification visor
-	"idclev",		// Level select
-	"iddt",			// Toggle full map; full map and objects; normal map
-	"idmypos",		// Display coordinates and heading
-	"idmus",		// Change music to indicated level
-	"fhhall",		// Kill all enemies in level
-	"fhshh",		// Invisible to enemies until attack
-*/
-	NULL
-};
-char		lastKeys[32];
-int			lastKeyIndex;
-
-#endif
 
 /*
 ===================
@@ -372,7 +343,7 @@ Returns a string (either a single ascii char, a K_* name, or a 0x11 hex string) 
 given keynum.
 
 NOTE: with localized = true, the returned string is only valid until the next call (at least for K_SC_*)!
-      (currently this is no problem)
+	  (currently this is no problem)
 ===================
 */
 const char *idKeyInput::KeyNumToString( int keynum, bool localized ) {
@@ -660,7 +631,7 @@ const char *idKeyInput::KeysFromBinding( const char *bind ) {
 	int i;
 	static char keyName[MAX_STRING_CHARS];
 
-	const char* orstr = common->GetLanguageDict()->GetString( "#str_07183" );
+	const char* orstr = common->GetLanguageDict()->GetString( "#str_key_or" );
 	if ( orstr == NULL || orstr[0] == '\0' || orstr[0] == '#' ) {
 		// fallback for windows demo where this string is missing
 		orstr = " or ";
@@ -679,7 +650,7 @@ const char *idKeyInput::KeysFromBinding( const char *bind ) {
 	}
 	if ( keyName[0] == '\0' ) {
 		// "<empty>"
-		idStr::Copynz( keyName, common->GetLanguageDict()->GetString( "#str_07133" ), sizeof( keyName ) );
+		idStr::Copynz( keyName, common->GetLanguageDict()->GetString( "#str_key_empty" ), sizeof( keyName ) );
 	}
 	idStr::ToLower( keyName );
 	return keyName;
@@ -763,22 +734,6 @@ void idKeyInput::PreliminaryKeyEvent( int keynum, bool down ) {
 	if( down && in_namePressed.GetBool() ) {
 		KeyReveal( keynum );
 	}
-
-#ifdef ID_DOOM_LEGACY
-	if ( down && keynum < 127 ) { // DG: only ASCII keys are of interest here
-		lastKeys[ 0 + ( lastKeyIndex & 15 )] = keynum;
-		lastKeys[16 + ( lastKeyIndex & 15 )] = keynum;
-		lastKeyIndex = ( lastKeyIndex + 1 ) & 15;
-		for ( int i = 0; cheatCodes[i] != NULL; i++ ) {
-			int l = strlen( cheatCodes[i] );
-			assert( l <= 16 );
-			if ( idStr::Icmpn( lastKeys + 16 + ( lastKeyIndex & 15 ) - l, cheatCodes[i], l ) == 0 ) {
-				common->Printf( "your memory serves you well!\n" );
-				break;
-			}
-		}
-	}
-#endif
 }
 
 /*

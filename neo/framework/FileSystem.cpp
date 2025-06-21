@@ -65,12 +65,6 @@ to the base path, but can be overridden with a "+set fs_savepath c:\doom" on the
 command line. Any files that are created during the game (demos, screenshots, etc.) will
 be created reletive to the save path.
 
-The "cd path" is the path to an alternate hierarchy that will be searched if a file
-is not located in the base path. A user can do a partial install that copies some
-data to a base path created on their hard drive and leave the rest on the cd. It defaults
-to the current directory, but it can be overridden with "+set fs_cdpath g:\doom" on the
-command line.
-
 The "dev path" is the path to an alternate hierarchy where the editors and tools used
 during development (Radiant, AF editor, dmap, runAAS) will write files to. It defaults to
 the cd path, but can be overridden with a "+set fs_devpath c:\doom" on the command line.
@@ -95,37 +89,6 @@ but otherwise they are simply normal zip files. A game directory can have multip
 files of the form "pak0.pk4", "pak1.pk4", etc. Zip files are searched in decending order
 from the highest number to the lowest, and will always take precedence over the filesystem.
 This allows a pk4 distributed as a patch to override all existing data.
-
-Because we will have updated executables freely available online, there is no point to
-trying to restrict demo / oem versions of the game with code changes. Demo / oem versions
-should be exactly the same executables as release versions, but with different data that
-automatically restricts where game media can come from to prevent add-ons from working.
-
-After the paths are initialized, Doom will look for the product.txt file. If not found
-and verified, the game will run in restricted mode. In restricted mode, only files
-contained in demo/pak0.pk4 will be available for loading, and only if the zip header is
-verified to not have been modified. A single exception is made for DoomConfig.cfg. Files
-can still be written out in restricted mode, so screenshots and demos are allowed.
-Restricted mode can be tested by setting "+set fs_restrict 1" on the command line, even
-if there is a valid product.txt under the basepath or cdpath.
-
-If the "fs_copyfiles" cvar is set to 1, then every time a file is sourced from the cd
-path, it will be copied over to the save path. This is a development aid to help build
-test releases and to copy working sets of files.
-
-If the "fs_copyfiles" cvar is set to 2, any file found in fs_cdpath that is newer than
-it's fs_savepath version will be copied to fs_savepath (in addition to the fs_copyfiles 1
-behaviour).
-
-If the "fs_copyfiles" cvar is set to 3, files from both basepath and cdpath will be copied
-over to the save path. This is useful when copying working sets of files mainly from base
-path with an additional cd path (which can be a slower network drive for instance).
-
-If the "fs_copyfiles" cvar is set to 4, files that exist in the cd path but NOT the base path
-will be copied to the save path
-
-NOTE: fs_copyfiles and case sensitivity. On fs_caseSensitiveOS 0 filesystems ( win32 ), the
-copied files may change casing when copied over.
 
 The relative path "sound/newstuff/test.wav" would be searched for in the following places:
 
@@ -157,16 +120,9 @@ is stored all lowercase.
 "additional mod path search":
 fs_game_base can be used to set an additional search path
 in search order, fs_game, fs_game_base, BASEGAME
-for instance to base a mod of D3 + D3XP assets, fs_game mymod, fs_game_base d3xp
 
 =============================================================================
 */
-
-
-
-// define to fix special-cases for GetPackStatus so that files that shipped in
-// the wrong place for Doom 3 don't break pure servers.
-#define DOOM3_PURE_SPECIAL_CASES
 
 typedef bool (*pureExclusionFunc_t)( const struct pureExclusion_s &excl, int l, const idStr &name );
 
@@ -208,25 +164,15 @@ static pureExclusion_t pureExclusions[] = {
 	{ 0,	0,	NULL,											".lang",	excludeExtension },
 	{ 0,	0,	"sound/VO",										".ogg",		excludePathPrefixAndExtension },
 	{ 0,	0,	"sound/VO",										".wav",		excludePathPrefixAndExtension },
-#if	defined DOOM3_PURE_SPECIAL_CASES
-	// add any special-case files or paths for pure servers here
-	{ 0,	0,	"sound/ed/marscity/vo_intro_cutscene.ogg",		NULL,		excludeFullName },
-	{ 0,	0,	"sound/weapons/soulcube/energize_01.ogg",		NULL,		excludeFullName },
-	{ 0,	0,	"sound/xian/creepy/vocal_fx",					".ogg",		excludePathPrefixAndExtension },
-	{ 0,	0,	"sound/xian/creepy/vocal_fx",					".wav",		excludePathPrefixAndExtension },
 	{ 0,	0,	"sound/feedback",								".ogg",		excludePathPrefixAndExtension },
 	{ 0,	0,	"sound/feedback",								".wav",		excludePathPrefixAndExtension },
-	{ 0,	0,	"guis/assets/mainmenu/chnote.tga",				NULL,		excludeFullName },
-	{ 0,	0,	"sound/levels/alphalabs2/uac_better_place.ogg",	NULL,		excludeFullName },
 	{ 0,	0,	"textures/bigchars.tga",						NULL,		excludeFullName },
 	{ 0,	0,	"dds/textures/bigchars.dds",					NULL,		excludeFullName },
 	{ 0,	0,	"fonts",										".tga",		excludePathPrefixAndExtension },
 	{ 0,	0,	"dds/fonts",									".dds",		excludePathPrefixAndExtension },
 	{ 0,	0,	"default.cfg",									NULL,		excludeFullName },
-	// russian zpak001.pk4
 	{ 0,	0,  "fonts",										".dat",		excludePathPrefixAndExtension },
 	{ 0,	0,	"guis/temp.guied",								NULL,		excludeFullName },
-#endif
 	{ 0,	0,	NULL,											NULL,		NULL }
 };
 
@@ -301,7 +247,7 @@ typedef struct searchpath_s {
 #define FSFLAG_PURE_NOREF		( 1 << 2 )
 #define FSFLAG_SEARCH_ADDONS	( 1 << 4 )
 
-// 3 search path (fs_savepath fs_basepath fs_cdpath)
+// 2 search path (fs_savepath fs_basepath)
 // + .jpg and .tga
 #define MAX_CACHED_DIRS 6
 
@@ -332,7 +278,6 @@ public:
 	virtual void			Restart( void );
 	virtual void			Shutdown( bool reloading );
 	virtual bool			IsInitialized( void ) const;
-	virtual bool			PerformingCopyFiles( void ) const;
 	virtual idModList *		ListMods( void );
 	virtual void			FreeModList( idModList *modList );
 	virtual idFileList *	ListFiles( const char *relativePath, const char *extension, bool sort = false, bool fullRelativePath = false, const char* gamedir = NULL );
@@ -352,8 +297,8 @@ public:
 	virtual void			FreeFile( void *buffer );
 	virtual int				WriteFile( const char *relativePath, const void *buffer, int size, const char *basePath = "fs_savepath" );
 	virtual void			RemoveFile( const char *relativePath );
-	virtual idFile *		OpenFileReadFlags( const char *relativePath, int searchFlags, pack_t **foundInPak = NULL, bool allowCopyFiles = true, const char* gamedir = NULL );
-	virtual idFile *		OpenFileRead( const char *relativePath, bool allowCopyFiles = true, const char* gamedir = NULL );
+    virtual idFile *		OpenFileReadFlags( const char *relativePath, int searchFlags, pack_t **foundInPak = NULL, const char* gamedir = NULL );
+    virtual idFile *		OpenFileRead( const char *relativePath, const char* gamedir = NULL );
 	virtual idFile *		OpenFileWrite( const char *relativePath, const char *basePath = "fs_savepath" );
 	virtual idFile *		OpenFileAppend( const char *relativePath, bool sync = false, const char *basePath = "fs_basepath"   );
 	virtual idFile *		OpenFileByMode( const char *relativePath, fsMode_t mode );
@@ -366,8 +311,6 @@ public:
 	virtual int				GetReadCount( void ) { return readCount; }
 	virtual void			FindDLL( const char *basename, char dllPath[ MAX_OSPATH ] );
 	virtual void			ClearDirCache( void );
-	virtual bool			HasD3XP( void );
-	virtual bool			RunningD3XP( void );
 	virtual void			CopyFile( const char *fromOSPath, const char *toOSPath );
 	virtual int				ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ] );
 	virtual idFile *		MakeTemporaryFile( void );
@@ -399,11 +342,9 @@ private:
 
 	static idCVar			fs_debug;
 	static idCVar			fs_restrict;
-	static idCVar			fs_copyfiles;
 	static idCVar			fs_basepath;
 	static idCVar			fs_configpath;
 	static idCVar			fs_savepath;
-	static idCVar			fs_cdpath;
 	static idCVar			fs_devpath;
 	static idCVar			fs_game;
 	static idCVar			fs_game_base;
@@ -423,8 +364,6 @@ private:
 	idDEntry				dir_cache[ MAX_CACHED_DIRS ]; // fifo
 	int						dir_cache_index;
 	int						dir_cache_count;
-
-	int						d3xp;	// 0: didn't check, -1: not installed, 1: installed
 
 private:
 	void					ReplaceSeparators( idStr &path, char sep = PATHSEPERATOR_CHAR );
@@ -462,11 +401,9 @@ private:
 
 idCVar	idFileSystemLocal::fs_restrict( "fs_restrict", "", CVAR_SYSTEM | CVAR_INIT | CVAR_BOOL, "" );
 idCVar	idFileSystemLocal::fs_debug( "fs_debug", "0", CVAR_SYSTEM | CVAR_INTEGER, "", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
-idCVar	idFileSystemLocal::fs_copyfiles( "fs_copyfiles", "0", CVAR_SYSTEM | CVAR_INIT | CVAR_INTEGER, "", 0, 4, idCmdSystem::ArgCompletion_Integer<0,3> );
 idCVar	idFileSystemLocal::fs_basepath( "fs_basepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_configpath( "fs_configpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_savepath( "fs_savepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
-idCVar	idFileSystemLocal::fs_cdpath( "fs_cdpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_devpath( "fs_devpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_game( "fs_game", "", CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "mod path" );
 idCVar  idFileSystemLocal::fs_game_base( "fs_game_base", "", CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "alternate mod path, searched after the main fs_game path, before the basedir" );
@@ -492,7 +429,6 @@ idFileSystemLocal::idFileSystemLocal( void ) {
 	loadStack = 0;
 	dir_cache_index = 0;
 	dir_cache_count = 0;
-	d3xp = 0;
 	loadedFileFromDir = false;
 	memset( &backgroundThread, 0, sizeof( backgroundThread ) );
 	backgroundThread_exit = false;
@@ -1076,7 +1012,7 @@ int idFileSystemLocal::ReadFile( const char *relativePath, void **buffer, ID_TIM
 	}
 
 	// look for it in the filesystem or pack files
-	f = OpenFileRead( relativePath, ( buffer != NULL ) );
+	f = OpenFileRead( relativePath );
 	if ( f == NULL ) {
 		if ( buffer ) {
 			*buffer = NULL;
@@ -1706,15 +1642,14 @@ idModList *idFileSystemLocal::ListMods( void ) {
 
 	idModList	*list = new idModList;
 
-	const char	*search[ 4 ];
+	const char	*search[ 3 ];
 	int			isearch;
 
 	search[0] = fs_savepath.GetString();
 	search[1] = fs_devpath.GetString();
 	search[2] = fs_basepath.GetString();
-	search[3] = fs_cdpath.GetString();
 
-	for ( isearch = 0; isearch < 4; isearch++ ) {
+	for ( isearch = 0; isearch < 3; isearch++ ) {
 		// skip empty cdpath or such, so we don't search C:\ or / -_-
 		if ( search[ isearch ][ 0 ] == '\0' ) {
 			continue;
@@ -1729,21 +1664,17 @@ idModList *idFileSystemLocal::ListMods( void ) {
 		dirs.Remove( "." );
 		dirs.Remove( ".." );
 		dirs.Remove( BASE_GAMEDIR );
-		dirs.Remove( "pb" );
 
 		// see if there are any pk4 files in each directory
 		for( i = 0; i < dirs.Num(); i++ ) {
 			idStr gamepath = BuildOSPath( search[ isearch ], dirs[ i ], "" );
-			ListOSFiles( gamepath, ".pk4", pk4s );
-			if ( pk4s.Num() ) {
-				if ( !list->mods.Find( dirs[ i ] ) ) {
-					// DG: ignore d3xp, it's added explicitly later, if available
-					if ( dirs[ i ].Icmp( "d3xp" ) ) {
-						list->mods.Append( dirs[ i ] );
-					}
-				}
-			}
-		}
+ 			ListOSFiles( gamepath, ".pk4", pk4s );
+ 			if ( pk4s.Num() ) {
+ 				if ( !list->mods.Find( dirs[ i ] ) ) {
+					list->mods.Append( dirs[ i ] );
+ 				}
+ 			}
+ 		}
 	}
 
 	list->mods.Sort();
@@ -1751,7 +1682,7 @@ idModList *idFileSystemLocal::ListMods( void ) {
 	// read the descriptions for each mod - search all paths
 	for ( i = 0; i < list->mods.Num(); i++ ) {
 
-		for ( isearch = 0; isearch < 4; isearch++ ) {
+		for ( isearch = 0; isearch < 3; isearch++ ) {
 
 			idStr descfile = BuildOSPath( search[ isearch ], list->mods[ i ], "description.txt" );
 			FILE *f = OpenOSFile( descfile, "r" );
@@ -1768,19 +1699,13 @@ idModList *idFileSystemLocal::ListMods( void ) {
 			}
 		}
 
-		if ( isearch == 4 ) {
+		if ( isearch == 3 ) {
 			list->descriptions.Append( list->mods[ i ] );
 		}
 	}
 
 	list->mods.Insert( "" );
-	list->descriptions.Insert( "Doom 3 (base game)" );
-
-	// DG: if installed, add d3xp with useful description, right below the base game
-	if ( HasD3XP() ) {
-		list->mods.Insert( "d3xp", 1 );
-		list->descriptions.Insert( "Resurrection Of Evil (d3xp)", 1 );
-	}
+	list->descriptions.Insert( BUILD_NAME );
 
 	assert( list->mods.Num() == list->descriptions.Num() );
 
@@ -2144,11 +2069,6 @@ idFileSystemLocal::SetupGameDirectories
 ================
 */
 void idFileSystemLocal::SetupGameDirectories( const char *gameName ) {
-	// setup cdpath
-	if ( fs_cdpath.GetString()[0] ) {
-		AddGameDirectory( fs_cdpath.GetString(), gameName );
-	}
-
 	// setup basepath
 	if ( fs_basepath.GetString()[0] ) {
 		AddGameDirectory( fs_basepath.GetString(), gameName );
@@ -2469,7 +2389,7 @@ int idFileSystemLocal::ValidateDownloadPakForChecksum( int checksum, char path[ 
 	testList.Append( fs_savepath.GetString() );
 	testList.Append( fs_devpath.GetString() );
 	testList.Append( fs_basepath.GetString() );
-	testList.Append( fs_cdpath.GetString() );
+
 	for ( i = 0; i < testList.Num(); i ++ ) {
 		if ( testList[ i ].Length() && !testList[ i ].Icmpn( pak->pakFilename, testList[ i ].Length() ) ) {
 			relativePath = pak->pakFilename.c_str() + testList[ i ].Length() + 1;
@@ -2660,11 +2580,9 @@ void idFileSystemLocal::Init( void ) {
 	common->StartupVariable( "fs_basepath", false );
 	common->StartupVariable( "fs_configpath", false );
 	common->StartupVariable( "fs_savepath", false );
-	common->StartupVariable( "fs_cdpath", false );
 	common->StartupVariable( "fs_devpath", false );
 	common->StartupVariable( "fs_game", false );
 	common->StartupVariable( "fs_game_base", false );
-	common->StartupVariable( "fs_copyfiles", false );
 	common->StartupVariable( "fs_restrict", false );
 	common->StartupVariable( "fs_searchAddons", false );
 
@@ -2680,7 +2598,7 @@ void idFileSystemLocal::Init( void ) {
 
 	if ( fs_devpath.GetString()[0] == '\0' ) {
 #ifdef WIN32
-		fs_devpath.SetString( fs_cdpath.GetString()[0] ? fs_cdpath.GetString() : fs_basepath.GetString() );
+		fs_devpath.SetString( fs_basepath.GetString() );
 #else
 		fs_devpath.SetString( fs_savepath.GetString() );
 #endif
@@ -2693,19 +2611,11 @@ void idFileSystemLocal::Init( void ) {
 	StartBackgroundDownloadThread();
 
 	if ( ReadFile( "default.cfg", NULL, NULL ) <= 0 ) {
-		// DG: the demo gamedata is in demo/ instead of base/. to make it "just work", add a fallback for that
-		if(fs_game.GetString()[0] == '\0' || idStr::Icmp(fs_game.GetString(), BASE_GAMEDIR) == 0) {
-			common->Warning("Couldn't find default.cfg in %s/, trying again with demo/\n", BASE_GAMEDIR);
-			fs_game.SetString("demo");
-			fs_game_base.SetString("demo");
-			Restart();
-		} else {
-			// if we can't find default.cfg, assume that the paths are
-			// busted and error out now, rather than getting an unreadable
-			// graphics screen when the font fails to load
-			// Dedicated servers can run with no outside files at all
-			common->FatalError( "Couldn't load default.cfg" );
-		}
+		// if we can't find default.cfg, assume that the paths are
+		// busted and error out now, rather than getting an unreadable
+		// graphics screen when the font fails to load
+		// Dedicated servers can run with no outside files at all
+		common->FatalError( "Couldn't load default.cfg" );
 	}
 }
 
@@ -2958,7 +2868,7 @@ Used for streaming data out of either a
 separate file or a ZIP file.
 ===========
 */
-idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int searchFlags, pack_t **foundInPak, bool allowCopyFiles, const char* gamedir ) {
+idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int searchFlags, pack_t **foundInPak, const char* gamedir ) {
 	searchpath_t *	search;
 	idStr			netpath;
 	pack_t *		pak;
@@ -2993,12 +2903,6 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 
 	// edge case
 	if ( relativePath[0] == '\0' ) {
-		return NULL;
-	}
-
-	// make sure the doomkey file is only readable by game at initialization
-	// any other time the key should only be accessed in memory using the provided functions
-	if( common->IsInitialized() && ( idStr::Icmp( relativePath, CDKEY_FILE ) == 0 || idStr::Icmp( relativePath, XPKEY_FILE ) == 0 ) ) {
 		return NULL;
 	}
 
@@ -3050,63 +2954,6 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 				}
 				common->DPrintf( "filesystem: switching to pure mode will require a restart. '%s' loaded from directory.\n", relativePath );
 				loadedFileFromDir = true;
-			}
-
-			// if fs_copyfiles is set
-			if ( allowCopyFiles && fs_copyfiles.GetInteger() ) {
-
-				idStr copypath;
-				idStr name;
-				copypath = BuildOSPath( fs_savepath.GetString(), dir->gamedir, relativePath );
-				netpath.ExtractFileName( name );
-				copypath.StripFilename( );
-				copypath += PATHSEPERATOR_STR;
-				copypath += name;
-
-				bool isFromCDPath = !dir->path.Cmp( fs_cdpath.GetString() );
-				bool isFromSavePath = !dir->path.Cmp( fs_savepath.GetString() );
-				bool isFromBasePath = !dir->path.Cmp( fs_basepath.GetString() );
-
-				switch ( fs_copyfiles.GetInteger() ) {
-					case 1:
-						// copy from cd path only
-						if ( isFromCDPath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-					case 2:
-						// from cd path + timestamps
-						if ( isFromCDPath ) {
-							CopyFile( netpath, copypath );
-						} else if ( isFromSavePath || isFromBasePath ) {
-							idStr sourcepath;
-							sourcepath = BuildOSPath( fs_cdpath.GetString(), dir->gamedir, relativePath );
-							FILE *f1 = OpenOSFile( sourcepath, "r" );
-							if ( f1 ) {
-								ID_TIME_T t1 = Sys_FileTimeStamp( f1 );
-								fclose( f1 );
-								FILE *f2 = OpenOSFile( copypath, "r" );
-								if ( f2 ) {
-									ID_TIME_T t2 = Sys_FileTimeStamp( f2 );
-									fclose( f2 );
-									if ( t1 > t2 ) {
-										CopyFile( sourcepath, copypath );
-									}
-								}
-							}
-						}
-						break;
-					case 3:
-						if ( isFromCDPath || isFromBasePath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-					case 4:
-						if ( isFromCDPath && !isFromBasePath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-				}
 			}
 
 			return file;
@@ -3185,8 +3032,8 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 idFileSystemLocal::OpenFileRead
 ===========
 */
-idFile *idFileSystemLocal::OpenFileRead( const char *relativePath, bool allowCopyFiles, const char* gamedir ) {
-	return OpenFileReadFlags( relativePath, FSFLAG_SEARCH_DIRS | FSFLAG_SEARCH_PAKS, NULL, allowCopyFiles, gamedir );
+idFile *idFileSystemLocal::OpenFileRead( const char *relativePath, const char* gamedir ) {
+	return OpenFileReadFlags( relativePath, FSFLAG_SEARCH_DIRS | FSFLAG_SEARCH_PAKS, NULL, gamedir );
 }
 
 /*
@@ -3585,15 +3432,6 @@ void idFileSystemLocal::BackgroundDownload( backgroundDownload_t *bgl ) {
 
 /*
 =================
-idFileSystemLocal::PerformingCopyFiles
-=================
-*/
-bool idFileSystemLocal::PerformingCopyFiles( void ) const {
-	return fs_copyfiles.GetInteger() > 0;
-}
-
-/*
-=================
 idFileSystemLocal::FindPakForFileChecksum
 =================
 */
@@ -3700,91 +3538,6 @@ void idFileSystemLocal::ClearDirCache( void ) {
 	for( i = 0; i < MAX_CACHED_DIRS; i++ ) {
 		dir_cache[ i ].Clear();
 	}
-}
-
-/*
-===============
-idFileSystemLocal::HasD3XP
-===============
-*/
-bool idFileSystemLocal::HasD3XP( void ) {
-	int			i;
-	idStrList	dirs, pk4s;
-	idStr		gamepath;
-
-	if ( d3xp == -1 ) {
-		return false;
-	} else if ( d3xp == 1 ) {
-		return true;
-	}
-
-#if 0
-	// check for a d3xp directory with a pk4 file
-	// copied over from ListMods - only looks in basepath
-	ListOSFiles( fs_basepath.GetString(), "/", dirs );
-	for ( i = 0; i < dirs.Num(); i++ ) {
-		if ( dirs[i].Icmp( "d3xp" ) == 0 ) {
-			gamepath = BuildOSPath( fs_basepath.GetString(), dirs[ i ], "" );
-			ListOSFiles( gamepath, ".pk4", pk4s );
-			if ( pk4s.Num() ) {
-				d3xp = 1;
-				return true;
-			}
-		}
-	}
-#else
-	// check for d3xp's d3xp/pak000.pk4 in any search path
-	// checking wether the pak is loaded by checksum wouldn't be enough:
-	// we may have a different fs_game right now but still need to reply that it's installed
-	const char	*search[4];
-	idFile		*pakfile;
-	search[0] = fs_savepath.GetString();
-	search[1] = fs_devpath.GetString();
-	search[2] = fs_basepath.GetString();
-	search[3] = fs_cdpath.GetString();
-	for ( i = 0; i < 4; i++ ) {
-		pakfile = OpenExplicitFileRead( BuildOSPath( search[ i ], "d3xp", "pak000.pk4" ) );
-		if ( pakfile ) {
-			CloseFile( pakfile );
-			d3xp = 1;
-			return true;
-		}
-	}
-#endif
-
-	// if we didn't find a pk4 file then the user might have unpacked so look for default.cfg file
-	// that's the old way mostly used during developement. don't think it hurts to leave it there
-	ListOSFiles( fs_basepath.GetString(), "/", dirs );
-	for ( i = 0; i < dirs.Num(); i++ ) {
-		if ( dirs[i].Icmp( "d3xp" ) == 0 ) {
-
-			gamepath = BuildOSPath( fs_configpath.GetString(), dirs[ i ], "default.cfg" );
-			idFile* cfg = OpenExplicitFileRead(gamepath);
-			if(cfg) {
-				CloseFile(cfg);
-				d3xp = 1;
-				return true;
-			}
-		}
-	}
-
-	d3xp = -1;
-	return false;
-}
-
-/*
-===============
-idFileSystemLocal::RunningD3XP
-===============
-*/
-bool idFileSystemLocal::RunningD3XP( void ) {
-	// TODO: mark the checksum of the gold XP and check for it being referenced ( for double mod support )
-	// a simple fs_game check should be enough for now..
-	if ( !idStr::Icmp( fs_game.GetString(), "d3xp" ) ||
-		 !idStr::Icmp( fs_game_base.GetString(), "d3xp" ) ) {
-		return true;
-	}
-	return false;
 }
 
 /*

@@ -1,0 +1,129 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+TEMP	R0, R1, R2;
+MOV		result.texcoord[0], vertex.texcoord[0];
+MOV		result.color, program.local[1];
+END
+
+#======================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# registers
+TEMP	R0, R1, R2;
+
+# temps
+TEMP	TEMP_color;
+TEMP	TEMP_adjustedTC;
+TEMP	TEMP_unadjustedTC;
+TEMP	TEMP_warpFactor;
+TEMP	TEMP_alpha;
+TEMP	TEMP_glassColor;
+TEMP	TEMP_warpedAdjustedTC;
+
+# default parms
+PARAM	PARM_pointFive	= { 0.5, 0.5, 0.5, 0.5 };
+PARAM	PARM_one		= { 1, 1, 1, 1 };
+PARAM	PARM_default	= { 0, 0, 0, 1 };
+PARAM	PARM_warpFactor	= { 0.995, 0.995, 0.995, 1 };
+
+# program params
+PARAM	PARM_scale		= { 2, 2, 2, 1 };
+PARAM	PARM_coi		= { 0.2, 0.2, 0, 1 };
+PARAM	PARM_radius		= { 0.1, 0.1, 0, 1 };
+PARAM	PARM_colorScale	= { 0.9, 0.8, 1, 1 };
+
+
+
+# =======================================
+# COMPUTE UNADJUSTED/ADJUSTED TEXCOORDS
+# =======================================
+MUL		TEMP_unadjustedTC, fragment.position, program.env[1];
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL		R0, fragment.position, program.env[1];
+
+# scale by the screen non-power-of-two-adjust
+MUL		R0, R0, program.env[0];
+
+
+# =======================================
+# COMPUTE PRETURBED COORDS
+# =======================================
+MOV		R0, TEMP_unadjustedTC;
+MUL		R0, R0, program.env[0];					# scale by the screen non-power-of-two-adjust
+
+
+# =======================================
+# FX CODE
+# =======================================
+
+# get the _currentRender color
+TXP		TEMP_color, R0, texture[0], 2D;
+
+# get illumination factor
+TXP		R0, TEMP_unadjustedTC, texture[1], 2D;
+MOV		TEMP_alpha, R0;
+
+# get the glass color/alpha
+TXP		TEMP_glassColor, TEMP_unadjustedTC, texture[2], 2D;
+MOV		TEMP_glassColor, TEMP_glassColor.wyzx;		# handle the fucking swizzle
+
+# multiply by alpha of glass color
+MUL		TEMP_alpha, TEMP_alpha, TEMP_glassColor;
+
+# lerp between _currentRender and glass texture given alpha value
+# LRP		TEMP_color, TEMP_alpha, TEMP_glassColor, TEMP_color;
+
+# blend glass texture on top of _currentRender
+MUL		TEMP_glassColor, TEMP_alpha, TEMP_glassColor;
+ADD		TEMP_color, TEMP_color, TEMP_glassColor;
+
+# final dump
+# MOV		result.color.xyz, TEMP_color;
+
+
+
+
+
+
+
+
+
+# =======================================
+# compute warp factor
+# =======================================
+# TXP		TEMP_glassColor, TEMP_unadjustedTC, texture[2], 2D;
+# MOV		TEMP_glassColor, TEMP_glassColor.wyzx;		# handle the fucking swizzle
+
+MUL		R0, TEMP_glassColor, fragment.color;
+MUL		R0, PARM_coi, R0;
+SUB		TEMP_warpFactor, PARM_one, R0;
+
+# =======================================
+# compute _currentRender preturbed texcoords
+# =======================================
+MUL		R0, fragment.position, program.env[1];
+MOV		R1, R0;
+RCP		R1.w, R1.w;
+MOV		R0.w, PARM_default;
+MUL		R0.xy, R0, R1.wwww;
+
+SUB		R0.xy, R0, PARM_pointFive;
+MUL		R0.xy, R0, TEMP_warpFactor;
+ADD		R0.xy, R0, PARM_pointFive;
+
+MUL		TEMP_warpedAdjustedTC, R0, program.env[0];				# scale by the screen non-power-of-two-adjust
+TXP		TEMP_color, TEMP_warpedAdjustedTC, texture[0], 2D;
+
+ADD		TEMP_color, TEMP_color, TEMP_glassColor;
+
+# lerp the colors
+# MUL		R0, TEMP_glassColor, PARM_colorScale;
+# LRP		TEMP_color, TEMP_glassColor, R0, TEMP_color;
+
+
+MOV		result.color, TEMP_color;
+
+END

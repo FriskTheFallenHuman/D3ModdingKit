@@ -11,6 +11,7 @@
 #define STBI_NO_HDR
 #define STBI_NO_LINEAR
 #define STBI_ONLY_JPEG // at least for now, only use it for JPEG
+#define IMG_ENABLE_PNGS 1
 #if IMG_ENABLE_PNGS > 0
 #define STBI_ONLY_PNG
 #endif

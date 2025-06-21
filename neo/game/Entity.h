@@ -150,6 +150,15 @@ public:
 		bool				networkSync			:1; // if true the entity is synchronized over the network
 	} fl;
 
+#ifdef _D3XP
+	int						timeGroup;
+
+	renderEntity_t			xrayEntity;
+	qhandle_t				xrayEntityHandle;
+	const idDeclSkin *		xraySkin;
+
+	void					DetermineTimeGroup( bool slowmo );
+#endif
 
 public:
 	ABSTRACT_PROTOTYPE( idEntity );
@@ -460,6 +469,13 @@ private:
 	void					Script_SetNeverDormant( int enable );
 	void					Script_GetMass( int body );
 	void					Script_IsInLiquid( void );
+#ifdef _D3XP
+	void					Script_SetGui( int guiNum, const char *guiName );
+	void					Script_PrecacheGui( const char *guiName );
+	void					Script_GetGuiParm( int guiNum, const char *key );
+	void					Script_GetGuiParmFloat( int guiNum, const char *key );
+	void					Script_GuiNamedEvent( int guiNum, const char *event );
+#endif
 
 public:
 	int						NumTargets( void );
@@ -507,9 +523,87 @@ public:
 	bool					HasFunction( const char *name );
 	void					CallFunction( const char *name );
 	void					SetNeverDormant( bool neverDormant );
+#ifdef _D3XP
+	void					SetGui( int guiNum, const char *guiName );
+	void					PrecacheGui( const char *guiName );
+	const char *			GetGuiParm( int guiNum, const char *key );
+	float					GetGuiParmFloat( int guiNum, const char *key );
+	void					GuiNamedEvent( int guiNum, const char *event );
+#endif
 	float					GetMass( int id );
 	bool					IsInLiquid( void );
 };
+
+#ifdef _D3XP
+class SetTimeState {
+	bool					activated;
+	bool					previousFast;
+	bool					fast;
+
+public:
+							SetTimeState();
+							SetTimeState( int timeGroup );
+							~SetTimeState();
+
+	void					PushState( int timeGroup );
+};
+
+ID_INLINE SetTimeState::SetTimeState() {
+	activated = false;
+	previousFast = false;
+}
+
+ID_INLINE SetTimeState::SetTimeState( int timeGroup ) {
+	activated = false;
+	previousFast = false;
+	PushState( timeGroup );
+}
+
+ID_INLINE void SetTimeState::PushState( int timeGroup ) {
+
+	// Don't mess with time in Multiplayer
+	if ( !gameLocal.isMultiplayer ) {
+
+		activated = true;
+
+		// determine previous fast setting
+		if ( gameLocal.time == gameLocal.slow.time ) {
+			previousFast = false;
+		}
+		else {
+			previousFast = true;
+		}
+
+		// determine new fast setting
+		if ( timeGroup ) {
+			fast = true;
+		}
+		else {
+			fast = false;
+		}
+
+		// set correct time
+		if ( fast ) {
+			gameLocal.fast.Get( gameLocal.time, gameLocal.previousTime, gameLocal.msec, gameLocal.framenum, gameLocal.realClientTime );
+		}
+		else {
+			gameLocal.slow.Get( gameLocal.time, gameLocal.previousTime, gameLocal.msec, gameLocal.framenum, gameLocal.realClientTime );
+		}
+	}
+}
+
+ID_INLINE SetTimeState::~SetTimeState() {
+	if ( activated && !gameLocal.isMultiplayer ) {
+		// set previous correct time
+		if ( previousFast ) {
+			gameLocal.fast.Get( gameLocal.time, gameLocal.previousTime, gameLocal.msec, gameLocal.framenum, gameLocal.realClientTime );
+		}
+		else {
+			gameLocal.slow.Get( gameLocal.time, gameLocal.previousTime, gameLocal.msec, gameLocal.framenum, gameLocal.realClientTime );
+		}
+	}
+}
+#endif
 
 extern const idEventDef EV_SpawnBind;
 extern const idEventDef EV_UpdateCameraTarget;

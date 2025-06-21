@@ -1,0 +1,12 @@
+skies/sky_cloudy
+{
+	noFragment
+	noshadows
+	nooverlays
+	{
+		cameraCubeMap	env/cloudy
+		forceHighQuality
+		texgen      	skybox
+		texgen			wobblesky 10 0.1 0.1
+	}
+}

@@ -43,15 +43,13 @@ const int HEARTBEAT_MSEC				= 5*60*1000;
 // must be kept in sync with authReplyMsg_t
 const char* authReplyMsg[] = {
 	//	"Waiting for authorization",
-	"#str_07204",
+	"#str_authreply_waiting",
 	//	"Client unknown to auth",
-	"#str_07205",
-	//	"Access denied - CD Key in use",
-	"#str_07206",
+	"#str_authreply_unknow",
 	//	"Auth custom message", // placeholder - we propagate a message from the master
-	"#str_07207",
+	"#str_authreply_custom",
 	//	"Authorize Server - Waiting for client"
-	"#str_07208"
+	"#str_authreply_waiting_client"
 };
 
 const char* authReplyStr[] = {
@@ -209,7 +207,7 @@ void idAsyncServer::Kill( void ) {
 
 	// drop all clients
 	for ( i = 0; i < MAX_ASYNC_CLIENTS; i++ ) {
-		DropClient( i, "#str_07135" );
+		DropClient( i, "#str_server_closed" );
 	}
 
 	// send some empty messages to the zombie clients to make sure they disconnect
@@ -790,7 +788,7 @@ void idAsyncServer::SendReliableMessage( int clientNum, const idBitMsg &msg ) {
 	}
 	if ( !clients[ clientNum ].channel.SendReliableMessage( msg ) ) {
 		clients[ clientNum ].channel.ClearReliableMessages();
-		DropClient( clientNum, "#str_07136" );
+		DropClient( clientNum, "#str_server_overflow" );
 	}
 }
 
@@ -824,7 +822,7 @@ void idAsyncServer::CheckClientTimeouts( void ) {
 		}
 
 		if ( client.clientState >= SCS_PUREWAIT && client.lastPacketTime < clientTimeout ) {
-			DropClient( i, "#str_07137" );
+			DropClient( i, "#str_timeout" );
 			continue;
 		}
 	}
@@ -1363,7 +1361,7 @@ void idAsyncServer::ProcessReliableClientMessages( int clientNum ) {
 				break;
 			}
 			case CLIENT_RELIABLE_MESSAGE_DISCONNECT: {
-				DropClient( clientNum, "#str_07138" );
+				DropClient( clientNum, "#str_disconnected" );
 				break;
 			}
 			case CLIENT_RELIABLE_MESSAGE_PURE: {
@@ -1520,33 +1518,7 @@ void idAsyncServer::ProcessChallengeMessage( const netadr_t from, const idBitMsg
 
 	serverPort.SendPacket( from, outMsg.GetData(), outMsg.GetSize() );
 
-#if ID_ENFORCE_KEY_CLIENT
-	if ( Sys_IsLANAddress( from ) ) {
-		// no CD Key check for LAN clients
-		challenges[i].authState = CDK_OK;
-	} else {
-		if ( idAsyncNetwork::LANServer.GetBool() ) {
-			common->Printf( "net_LANServer is enabled. Client %s is not a LAN address, will be rejected\n", Sys_NetAdrToString( from ) );
-			challenges[ i ].authState = CDK_ONLYLAN;
-		} else {
-			// emit a cd key confirmation request
-			outMsg.BeginWriting();
-			outMsg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
-			outMsg.WriteString( "srvAuth" );
-			outMsg.WriteInt( ASYNC_PROTOCOL_VERSION );
-			outMsg.WriteNetadr( from );
-			outMsg.WriteInt( -1 ); // this identifies "challenge" auth vs "connect" auth
-			// protocol 1.37 addition
-			outMsg.WriteByte( fileSystem->RunningD3XP() );
-			serverPort.SendPacket( idAsyncNetwork::GetMasterAddress(), outMsg.GetData(), outMsg.GetSize() );
-		}
-	}
-#else
-	if (! Sys_IsLANAddress( from ) ) {
-		common->Printf( "Build Does not have CD Key Enforcement enabled. Client %s is not a LAN address, but will be accepted\n", Sys_NetAdrToString( from ) );
-	}
 	challenges[i].authState = CDK_OK;
-#endif
 }
 
 /*
@@ -1650,7 +1622,7 @@ int idAsyncServer::ValidateChallenge( const netadr_t from, int challenge, int cl
 		}
 	}
 	if ( i == MAX_CHALLENGES ) {
-		PrintOOB( from, SERVER_PRINT_BADCHALLENGE, "#str_04840" );
+		PrintOOB( from, SERVER_PRINT_BADCHALLENGE, "#str_badchallenge" );
 		return -1;
 	}
 	return i;
@@ -1685,7 +1657,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 
 	// check the client data - only for non pure servers
 	if ( !sessLocal.mapSpawnData.serverInfo.GetInt( "si_pure" ) && clientDataChecksum != serverDataChecksum ) {
-		PrintOOB( from, SERVER_PRINT_MISC, "#str_04842" );
+		PrintOOB( from, SERVER_PRINT_MISC, "#str_pureserver_fail" );
 		return;
 	}
 
@@ -1701,7 +1673,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 			return;
 		case CDK_ONLYLAN:
 			common->DPrintf( "%s: not a lan client\n", Sys_NetAdrToString( from ) );
-			PrintOOB( from, SERVER_PRINT_MISC, "#str_04843" );
+			PrintOOB( from, SERVER_PRINT_MISC, "#str_lan_only" );
 			return;
 		case CDK_WAIT:
 			if ( challenges[ ichallenge ].authReply == AUTH_NONE && Min( serverTime - lastAuthTime, serverTime - challenges[ ichallenge ].time ) > AUTHORIZE_TIMEOUT ) {
@@ -1744,8 +1716,6 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 				outMsg.WriteNetadr( from );
 				outMsg.WriteInt( clientId );
 				outMsg.WriteString( guid );
-				// protocol 1.37 addition
-				outMsg.WriteByte( fileSystem->RunningD3XP() );
 				serverPort.SendPacket( idAsyncNetwork::GetMasterAddress(), outMsg.GetData(), outMsg.GetSize() );
 			}
 			return;
@@ -1792,7 +1762,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 
 	// push back decl checksum here when running pure. just an additional safe check
 	if ( sessLocal.mapSpawnData.serverInfo.GetInt( "si_pure" ) && clientDataChecksum != serverDataChecksum ) {
-		PrintOOB( from, SERVER_PRINT_MISC, "#str_04844" );
+		PrintOOB( from, SERVER_PRINT_MISC, "#str_pureserver_fail_2" );
 		return;
 	}
 
@@ -1838,7 +1808,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 
 	// if no free spots available
 	if ( clientNum >= MAX_ASYNC_CLIENTS ) {
-		PrintOOB( from, SERVER_PRINT_MISC, "#str_04845" );
+		PrintOOB( from, SERVER_PRINT_MISC, "#str_server_full" );
 		return;
 	}
 
@@ -1883,7 +1853,7 @@ bool idAsyncServer::VerifyChecksumMessage( int clientNum, const netadr_t *from, 
 		// just to make sure a broken client doesn't crash us
 		if ( numChecksums >= MAX_PURE_PAKS ) {
 			common->Warning( "MAX_PURE_PAKS ( %d ) exceeded in idAsyncServer::ProcessPureMessage\n", MAX_PURE_PAKS );
-			sprintf( reply, "#str_07144" );
+			sprintf( reply, "#str_server_purepak_exceeded" );
 			return false;
 		}
 	} while ( i );
@@ -2003,14 +1973,14 @@ void idAsyncServer::ProcessRemoteConsoleMessage( const netadr_t from, const idBi
 	char		string[MAX_STRING_CHARS];
 
 	if ( idAsyncNetwork::serverRemoteConsolePassword.GetString()[0] == '\0' ) {
-		PrintOOB( from, SERVER_PRINT_MISC, "#str_04846" );
+		PrintOOB( from, SERVER_PRINT_MISC, "#str_rcon_disabled" );
 		return;
 	}
 
 	msg.ReadString( string, sizeof( string ) );
 
 	if ( idStr::Icmp( string, idAsyncNetwork::serverRemoteConsolePassword.GetString() ) != 0 ) {
-		PrintOOB( from, SERVER_PRINT_MISC, "#str_04847" );
+		PrintOOB( from, SERVER_PRINT_MISC, "#str_rcon_incorrect_psswrd" );
 		return;
 	}
 
@@ -2027,7 +1997,7 @@ void idAsyncServer::ProcessRemoteConsoleMessage( const netadr_t from, const idBi
 	common->EndRedirect();
 
 	if ( noRconOutput ) {
-		PrintOOB( rconAddress, SERVER_PRINT_RCON, "#str_04848" );
+		PrintOOB( rconAddress, SERVER_PRINT_RCON, "#str_rcon_success" );
 	}
 }
 
@@ -2126,7 +2096,7 @@ bool idAsyncServer::ConnectionlessMessage( const netadr_t from, const idBitMsg &
 	}
 
 	if ( !active ) {
-		PrintOOB( from, SERVER_PRINT_MISC, "#str_04849" );
+		PrintOOB( from, SERVER_PRINT_MISC, "#str_no_map" );
 		return false;
 	}
 

@@ -1,0 +1,46 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	visible	1
+	noevents	1
+	nocursor	1
+	windowDef health_background
+	{
+		rect	29,399,111,59
+		visible	1
+		noevents	1
+		backcolor	0,0,0,0.49803922
+	}
+	windowDef player_health
+	{
+		rect	74,425,60,26
+		text	"gui::player_health"
+		font	"fonts/english"
+		visible	1
+		forecolor	1,1,1,1
+		textscale	0.6
+		textaligny	-5
+	}
+	windowDef health_symbol
+	{
+		rect	36,425,32,26
+		visible	1
+		noevents	1
+		forecolor	1,1,1,1
+		text	"+"
+		textscale	0.6
+		textalign	1
+		textaligny	-6
+	}
+	windowDef health_label
+	{
+		rect	35,403,100,17
+		visible	1
+		forecolor	1,1,1,1
+		text	"HEALTH"
+		textscale	0.4
+		textalign	1
+		font	"fonts/english"
+		textaligny	-5
+	}
+}

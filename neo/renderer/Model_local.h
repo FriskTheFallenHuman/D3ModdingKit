@@ -89,7 +89,6 @@ public:
 
 	bool						LoadASE( const char *fileName );
 	bool						LoadLWO( const char *fileName );
-	bool						LoadFLT( const char *fileName );
 #ifdef ID_MAYA_IMPORT_TOOL
 	bool						LoadMA( const char *filename );
 #endif

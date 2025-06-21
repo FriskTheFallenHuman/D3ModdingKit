@@ -31,9 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "Session_local.h"
 
-#define CDKEY_FILEPATH "../" BASE_GAMEDIR "/" CDKEY_FILE
-#define XPKEY_FILEPATH "../" BASE_GAMEDIR "/" XPKEY_FILE
-
 idCVar	idSessionLocal::com_showAngles( "com_showAngles", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar	idSessionLocal::com_minTics( "com_minTics", "1", CVAR_SYSTEM, "" );
 idCVar	idSessionLocal::com_showTics( "com_showTics", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
@@ -219,86 +216,6 @@ static void Sess_WritePrecache_f( const idCmdArgs &args ) {
 }
 
 /*
-===============
-idSessionLocal::MaybeWaitOnCDKey
-===============
-*/
-bool idSessionLocal::MaybeWaitOnCDKey( void ) {
-	if ( authEmitTimeout > 0 ) {
-		authWaitBox = true;
-		sessLocal.MessageBox( MSG_WAIT, common->GetLanguageDict()->GetString( "#str_07191" ), NULL, true, NULL, NULL, true );
-		return true;
-	}
-	return false;
-}
-
-/*
-===================
-Session_PromptKey_f
-===================
-*/
-static void Session_PromptKey_f( const idCmdArgs &args ) {
-	const char	*retkey;
-	bool		valid[ 2 ];
-	static bool recursed = false;
-
-	if ( recursed ) {
-		common->Warning( "promptKey recursed - aborted" );
-		return;
-	}
-	recursed = true;
-
-	do {
-		// in case we're already waiting for an auth to come back to us ( may happen exceptionally )
-		if ( sessLocal.MaybeWaitOnCDKey() ) {
-			if ( sessLocal.CDKeysAreValid( true ) ) {
-				recursed = false;
-				return;
-			}
-		}
-		// the auth server may have replied and set an error message, otherwise use a default
-		const char *prompt_msg = sessLocal.GetAuthMsg();
-		if ( prompt_msg[ 0 ] == '\0' ) {
-			prompt_msg = common->GetLanguageDict()->GetString( "#str_04308" );
-		}
-		retkey = sessLocal.MessageBox( MSG_CDKEY, prompt_msg, common->GetLanguageDict()->GetString( "#str_04305" ), true, NULL, NULL, true );
-		if ( retkey ) {
-			if ( sessLocal.CheckKey( retkey, false, valid ) ) {
-				// if all went right, then we may have sent an auth request to the master ( unless the prompt is used during a net connect )
-				bool canExit = true;
-				if ( sessLocal.MaybeWaitOnCDKey() ) {
-					// wait on auth reply, and got denied, prompt again
-					if ( !sessLocal.CDKeysAreValid( true ) ) {
-						// server says key is invalid - MaybeWaitOnCDKey was interrupted by a CDKeysAuthReply call, which has set the right error message
-						// the invalid keys have also been cleared in the process
-						sessLocal.MessageBox( MSG_OK, sessLocal.GetAuthMsg(), common->GetLanguageDict()->GetString( "#str_04310" ), true, NULL, NULL, true );
-						canExit = false;
-					}
-				}
-				if ( canExit ) {
-					// make sure that's saved on file
-					sessLocal.WriteCDKey();
-					sessLocal.MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_04307" ), common->GetLanguageDict()->GetString( "#str_04305" ), true, NULL, NULL, true );
-					break;
-				}
-			} else {
-				// offline check sees key invalid
-				// build a message about keys being wrong. do not attempt to change the current key state though
-				// ( the keys may be valid, but user would have clicked on the dialog anyway, that kind of thing )
-				idStr msg;
-				idAsyncNetwork::BuildInvalidKeyMsg( msg, valid );
-				sessLocal.MessageBox( MSG_OK, msg, common->GetLanguageDict()->GetString( "#str_04310" ), true, NULL, NULL, true );
-			}
-		} else if ( args.Argc() == 2 && idStr::Icmp( args.Argv(1), "force" ) == 0 ) {
-			// cancelled in force mode
-			cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "quit\n" );
-			cmdSystem->ExecuteCommandBuffer();
-		}
-	} while ( retkey );
-	recursed = false;
-}
-
-/*
 ===============================================================================
 
 SESSION LOCAL
@@ -356,11 +273,6 @@ void idSessionLocal::Clear() {
 
 	loadGameList.Clear();
 	modsList.Clear();
-
-	authEmitTimeout = 0;
-	authWaitBox = false;
-
-	authMsg.Clear();
 }
 
 /*
@@ -376,8 +288,6 @@ idSessionLocal::idSessionLocal() {
 	menuSoundWorld = NULL;
 
 	lastTicMsec = 0;
-
-	demoversion=false;
 
 	Clear();
 }
@@ -933,7 +843,7 @@ void idSessionLocal::StartPlayingRenderDemo( idStr demoName ) {
 	// bring up the loading screen manually, since demos won't
 	// call ExecuteMapChange()
 	guiLoading = uiManager->FindGui( "guis/map/loading.gui", true, false, true );
-	guiLoading->SetStateString( "demo", common->GetLanguageDict()->GetString( "#str_02087" ) );
+	guiLoading->SetStateString( "demo", common->GetLanguageDict()->GetString( "#str_loading" ) );
 	readDemo = new idDemoFile;
 	demoName.DefaultFileExtension( ".demo" );
 	if ( !readDemo->OpenForReading( demoName ) ) {
@@ -979,7 +889,7 @@ void idSessionLocal::TimeRenderDemo( const char *demoName, bool twice ) {
 
 	if ( twice && readDemo ) {
 		// cycle through once to precache everything
-		guiLoading->SetStateString( "demo", common->GetLanguageDict()->GetString( "#str_04852" ) );
+		guiLoading->SetStateString( "demo", common->GetLanguageDict()->GetString( "#str_loading_precache" ) );
 		guiLoading->StateChanged( com_frameTime );
 		while ( readDemo ) {
 			insideExecuteMapChange = true;
@@ -1164,23 +1074,6 @@ void idSessionLocal::StartNewGame( const char *mapName, bool devmap ) {
 	common->Printf( "Dedicated servers cannot start singleplayer games.\n" );
 	return;
 #else
-#if ID_ENFORCE_KEY
-	// strict check. don't let a game start without a definitive answer
-	if ( !CDKeysAreValid( true ) ) {
-		bool prompt = true;
-		if ( MaybeWaitOnCDKey() ) {
-			// check again, maybe we just needed more time
-			if ( CDKeysAreValid( true ) ) {
-				// can continue directly
-				prompt = false;
-			}
-		}
-		if ( prompt ) {
-			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "promptKey force" );
-			cmdSystem->ExecuteCommandBuffer();
-		}
-	}
-#endif
 	if ( idAsyncNetwork::server.IsActive() ) {
 		common->Printf("Server running, use si_map / serverMapRestart\n");
 		return;
@@ -1863,13 +1756,13 @@ bool idSessionLocal::SaveGame( const char *saveName, bool autosave, const char* 
 	}
 
 	if ( game->GetPersistentPlayerInfo( 0 ).GetInt( "health" ) <= 0 ) {
-		MessageBox( MSG_OK, common->GetLanguageDict()->GetString ( "#str_04311" ), common->GetLanguageDict()->GetString ( "#str_04312" ), true );
+		MessageBox( MSG_OK, common->GetLanguageDict()->GetString ( "#str_messagegox_save_dead" ), common->GetLanguageDict()->GetString ( "#str_messagebox_save_error" ), true );
 		common->Printf( "You must be alive to save the game\n" );
 		return false;
 	}
 
 	if ( Sys_GetDriveFreeSpace( cvarSystem->GetCVarString( "fs_savepath" ) ) < 25 ) {
-		MessageBox( MSG_OK, common->GetLanguageDict()->GetString ( "#str_04313" ), common->GetLanguageDict()->GetString ( "#str_04314" ), true );
+		MessageBox( MSG_OK, common->GetLanguageDict()->GetString ( "#str_messagebox_no_space" ), common->GetLanguageDict()->GetString ( "#str_messagebox_warning" ), true );
 		common->Printf( "Not enough drive space to save the game\n" );
 		return false;
 	}
@@ -1907,7 +1800,7 @@ bool idSessionLocal::SaveGame( const char *saveName, bool autosave, const char* 
 	// Game Name / Version / Map Name / Persistant Player Info
 
 	// game
-	const char *gamename = GAME_NAME;
+	const char *gamename = BUILD_NAME;
 	fileOut->WriteString( gamename );
 
 	// version
@@ -2015,7 +1908,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 	// Open savegame file
 	// only allow loads from the game directory because we don't want a base game to load
 	idStr game = cvarSystem->GetCVarString( "fs_game" );
-	savegameFile = fileSystem->OpenFileRead( in, true, game.Length() ? game : NULL );
+	savegameFile = fileSystem->OpenFileRead( in, game.Length() ? game : NULL );
 
 	if ( savegameFile == NULL ) {
 		common->Warning( "Couldn't open savegame file %s", in.c_str() );
@@ -2031,7 +1924,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 	savegameFile->ReadString( gamename );
 
 	// if this isn't a savegame for the correct game, abort loadgame
-	if ( ! (gamename == GAME_NAME || gamename == "DOOM 3") ) {
+	if ( ! (gamename == BUILD_NAME) ) {
 		common->Warning( "Attempted to load an invalid savegame: %s", in.c_str() );
 
 		loadingSaveGame = false;
@@ -2054,7 +1947,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 	// check the version, if it doesn't match, cancel the loadgame,
 	// but still load the map with the persistant playerInfo from the header
 	// so that the player doesn't lose too much progress.
-	if ( savegameVersion < 16 || savegameVersion > SAVEGAME_VERSION ) { // dhewm3 supports savegames with v16 - v18
+	if ( savegameVersion < 16 || savegameVersion > SAVEGAME_VERSION ) {
 		common->Warning( "Savegame Version mismatch: aborting loadgame and starting level with persistent data" );
 		loadingSaveGame = false;
 		fileSystem->CloseFile( savegameFile );
@@ -2097,7 +1990,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 
 bool idSessionLocal::QuickSave()
 {
-	idStr saveName = common->GetLanguageDict()->GetString( "#str_07178" );
+	idStr saveName = common->GetLanguageDict()->GetString( "#str_quicksave" );
 
 	idStr saveFilePathBase = saveName;
 	ScrubSaveGameFileName( saveFilePathBase );
@@ -2120,7 +2013,7 @@ bool idSessionLocal::QuickSave()
 		}
 		saveFilePath.SetFileExtension( ".save" );
 
-		idFile *f = fileSystem->OpenFileRead( saveFilePath, true, game );
+		idFile *f = fileSystem->OpenFileRead( saveFilePath, game );
 		if ( f == NULL ) {
 			// this savegame doesn't exist yet => we can use this index for the name
 			indexToUse = i;
@@ -2150,7 +2043,7 @@ bool idSessionLocal::QuickSave()
 
 bool idSessionLocal::QuickLoad()
 {
-	idStr saveName = common->GetLanguageDict()->GetString( "#str_07178" );
+	idStr saveName = common->GetLanguageDict()->GetString( "#str_quicksave" );
 
 	idStr saveFilePathBase = saveName;
 	ScrubSaveGameFileName( saveFilePathBase );
@@ -2174,7 +2067,7 @@ bool idSessionLocal::QuickLoad()
 		}
 		saveFilePath.SetFileExtension( ".save" );
 
-		idFile *f = fileSystem->OpenFileRead( saveFilePath, true, game );
+		idFile *f = fileSystem->OpenFileRead( saveFilePath, game );
 		if ( f != NULL ) {
 			ID_TIME_T ts = f->Timestamp();
 			assert( ts != 0 );
@@ -2517,7 +2410,6 @@ idSessionLocal::UpdateScreen
 void idSessionLocal::UpdateScreen( bool outOfSequence ) {
 
 #ifdef _WIN32
-
 	if ( com_editors ) {
 		if ( !Sys_IsWindowVisible() ) {
 			return;
@@ -2606,30 +2498,6 @@ void idSessionLocal::Frame() {
 		// this will call Draw, possibly multiple times if com_aviDemoSamples is > 1
 		g_screenshotFormat = 0;
 		renderSystem->TakeScreenshot( com_aviDemoWidth.GetInteger(), com_aviDemoHeight.GetInteger(), name, com_aviDemoSamples.GetInteger(), NULL );
-	}
-
-	if ( authEmitTimeout ) {
-		// waiting for a game auth
-		if ( Sys_Milliseconds() > authEmitTimeout ) {
-			// expired with no reply
-			// means that if a firewall is blocking the master, we will let through
-			common->DPrintf( "no reply from auth\n" );
-			if ( authWaitBox ) {
-				// close the wait box
-				StopBox();
-				authWaitBox = false;
-			}
-			if ( cdkey_state == CDKEY_CHECKING ) {
-				cdkey_state = CDKEY_OK;
-			}
-			if ( xpkey_state == CDKEY_CHECKING ) {
-				xpkey_state = CDKEY_OK;
-			}
-			// maintain this empty as it's set by auth denials
-			authMsg.Empty();
-			authEmitTimeout = 0;
-			SetCDKeyGuiVars();
-		}
 	}
 
 	// send frame and mouse events to active guis
@@ -2884,9 +2752,9 @@ void idSessionLocal::Init() {
 
 	cmdSystem->AddCommand( "rescanSI", Session_RescanSI_f, CMD_FL_SYSTEM, "internal - rescan serverinfo cvars and tell game" );
 
-	cmdSystem->AddCommand( "promptKey", Session_PromptKey_f, CMD_FL_SYSTEM, "prompt and sets the CD Key" );
-
+#ifdef _DEBUG
 	cmdSystem->AddCommand( "hitch", Session_Hitch_f, CMD_FL_SYSTEM|CMD_FL_CHEAT, "hitches the game" );
+#endif
 
 	// the same idRenderWorld will be used for all games
 	// and demos, insuring that level specific models
@@ -2898,10 +2766,6 @@ void idSessionLocal::Init() {
 
 	// we have a single instance of the main menu
 	guiMainMenu = uiManager->FindGui( "guis/mainmenu.gui", true, false, true );
-	if (!guiMainMenu) {
-		guiMainMenu = uiManager->FindGui( "guis/demo_mainmenu.gui", true, false, true );
-		demoversion = (guiMainMenu != NULL);
-	}
 	guiMainMenu_MapList = uiManager->AllocListGUI();
 	guiMainMenu_MapList->Config( guiMainMenu, "mapList" );
 	idAsyncNetwork::client.serverList.GUIConfig( guiMainMenu, "serverList" );
@@ -2916,8 +2780,6 @@ void idSessionLocal::Init() {
 
 	guiActive = NULL;
 	guiHandle = NULL;
-
-	ReadCDKey();
 }
 
 /*
@@ -2967,335 +2829,6 @@ void idSessionLocal::TimeHitch( int msec ) {
 }
 
 /*
-=================
-idSessionLocal::ReadCDKey
-=================
-*/
-void idSessionLocal::ReadCDKey( void ) {
-	idStr filename;
-	idFile *f;
-	char buffer[32];
-
-	cdkey_state = CDKEY_UNKNOWN;
-
-	filename = CDKEY_FILEPATH;
-	f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_configpath" ) );
-
-	// try the install path, which is where the cd installer and steam put it
-	if ( !f )
-		f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_basepath" ) );
-
-	if ( !f ) {
-		common->Printf( "Couldn't read %s.\n", filename.c_str() );
-		cdkey[ 0 ] = '\0';
-	} else {
-		memset( buffer, 0, sizeof(buffer) );
-		f->Read( buffer, CDKEY_BUF_LEN - 1 );
-		fileSystem->CloseFile( f );
-		idStr::Copynz( cdkey, buffer, CDKEY_BUF_LEN );
-	}
-
-	xpkey_state = CDKEY_UNKNOWN;
-
-	filename = XPKEY_FILEPATH;
-	f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_configpath" ) );
-
-	// try the install path, which is where the cd installer and steam put it
-	if ( !f )
-		f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_basepath" ) );
-
-	if ( !f ) {
-		common->Printf( "Couldn't read %s.\n", filename.c_str() );
-		xpkey[ 0 ] = '\0';
-	} else {
-		memset( buffer, 0, sizeof(buffer) );
-		f->Read( buffer, CDKEY_BUF_LEN - 1 );
-		fileSystem->CloseFile( f );
-		idStr::Copynz( xpkey, buffer, CDKEY_BUF_LEN );
-	}
-}
-
-/*
-================
-idSessionLocal::WriteCDKey
-================
-*/
-void idSessionLocal::WriteCDKey( void ) {
-	idStr filename;
-	idFile *f;
-	const char *OSPath;
-
-	filename = CDKEY_FILEPATH;
-	// OpenFileWrite advertises creating directories to the path if needed, but that won't work with a '..' in the path
-	// occasionally on windows, but mostly on Linux and OSX, the fs_configpath/base may not exist in full
-	OSPath = fileSystem->BuildOSPath( cvarSystem->GetCVarString( "fs_configpath" ), BASE_GAMEDIR, CDKEY_FILE );
-	fileSystem->CreateOSPath( OSPath );
-	f = fileSystem->OpenFileWrite( filename, "fs_configpath" );
-	if ( !f ) {
-		common->Printf( "Couldn't write %s.\n", filename.c_str() );
-		return;
-	}
-	f->Printf( "%s%s", cdkey, CDKEY_TEXT );
-	fileSystem->CloseFile( f );
-
-	filename = XPKEY_FILEPATH;
-	f = fileSystem->OpenFileWrite( filename, "fs_configpath" );
-	if ( !f ) {
-		common->Printf( "Couldn't write %s.\n", filename.c_str() );
-		return;
-	}
-	f->Printf( "%s%s", xpkey, CDKEY_TEXT );
-	fileSystem->CloseFile( f );
-}
-
-/*
-===============
-idSessionLocal::ClearKey
-===============
-*/
-void idSessionLocal::ClearCDKey( bool valid[ 2 ] ) {
-	if ( !valid[ 0 ] ) {
-		memset( cdkey, 0, CDKEY_BUF_LEN );
-		cdkey_state = CDKEY_UNKNOWN;
-	} else if ( cdkey_state == CDKEY_CHECKING ) {
-		// if a key was in checking and not explicitely asked for clearing, put it back to ok
-		cdkey_state = CDKEY_OK;
-	}
-	if ( !valid[ 1 ] ) {
-		memset( xpkey, 0, CDKEY_BUF_LEN );
-		xpkey_state = CDKEY_UNKNOWN;
-	} else if ( xpkey_state == CDKEY_CHECKING ) {
-		xpkey_state = CDKEY_OK;
-	}
-	WriteCDKey( );
-}
-
-/*
-================
-idSessionLocal::GetCDKey
-================
-*/
-const char *idSessionLocal::GetCDKey( bool xp ) {
-	if ( !xp ) {
-		return cdkey;
-	}
-	if ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_CHECKING ) {
-		return xpkey;
-	}
-	return NULL;
-}
-
-// digits to letters table
-#define CDKEY_DIGITS "TWSBJCGD7PA23RLH"
-
-/*
-===============
-idSessionLocal::EmitGameAuth
-we toggled some key state to CDKEY_CHECKING. send a standalone auth packet to validate
-===============
-*/
-void idSessionLocal::EmitGameAuth( void ) {
-	// make sure the auth reply is empty, we use it to indicate an auth reply
-	authMsg.Empty();
-	if ( idAsyncNetwork::client.SendAuthCheck( cdkey_state == CDKEY_CHECKING ? cdkey : NULL, xpkey_state == CDKEY_CHECKING ? xpkey : NULL ) ) {
-		authEmitTimeout = Sys_Milliseconds() + CDKEY_AUTH_TIMEOUT;
-		common->DPrintf( "authing with the master..\n" );
-	} else {
-		// net is not available
-		common->DPrintf( "sendAuthCheck failed\n" );
-		if ( cdkey_state == CDKEY_CHECKING ) {
-			cdkey_state = CDKEY_OK;
-		}
-		if ( xpkey_state == CDKEY_CHECKING ) {
-			xpkey_state = CDKEY_OK;
-		}
-	}
-}
-
-/*
-================
-idSessionLocal::CheckKey
-the function will only modify keys to _OK or _CHECKING if the offline checks are passed
-if the function returns false, the offline checks failed, and offline_valid holds which keys are bad
-================
-*/
-bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_valid[ 2 ] ) {
-	char lkey[ 2 ][ CDKEY_BUF_LEN ];
-	char l_chk[ 2 ][ 3 ];
-	char s_chk[ 3 ];
-	int imax,i_key;
-	unsigned int checksum, chk8;
-	bool edited_key[ 2 ];
-
-	// make sure have a right input string
-	assert( strlen( key ) == ( CDKEY_BUF_LEN - 1 ) * 2 + 4 + 3 + 4 );
-
-	edited_key[ 0 ] = ( key[0] == '1' );
-	idStr::Copynz( lkey[0], key + 2, CDKEY_BUF_LEN );
-	idStr::ToUpper( lkey[0] );
-	idStr::Copynz( l_chk[0], key + CDKEY_BUF_LEN + 2, 3 );
-	idStr::ToUpper( l_chk[0] );
-	edited_key[ 1 ] = ( key[ CDKEY_BUF_LEN + 2 + 3 ] == '1' );
-	idStr::Copynz( lkey[1], key + CDKEY_BUF_LEN + 7, CDKEY_BUF_LEN );
-	idStr::ToUpper( lkey[1] );
-	idStr::Copynz( l_chk[1], key + CDKEY_BUF_LEN * 2 + 7, 3 );
-	idStr::ToUpper( l_chk[1] );
-
-	if ( fileSystem->HasD3XP() ) {
-		imax = 2;
-	} else {
-		imax = 1;
-	}
-	offline_valid[ 0 ] = offline_valid[ 1 ] = true;
-	for( i_key = 0; i_key < imax; i_key++ ) {
-		// check that the characters are from the valid set
-		int i;
-		for ( i = 0; i < CDKEY_BUF_LEN - 1; i++ ) {
-			if ( !strchr( CDKEY_DIGITS, lkey[i_key][i] ) ) {
-				offline_valid[ i_key ] = false;
-				continue;
-			}
-		}
-
-		if ( edited_key[ i_key ] ) {
-			// verify the checksum for edited keys only
-			checksum = CRC32_BlockChecksum( lkey[i_key], CDKEY_BUF_LEN - 1 );
-			chk8 = ( checksum & 0xff ) ^ ( ( ( checksum & 0xff00 ) >> 8 ) ^ ( ( ( checksum & 0xff0000 ) >> 16 ) ^ ( ( checksum & 0xff000000 ) >> 24 ) ) );
-			idStr::snPrintf( s_chk, 3, "%02X", chk8 );
-			if ( idStr::Icmp( l_chk[i_key], s_chk ) != 0 ) {
-				offline_valid[ i_key ] = false;
-				continue;
-			}
-		}
-	}
-
-	if ( !offline_valid[ 0 ] || !offline_valid[1] ) {
-		return false;
-	}
-
-	// offline checks passed, we'll return true and optionally emit key check requests
-	// the function should only modify the key states if the offline checks passed successfully
-
-	// set the keys, don't send a game auth if we are net connecting
-	idStr::Copynz( cdkey, lkey[0], CDKEY_BUF_LEN );
-	netConnect ? cdkey_state = CDKEY_OK : cdkey_state = CDKEY_CHECKING;
-	if ( fileSystem->HasD3XP() ) {
-		idStr::Copynz( xpkey, lkey[1], CDKEY_BUF_LEN );
-		netConnect ? xpkey_state = CDKEY_OK : xpkey_state = CDKEY_CHECKING;
-	} else {
-		xpkey_state = CDKEY_NA;
-	}
-	if ( !netConnect ) {
-		EmitGameAuth();
-	}
-	SetCDKeyGuiVars();
-
-	return true;
-}
-
-/*
-===============
-idSessionLocal::CDKeysAreValid
-checking that the key is present and uses only valid characters
-if d3xp is installed, check for a valid xpkey as well
-emit an auth packet to the master if possible and needed
-===============
-*/
-bool idSessionLocal::CDKeysAreValid( bool strict ) {
-	int i;
-	bool emitAuth = false;
-
-	if ( cdkey_state == CDKEY_UNKNOWN ) {
-		if ( strlen( cdkey ) != CDKEY_BUF_LEN - 1 ) {
-			cdkey_state = CDKEY_INVALID;
-		} else {
-			for ( i = 0; i < CDKEY_BUF_LEN-1; i++ ) {
-				if ( !strchr( CDKEY_DIGITS, cdkey[i] ) ) {
-					cdkey_state = CDKEY_INVALID;
-					break;
-				}
-			}
-		}
-		if ( cdkey_state == CDKEY_UNKNOWN ) {
-			cdkey_state = CDKEY_CHECKING;
-			emitAuth = true;
-		}
-	}
-	if ( xpkey_state == CDKEY_UNKNOWN ) {
-		if ( fileSystem->HasD3XP() ) {
-			if ( strlen( xpkey ) != CDKEY_BUF_LEN -1 ) {
-				xpkey_state = CDKEY_INVALID;
-			} else {
-				for ( i = 0; i < CDKEY_BUF_LEN-1; i++ ) {
-					if ( !strchr( CDKEY_DIGITS, xpkey[i] ) ) {
-						xpkey_state = CDKEY_INVALID;
-					}
-				}
-			}
-			if ( xpkey_state == CDKEY_UNKNOWN ) {
-				xpkey_state = CDKEY_CHECKING;
-				emitAuth = true;
-			}
-		} else {
-			xpkey_state = CDKEY_NA;
-		}
-	}
-	if ( emitAuth ) {
-		EmitGameAuth();
-	}
-	// make sure to keep the mainmenu gui up to date in case we made state changes
-	SetCDKeyGuiVars();
-	if ( strict ) {
-		return cdkey_state == CDKEY_OK && ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_NA );
-	} else {
-		return ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING ) && ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_CHECKING || xpkey_state == CDKEY_NA );
-	}
-}
-
-/*
-===============
-idSessionLocal::WaitingForGameAuth
-===============
-*/
-bool idSessionLocal::WaitingForGameAuth( void ) {
-	return authEmitTimeout != 0;
-}
-
-/*
-===============
-idSessionLocal::CDKeysAuthReply
-===============
-*/
-void idSessionLocal::CDKeysAuthReply( bool valid, const char *auth_msg ) {
-	//assert( authEmitTimeout > 0 );
-	if ( authWaitBox ) {
-		// close the wait box
-		StopBox();
-		authWaitBox = false;
-	}
-	if ( !valid ) {
-		common->DPrintf( "auth key is invalid\n" );
-		authMsg = auth_msg;
-		if ( cdkey_state == CDKEY_CHECKING ) {
-			cdkey_state = CDKEY_INVALID;
-		}
-		if ( xpkey_state == CDKEY_CHECKING ) {
-			xpkey_state = CDKEY_INVALID;
-		}
-	} else {
-		common->DPrintf( "client is authed in\n" );
-		if ( cdkey_state == CDKEY_CHECKING ) {
-			cdkey_state = CDKEY_OK;
-		}
-		if ( xpkey_state == CDKEY_CHECKING ) {
-			xpkey_state = CDKEY_OK;
-		}
-	}
-	authEmitTimeout = 0;
-	SetCDKeyGuiVars();
-}
-
-/*
 ===============
 idSessionLocal::GetCurrentMapName
 ===============
@@ -3311,13 +2844,4 @@ idSessionLocal::GetSaveGameVersion
 */
 int idSessionLocal::GetSaveGameVersion( void ) {
 	return savegameVersion;
-}
-
-/*
-===============
-idSessionLocal::GetAuthMsg
-===============
-*/
-const char *idSessionLocal::GetAuthMsg( void ) {
-	return authMsg.c_str();
 }

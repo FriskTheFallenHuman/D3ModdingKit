@@ -41,6 +41,8 @@ extern idCVar r_scaleMenusTo43; // DG: for the "scale menus to 4:3" hack
 idUserInterfaceManagerLocal	uiManagerLocal;
 idUserInterfaceManager *	uiManager = &uiManagerLocal;
 
+extern idCVar sys_lang;
+
 /*
 ===============================================================================
 
@@ -288,7 +290,22 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		desktop = new idWindow( this );
 	}
 
-	source = qpath;
+	// First try loading the localized version
+	// Then fall back to the english version
+	for ( int i = 0; i < 2; i++ ) {
+		source = qpath;
+		idStr trySource = qpath;
+		trySource.ToLower();
+		trySource.BackSlashesToSlashes();
+		if ( i == 0 ) {
+			trySource.Replace( "guis/", va( "guis/%s/", sys_lang.GetString() ) );
+		}
+		fileSystem->ReadFile( trySource, NULL, &timeStamp);
+		if ( timeStamp != FILE_NOT_FOUND_TIMESTAMP ) {
+			source = trySource;
+			break;
+		}
+	}
 	state.Set( "text", "Test Text!" );
 
 	idParser src( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWMULTICHARLITERALS | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
@@ -310,8 +327,7 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 				continue;
 			}
 		}
-
-		state.Set( "name", qpath );
+		state.Set( "name", qpath );	// don't use localized name
 	} else {
 		desktop->SetDC( &uiManagerLocal.dc );
 		desktop->SetFlag( WIN_DESKTOP );

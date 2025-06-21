@@ -1,0 +1,435 @@
+/*
+================================================================
+
+ PLAYER_BASE
+
+================================================================
+*/
+
+// ---------------------------------------------
+//
+//	Shared Rig
+//
+// ---------------------------------------------
+
+model player_default {
+
+	mesh							models/players/base/mesh/Mixamo_SpecOps.md5mesh
+	offset							( 0 0 1 )
+
+	channel legs						( *origin )
+
+//	channel torso						( *Spine )
+//	channel legs						( *origin -*Spine )
+
+	anim af_pose						models/players/base/anim/tpose.md5anim
+	anim ik_pose						models/players/base/anim/tpose.md5anim
+	anim initial						models/players/base/anim/tpose.md5anim
+
+	anim teleport						models/players/base/anim/spawn.md5anim {
+		frame 3						rightfoot
+		frame 5						leftfoot
+	}
+	anim exit						models/players/base/anim/exit_teleporter.md5anim {
+		frame 6						leftfoot
+	}
+
+	anim idle						models/players/base/anim/idle.md5anim
+
+	anim crouch_down					models/players/base/anim/idle_to_crouch.md5anim
+	anim crouch_up						models/players/base/anim/crouch_to_idle.md5anim
+
+	anim crouch						models/players/base/anim/crouch_idle.md5anim
+	anim crouch_walk					models/players/base/anim/crouch_walk_forward.md5anim
+	anim crouch_walk_backwards				models/players/base/anim/crouch_walk_backward.md5anim
+	anim crouch_strafe_left					models/players/base/anim/crouch_strafe_left.md5anim
+	anim crouch_strafe_right				models/players/base/anim/crouch_strafe_right.md5anim
+
+	anim walk						models/players/base/anim/jog_forward.md5anim {
+		frame 8						leftfoot
+		frame 20					rightfoot
+	}
+	anim walk_backwards					models/players/base/anim/jog_backward.md5anim {
+		frame 10					leftfoot
+		frame 22					rightfoot
+	}
+	anim walk_strafe_left					models/players/base/anim/jog_strafe_left.md5anim {
+		frame 10					leftfoot
+		frame 20					rightfoot
+	}
+	anim walk_strafe_right					models/players/base/anim/jog_strafe_right.md5anim {
+		frame 10					leftfoot
+		frame 20					rightfoot
+	}
+
+	anim run_forward					models/players/base/anim/run_forward.md5anim {
+		frame 7						leftfoot
+		frame 17					rightfoot
+	}
+	anim run_backwards					models/players/base/anim/run_backward.md5anim {
+		prevent_idle_override
+		frame 9						leftfoot
+		frame 18					rightfoot
+	}
+	anim run_strafe_left					models/players/base/anim/run_strafe_left.md5anim {
+		prevent_idle_override
+		frame 9						leftfoot
+		frame 19					rightfoot
+	}
+	anim run_strafe_right					models/players/base/anim/run_strafe_right.md5anim {
+		prevent_idle_override
+		frame 9						leftfoot
+		frame 19					rightfoot
+	}
+
+	anim jump						models/players/base/anim/jump.md5anim {
+		prevent_idle_override
+		frame 1						sound_body player_sounds_jump_small
+	}
+	anim run_jump						models/players/base/anim/jump.md5anim {
+		prevent_idle_override
+		frame 1						sound_body player_sounds_jump
+	}
+
+	anim soft_land						models/players/base/anim/land_soft.md5anim {
+		prevent_idle_override
+		frame 2						leftfoot
+		frame 4						rightfoot
+	}
+	anim hard_land						models/players/base/anim/land_hard.md5anim {
+		prevent_idle_override
+		frame 1						sound_voice2 snd_land_hard
+		frame 1						leftfoot
+		frame 3						rightfoot
+	}
+
+	anim fall						models/players/base/anim/fall.md5anim {
+		prevent_idle_override
+	}
+
+	anim turn_left						models/players/base/anim/turn_left.md5anim {
+		prevent_idle_override
+	}
+	anim turn_right						models/players/base/anim/turn_right.md5anim  {
+		prevent_idle_override
+	}
+
+	anim pain						models/players/base/anim/pain_arm_left.md5anim {
+		prevent_idle_override
+	}
+	anim pain_head						models/players/base/anim/pain_arm_left.md5anim {
+		prevent_idle_override
+	}
+	anim pain_right_arm					models/players/base/anim/pain_arm_right.md5anim {
+		prevent_idle_override
+	}
+
+	anim pain_left_arm					models/players/base/anim/pain_arm_left.md5anim {
+		prevent_idle_override
+	}
+
+	anim pain_chest						models/players/base/anim/pain_arm_left.md5anim {
+		prevent_idle_override
+	}
+
+//	anim soulcube_raise					models/players/base/anim/pain_arm_left.md5anim
+//	anim soulcube_idle					models/players/base/anim/soulcube_idle.md5anim, models/players/base/anim/soulcube_idle.md5anim, models/players/base/anim/soulcube_idle.md5anim
+//	anim soulcube_aim					models/players/base/anim/soulcube_idle.md5anim, models/players/base/anim/soulcube_idle.md5anim, models/players/base/anim/soulcube_idle.md5anim
+//	anim soulcube_fire					models/players/base/anim/soulcube_fire.md5anim, models/players/base/anim/soulcube_fire.md5anim, models/players/base/anim/soulcube_fire.md5anim
+//	anim soulcube_lower
+	
+
+/*
+	anim pda_raise						models/md5/characters/npcs/playermoves/raisepda.md5anim
+	anim pda_idle						models/md5/characters/npcs/playermoves/pda_idle.md5anim
+	anim pda_lower						models/md5/characters/npcs/playermoves/lowerpda.md5anim
+	
+	anim fists_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim fists_idle						models/md5/characters/npcs/playermoves/fists_idle_down.md5anim, models/md5/characters/npcs/playermoves/fists_idle.md5anim, models/md5/characters/npcs/playermoves/fists_idle_up.md5anim
+	anim fists_aim						models/md5/characters/npcs/playermoves/fists_aim_down.md5anim, models/md5/characters/npcs/playermoves/fists_aim.md5anim, models/md5/characters/npcs/playermoves/fists_aim_up.md5anim
+	anim fists_punch_right					models/md5/characters/npcs/playermoves/fists_punch_down1.md5anim, models/md5/characters/npcs/playermoves/fists_punch1.md5anim, models/md5/characters/npcs/playermoves/fists_punch_up1.md5anim
+	anim fists_punch_left					models/md5/characters/npcs/playermoves/fists_punch_down2.md5anim, models/md5/characters/npcs/playermoves/fists_punch2.md5anim, models/md5/characters/npcs/playermoves/fists_punch_up2.md5anim
+	anim fists_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim pistol_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim	
+	anim pistol_idle					models/md5/characters/npcs/playermoves/pistol_idle_down.md5anim, models/md5/characters/npcs/playermoves/pistol_idle.md5anim, models/md5/characters/npcs/playermoves/pistol_idle_up.md5anim
+	anim pistol_aim						models/md5/characters/npcs/playermoves/pistol_aim_down.md5anim, models/md5/characters/npcs/playermoves/pistol_aim.md5anim, models/md5/characters/npcs/playermoves/pistol_aim_up.md5anim
+	anim pistol_fire1					models/md5/characters/npcs/playermoves/pistol_fire_down.md5anim, models/md5/characters/npcs/playermoves/pistol_fire1.md5anim, models/md5/characters/npcs/playermoves/pistol_fire_up.md5anim
+	anim pistol_reload					models/md5/characters/npcs/playermoves/pistol_reload.md5anim
+	anim pistol_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim shotgun_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim	
+
+	anim shotgun_idle					models/md5/characters/npcs/playermoves/shotgun_idle_down.md5anim, models/md5/characters/npcs/playermoves/shotgun_idle.md5anim, models/md5/characters/npcs/playermoves/shotgun_idle_up.md5anim
+	anim shotgun_aim					models/md5/characters/npcs/playermoves/shotgun_aim_down.md5anim, models/md5/characters/npcs/playermoves/shotgun_aim.md5anim, models/md5/characters/npcs/playermoves/shotgun_aim_up.md5anim
+	anim shotgun_fire1					models/md5/characters/npcs/playermoves/shotgun_fire_down.md5anim, models/md5/characters/npcs/playermoves/shotgun_fire1.md5anim, models/md5/characters/npcs/playermoves/shotgun_fire_up.md5anim	
+	anim shotgun_reload_start				models/md5/characters/npcs/playermoves/shotgun_reload_start.md5anim
+	anim shotgun_reload_loop				models/md5/characters/npcs/playermoves/shotgun_reload_loop1.md5anim
+	anim shotgun_reload_end					models/md5/characters/npcs/playermoves/shotgun_reload_end.md5anim
+	anim shotgun_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim machinegun_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim machinegun_idle					models/md5/characters/npcs/playermoves/machinegun_idle_down.md5anim, models/md5/characters/npcs/playermoves/machinegun_idle.md5anim, models/md5/characters/npcs/playermoves/machinegun_idle_up.md5anim
+	anim machinegun_aim					models/md5/characters/npcs/playermoves/machinegun_aim_down.md5anim, models/md5/characters/npcs/playermoves/machinegun_aim.md5anim, models/md5/characters/npcs/playermoves/machinegun_aim_up.md5anim
+	anim machinegun_fire1					models/md5/characters/npcs/playermoves/machinegun_fire_down.md5anim, models/md5/characters/npcs/playermoves/machinegun_fire1.md5anim, models/md5/characters/npcs/playermoves/machinegun_fire_up.md5anim
+	anim machinegun_reload					models/md5/characters/npcs/playermoves/machinegun_reload.md5anim
+	anim machinegun_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim chaingun_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim chaingun_idle					models/md5/characters/npcs/playermoves/chaingun_idle_down.md5anim, models/md5/characters/npcs/playermoves/chaingun_idle.md5anim, models/md5/characters/npcs/playermoves/chaingun_idle_up.md5anim
+	anim chaingun_aim					models/md5/characters/npcs/playermoves/chaingun_idle_down.md5anim, models/md5/characters/npcs/playermoves/chaingun_idle.md5anim, models/md5/characters/npcs/playermoves/chaingun_idle_up.md5anim
+	anim chaingun_fire					models/md5/characters/npcs/playermoves/chaingun_fire_down.md5anim, models/md5/characters/npcs/playermoves/chaingun_fire.md5anim, models/md5/characters/npcs/playermoves/chaingun_fire_up.md5anim
+	anim chaingun_reload					models/md5/characters/npcs/playermoves/chaingun_reload.md5anim
+	anim chaingun_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+
+	anim plasmagun_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim plasmagun_idle					models/md5/characters/npcs/playermoves/plasmagun_idle_down.md5anim, models/md5/characters/npcs/playermoves/plasmagun_idle.md5anim, models/md5/characters/npcs/playermoves/plasmagun_idle_up.md5anim
+	anim plasmagun_aim					models/md5/characters/npcs/playermoves/plasmagun_aim_down.md5anim, models/md5/characters/npcs/playermoves/plasmagun_aim.md5anim, models/md5/characters/npcs/playermoves/plasmagun_aim_up.md5anim
+	anim plasmagun_fire1					models/md5/characters/npcs/playermoves/plasmagun_fire_down.md5anim, models/md5/characters/npcs/playermoves/plasmagun_fire1.md5anim, models/md5/characters/npcs/playermoves/plasmagun_fire_up.md5anim
+
+	anim plasmagun_reload					models/md5/characters/npcs/playermoves/machinegun_reload.md5anim
+	anim plasmagun_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim handgrenade_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim handgrenade_idle					models/md5/characters/npcs/playermoves/nade_idle_down.md5anim, models/md5/characters/npcs/playermoves/nade_idle.md5anim, models/md5/characters/npcs/playermoves/nade_idle_up.md5anim
+	anim handgrenade_aim					models/md5/characters/npcs/playermoves/nade_idle_down.md5anim, models/md5/characters/npcs/playermoves/nade_idle.md5anim, models/md5/characters/npcs/playermoves/nade_idle_up.md5anim
+	anim handgrenade_throw_quick				models/md5/characters/npcs/playermoves/nade_quickthrow_down.md5anim, models/md5/characters/npcs/playermoves/nade_quickthrow.md5anim, models/md5/characters/npcs/playermoves/nade_quickthrow_up.md5anim
+	anim handgrenade_throw_start				models/md5/characters/npcs/playermoves/nade_throwstart_down.md5anim, models/md5/characters/npcs/playermoves/nade_throwstart.md5anim, models/md5/characters/npcs/playermoves/nade_throwstart_up.md5anim
+	anim handgrenade_throw					models/md5/characters/npcs/playermoves/nade_throw_down.md5anim, models/md5/characters/npcs/playermoves/nade_throw.md5anim, models/md5/characters/npcs/playermoves/nade_throw_up.md5anim
+
+	anim handgrenade_startfire				models/md5/characters/npcs/playermoves/nade_throwstart_down.md5anim, models/md5/characters/npcs/playermoves/nade_throwstart.md5anim, models/md5/characters/npcs/playermoves/nade_throwstart_up.md5anim
+	anim handgrenade_fire					models/md5/characters/npcs/playermoves/nade_throw_down.md5anim, models/md5/characters/npcs/playermoves/nade_throw.md5anim, models/md5/characters/npcs/playermoves/nade_throw_up.md5anim
+	anim handgrenade_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim chainsaw_raise					models/md5/characters/npcs/playermoves/chainsaw_raise.md5anim
+	anim chainsaw_idle					models/md5/characters/npcs/playermoves/chainsaw_idle_down.md5anim, models/md5/characters/npcs/playermoves/chainsaw_idle.md5anim, models/md5/characters/npcs/playermoves/chainsaw_idle_up.md5anim
+	anim chainsaw_aim					models/md5/characters/npcs/playermoves/chainsaw_idle_down.md5anim, models/md5/characters/npcs/playermoves/chainsaw_idle.md5anim, models/md5/characters/npcs/playermoves/chainsaw_idle_up.md5anim
+	anim chainsaw_fire					models/md5/characters/npcs/playermoves/chainsaw_fire_down.md5anim, models/md5/characters/npcs/playermoves/chainsaw_fire.md5anim, models/md5/characters/npcs/playermoves/chainsaw_fire_up.md5anim
+	anim chainsaw_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+	anim rocketlauncher_raise				models/md5/characters/npcs/playermoves/raisewep_left.md5anim
+	anim rocketlauncher_idle				models/md5/characters/npcs/playermoves/rocketlauncher_idle_down.md5anim, models/md5/characters/npcs/playermoves/rocketlauncher_idle.md5anim, models/md5/characters/npcs/playermoves/rocketlauncher_idle_up.md5anim
+	anim rocketlauncher_aim					models/md5/characters/npcs/playermoves/rocketlauncher_aim_down.md5anim, models/md5/characters/npcs/playermoves/rocketlauncher_aim.md5anim, models/md5/characters/npcs/playermoves/rocketlauncher_aim_up.md5anim
+	anim rocketlauncher_fire				models/md5/characters/npcs/playermoves/rocketlauncher_fire_down.md5anim, models/md5/characters/npcs/playermoves/rocketlauncher_fire.md5anim, models/md5/characters/npcs/playermoves/rocketlauncher_fire_up.md5anim
+	anim rocketlauncher_reload				models/md5/characters/npcs/playermoves/rocketlauncher_reload.md5anim
+	anim rocketlauncher_lower				models/md5/characters/npcs/playermoves/lowerwep_left.md5anim
+
+	anim flashlight_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim flashlight_idle					models/md5/characters/npcs/playermoves/flashlight_aim_down.md5anim, models/md5/characters/npcs/playermoves/flashlight_idle.md5anim, models/md5/characters/npcs/playermoves/flashlight_aim_up.md5anim
+	anim flashlight_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+	anim flashlight_aim					models/md5/characters/npcs/playermoves/flashlight_aim_down.md5anim, models/md5/characters/npcs/playermoves/flashlight_idle.md5anim, models/md5/characters/npcs/playermoves/flashlight_aim_up.md5anim
+	anim flashlight_fire1					models/md5/characters/npcs/playermoves/flashlight_swing1_down.md5anim, models/md5/characters/npcs/playermoves/flashlight_swing1.md5anim, models/md5/characters/npcs/playermoves/flashlight_swing1_up.md5anim
+	anim flashlight_fire2					models/md5/characters/npcs/playermoves/flashlight_swing2_down.md5anim, models/md5/characters/npcs/playermoves/flashlight_swing2.md5anim, models/md5/characters/npcs/playermoves/flashlight_swing2_up.md5anim
+
+
+	anim bfg_raise						models/md5/characters/npcs/playermoves/raisewep.md5anim
+	anim bfg_idle						models/md5/characters/npcs/playermoves/bfg_idle_down.md5anim, models/md5/characters/npcs/playermoves/bfg_idle.md5anim, models/md5/characters/npcs/playermoves/bfg_idle_up.md5anim
+	anim bfg_aim						models/md5/characters/npcs/playermoves/bfg_aim_down.md5anim, models/md5/characters/npcs/playermoves/bfg_aim.md5anim, models/md5/characters/npcs/playermoves/bfg_aim_up.md5anim	
+	anim bfg_startfire					models/md5/characters/npcs/playermoves/bfg_startfire_down.md5anim, models/md5/characters/npcs/playermoves/bfg_startfire.md5anim, models/md5/characters/npcs/playermoves/bfg_startfire_up.md5anim
+	anim bfg_fire						models/md5/characters/npcs/playermoves/bfg_fire_down.md5anim, models/md5/characters/npcs/playermoves/bfg_fire.md5anim, models/md5/characters/npcs/playermoves/bfg_fire_up.md5anim
+	anim bfg_reload						models/md5/characters/npcs/playermoves/bfg_reload.md5anim
+	anim bfg_lower						models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+//	anim soulcube_raise					models/md5/characters/npcs/playermoves/raisewep.md5anim
+//	anim soulcube_idle					models/md5/characters/npcs/playermoves/soulcube_idle_down.md5anim, models/md5/characters/npcs/playermoves/soulcube_idle.md5anim, models/md5/characters/npcs/playermoves/soulcube_idle_up.md5anim
+//	anim soulcube_aim					models/md5/characters/npcs/playermoves/soulcube_idle_down.md5anim, models/md5/characters/npcs/playermoves/soulcube_idle.md5anim, models/md5/characters/npcs/playermoves/soulcube_idle_up.md5anim
+//	anim soulcube_fire					models/md5/characters/npcs/playermoves/soulcube_fire.md5anim, models/md5/characters/npcs/playermoves/soulcube_fire.md5anim, models/md5/characters/npcs/playermoves/soulcube_fire.md5anim
+//	anim soulcube_lower					models/md5/characters/npcs/playermoves/lowerwep.md5anim
+
+*/
+
+}
+
+// ---------------------------------------------
+//
+//	Player_Base
+//
+//	Players should inherit from this
+//
+// ---------------------------------------------
+
+entityDef player_base {
+	"spawnclass"						"idPlayer"
+	"scriptobject"						"player"
+
+	"health"							"100"
+	"maxhealth"							"100"
+	"stamina"							"110"
+	"armor"								"0"
+	"maxarmor"							"100"
+
+	"bleed"								"0"
+	"gib"								"0"
+
+	"hud"								"guis/hud.gui"
+	"mphud"								"guis/mphud.gui"
+	"cursor"						    "guis/cursor.gui"
+
+	//"blink_min"							"2.5"
+	//"blink_max"							"8.0"
+
+	"def_weapon0"						"weapon_unarmed"
+	"weapon0_best"						"0"			
+	"weapon0_cycle"						"1"
+	"weapon0_toggle"					"0"
+	"weapon0_allowempty"				"1"				
+
+	"weapon"							"weapon_unarmed"
+	"weapon_nightmare"					"weapon_unarmed"
+	"current_weapon"					"0"
+
+	"pm_jumpheight"						"40"
+	"pm_stepsize"						"15"
+	"pm_crouchspeed"					"70"
+	"pm_walkspeed"						"130"
+	"pm_runspeed"						"210"
+	"pm_noclipspeed"					"220"
+	"pm_minviewpitch"					"-85"
+	"pm_maxviewpitch"					"85"
+	"pm_stamina"						"20"
+	"pm_staminathreshold"				"5"
+	"pm_staminarate"					"0.72"
+	"pm_crouchheight"					"35"
+	"pm_crouchviewheight"				"30"
+	"pm_normalheight"					"72"
+	"pm_normalviewheight"				"66"
+	"pm_deadheight"						"19"
+	"pm_deadviewheight"					"9"
+	"pm_crouchrate"						"0.85"
+	"pm_bboxwidth"						"31"
+	"pm_crouchbob"						"0.4"		
+	"pm_walkbob"						"0.25"		
+	"pm_runbob"							"0.37"		
+	"pm_modelview"						"0"
+
+	"pain_delay"						"0.4"
+	"respawn_delay"						"2"
+
+	"bleed"							"1"
+
+	"bone_focus"						"Head"
+	"bone_leftEye"						"Eye_Control"
+	"bone_rightEye"						"Eye_Control"
+	"bone_hips"						"Hips"
+	"bone_chest"						"Spine2"		// AI aim location
+	"bone_head"						"Head"			// AI aim location
+
+	"damage_zone head"					"*Head"
+	"damage_zone chest"					"*Hips -*Head"
+	"damage_zone left_arm"					"*LeftArm"
+	"damage_zone right_arm"					"*RightArm"
+	"damage_zone legs"					"origin Hips"
+	"damage_scale head"					"1"
+
+	"ragdoll"						""
+/*
+	"gib"							"1"
+	"def_dropGibItem"					"moveable_item_head_pork"
+	"dropGibItemJoint"					"Head"
+	"skin_dropGib"						"skins/characters/player/marine_mp_death.skin"
+
+	"def_dropGibItem2"					"moveable_item_torso_pork"
+	"dropGibItem2Joint"					"Chest"
+
+	"def_dropGibItem3"					"moveable_item_rup_arm_pork"
+	"dropGibItem3Joint"					"Ruparm"
+
+	"def_dropGibItem4"					"moveable_item_left_waist_pork"
+	"dropGibItem4Joint"					"Waist"
+
+	"def_dropGibItem5"					"moveable_item_lup_leg_pork"
+	"dropGibItem5Joint"					"Lupleg"
+
+	"def_dropItem6"						"moveable_item_rup_leg_pork"
+	"dropGibItem6Joint"					"Rupleg"
+
+	"def_dropGibItem7"					"moveable_item_rup2_leg_pork"
+	"dropGibItem7Joint"					"Rloleg"
+
+	"def_dropGibItem8"					"moveable_item_pelvis_pork"
+	"dropGibItem8Joint"					"Hips"
+*/
+
+	"ik_numLegs"						"2"
+	"ik_footSize"						"4"
+	"ik_minWaistAnkleDist"					"16"
+	"ik_waist"						"Spine1"	// Body ?
+	"ik_hip1"						"LeftUpLeg"
+	"ik_hip2"						"RightUpLeg"
+	"ik_knee1"						"LeftLeg"
+	"ik_knee2"						"RightLeg"
+	"ik_ankle1"						"LeftFoot"
+	"ik_ankle2"						"RightFoot"
+	"ik_dir1"						"IK_LegPole_Left"
+	"ik_dir2"						"IK_LegPole_Right"
+	"ik_foot1"						"LeftToeBase"
+	"ik_foot2"						"RightToeBase"
+
+	"ik_numArms"						"2"
+	"ik_shoulder1"						"RightArm"
+	"ik_shoulder2"						"LeftArm"
+	"ik_elbow1"						"RightForeArm"
+	"ik_elbow2"						"LeftForeArm"
+	"ik_hand1"						"LeftHandMiddle3"
+	"ik_hand2"						"RightHandMiddle3"
+
+	"snd_stepladder"					"no_sound"
+	"snd_weapon_switch"					"no_sound"
+	"snd_footstep"						"player_sounds_footstep"
+	"snd_footstep_flesh"				"player_footstep_flesh"
+	"snd_footstep_metal"				"player_footstep_metal"
+	"snd_footstep_ricochet"				"player_footstep_metal2"
+	"snd_footstep_pipe"					"player_footstep_metal"
+	"snd_footstep_wood"					"player_footstep_wood"
+	"snd_footstep_stone"				"player_footstep_stone"
+	"snd_footstep_tile"					"player_footstep_tile"
+	"snd_footstep_glass"				"player_footstep_glass"
+	"snd_footstep_cardboard"			"player_footstep_wood"
+	"snd_footstep_liquid"				"player_footstep_liquid"
+	"snd_death"							"no_sound"
+	"snd_fall"							"no_sound"
+	"snd_pain_small"					"no_sound"
+	"snd_pain_medium"					"no_sound"
+	"snd_pain_large"					"no_sound"
+	"snd_pain_huge"						"no_sound"
+	"snd_land_soft"						"no_sound"
+	"snd_land_hard"						"no_sound"
+	"snd_objectiveup"					"no_sound"
+	"snd_objectivedown"					"no_sound"
+	"snd_doublevision"					"no_sound"
+	"snd_thud"							"no_sound"
+	"snd_heartbeat"						"no_sound"
+	"snd_heartbeat_dying"				"no_sound"
+	"snd_skipcinematic"					"no_sound"
+	"snd_guienter"						"no_sound"
+	"snd_guiexit"						"no_sound"
+	"snd_soulcube_ready"				"no_sound"
+	"snd_healthpulse"					"no_sound"
+	"snd_hitArmor"						"no_sound"
+	"snd_hitFlesh"						"no_sound"
+	"snd_airGasp"						"no_sound"
+	"snd_noAir"							"no_sound"
+	"snd_berserk_third"					"no_sound"
+	"snd_teleport_exit"					"no_sound"
+	"snd_teleport_start"				"no_sound"
+	"snd_burn"							"no_sound"
+	"snd_invisibility"					"no_sound"
+	"snd_megahealth"					"no_sound"
+	"snd_healthtake"					"no_sound"
+}
+
+entityDef player_sp 
+{
+	"inherit"							"player_base"
+	"model"							"player_default"
+	"snd_decompress"					"no_sound"
+	"snd_recompress"					"no_sound"
+	"snd_airless"						"no_sound"
+//	"def_head"						""
+//	"head_joint"						""
+//	"copy_joint neckcontrol"				""
+//	"copy_joint headcontrol"				""
+//	"copy_joint_world eyecontrol"				""
+	"text_infoTitle"					"#str_info"
+}

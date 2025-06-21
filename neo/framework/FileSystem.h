@@ -44,7 +44,6 @@ If you have questions concerning this license or the applicable additional terms
 
 	"fs_basepath"		path to local install, read-only
 	"fs_savepath"		path to config, save game, etc. files, read & write
-	"fs_cdpath"			path to cd, read-only
 	"fs_devpath"		path to files created during development, read & write
 
 	The base path for file saving can be set to "fs_savepath" or "fs_devpath".
@@ -160,8 +159,6 @@ public:
 	virtual void			Shutdown( bool reloading ) = 0;
 							// Returns true if the file system is initialized.
 	virtual bool			IsInitialized( void ) const = 0;
-							// Returns true if we are doing an fs_copyfiles.
-	virtual bool			PerformingCopyFiles( void ) const = 0;
 							// Returns a list of mods found along with descriptions
 							// 'mods' contains the directory names to be passed to fs_game
 							// 'descriptions' contains a free form string to be used in the UI
@@ -226,7 +223,7 @@ public:
 							// Removes the given file.
 	virtual void			RemoveFile( const char *relativePath ) = 0;
 							// Opens a file for reading.
-	virtual idFile *		OpenFileRead( const char *relativePath, bool allowCopyFiles = true, const char* gamedir = NULL ) = 0;
+	virtual idFile *		OpenFileRead( const char *relativePath, const char* gamedir = NULL ) = 0;
 							// Opens a file for writing, will create any needed subdirectories.
 	virtual idFile *		OpenFileWrite( const char *relativePath, const char *basePath = "fs_savepath" ) = 0;
 							// Opens a file for writing at the end.
@@ -253,11 +250,6 @@ public:
 							// the cache is cleared when calling OpenFileWrite and RemoveFile
 							// in some cases you may need to use this directly
 	virtual void			ClearDirCache( void ) = 0;
-
-							// is D3XP installed? even if not running it atm
-	virtual bool			HasD3XP( void ) = 0;
-							// are we using D3XP content ( through a real d3xp run or through a double mod )
-	virtual bool			RunningD3XP( void ) = 0;
 
 							// don't use for large copies - allocates a single memory block for the copy
 	virtual void			CopyFile( const char *fromOSPath, const char *toOSPath ) = 0;

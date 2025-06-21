@@ -93,6 +93,9 @@ extern idCVar	ai_showCombatNodes;
 extern idCVar	ai_showPaths;
 extern idCVar	ai_showObstacleAvoidance;
 extern idCVar	ai_blockedFailSafe;
+#ifdef _D3XP
+extern idCVar	ai_showHealth;
+#endif
 
 #if MD5_ENABLE_LODS > 1 // DEBUG
 extern idCVar	ai_showLevelOfDetail;
@@ -127,6 +130,11 @@ extern idCVar	g_vehicleSuspensionDown;
 extern idCVar	g_vehicleSuspensionKCompress;
 extern idCVar	g_vehicleSuspensionDamping;
 extern idCVar	g_vehicleTireFriction;
+#ifdef _D3XP
+extern idCVar	g_vehicleDebug;
+extern idCVar	g_debugShockwave;
+extern idCVar	g_enablePortalSky;
+#endif
 
 extern idCVar	ik_enable;
 extern idCVar	ik_debug;
@@ -236,6 +244,19 @@ extern idCVar	g_testModelBlend;
 extern idCVar	g_exportMask;
 extern idCVar	g_flushSave;
 
+#ifdef _D3XP
+extern idCVar	g_enableSlowmo;
+extern idCVar	g_slowmoStepRate;
+extern idCVar	g_testFullscreenFX;
+extern idCVar	g_testHelltimeFX;
+extern idCVar	g_testMultiplayerFX;
+extern idCVar	g_lowresFullscreenFX;
+extern idCVar	g_moveableDamageScale;
+extern idCVar	g_testBloomSpeed;
+extern idCVar	g_testBloomIntensity;
+extern idCVar	g_testBloomNumPasses;
+#endif
+
 extern idCVar	aas_test;
 extern idCVar	aas_showAreas;
 extern idCVar	aas_showPath;
@@ -258,6 +279,33 @@ extern idCVar	si_fragLimit;
 extern idCVar	si_gameType;
 extern idCVar	si_map;
 extern idCVar	si_spectators;
+
+#ifdef CTF
+extern idCVar si_flagDropTimeLimit;
+extern idCVar si_midnight;
+
+extern idCVar g_flagAttachJoint;
+extern idCVar g_flagAttachOffsetX;
+extern idCVar g_flagAttachOffsetY;
+extern idCVar g_flagAttachOffsetZ;
+extern idCVar g_flagAttachAngleX;
+extern idCVar g_flagAttachAngleY;
+extern idCVar g_flagAttachAngleZ;
+
+extern idCVar g_CTFArrows;
+
+#endif
+
+extern idCVar	r_bloom;
+extern idCVar	r_bloom_blur_mult;
+extern idCVar	r_bloom_src_mult;
+extern idCVar   r_bloom_contrast;
+extern idCVar   r_bloom_contrast_mult;				// clone_jc_denton
+extern idCVar   r_bloom_contrast_min;				// clone_jc_denton
+extern idCVar   r_bloom_shiftSensitivity_delay;		// clone_jc_denton
+extern idCVar   r_bloom_blurIterations;				// clone_jc_denton
+extern idCVar   r_bloom_buffer;						// clone_jc_denton
+extern idCVar   r_bloom_lightRayScale;
 
 extern idCVar	net_clientSelfSmoothing;
 extern idCVar	net_clientLagOMeter;

@@ -1094,53 +1094,52 @@ static void InitBindingEntries()
 	bindingEntries.Clear();
 
 	const BindingEntryTemplate betsMoveLookAttack[] = {
-		{ "_forward",       "Forward"    , "#str_02100" },
-		{ "_back",          "Backpedal"  , "#str_02101" },
-		{ "_moveLeft",      "Move Left"  , "#str_02102" },
-		{ "_moveRight",     "Move Right" , "#str_02103" },
-		{ "_moveUp",        "Jump"       , "#str_02104" },
-		{ "_moveDown",      "Crouch"     , "#str_02105" },
-		{ "_left",          "Turn Left"  , "#str_02106" },
-		{ "_right",         "Turn Right" , "#str_02107" },
+		{ "_forward",       "Forward"    , "#str_bind_forward" },
+		{ "_back",          "Backpedal"  , "#str_bind_backpedal" },
+		{ "_moveLeft",      "Move Left"  , "#str_bind_left" },
+		{ "_moveRight",     "Move Right" , "#str_bind_right" },
+		{ "_moveUp",        "Jump"       , "#str_bind_jump" },
+		{ "_moveDown",      "Crouch"     , "#str_bind_crouch" },
+		{ "_left",          "Turn Left"  , "#str_bind_turn_left" },
+		{ "_right",         "Turn Right" , "#str_bind_turn_right" },
 
-		{ "_speed",         "Sprint"     , "#str_02109" },
+		{ "_speed",         "Sprint"     , "#str_bind_sprint" },
 
-		{ "_strafe",        "Strafe"     , "#str_02108" },
+		{ "_strafe",        "Strafe"     , "#str_bind_strafe" },
 
-		{ "_lookUp",        "Look Up"    , "#str_02116" },
-		{ "_lookDown",      "Look Down"  , "#str_02117" },
+		{ "_lookUp",        "Look Up"    , "#str_bind_look_up" },
+		{ "_lookDown",      "Look Down"  , "#str_bind_look_down" },
 
-		{ "_mlook",         "Mouse Look" , "#str_02118", "only really relevant if in_freeLook = 0" },
-		{ "_impulse18",     "Center View", "#str_02119" },
+		{ "_mlook",         "Mouse Look" , "#str_bind_mouse_look", "only really relevant if in_freeLook = 0" },
+		{ "_impulse18",     "Center View", "#str_bind_center_view" },
 
-		{ nullptr,          "Attack"     , "#str_02112" },
+		{ nullptr,          "Attack"     , "#str_bind_attack" },
 
-		{ "_attack",        "Attack"     , "#str_02112" },
-		{ "_impulse13",     "Reload"     , "#str_02115" },
-		{ "_impulse14",     "Prev. Weapon" , "#str_02113" },
-		{ "_impulse15",     "Next Weapon"  , "#str_02114" },
-		{ "_zoom",          "Zoom View"    , "#str_02120" },
+		{ "_attack",        "Attack"     , "#str_bind_attack" },
+		{ "_impulse13",     "Reload"     , "#str_bind_reload" },
+		{ "_impulse14",     "Prev. Weapon" , "#str_bind_prev_weapon" },
+		{ "_impulse15",     "Next Weapon"  , "#str_bind_next_weapon" },
+		{ "_zoom",          "Zoom View"    , "#str_bind_zoom" },
 		{ "clientDropWeapon", "Drop Weapon", "#str_04071" },
 
 		// also the heading for weapons, but the weapons entries are generated below..
-		{ nullptr,          "Weapons"    , "#str_01416" },
+		{ nullptr,          "Weapons"    , "#str_section_weapons" },
 	};
 
 	const BindingEntryTemplate betsOther[] = {
-		{ nullptr,          "Other"          , "#str_04064" }, // TODO: or "#str_02406"	"Misc"
+		{ nullptr,          "Other"          , "#str_section_misc" },
 
-		{ "_impulse19",     "PDA / Score"    , "#str_04066" },
-		{ "dhewm3Settings", "dhewm3 settings menu", nullptr },
-		{ "savegame quick", "Quick Save"     , "#str_04067" },
-		{ "loadgame quick", "Quick Load"     , "#str_04068" },
-		{ "screenshot",     "Screenshot"     , "#str_04069" },
-		{ "clientMessageMode",   "Chat"      , "#str_02068" },
-		{ "clientMessageMode 1", "Team Chat" , "#str_02122" },
-		{ "_impulse20",     "Toggle Team"    , "#str_04070" },
-		{ "_impulse22",     "Spectate"       , "#str_02125" },
-		{ "_impulse17",     "Ready"          , "#str_02126" },
-		{ "_impulse28",     "Vote Yes"       , "#str_02127" },
-		{ "_impulse29",     "Vote No"        , "#str_02128" },
+		{ "_impulse19",     "Scoreboard"    , "#str_bind_scoreboard" },
+		{ "savegame quick", "Quick Save"     , "#str_bind_quick_save" },
+		{ "loadgame quick", "Quick Load"     , "#str_bind_quick_load" },
+		{ "screenshot",     "Screenshot"     , "#str_bind_screenshot" },
+		{ "clientMessageMode",   "Chat"      , "#str_bind_chat" },
+		{ "clientMessageMode 1", "Team Chat" , "#str_bind_team_chat" },
+		{ "_impulse20",     "Toggle Team"    , "#str_bind_toggle_team" },
+		{ "_impulse22",     "Spectate"       , "#str_bind_spectate" },
+		{ "_impulse17",     "Ready"          , "#str_bind_ready" },
+		{ "_impulse28",     "Vote Yes"       , "#str_bind_vote_yes" },
+		{ "_impulse29",     "Vote No"        , "#str_bind_vote_no" },
 		{ "_impulse40",     "Use Vehicle"    , nullptr },
 	};
 
@@ -1151,9 +1150,9 @@ static void InitBindingEntries()
 		bindingEntries.Resize( numReserve );
 	}
 
-	idStr moveLookHeading = GetLocalizedString( "#str_02404", "Move" );
+	idStr moveLookHeading = GetLocalizedString( "#str_section_move", "Move" );
 	moveLookHeading += " / ";
-	moveLookHeading += GetLocalizedString( "#str_02403", "Look" );
+	moveLookHeading += GetLocalizedString( "#str_section_look", "Look" );
 
 	bindingEntries.Append( BindingEntry( moveLookHeading ) );
 
@@ -1169,8 +1168,8 @@ static void InitBindingEntries()
 
 	// hardcorps uses: idCVar pm_character("pm_character", "0", CVAR_GAME | CVAR_BOOL, "Change Player character. 1 = Scarlet. 0 = Doom Marine");
 	// but I guess (hope) they use the same weapons..
-	const idDict* playerDict = GetEntityDefDict( "player_doommarine" );
-	const idDict* playerDictMP = GetEntityDefDict( "player_doommarine_mp" );
+	const idDict* playerDict = GetEntityDefDict( "player_sp" );
+	const idDict* playerDictMP = GetEntityDefDict( "player_mp" );
 	bool impulse27used = false;
 	for ( int i = 0; i <= 13; ++i ) {
 		int weapNum = i;

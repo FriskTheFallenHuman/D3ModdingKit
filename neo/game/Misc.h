@@ -161,6 +161,11 @@ public:
 	void				Spawn( void );
 	void				Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 
+#ifdef _D3XP
+	virtual void		Hide( void );
+	virtual void		Show( void );
+#endif
+
 private:
 	int					count;
 	int					nextTriggerTime;
@@ -194,11 +199,6 @@ private:
 ===============================================================================
 
   idSpring
-
-  Enhancements (like Save/Restore functions) taken from FraggingFree by IvanTheB
-
-  https://github.com/IvanTheB/fraggingfree-dhewm3-sdk
-  https://www.moddb.com/mods/fragging-free
 
 ===============================================================================
 */
@@ -301,6 +301,10 @@ private:
 	void					Event_Footstep( void );
 	void					Event_LaunchMissiles( const char *projectilename, const char *sound, const char *launchjoint, const char *targetjoint, int numshots, int framedelay );
 	void					Event_LaunchMissilesUpdate( int launchjoint, int targetjoint, int numshots, int framedelay );
+#ifdef _D3XP
+	void					Event_SetAnimation( const char *animName );
+	void					Event_GetAnimationLength();
+#endif
 };
 
 
@@ -721,69 +725,127 @@ private:
 	void				Event_Activate( idEntity *activator );
 };
 
-
+#ifdef _D3XP
 /*
 ===============================================================================
 
-idFuncRadioChatter
+idShockwave
 
 ===============================================================================
 */
-
-class idFuncRadioChatter : public idEntity {
+class idShockwave : public idEntity {
 public:
-	CLASS_PROTOTYPE( idFuncRadioChatter );
+	CLASS_PROTOTYPE( idShockwave );
 
-						idFuncRadioChatter();
+	idShockwave();
+	~idShockwave();
 
 	void				Spawn( void );
+	void				Think( void );
 
 	void				Save( idSaveGame *savefile ) const;
 	void				Restore( idRestoreGame *savefile );
 
 private:
-	float				time;
 	void				Event_Activate( idEntity *activator );
-	void				Event_ResetRadioHud( idEntity *activator );
-};
 
+	bool				isActive;
+	int					startTime;
+	int					duration;
+
+	float				startSize;
+	float				endSize;
+	float				currentSize;
+
+	float				magnitude;
+
+	float				height;
+	bool				playerDamaged;
+	float				playerDamageSize;
+
+};
 
 /*
 ===============================================================================
 
-  idPhantomObjects
+idFuncMountedObject
 
 ===============================================================================
 */
-
-class idPhantomObjects : public idEntity {
+class idFuncMountedObject : public idEntity {
 public:
-	CLASS_PROTOTYPE( idPhantomObjects );
+	CLASS_PROTOTYPE( idFuncMountedObject );
 
-						idPhantomObjects();
+	idFuncMountedObject();
+	~idFuncMountedObject();
 
 	void				Spawn( void );
+	void				Think( void );
 
-	void				Save( idSaveGame *savefile ) const;
-	void				Restore( idRestoreGame *savefile );
-
-	virtual void		Think( void );
+	void				GetAngleRestrictions( int &yaw_min, int &yaw_max, int &pitch );
 
 private:
-	void				Event_Activate( idEntity *activator );
-	void				Event_Throw( void );
-	void				Event_ShakeObject( idEntity *object, int starttime );
+	int					harc;
+	int					varc;
 
-	int					end_time;
-	float				throw_time;
-	float				shake_time;
-	idVec3				shake_ang;
-	float				speed;
-	int					min_wait;
-	int					max_wait;
-	idEntityPtr<idActor>target;
-	idList<int>			targetTime;
-	idList<idVec3>		lastTargetPos;
+	void				Event_Touch( idEntity *other, trace_t *trace );
+	void				Event_Activate( idEntity *activator );
+
+public:
+	bool				isMounted;
+	function_t	*		scriptFunction;
+	idPlayer *			mountedPlayer;
 };
+
+
+class idFuncMountedWeapon : public idFuncMountedObject {
+public:
+	CLASS_PROTOTYPE( idFuncMountedWeapon );
+
+	idFuncMountedWeapon();
+	~idFuncMountedWeapon();
+
+	void				Spawn( void );
+	void				Think( void );
+
+private:
+
+	// The actual turret that moves with the player's view
+	idEntity	*		turret;
+
+	// the muzzle bone's position, used for launching projectiles and trailing smoke
+	idVec3				muzzleOrigin;
+	idMat3				muzzleAxis;
+
+	float				weaponLastFireTime;
+	float				weaponFireDelay;
+
+	const idDict *		projectile;
+
+	const idSoundShader	*soundFireWeapon;
+
+	void				Event_PostSpawn( void );
+};
+
+/*
+===============================================================================
+
+idPortalSky
+
+===============================================================================
+*/
+class idPortalSky : public idEntity {
+public:
+	CLASS_PROTOTYPE( idPortalSky );
+
+	idPortalSky();
+	~idPortalSky();
+
+	void				Spawn( void );
+	void				Event_PostSpawn();
+	void				Event_Activate( idEntity *activator );
+};
+
+#endif /* _D3XP */
 
 #endif /* !__GAME_MISC_H__ */

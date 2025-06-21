@@ -580,7 +580,7 @@ void idPhysics_Player::WaterMove( void ) {
 
 	idPhysics_Player::Accelerate( wishdir, wishspeed, PM_WATERACCELERATE );
 
-	// make sure we can go up slopes easily under water
+	// make sure we can go up slopes easily under water	
 	if ( groundPlane && ( command.forwardmove != 0 ) && ( current.velocity * groundTrace.c.normal ) < 0.0f ) {	// fix - do this only if we are actually trying to walk
 		vel = current.velocity.Length();
 		// slide along the ground plane

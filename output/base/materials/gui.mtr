@@ -1,0 +1,32 @@
+textures/bigchars
+{
+	{	
+		blend blend
+		maskDepth
+		colored
+		nopicmip
+		linear
+		map textures/bigchars.tga
+	}
+}
+
+console
+ {
+	{
+		map	_default
+	}
+}
+
+splashscreen
+{
+	{
+		map	_default
+	}
+}
+
+gui/loading/launch
+{
+	{
+		map	_default
+	}
+}

@@ -97,6 +97,15 @@ const idEventDef EV_StartFx( "startFx", "s" );
 const idEventDef EV_HasFunction( "hasFunction", "s", 'd' );
 const idEventDef EV_CallFunction( "callFunction", "s" );
 const idEventDef EV_SetNeverDormant( "setNeverDormant", "d" );
+#ifdef _D3XP
+const idEventDef EV_SetGui ( "setGui", "ds" );
+const idEventDef EV_PrecacheGui ( "precacheGui", "s" );
+const idEventDef EV_GetGuiParm ( "getGuiParm", "ds", 's' );
+const idEventDef EV_GetGuiParmFloat ( "getGuiParmFloat", "ds", 'f' );
+const idEventDef EV_MotionBlurOn( "motionBlurOn" );
+const idEventDef EV_MotionBlurOff( "motionBlurOff" );
+const idEventDef EV_GuiNamedEvent ( "guiNamedEvent", "ds" );
+#endif
 const idEventDef EV_GetMass( "getMass", "d" , 'f' );
 const idEventDef EV_IsInLiquid( "isInLiquid", NULL, 'd' );
 
@@ -164,6 +173,13 @@ ABSTRACT_DECLARATION( idClass, idEntity )
 	EVENT( EV_HasFunction,			idEntity::Script_HasFunction )
 	EVENT( EV_CallFunction,			idEntity::Script_CallFunction )
 	EVENT( EV_SetNeverDormant,		idEntity::Script_SetNeverDormant )
+#ifdef _D3XP
+	EVENT( EV_SetGui,				idEntity::Script_SetGui )
+	EVENT( EV_PrecacheGui,			idEntity::Script_PrecacheGui )
+	EVENT( EV_GetGuiParm,			idEntity::Script_GetGuiParm )
+	EVENT( EV_GetGuiParmFloat,		idEntity::Script_GetGuiParmFloat )
+	EVENT( EV_GuiNamedEvent,		idEntity::Script_GuiNamedEvent )
+#endif
 	EVENT( EV_GetMass,              idEntity::Script_GetMass )
 	EVENT( EV_IsInLiquid,           idEntity::Script_IsInLiquid )
 END_CLASS
@@ -745,6 +761,53 @@ idEntity::Script_IsInLiquid
 void idEntity::Script_SetNeverDormant( int enable ) {
 	SetNeverDormant( enable );
 }
+
+#ifdef _D3XP
+/*
+================
+idEntity::Script_SetGui
+================
+*/
+void idEntity::Script_SetGui( int guiNum, const char *guiName ) {
+	SetGui( guiNum, guiName );
+}
+
+/*
+================
+idEntity::Script_PrecacheGui
+================
+*/
+void idEntity::Script_PrecacheGui( const char *guiName ) {
+	PrecacheGui( guiName );
+}
+
+/*
+================
+idEntity::Script_GetGuiParm
+================
+*/
+void idEntity::Script_GetGuiParm( int guiNum, const char *key ) {
+	idThread::ReturnString( GetGuiParm( guiNum, key ) );
+}
+
+/*
+================
+idEntity::Script_GetGuiParmFloat
+================
+*/
+void idEntity::Script_GetGuiParmFloat( int guiNum, const char *key ) {
+	idThread::ReturnFloat( GetGuiParmFloat( guiNum, key ) );
+}
+
+/*
+================
+idEntity::Script_GuiNamedEvent
+================
+*/
+void idEntity::Script_GuiNamedEvent( int guiNum, const char *event ) {
+	GuiNamedEvent( guiNum, event );
+}
+#endif
 
 /*
 ================

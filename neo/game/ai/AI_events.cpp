@@ -361,6 +361,63 @@ idEntity *idAI::LaunchMissile( const idVec3 &org, const idAngles &ang ) {
 	return projectile.GetEntity();
 }
 
+
+#ifdef _D3XP
+/*
+=====================
+idAI::LaunchProjectile
+=====================
+*/
+void idAI::LaunchProjectile( const char *entityDefName ) {
+	idVec3				muzzle, start, dir;
+	const idDict		*projDef;
+	idMat3				axis;
+	const idClipModel	*projClip;
+	idBounds			projBounds;
+	trace_t				tr;
+	idEntity			*ent;
+	const char			*clsname;
+	float				distance;
+	idProjectile		*proj = NULL;
+
+	projDef = gameLocal.FindEntityDefDict( entityDefName );
+
+	gameLocal.SpawnEntityDef( *projDef, &ent, false );
+	if ( !ent ) {
+		clsname = projectileDef->GetString( "classname" );
+		gameLocal.Error( "Could not spawn entityDef '%s'", clsname );
+	}
+
+	if ( !ent->IsType( idProjectile::GetClassType() ) ) {
+		clsname = ent->GetClassname();
+		gameLocal.Error( "'%s' is not an idProjectile", clsname );
+	}
+	proj = ( idProjectile * )ent;
+
+	GetMuzzle( "pistol", muzzle, axis );
+	proj->Create( this, muzzle, axis[0] );
+
+	// make sure the projectile starts inside the monster bounding box
+	const idBounds &ownerBounds = physicsObj.GetAbsBounds();
+	projClip = proj->GetPhysics()->GetClipModel();
+	projBounds = projClip->GetBounds().Rotate( projClip->GetAxis() );
+	if ( (ownerBounds - projBounds).RayIntersection( muzzle, viewAxis[ 0 ], distance ) ) {
+		start = muzzle + distance * viewAxis[ 0 ];
+	} else {
+		start = ownerBounds.GetCenter();
+	}
+	gameLocal.clip.Translation( tr, start, muzzle, projClip, projClip->GetAxis(), MASK_SHOT_RENDERMODEL, this );
+	muzzle = tr.endpos;
+
+	GetAimDir( muzzle, enemy.GetEntity(), this, dir );
+
+	proj->Launch( muzzle, dir, vec3_origin );
+
+	TriggerWeaponEffects( muzzle );
+}
+#endif
+
+
 /*
 =====================
 idAI::DirectDamage
@@ -385,7 +442,7 @@ void idAI::RadiusDamageFromJoint( const char *jointname, const char *damageDefNa
 	} else {
 		joint = animator.GetJointHandle( jointname );
 		if ( joint == INVALID_JOINT ) {
-			gameLocal.Error( "Unknown joint '%s' on %s", jointname, GetEntityDefName() );
+			gameLocal.Warning( "Unknown joint '%s' on %s", jointname, GetEntityDefName() );
 		}
 		GetJointWorldTransform( joint, gameLocal.time, org, axis );
 	}
@@ -417,7 +474,7 @@ bool idAI::MeleeAttackToJoint( const char *jointname, const char* meleeDefName )
 
 	joint = animator.GetJointHandle( jointname );
 	if ( joint == INVALID_JOINT ) {
-		gameLocal.Error( "Unknown joint '%s' on %s", jointname, GetEntityDefName() );
+		gameLocal.Warning( "Unknown joint '%s' on %s", jointname, GetEntityDefName() );
 	}
 	animator.GetJointTransform( joint, gameLocal.time, end, axis );
 	end = physicsObj.GetOrigin() + ( end + modelOffset ) * viewAxis * physicsObj.GetGravityAxis();
@@ -448,6 +505,9 @@ idAI::CanBecomeSolid
 bool idAI::CanBecomeSolid( void ) {
 	int			i;
 	int			num;
+#ifdef _D3XP
+	bool		returnValue = true;
+#endif
 	idEntity *	hit;
 	idClipModel *cm;
 	idClipModel *clipModels[ MAX_GENTITIES ];
@@ -466,12 +526,35 @@ bool idAI::CanBecomeSolid( void ) {
 			continue;
 		}
 
+#ifdef _D3XP
+		if ( ( spawnClearMoveables && hit->IsType( idMoveable::GetClassType() ) ) || ( hit->IsType( idBarrel::GetClassType() ) || hit->IsType( idExplodingBarrel::GetClassType() ) ) ) {
+			idVec3 push;
+			push = hit->GetPhysics()->GetOrigin() - GetPhysics()->GetOrigin();
+			push.z = 30.f;
+			push.NormalizeFast();
+			if ( (idMath::Fabs(push.x) < 0.15f) && (idMath::Fabs(push.y) < 0.15f) ) {
+				push.x = 10.f; push.y = 10.f; push.z = 15.f;
+				push.NormalizeFast();
+			}
+			push *= 300.f;
+			hit->GetPhysics()->SetLinearVelocity( push );
+		}
+#endif
+
 		if ( physicsObj.ClipContents( cm ) ) {
+#ifdef _D3XP
+			returnValue = false;
+#else
 			return false;
+#endif
 		}
 	}
 
+#ifdef _D3XP
+	return returnValue;
+#else
 	return true;
+#endif
 }
 
 /*
@@ -690,6 +773,37 @@ idCombatNode *idAI::GetCombatNode( void ) {
 	if ( !enemyEnt || !EnemyPositionValid() ) {
 		// don't return a combat node if we don't have an enemy or
 		// if we can see he's not in the last place we saw him
+
+#ifdef _D3XP
+		if ( team == 0 ) {
+			// find the closest attack node to the player
+			bestNode = NULL;
+			const idVec3 &myPos = physicsObj.GetOrigin();
+			const idVec3 &playerPos = gameLocal.GetLocalPlayer()->GetPhysics()->GetOrigin();
+
+			bestDist = ( myPos - playerPos ).LengthSqr();
+
+			for( i = 0; i < targets.Num(); i++ ) {
+				targetEnt = targets[ i ].GetEntity();
+				if ( !targetEnt || !targetEnt->IsType( idCombatNode::GetClassType() ) ) {
+					continue;
+				}
+
+				node = static_cast<idCombatNode *>( targetEnt );
+				if ( !node->IsDisabled() ) {
+					idVec3 org = node->GetPhysics()->GetOrigin();
+					dist = ( playerPos - org ).LengthSqr();
+					if ( dist < bestDist ) {
+						bestNode = node;
+						bestDist = dist;
+					}
+				}
+			}
+
+			return bestNode;
+		}
+#endif
+
 		return NULL;
 	}
 
@@ -741,6 +855,14 @@ bool idAI::EnemyInCombatCone( idEntity *ent, int use_current_enemy_location ) {
 		// not a combat node
 		return false;
 	}
+
+#ifdef _D3XP
+	// Allow the level designers define attack nodes that the enemy should never leave.
+	// This is different that the turrent type combat nodes because they can play an animation
+	if( ent->spawnArgs.GetBool( "neverLeave", "0" ) ) {
+		return true;
+	}
+#endif
 
 	node = static_cast<idCombatNode *>( ent );
 	if ( use_current_enemy_location ) {
@@ -1294,38 +1416,6 @@ bool idAI::TestAnimAttack( const char *animname ) {
 	idAI::PredictPath( this, aas, physicsObj.GetOrigin(), animator.TotalMovementDelta( anim ), 1000, 1000, ( move.moveType == MOVETYPE_FLY ) ? SE_BLOCKED : ( SE_ENTER_OBSTACLE | SE_BLOCKED | SE_ENTER_LEDGE_AREA ), path );
 
 	return ( path.blockingEntity && ( path.blockingEntity == enemy.GetEntity() ) );
-}
-
-/*
-=====================
-idAI::PreBurn
-=====================
-*/
-void idAI::PreBurn( void ) {
-	// for now this just turns shadows off
-	renderEntity.noShadow = true;
-}
-
-/*
-=====================
-idAI::Burn
-=====================
-*/
-void idAI::Burn( void ) {
-	renderEntity.shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
-	SpawnParticles( "smoke_burnParticleSystem" );
-	UpdateVisuals();
-}
-
-/*
-=====================
-idAI::Burn
-=====================
-*/
-void idAI::ClearBurn( void ) {
-	renderEntity.noShadow = spawnArgs.GetBool( "noshadows" );
-	renderEntity.shaderParms[ SHADERPARM_TIME_OF_DEATH ] = 0.0f;
-	UpdateVisuals();
 }
 
 /*
@@ -2126,3 +2216,24 @@ idVec3 idAI::GetReachableEntityPosition( idEntity *ent ) {
 
 	return pos;
 }
+
+#ifdef _D3XP
+/*
+================
+idAI::MoveToPositionDirect
+================
+*/
+void idAI::MoveToPositionDirect( const idVec3 &pos ) {
+	StopMove( MOVE_STATUS_DONE );
+	DirectMoveToPosition( pos );
+}
+
+/*
+================
+idAI::AvoidObstacles
+================
+*/
+void idAI::AvoidObstacles( int ignore) {
+	ignore_obstacles = ( ignore == 1 ) ? false : true;
+}
+#endif

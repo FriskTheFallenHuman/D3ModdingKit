@@ -1,0 +1,65 @@
+// NOTE:  THIS FILE IS WAS GENERATE BY THE ENGINE
+// MANUAL EDITING MAY BE REQUIERED
+
+textures/brick/brick01
+{
+	diffusemap textures/brick/brick01_d
+	bumpmap addnormals ( textures/brick/brick01_local, heightmap ( textures/brick/brick01_h, 4 ) )
+	specularmap textures/brick/brick01_spec
+}
+
+textures/brick/brick02
+{
+	diffusemap textures/brick/brick02_d
+	bumpmap addnormals ( textures/brick/brick02_local, heightmap ( textures/brick/brick02_h, 4 ) )
+	specularmap textures/brick/brick02_spec
+}
+
+textures/brick/brick03
+{
+	diffusemap textures/brick/brick03_d
+	bumpmap addnormals ( textures/brick/brick03_local, heightmap ( textures/brick/brick03_h, 4 ) )
+	specularmap textures/brick/brick03_spec
+}
+
+textures/brick/brick04
+{
+	diffusemap textures/brick/brick04_d
+	bumpmap addnormals ( textures/brick/brick04_local, heightmap ( textures/brick/brick04_h, 4 ) )
+	specularmap textures/brick/brick04_spec
+}
+
+textures/brick/brick05
+{
+	diffusemap textures/brick/brick05_d
+	bumpmap addnormals ( textures/brick/brick05_local, heightmap ( textures/brick/brick05_h, 4 ) )
+	specularmap textures/brick/brick05_spec
+}
+
+textures/brick/brick06
+{
+	diffusemap textures/brick/brick06_d
+	bumpmap addnormals ( textures/brick/brick06_local, heightmap ( textures/brick/brick06_h, 4 ) )
+	specularmap textures/brick/brick06_spec
+}
+
+textures/brick/brick07
+{
+	diffusemap textures/brick/brick07_d
+	bumpmap addnormals ( textures/brick/brick07_local, heightmap ( textures/brick/brick07_h, 4 ) )
+	specularmap textures/brick/brick07_spec
+}
+
+textures/brick/stonepaviment01
+{
+	diffusemap textures/brick/stonepaviment01_d
+	bumpmap addnormals ( textures/brick/stonepaviment01_local, heightmap ( textures/brick/stonepaviment01_h, 4 ) )
+	specularmap textures/brick/stonepaviment01_spec
+}
+
+textures/brick/stonepaviment02
+{
+	diffusemap textures/brick/stonepaviment02_d
+	bumpmap addnormals ( textures/brick/stonepaviment02_local, heightmap ( textures/brick/stonepaviment02_h, 4 ) )
+	specularmap textures/brick/stonepaviment02_spec
+}

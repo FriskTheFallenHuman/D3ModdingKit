@@ -1,0 +1,114 @@
+// NOTE:  THIS FILE IS WAS GENERATE BY THE ENGINE
+// MANUAL EDITING MAY BE REQUIERED
+
+textures/nature/dirt01
+{
+	diffusemap textures/nature/dirt01_d
+	bumpmap addnormals ( textures/nature/dirt01_local, heightmap ( textures/nature/dirt01_h, 4 ) )
+	specularmap textures/nature/dirt01_spec
+}
+
+textures/nature/dirt02
+{
+	diffusemap textures/nature/dirt02_d
+	bumpmap addnormals ( textures/nature/dirt02_local, heightmap ( textures/nature/dirt02_h, 4 ) )
+	specularmap textures/nature/dirt02_spec
+}
+
+textures/nature/dirt03
+{
+	diffusemap textures/nature/dirt03_d
+	bumpmap addnormals ( textures/nature/dirt03_local, heightmap ( textures/nature/dirt03_h, 4 ) )
+	specularmap textures/nature/dirt03_spec
+}
+
+textures/nature/dirt04
+{
+	diffusemap textures/nature/dirt04_d
+	bumpmap addnormals ( textures/nature/dirt04_local, heightmap ( textures/nature/dirt04_h, 4 ) )
+	specularmap textures/nature/dirt04_spec
+}
+
+textures/nature/grass01
+{
+	diffusemap textures/nature/grass01_d
+	bumpmap addnormals ( textures/nature/grass01_local, heightmap ( textures/nature/grass01_h, 4 ) )
+	specularmap textures/nature/grass01_spec
+}
+
+textures/nature/grass02_D
+{
+	diffusemap textures/nature/grass02_D_d
+	bumpmap addnormals ( textures/nature/grass02_D_local, heightmap ( textures/nature/grass02_D_h, 4 ) )
+	specularmap textures/nature/grass02_D_spec
+}
+
+textures/nature/grass03
+{
+	diffusemap textures/nature/grass03_d
+	bumpmap addnormals ( textures/nature/grass03_local, heightmap ( textures/nature/grass03_h, 4 ) )
+	specularmap textures/nature/grass03_spec
+}
+
+textures/nature/grass04
+{
+	diffusemap textures/nature/grass04_d
+	bumpmap addnormals ( textures/nature/grass04_local, heightmap ( textures/nature/grass04_h, 4 ) )
+	specularmap textures/nature/grass04_spec
+}
+
+textures/nature/gravel01
+{
+	diffusemap textures/nature/gravel01_d
+	bumpmap addnormals ( textures/nature/gravel01_local, heightmap ( textures/nature/gravel01_h, 4 ) )
+	specularmap textures/nature/gravel01_spec
+}
+
+textures/nature/gravel02
+{
+	diffusemap textures/nature/gravel02_d
+	bumpmap addnormals ( textures/nature/gravel02_local, heightmap ( textures/nature/gravel02_h, 4 ) )
+	specularmap textures/nature/gravel02_spec
+}
+
+textures/nature/gravel03
+{
+	diffusemap textures/nature/gravel03_d
+	bumpmap addnormals ( textures/nature/gravel03_local, heightmap ( textures/nature/gravel03_h, 4 ) )
+	specularmap textures/nature/gravel03_spec
+}
+
+textures/nature/gravel04
+{
+	diffusemap textures/nature/gravel04_d
+	bumpmap addnormals ( textures/nature/gravel04_local, heightmap ( textures/nature/gravel04_h, 4 ) )
+	specularmap textures/nature/gravel04_spec
+}
+
+textures/nature/sand01
+{
+	diffusemap textures/nature/sand01_d
+	bumpmap addnormals ( textures/nature/sand01_local, heightmap ( textures/nature/sand01_h, 4 ) )
+	specularmap textures/nature/sand01_spec
+}
+
+textures/nature/sand02
+{
+	diffusemap textures/nature/sand02_d
+	bumpmap addnormals ( textures/nature/sand02_local, heightmap ( textures/nature/sand02_h, 4 ) )
+	specularmap textures/nature/sand02_spec
+}
+
+textures/nature/sand03
+{
+	diffusemap textures/nature/sand03_d
+	bumpmap addnormals ( textures/nature/sand03_local, heightmap ( textures/nature/sand03_h, 4 ) )
+	specularmap textures/nature/sand03_spec
+}
+
+textures/nature/sand04
+{
+	diffusemap textures/nature/sand04_d
+	bumpmap addnormals ( textures/nature/sand04_local, heightmap ( textures/nature/sand04_h, 4 ) )
+	specularmap textures/nature/sand04_spec
+}

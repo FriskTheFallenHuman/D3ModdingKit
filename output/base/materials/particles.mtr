@@ -1,0 +1,57 @@
+textures/particles/smokepuff
+{
+	translucent
+	noShadows
+	sort		10		// sort very late, so no translucent objects in the world draws over it
+	{
+		blend add
+		map textures/particles/smokepuff.tga
+		vertexColor
+		//colored
+	}
+}
+
+textures/particles/smokepuffalpha
+{
+	translucent
+	noShadows
+	{
+		blend gl_one,gl_one
+//		blend add
+		map textures/particles/smokepuffalpha.tga
+		vertexColor
+	}
+}
+
+textures/particles/droppuddle
+{
+	noSelfShadow
+	noshadows
+	twosided
+	translucent
+	nonsolid
+	noimpact
+	{
+		blend		add
+		map		textures/particles/droppuddle.tga
+		vertexcolor
+	}
+}
+
+textures/particles/dim_disk
+{
+	noSelfShadow
+	noshadows
+	translucent
+	discrete
+	twosided
+	nonsolid
+	noimpact
+	{
+		blend  add
+		map    lights/spot01.tga
+		red		Parm0
+		green		Parm1
+		blue		Parm2
+	}
+}

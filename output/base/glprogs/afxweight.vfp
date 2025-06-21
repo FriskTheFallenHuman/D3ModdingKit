@@ -1,0 +1,97 @@
+######################################################
+######################################################
+
+!!ARBvp1.0 OPTION ARB_position_invariant;
+
+# basic texcoord
+MOV 	result.texcoord[0], vertex.texcoord[0];
+
+END;
+
+######################################################
+######################################################
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+###
+
+PARAM	xero = { 0.0, 0.0, 0.0 };
+
+# measure points
+PARAM	w1 = { 0.3, 0.5 };
+PARAM	w2 = { 0.7, 0.5 };
+PARAM	w3 = { 0.5, 0.55 };
+PARAM	w4 = { 0.5, 0.45 };
+PARAM	w5 = { 0.5, 0.5 };
+
+PARAM	w6 = { 0.4, 0.55 };
+PARAM	w7 = { 0.6, 0.55 };
+PARAM	w8 = { 0.6, 0.45 };
+PARAM	w9 = { 0.4, 0.45 };
+
+#PARAM	wS = { 0.8, 0.15 };    # shotgun sample
+
+###
+
+TEMP R1, R2, W;
+
+TEX	W, w1, texture[0], 2D;
+
+TEX	R1, w2, texture[0], 2D;
+ADD	W, W, R1;
+
+TEX	R1, w3, texture[0], 2D;
+ADD	W, W, R1;
+
+TEX	R1, w4, texture[0], 2D;
+ADD	W, W, R1;
+
+TEX	R1, w6, texture[0], 2D;
+ADD	W, W, R1;
+
+TEX	R1, w7, texture[0], 2D;
+ADD	W, W, R1;
+
+TEX	R1, w8, texture[0], 2D;
+ADD	W, W, R1;
+
+TEX	R1, w9, texture[0], 2D;
+ADD	W, W, R1;
+
+###
+
+#MUL	W, W, 0.05555;
+
+TEX	R1, w5, texture[0], 2D;
+ADD	W, W, R1;
+
+MUL	W, W, 0.1111111;
+
+#TEX	R1, wS, texture[0], 2D;
+#MAX	W, R1, W;
+
+# make monochromatic
+
+MAX	W.a, W.r, W.g;
+MAX	W.a, W.a, W.b;
+
+MUL	W.a, W.a, W.a;
+
+### fetch last weight
+
+TEX	R2, xero, texture[1], 2D;
+
+### 
+
+SUB	R1, 1.0, W.aaaa;
+#mov	R1, W.aaaa;
+
+SUB	R1, R1, R2;
+MUL	R1, R1, 0.1;
+
+ADD	result.color, R1, R2;
+
+###
+
+END;

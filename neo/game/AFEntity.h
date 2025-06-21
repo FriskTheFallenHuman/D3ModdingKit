@@ -224,6 +224,10 @@ public:
 	virtual	void			Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, const char *damageDefName, const float damageScale, const int location );
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
+#ifdef _D3XP
+	bool					IsGibbed() { return gibbed; };
+#endif
+
 protected:
 	idRenderModel *			skeletonModel;
 	int						skeletonModelDefHandle;
@@ -299,7 +303,11 @@ public:
 protected:
 	virtual void			Gib( const idVec3 &dir, const char *damageDefName );
 
+#ifndef _D3XP
 private:
+#else
+public:
+#endif
 	idEntityPtr<idAFAttachment>	head;
 
 	void					Event_Gib( const char *damageDefName );
@@ -405,13 +413,18 @@ public:
 	void					Spawn( void );
 	virtual void			Think( void );
 
+#ifdef _D3XP
+	float					force;
+	float					velocity;
+	float					steerAngle;
+#endif
+
 private:
 	idAFBody *				wheels[6];
 	idAFConstraint_Hinge *	steering[4];
 	jointHandle_t			wheelJoints[6];
 	float					wheelAngles[6];
 };
-
 
 /*
 ===============================================================================

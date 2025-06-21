@@ -61,6 +61,14 @@ const idEventDef EV_Weapon_AutoReload( "autoReload", NULL, 'f' );
 const idEventDef EV_Weapon_NetReload( "netReload" );
 const idEventDef EV_Weapon_IsInvisible( "isInvisible", NULL, 'f' );
 const idEventDef EV_Weapon_NetEndReload( "netEndReload" );
+#ifdef _D3XP
+const idEventDef EV_Weapon_StartWeaponSmoke( "startWeaponSmoke" );
+const idEventDef EV_Weapon_StopWeaponSmoke( "stopWeaponSmoke" );
+const idEventDef EV_Weapon_StartWeaponParticle( "startWeaponParticle", "s" );
+const idEventDef EV_Weapon_StopWeaponParticle( "stopWeaponParticle", "s" );
+const idEventDef EV_Weapon_StartWeaponLight( "startWeaponLight", "s" );
+const idEventDef EV_Weapon_StopWeaponLight( "stopWeaponLight", "s" );
+#endif
 
 //
 // class def
@@ -102,6 +110,14 @@ CLASS_DECLARATION( idAnimatedEntity, idWeapon )
 	EVENT( EV_Weapon_NetReload,					idWeapon::Script_NetReload )
 	EVENT( EV_Weapon_IsInvisible,				idWeapon::Script_IsInvisible )
 	EVENT( EV_Weapon_NetEndReload,				idWeapon::Script_NetEndReload )
+#ifdef _D3XP
+	EVENT( EV_Weapon_StartWeaponSmoke,			idWeapon::Script_StartWeaponSmoke )
+	EVENT( EV_Weapon_StopWeaponSmoke,			idWeapon::Script_StopWeaponSmoke )
+	EVENT( EV_Weapon_StartWeaponParticle,		idWeapon::Script_StartWeaponParticle )
+	EVENT( EV_Weapon_StopWeaponParticle,		idWeapon::Script_StopWeaponParticle )
+	EVENT( EV_Weapon_StartWeaponLight,			idWeapon::Script_StartWeaponLight )
+	EVENT( EV_Weapon_StopWeaponLight,			idWeapon::Script_StopWeaponLight )
+#endif
 END_CLASS
 
 /*
@@ -328,6 +344,62 @@ idWeapon::Script_LaunchProjectiles
 void idWeapon::Script_LaunchProjectiles( int num_projectiles, float spread, float fuseOffset, float launchPower, float dmgPower ) {
 	LaunchProjectiles( num_projectiles, spread, fuseOffset, launchPower, dmgPower );
 }
+
+#ifdef _D3XP
+/*
+================
+idWeapon::Script_StartWeaponSmoke
+================
+*/
+void idWeapon::Script_StartWeaponSmoke( void ) {
+	StartWeaponSmoke();
+}
+
+/*
+================
+idWeapon::Script_StopWeaponSmoke
+================
+*/
+void idWeapon::Script_StopWeaponSmoke( void ) {
+	StopWeaponSmoke();
+}
+
+/*
+================
+idWeapon::Script_StartWeaponParticle
+================
+*/
+void idWeapon::Script_StartWeaponParticle( const char *name ) {
+	StartWeaponParticle( name );
+}
+
+/*
+================
+idWeapon::Script_StopWeaponParticle
+================
+*/
+void idWeapon::Script_StopWeaponParticle( const char *name ) {
+	StopWeaponParticle( name );
+}
+
+/*
+================
+idWeapon::Script_StartWeaponLight
+================
+*/
+void idWeapon::Script_StartWeaponLight( const char *name ) {
+	StartWeaponLight( name );
+}
+
+/*
+================
+idWeapon::Script_StopWeaponLight
+================
+*/
+void idWeapon::Script_StopWeaponLight( const char *name ) {
+	StopWeaponLight( name );
+}
+#endif
 
 /*
 ================

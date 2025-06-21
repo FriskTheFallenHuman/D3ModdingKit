@@ -39,7 +39,6 @@ TEMP	R0, R1, R2;
 
 PARAM	defaultTexCoord = { 0, 0.5, 0, 1 };
 
-
 # calculate vector to light in R0
 SUB		R0, program.env[4], vertex.position;
 
@@ -87,11 +86,10 @@ MAD		result.color, vertex.color, program.env[16], program.env[17];
 
 END
 
-
 #======================================================================
 
-!!ARBfp1.0 
-OPTION ARB_precision_hint_fastest;
+!!ARBfp1.0
+OPTION ARB_precision_hint_nicest;
 
 # texture 0 is the cube map
 # texture 1 is the per-surface bump map
@@ -104,11 +102,12 @@ OPTION ARB_precision_hint_fastest;
 # env[0] is the diffuse modifier
 # env[1] is the specular modifier
 
-TEMP	light, color, R1, R2, localNormal, specular, lightDir, viewDir, lightDirRefl;
+TEMP	light, color, R1, R2, localNormal, specular, lightDir, viewDir, lightDirRefl, amb, ambR1, ambR2;
 
 PARAM	subOne = { -1.0, -1.0, -1.0, -1.0 };
 PARAM	scaleTwo = { 2.0, 2.0, 2.0, 2.0 };
 PARAM	consts = { 6.0, 12.0, 0.1, 0.0 };
+PARAM	cubeLookup = { 1.0, 1.0, 1.0 };
 
 # view dir normalized
 DP3		viewDir, fragment.texcoord[6], fragment.texcoord[6];
@@ -120,17 +119,8 @@ DP3		lightDir, fragment.texcoord[0], fragment.texcoord[0];
 RSQ		lightDir, lightDir.x;
 MUL		lightDir, lightDir.x, fragment.texcoord[0];
 
-####
-RCP		R1, viewDir.z;
-MUL		R1, R1, viewDir;
-TEX		R2, fragment.texcoord[5], texture[5], 2D;
-SUB		R2, 1.0, R2.w;
-MUL		R2, R2, R1;
-MUL		R2, R2, 0.0125;
-
 # normal
-SUB		R1, fragment.texcoord[1], R2; ####
-TEX		localNormal, R1, texture[1], 2D; #### localNormal, fragment.texcoord[1], texture[1], 2D;
+TEX		localNormal, fragment.texcoord[1], texture[1], 2D;
 MOV		localNormal.x, localNormal.a;
 MAD		localNormal, localNormal, scaleTwo, subOne;
 
@@ -151,12 +141,18 @@ POW		specular, specular.x, consts.x;
 MAX		specular, consts.z, specular;
 
 # half-lambert
-MAD color, light, 0.5, 0.5;
-MUL color, color, color;
-LRP light, 0.35, light, color;
+MAD		color, light, 0.5, 0.5;
+MUL		color, color, color;
+LRP		light, 0.35, light, color;
 
 # modulate by the light projection
 TXP		R1, fragment.texcoord[3], texture[3], 2D;
+# rebb > cubemap based ambient "detection"
+TEX		ambR1.x, cubeLookup, texture[0], CUBE;
+TEX		ambR2.x, -cubeLookup, texture[0], CUBE;
+SUB		amb.x, ambR2, ambR1;
+# super-simple ambient-shading ( localNormal.z ) being used here, modify as needed
+CMP		light.xyz, amb.x, light, localNormal.z;
 MUL		light, light, R1;
 
 # modulate by the light falloff
@@ -164,8 +160,7 @@ TXP		R1, fragment.texcoord[2], texture[2], 2D;
 MUL		light, light, R1;
 
 # modulate by the diffuse map and constant diffuse factor
-SUB		R1, fragment.texcoord[4], R2; ####
-TEX		R1, R1, texture[4], 2D; #### R1, fragment.texcoord[4], texture[4], 2D;
+TEX		R1, fragment.texcoord[4], texture[4], 2D;
 MUL		color, R1, program.env[0];
 
 # modulate by the constant specular factor
@@ -173,8 +168,7 @@ MUL		specular, specular, program.env[1];
 MUL		specular, specular, light;
 
 # modulate by the specular map
-SUB		R1, fragment.texcoord[5], R2; ####
-TEX		R1, R1, texture[5], 2D; #### R1, fragment.texcoord[5], texture[5], 2D;
+TEX		R1, fragment.texcoord[5], texture[5], 2D;
 MUL		R1, R1, R1;
 MUL		specular, specular, R1;
 MUL		specular, specular, consts.y;

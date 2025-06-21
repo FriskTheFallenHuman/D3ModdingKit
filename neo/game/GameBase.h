@@ -30,16 +30,19 @@ If you have questions concerning this license or the applicable additional terms
 #define	__GAMEBASE_H__
 
 // default scripts
-#define SCRIPT_DEFAULTDEFS		"script/doom_defs.script"
-#define SCRIPT_DEFAULT			"script/doom_main.script"
-#define SCRIPT_DEFAULTFUNC		"doom_main"
+#define SCRIPT_DEFAULTDEFS		"script/game_defs.script"
+#define SCRIPT_DEFAULT			"script/game_main.script"
+#define SCRIPT_DEFAULTFUNC		"GameMain"
+
+#define TIME_GROUP1				0
+#define TIME_GROUP2				1
 
 #define LAGO_IMG_WIDTH			64
 #define LAGO_IMG_HEIGHT			64
 #define LAGO_WIDTH				64
 #define LAGO_HEIGHT				44
-#define LAGO_MATERIAL			"textures/sfx/lagometer"
-#define LAGO_IMAGE				"textures/sfx/lagometer.tga"
+#define LAGO_MATERIAL			"textures/guis/lagometer"
+#define LAGO_IMAGE				"textures/guis/lagometer.tga"
 
 // if set to 1 the server sends the client PVS with snapshots and the client compares against what it sees
 #ifndef ASYNC_WRITE_PVS
@@ -47,7 +50,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 // the "gameversion" client command will print this plus compile date
-#define	GAME_VERSION			"baseDOOM-1"
+#define	GAME_VERSION			"baseMYGAME-1"
 
 #define	MAX_CLIENTS				32
 #define	GENTITYNUM_BITS			12

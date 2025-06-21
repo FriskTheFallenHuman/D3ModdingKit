@@ -69,7 +69,7 @@ public:
 	int					MaxCharHeight(float scale);
 	int					MaxCharWidth(float scale);
 
-	int					FindFont( const char *name );
+	int					FindFont( const char *name, bool boverride = false );
 	void				SetupFonts();
 
 	idRegion			*GetTextRegion(const char *text, float textScale, idRectangle rectDraw, float xStart, float yStart);

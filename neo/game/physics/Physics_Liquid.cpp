@@ -183,7 +183,7 @@ idPhysics_Liquid::SetViscosity
 ================
 */
 void idPhysics_Liquid::SetViscosity( float viscosity ) {
-	if( viscosity >= 0.0f )
+	if( viscosity >= 0.0f )	
 		this->viscosity = viscosity;
 }
 

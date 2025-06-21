@@ -1,0 +1,90 @@
+!!ARBvp1.0 OPTION ARB_position_invariant ;
+
+# input:
+# 
+# texcoord[0] TEX0	texcoords
+#
+# local[0]	scroll
+# local[1]	deform magnitude (1.0 is reasonable, 2.0 is twice as wavy, 0.5 is half as wavy, etc)
+#
+# output:
+# 
+# texture 0 is _currentRender
+# texture 1 is a normal map that we will use to deform texture 0
+#
+# texCoord[1] is the model surface texture coords
+# texCoord[2] is the copied deform magnitude
+
+TEMP	R0, R1, R2;
+
+# texture 1 takes the texture coordinates and adds a scroll
+MOV			result.texcoord[0], vertex.texcoord[0];
+# ADD		result.texcoord[1], vertex.texcoord[0], program.local[0];
+
+# magnitude of scale
+MOV		result.color, program.local[1];
+END
+
+#======================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# texture 0 is _currentRender
+# texture 1 is a normal map that we will use to deform texture 0
+#
+# env[0] is the 1.0 to _currentRender conversion
+# env[1] is the fragment.position to 0.0 - 1.0 conversion
+
+TEMP	localNormal, R0, R1, unadjustedTC, adjustedTC, warpFactor;
+
+PARAM	one = { 1, 1, 1, 1 };
+PARAM	negativeOne = { -1, -1, -1, -1 };
+PARAM	two = { 2, 2, 2, 2 };
+PARAM	pointFive = { 0.5, 0.5, 0.5, 0.5 };
+PARAM	default = { 0, 0, 0, 1 };
+
+PARAM	smallScale = { 0.2, 0.2, 0, 1 };
+
+# =======================================
+# COMPUTE UNADJUSTED/ADJUSTED TEXCOORDS
+# =======================================
+MUL		unadjustedTC, fragment.position, program.env[1];
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL		R0, fragment.position, program.env[1];
+
+# scale by the screen non-power-of-two-adjust
+MUL		R0, R0, program.env[0];
+MOV		adjustedTC, R0;
+
+# =======================================
+# compute warp factor
+# =======================================
+TXP		R0, unadjustedTC, texture[1], 2D;
+MUL		R0, R0, fragment.color;
+SUB		warpFactor, one, R0;
+
+# =======================================
+# compute _currentRender preturbed texcoords
+# =======================================
+MOV		R0, unadjustedTC;
+
+MOV		R1, R0;
+RCP		R1.w, R1.w;
+MOV		R0.w, default;
+MUL		R0.xy, R0, R1.wwww;
+
+SUB		R0.xy, R0, pointFive;
+MUL		R0.xy, R0, warpFactor;
+ADD		R0.xy, R0, pointFive;
+
+MUL		R0, R0, program.env[0];				# scale by the screen non-power-of-two-adjust
+
+# =======================================
+# do the _currentRender lookup
+# =======================================
+TXP		result.color.xyz, R0, texture[0], 2D;
+
+END
+

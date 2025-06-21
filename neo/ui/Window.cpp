@@ -41,10 +41,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "MarkerWindow.h"
 #include "FieldWindow.h"
 
-#include "GameSSDWindow.h"
-#include "GameBearShootWindow.h"
-#include "GameBustOutWindow.h"
-
 #ifdef ID_ALLOW_TOOLS
 //
 //  gui editor is more integrated into the window now
@@ -771,7 +767,12 @@ const char *idWindow::HandleEvent(const sysEvent_t *event, bool *updateVisuals) 
 		}
 		RunTimeEvents(gui->GetTime());
 		CalcRects(0,0);
-		dc->SetCursor( idDeviceContext::CURSOR_ARROW );
+
+		if ( overChild != NULL ) {
+			dc->SetCursor( overChild->cursor );
+		} else {
+			dc->SetCursor( idDeviceContext::CURSOR_ARROW );
+		}
 	}
 
 	if (visible && !noEvents) {
@@ -1118,6 +1119,9 @@ void idWindow::Time() {
 		}
 	}
 	if ( gui->Active() ) {
+		if ( gui->GetPendingCmd().Length() > 0 ) {
+			gui->GetPendingCmd() += ";";
+		}
 		gui->GetPendingCmd() += cmd;
 	}
 }
@@ -1352,11 +1356,15 @@ void idWindow::Redraw(float x, float y) {
 	}
 
 	if ( r_skipGuiShaders.GetInteger() < 5 ) {
-		Draw(time, x, y);
+		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
+			Draw(time, x, y);
+		}
 	}
 
 	if ( gui_debug.GetInteger() || gui_edit.GetBool() ) {
-		DebugDraw(time, x, y);
+		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
+			DebugDraw(time, x, y);
+		}
 	}
 
 	int c = drawWindows.Num();
@@ -2178,7 +2186,7 @@ bool idWindow::ParseInternalVar(const char *_name, idParser *src) {
 	if ( idStr::Icmp( _name, "font" ) == 0 ) {
 		idStr fontStr;
 		ParseString( src, fontStr );
-		fontNum = dc->FindFont( fontStr );
+		fontNum = dc->FindFont( fontStr, true );
 		return true;
 	}
 
@@ -2423,39 +2431,6 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 		}
 		else if ( token == "renderDef" ) {
 			idRenderWindow *win = new idRenderWindow(dc, gui);
-			SaveExpressionParseState();
-			win->Parse(src, rebuild);
-			RestoreExpressionParseState();
-			AddChild(win);
-			win->SetParent(this);
-			dwt.simp = NULL;
-			dwt.win = win;
-			drawWindows.Append(dwt);
-		}
-		else if ( token == "gameSSDDef" ) {
-			idGameSSDWindow *win = new idGameSSDWindow(dc, gui);
-			SaveExpressionParseState();
-			win->Parse(src, rebuild);
-			RestoreExpressionParseState();
-			AddChild(win);
-			win->SetParent(this);
-			dwt.simp = NULL;
-			dwt.win = win;
-			drawWindows.Append(dwt);
-		}
-		else if ( token == "gameBearShootDef" ) {
-			idGameBearShootWindow *win = new idGameBearShootWindow(dc, gui);
-			SaveExpressionParseState();
-			win->Parse(src, rebuild);
-			RestoreExpressionParseState();
-			AddChild(win);
-			win->SetParent(this);
-			dwt.simp = NULL;
-			dwt.win = win;
-			drawWindows.Append(dwt);
-		}
-		else if ( token == "gameBustOutDef" ) {
-			idGameBustOutWindow *win = new idGameBustOutWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -3724,6 +3699,11 @@ void idWindow::WriteToSaveGame( idFile *savefile ) {
 	// regList
 	regList.WriteToSaveGame( savefile );
 
+	if ( background ) {
+		savefile->WriteInt( background->GetCinematicStartTime() );
+	} else {
+		savefile->WriteInt( -1 );
+	}
 
 	// Save children
 	for ( i = 0; i < drawWindows.Num(); i++ ) {
@@ -3897,6 +3877,12 @@ void idWindow::ReadFromSaveGame( idFile *savefile ) {
 
 	// regList
 	regList.ReadFromSaveGame( savefile );
+
+	int cinematicStartTime = 0;
+	savefile->ReadInt( cinematicStartTime );
+	if ( background ) {
+		background->ResetCinematicTime( cinematicStartTime );
+	}
 
 	// Read children
 	for ( i = 0; i < drawWindows.Num(); i++ ) {

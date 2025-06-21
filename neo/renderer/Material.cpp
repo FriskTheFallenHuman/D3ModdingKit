@@ -78,7 +78,6 @@ idMaterial::CommonInit
 */
 void idMaterial::CommonInit() {
 	desc = "<none>";
-	renderBump = "";
 	contentFlags = CONTENTS_SOLID;
 	surfaceFlags = SURFTYPE_NONE;
 	materialFlags = 0;
@@ -105,7 +104,6 @@ void idMaterial::CommonInit() {
 	hasSubview = false;
 	allowOverlays = true;
 	unsmoothedTangents = false;
-	mikktspace = false; // RBMIKKT_TANGENT
 	gui = NULL;
 	memset( deformRegisters, 0, sizeof( deformRegisters ) );
 	editorAlpha = 1.0;
@@ -233,54 +231,54 @@ typedef struct {
 
 static const infoParm_t	infoParms[] = {
 	// game relevant attributes
-	{"solid",		0,	0,	CONTENTS_SOLID },		// may need to override a clearSolid
-	{"water",		1,	0,	CONTENTS_WATER },		// used for water
-	{"playerclip",	0,	0,	CONTENTS_PLAYERCLIP },	// solid to players
-	{"monsterclip",	0,	0,	CONTENTS_MONSTERCLIP },	// solid to monsters
-	{"moveableclip",0,	0,	CONTENTS_MOVEABLECLIP },// solid to moveable entities
-	{"ikclip",		0,	0,	CONTENTS_IKCLIP },		// solid to IK
-	{"blood",		0,	0,	CONTENTS_BLOOD },		// used to detect blood decals
-	{"trigger",		0,	0,	CONTENTS_TRIGGER },		// used for triggers
-	{"aassolid",	0,	0,	CONTENTS_AAS_SOLID },	// solid for AAS
-	{"aasobstacle",	0,	0,	CONTENTS_AAS_OBSTACLE },// used to compile an obstacle into AAS that can be enabled/disabled
-	{"flashlight_trigger",	0,	0,	CONTENTS_FLASHLIGHT_TRIGGER }, // used for triggers that are activated by the flashlight
-	{"nonsolid",	1,	0,	0 },					// clears the solid flag
-	{"nullNormal",	0,	SURF_NULLNORMAL,0 },		// renderbump will draw as 0x80 0x80 0x80
+	{"solid",				0,	0,	CONTENTS_SOLID },				// may need to override a clearSolid
+	{"water",				1,	0,	CONTENTS_WATER },				// used for water
+	{"playerclip",			0,	0,	CONTENTS_PLAYERCLIP },			// solid to players
+	{"monsterclip",			0,	0,	CONTENTS_MONSTERCLIP },			// solid to monsters
+	{"moveableclip",		0,	0,	CONTENTS_MOVEABLECLIP },		// solid to moveable entities
+	{"ikclip",				0,	0,	CONTENTS_IKCLIP },				// solid to IK
+	{"blood",				0,	0,	CONTENTS_BLOOD },				// used to detect blood decals
+	{"trigger",				0,	0,	CONTENTS_TRIGGER },				// used for triggers
+	{"aassolid",			0,	0,	CONTENTS_AAS_SOLID },			// solid for AAS
+	{"aasobstacle",			0,	0,	CONTENTS_AAS_OBSTACLE },		// used to compile an obstacle into AAS that can be enabled/disabled
+	{"flashlight_trigger",	0,	0,	CONTENTS_FLASHLIGHT_TRIGGER },	// used for triggers that are activated by the flashlight
+	{"nonsolid",			1,	0,	0 },							// clears the solid flag
+	{"nullNormal",			0,	SURF_NULLNORMAL,0 },				// normals will draw as 0x80 0x80 0x80
 
 	// utility relevant attributes
-	{"areaportal",	1,	0,	CONTENTS_AREAPORTAL },	// divides areas
-	{"qer_nocarve",	1,	0,	CONTENTS_NOCSG},		// don't cut brushes in editor
+	{"areaportal",			1,	0,	CONTENTS_AREAPORTAL },			// divides areas
+	{"qer_nocarve",			1,	0,	CONTENTS_NOCSG},				// don't cut brushes in editor
 
-	{"discrete",	1,	SURF_DISCRETE,	0 },		// surfaces should not be automatically merged together or
-													// clipped to the world,
-													// because they represent discrete objects like gui shaders
-													// mirrors, or autosprites
-	{"noFragment",	0,	SURF_NOFRAGMENT,	0 },
+	{"discrete",			1,	SURF_DISCRETE,	0 },				// surfaces should not be automatically merged together or
+																	// clipped to the world,
+																	// because they represent discrete objects like gui shaders
+																	// mirrors, or autosprites
+	{"noFragment",			0,	SURF_NOFRAGMENT,	0 },
 
-	{"slick",		0,	SURF_SLICK,		0 },
-	{"collision",	0,	SURF_COLLISION,	0 },
-	{"noimpact",	0,	SURF_NOIMPACT,	0 },		// don't make impact explosions or marks
-	{"nodamage",	0,	SURF_NODAMAGE,	0 },		// no falling damage when hitting
-	{"ladder",		0,	SURF_LADDER,	0 },		// climbable
-	{"nosteps",		0,	SURF_NOSTEPS,	0 },		// no footsteps
+	{"slick",				0,	SURF_SLICK,		0 },
+	{"collision",			0,	SURF_COLLISION,	0 },
+	{"noimpact",			0,	SURF_NOIMPACT,	0 },				// don't make impact explosions or marks
+	{"nodamage",			0,	SURF_NODAMAGE,	0 },				// no falling damage when hitting
+	{"ladder",				0,	SURF_LADDER,	0 },				// climbable
+	{"nosteps",				0,	SURF_NOSTEPS,	0 },				// no footsteps
 
 	// material types for particle, sound, footstep feedback
-	{"metal",		0,  SURFTYPE_METAL,		0 },	// metal
-	{"stone",		0,  SURFTYPE_STONE,		0 },	// stone
-	{"flesh",		0,  SURFTYPE_FLESH,		0 },	// flesh
-	{"wood",		0,  SURFTYPE_WOOD,		0 },	// wood
-	{"cardboard",	0,	SURFTYPE_CARDBOARD,	0 },	// cardboard
-	{"liquid",		0,	SURFTYPE_LIQUID,	0 },	// liquid
-	{"pipe",		0,	SURFTYPE_PIPE,		0 },	// pipe
-	{"glass",		0,	SURFTYPE_GLASS,		0 },	// glass
-	{"plastic",		0,	SURFTYPE_PLASTIC,	0 },	// plastic
-	{"ricochet",	0,	SURFTYPE_RICOCHET,	0 },	// behaves like metal but causes a ricochet sound
+	{"metal",				0,  SURFTYPE_METAL,		0 },			// metal
+	{"stone",				0,  SURFTYPE_STONE,		0 },			// stone
+	{"flesh",				0,  SURFTYPE_FLESH,		0 },			// flesh
+	{"wood",				0,  SURFTYPE_WOOD,		0 },			// wood
+	{"cardboard",			0,	SURFTYPE_CARDBOARD,	0 },			// cardboard
+	{"liquid",				0,	SURFTYPE_LIQUID,	0 },			// liquid
+	{"pipe",				0,	SURFTYPE_PIPE,		0 },			// pipe
+	{"glass",				0,	SURFTYPE_GLASS,		0 },			// glass
+	{"plastic",				0,	SURFTYPE_PLASTIC,	0 },			// plastic
+	{"ricochet",			0,	SURFTYPE_RICOCHET,	0 },			// behaves like metal but causes a ricochet sound
 
 	// unassigned surface types
-	{"surftype10",	0,	SURFTYPE_10,	0 },
-	{"surftype11",	0,	SURFTYPE_11,	0 },
-	{"surftype12",	0,	SURFTYPE_12,	0 },
-	{"surftype13",	0,	SURFTYPE_13,	0 },
+	{"surftype10",			0,	SURFTYPE_10,	0 },
+	{"surftype11",			0,	SURFTYPE_11,	0 },
+	{"surftype12",			0,	SURFTYPE_12,	0 },
+	{"surftype13",			0,	SURFTYPE_13,	0 },
 };
 
 static const int numInfoParms = sizeof(infoParms) / sizeof (infoParms[0]);
@@ -1538,26 +1536,10 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			}
 			continue;
 		}
-		if ( !token.Icmp( "megaTexture" ) ) {
-			if ( src.ReadTokenOnLine( &token ) ) {
-				newStage.megaTexture = new idMegaTexture;
-				if ( !newStage.megaTexture->InitFromMegaFile( token.c_str() ) ) {
-					delete newStage.megaTexture;
-					SetMaterialFlag( MF_DEFAULTED );
-					continue;
-				}
-				newStage.vertexProgram = R_FindARBProgram( GL_VERTEX_PROGRAM_ARB, "megaTexture.vfp" );
-				newStage.fragmentProgram = R_FindARBProgram( GL_FRAGMENT_PROGRAM_ARB, "megaTexture.vfp" );
-				continue;
-			}
-		}
-
-
 		if ( !token.Icmp( "vertexParm" ) ) {
 			ParseVertexParm( src, &newStage );
 			continue;
 		}
-
 		if (  !token.Icmp( "fragmentMap" ) ) {
 			ParseFragmentMap( src, &newStage );
 			continue;
@@ -2016,12 +1998,6 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 			unsmoothedTangents = true;
 			continue;
 		}
-		// RBMIKKT_TANGENT...
-		else if (!token.Icmp("mikktspace")) {
-			mikktspace = true;
-			continue;
-		}
-		// ...RBMIKKT_TANGENT
 		// lightFallofImage <imageprogram>
 		// specifies the image to use for the third axis of projected
 		// light volumes
@@ -2068,11 +2044,6 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		// decalInfo <staySeconds> <fadeSeconds> ( <start rgb> ) ( <end rgb> )
 		else if ( !token.Icmp( "decalInfo" ) ) {
 			ParseDecalInfo( src );
-			continue;
-		}
-		// renderbump <args...>
-		else if ( !token.Icmp( "renderbump") ) {
-			src.ParseRestOfLine( renderBump );
 			continue;
 		}
 		// diffusemap for stage shortcut
@@ -2209,11 +2180,6 @@ bool idMaterial::Parse( const char *text, const int textLength ) {
 
 	// parse it
 	ParseMaterial( src );
-
-	// if we are doing an fs_copyfiles, also reference the editorImage
-	if ( cvarSystem->GetCVarInteger( "fs_copyFiles" ) ) {
-		GetEditorImage();
-	}
 
 	//
 	// count non-lit stages
@@ -2650,6 +2616,20 @@ void idMaterial::ResetCinematicTime( int time ) const {
 			stages[i].texture.cinematic->ResetTime( time );
 		}
 	}
+}
+
+/*
+=============
+idMaterial::GetCinematicStartTime
+=============
+*/
+int idMaterial::GetCinematicStartTime() const {
+	for( int i = 0; i < numStages; i++ ) {
+		if ( stages[i].texture.cinematic ) {
+			return stages[i].texture.cinematic->GetStartTime();
+		}
+	}
+	return -1;
 }
 
 /*

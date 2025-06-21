@@ -45,11 +45,13 @@ idVec4 idDeviceContext::colorNone;
 
 idCVar gui_smallFontLimit( "gui_smallFontLimit", "0", CVAR_GUI | CVAR_ARCHIVE, "" );
 idCVar gui_mediumFontLimit( "gui_mediumFontLimit", "0", CVAR_GUI | CVAR_ARCHIVE, "" );
+idCVar gui_font_name("gui_font_name", "OpenSans", CVAR_GUI | CVAR_ARCHIVE, "Main-menu typography (ignored when a .gui file requests a custom font)");
+idCVar gui_font_type( "gui_font_type", "Bold", CVAR_GUI | CVAR_ARCHIVE, "Type of font to use for the main-menu." );
 
 
 idList<fontInfoEx_t> idDeviceContext::fonts;
 
-int idDeviceContext::FindFont( const char *name ) {
+int idDeviceContext::FindFont( const char *name, bool boverride ) {
 	int c = fonts.Num();
 	for (int i = 0; i < c; i++) {
 		if (idStr::Icmp(name, fonts[i].name) == 0) {
@@ -59,7 +61,9 @@ int idDeviceContext::FindFont( const char *name ) {
 
 	// If the font was not found, try to register it
 	idStr fileName = name;
-	fileName.Replace("fonts", va("fonts/%s", fontLang.c_str()) );
+	if ( !boverride ) {
+		fileName.Replace("fonts", va("fonts/%s_%s", gui_font_name.GetString(), gui_font_type.GetString()) );
+	}
 
 	fontInfoEx_t fontInfo = {}; // DG: initialize this
 	int index = fonts.Append( fontInfo );
@@ -74,13 +78,6 @@ int idDeviceContext::FindFont( const char *name ) {
 
 void idDeviceContext::SetupFonts() {
 	fonts.SetGranularity( 1 );
-
-	fontLang = cvarSystem->GetCVarString( "sys_lang" );
-
-	// western european languages can use the english font
-	if ( fontLang == "french" || fontLang == "german" || fontLang == "spanish" || fontLang == "italian" ) {
-		fontLang = "english";
-	}
 
 	// Default font has to be added first
 	FindFont( "fonts" );
@@ -98,7 +95,7 @@ void idDeviceContext::SetFont( int num ) {
 void idDeviceContext::Init() {
 	xScale = 0.0;
 	SetSize(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
-	whiteImage = declManager->FindMaterial("guis/assets/white.tga");
+	whiteImage = declManager->FindMaterial("_white");
 	whiteImage->SetSort( SS_GUI );
 	mbcs = false;
 	SetupFonts();
@@ -112,15 +109,15 @@ void idDeviceContext::Init() {
 	colorWhite = idVec4(1, 1, 1, 1);
 	colorBlack = idVec4(0, 0, 0, 1);
 	colorNone = idVec4(0, 0, 0, 0);
-	cursorImages[CURSOR_ARROW] = declManager->FindMaterial("ui/assets/guicursor_arrow.tga");
-	cursorImages[CURSOR_HAND] = declManager->FindMaterial("ui/assets/guicursor_hand.tga");
-	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("ui/assets/scrollbarh.tga");
-	scrollBarImages[SCROLLBAR_VBACK] = declManager->FindMaterial("ui/assets/scrollbarv.tga");
-	scrollBarImages[SCROLLBAR_THUMB] = declManager->FindMaterial("ui/assets/scrollbar_thumb.tga");
-	scrollBarImages[SCROLLBAR_RIGHT] = declManager->FindMaterial("ui/assets/scrollbar_right.tga");
-	scrollBarImages[SCROLLBAR_LEFT] = declManager->FindMaterial("ui/assets/scrollbar_left.tga");
-	scrollBarImages[SCROLLBAR_UP] = declManager->FindMaterial("ui/assets/scrollbar_up.tga");
-	scrollBarImages[SCROLLBAR_DOWN] = declManager->FindMaterial("ui/assets/scrollbar_down.tga");
+	cursorImages[CURSOR_ARROW] = declManager->FindMaterial("textures/guis/guicursor_arrow.tga");
+	cursorImages[CURSOR_HAND] = declManager->FindMaterial("textures/guis/guicursor_hand.tga");
+	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("textures/guis/scrollbarh.tga");
+	scrollBarImages[SCROLLBAR_VBACK] = declManager->FindMaterial("textures/guis/scrollbarv.tga");
+	scrollBarImages[SCROLLBAR_THUMB] = declManager->FindMaterial("textures/guis/scrollbar_thumb.tga");
+	scrollBarImages[SCROLLBAR_RIGHT] = declManager->FindMaterial("textures/guis/scrollbar_right.tga");
+	scrollBarImages[SCROLLBAR_LEFT] = declManager->FindMaterial("textures/guis/scrollbar_left.tga");
+	scrollBarImages[SCROLLBAR_UP] = declManager->FindMaterial("textures/guis/scrollbar_up.tga");
+	scrollBarImages[SCROLLBAR_DOWN] = declManager->FindMaterial("textures/guis/scrollbar_down.tga");
 	cursorImages[CURSOR_ARROW]->SetSort( SS_GUI );
 	cursorImages[CURSOR_HAND]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_HBACK]->SetSort( SS_GUI );

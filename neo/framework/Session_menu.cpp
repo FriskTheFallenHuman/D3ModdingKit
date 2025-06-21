@@ -52,7 +52,7 @@ idSessionLocal::StartMainMenu
 ==============
 */
 void idSessionLocal::StartMenu( bool playIntro ) {
-	if ( guiActive == guiMainMenu ) {
+	if ( guiActive && guiActive == guiMainMenu ) {
 		return;
 	}
 
@@ -72,12 +72,7 @@ void idSessionLocal::StartMenu( bool playIntro ) {
 	SetGUI( guiMainMenu, NULL );
 	guiMainMenu->HandleNamedEvent( playIntro ? "playIntro" : "noIntro" );
 
-
-	if(fileSystem->HasD3XP()) {
-		guiMainMenu->SetStateString("game_list", common->GetLanguageDict()->GetString( "#str_07202" ));
-	} else {
-		guiMainMenu->SetStateString("game_list", common->GetLanguageDict()->GetString( "#str_07212" ));
-	}
+	guiMainMenu->SetStateString("game_list", common->GetLanguageDict()->GetString( "#str_gamelist_name" ));
 
 	console->Close();
 
@@ -278,14 +273,6 @@ void idSessionLocal::SetMainMenuSkin( void ) {
 
 /*
 ===============
-idSessionLocal::SetPbMenuGuiVars
-===============
-*/
-void idSessionLocal::SetPbMenuGuiVars( void ) {
-}
-
-/*
-===============
 idSessionLocal::SetMainMenuGuiVars
 ===============
 */
@@ -309,19 +296,14 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 		guiMainMenu->SetStateString( "inGame", "0" );
 	}
 
-	SetCDKeyGuiVars( );
-	guiMainMenu->SetStateString( "nightmare", cvarSystem->GetCVarBool( "g_nightmare" ) ? "1" : "0" );
 	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/splash/pdtempa" );
 
 	SetMainMenuSkin();
+
 	// Mods Menu
 	SetModsMenuGuiVars();
 
-	guiMsg->SetStateString( "visible_hasxp", fileSystem->HasD3XP() ? "1" : "0" );
-
 	guiMainMenu->SetStateString( "driver_prompt", "0" );
-
-	SetPbMenuGuiVars();
 }
 
 /*
@@ -355,7 +337,7 @@ bool idSessionLocal::HandleSaveGameMenuCommand( idCmdArgs &args, int &icmd ) {
 				idStr game = cvarSystem->GetCVarString( "fs_game" );
 				idFile *file;
 				if(game.Length()) {
-					file = fileSystem->OpenFileRead( saveFileName, true, game );
+					file = fileSystem->OpenFileRead( saveFileName, game );
 				} else {
 					file = fileSystem->OpenFileRead( saveFileName );
 				}
@@ -396,6 +378,7 @@ bool idSessionLocal::HandleSaveGameMenuCommand( idCmdArgs &args, int &icmd ) {
 		if ( choice >= 0 && choice < loadGameList.Num() ) {
 			fileSystem->RemoveFile( va("savegames/%s.save", loadGameList[choice].c_str()) );
 			fileSystem->RemoveFile( va("savegames/%s.tga", loadGameList[choice].c_str()) );
+			fileSystem->RemoveFile( va("savegames/%s.jpg", loadGameList[choice].c_str()) );
 			fileSystem->RemoveFile( va("savegames/%s.txt", loadGameList[choice].c_str()) );
 			SetSaveGameGuiVars( );
 			guiActive->StateChanged( com_frameTime );
@@ -549,34 +532,6 @@ void idSessionLocal::UpdateMPLevelShot( void ) {
 	guiMainMenu->SetStateString( "current_levelshot", screenshot );
 }
 
-// helper function to load a mod (from mods menu)
-static void loadMod ( const idStr& modName ) {
-	// add special case for mods known to need fs_game_base d3xp
-	static const char* d3xpMods[] = {
-		// TODO: if there are more mods that need d3xp as base
-		// (and that are supported by dhewm3), add them here
-		"d3le", // The Lost Mission
-		"librecoopd3xp",
-		"perfected_roe",
-		"sikkmodd3xp",
-		// Doom 3: Phobos (they haven't released source yet, so it won't work yet,
-		//                 but ain't I ever the optimist..)
-		"tfphobos"
-	};
-	const char* baseMod = "";
-	for ( int i=0; i < sizeof(d3xpMods)/sizeof(d3xpMods[0]); ++i ) {
-		if ( modName.Icmp( d3xpMods[i] ) == 0 ) {
-			baseMod = "d3xp";
-			break;
-		}
-	}
-
-	cvarSystem->SetCVarString( "fs_game", modName );
-	cvarSystem->SetCVarString( "fs_game_base", baseMod );
-
-	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "reloadEngine menu\n" );
-}
-
 /*
 ==============
 idSessionLocal::HandleMainMenuCommands
@@ -630,7 +585,8 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 		if ( !idStr::Icmp( cmd, "loadMod" ) ) {
 			int choice = guiActive->State().GetInt( "modsList_sel_0" );
 			if ( choice >= 0 && choice < modsList.Num() ) {
-				loadMod( modsList[ choice ] );
+				cvarSystem->SetCVarString( "fs_game", modsList[ choice ] );
+				cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "reloadEngine menu\n" );
 			}
 		}
 
@@ -797,7 +753,7 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 							break;
 					}
 					if ( n_clients > maxclients ) {
-						if ( MessageBox( MSG_OKCANCEL, va( common->GetLanguageDict()->GetString( "#str_04315" ), dedicated ? maxclients : Min( 8, maxclients + 1 ) ), common->GetLanguageDict()->GetString( "#str_04316" ), true, "OK" )[ 0 ] == '\0' ) {
+						if ( MessageBox( MSG_OKCANCEL, va( common->GetLanguageDict()->GetString( "#str_internet_setting" ), dedicated ? maxclients : Min( 8, maxclients + 1 ) ), common->GetLanguageDict()->GetString( "#str_internet_maxplayer_limit" ), true, "OK" )[ 0 ] == '\0' ) {
 							continue;
 						}
 						cvarSystem->SetCVarInteger( "si_maxPlayers", dedicated ? maxclients : Min( 8, maxclients + 1 ) );
@@ -807,7 +763,7 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 
 			if ( !dedicated && !cvarSystem->GetCVarBool( "net_LANServer" ) && cvarSystem->GetCVarInteger("si_maxPlayers") > 4 ) {
 				// "Dedicated server mode is recommended for internet servers with more than 4 players. Continue in listen mode?"
-				if ( !MessageBox( MSG_YESNO, common->GetLanguageDict()->GetString ( "#str_00100625" ), common->GetLanguageDict()->GetString ( "#str_00100626" ), true, "yes" )[ 0 ] ) {
+				if ( !MessageBox( MSG_YESNO, common->GetLanguageDict()->GetString ( "#str_internet_players_perf" ), common->GetLanguageDict()->GetString ( "#str_internet_players_perf_title" ), true, "yes" )[ 0 ] ) {
 					continue;
 				}
 			}
@@ -897,10 +853,10 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 				cmdSystem->BufferCommandText( CMD_EXEC_NOW, "s_restart\n" );
 				if ( old != cvarSystem->GetCVarInteger( "s_numberOfSpeakers" ) ) {
 #ifdef _WIN32
-					MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_04142" ), common->GetLanguageDict()->GetString( "#str_04141" ), true );
+					MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_3daudio_speaker_error_win32" ), common->GetLanguageDict()->GetString( "#str_3daudio_speaker_init_error_win32" ), true );
 #else
 					// a message that doesn't mention the windows control panel
-					MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_07230" ), common->GetLanguageDict()->GetString( "#str_04141" ), true );
+					MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_3daudio_speaker_error_linux" ), common->GetLanguageDict()->GetString( "#str_3daudio_speaker_init_error" ), true );
 #endif
 				}
 			}
@@ -910,22 +866,22 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 					switch ( efx ) {
 					case 1:
 						// when you restart
-						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_04137" ), common->GetLanguageDict()->GetString( "#str_07231" ), true );
+						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_options_apply_notice" ), common->GetLanguageDict()->GetString( "#str_options_3daudio" ), true );
 						break;
 					case -1:
 						cvarSystem->SetCVarBool( "s_useEAXReverb", false );
 						// disabled
-						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_07233" ), common->GetLanguageDict()->GetString( "#str_07231" ), true );
+						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_options_3daudio_platform_null" ), common->GetLanguageDict()->GetString( "#str_options_3daudio" ), true );
 						break;
 					case 0:
 						cvarSystem->SetCVarBool( "s_useEAXReverb", false );
 						// not available
-						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_07232" ), common->GetLanguageDict()->GetString( "#str_07231" ), true );
+						MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_options_3daudio_not_found" ), common->GetLanguageDict()->GetString( "#str_options_3daudio" ), true );
 						break;
 					}
 				} else {
 					// when you restart
-					MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_04137" ), common->GetLanguageDict()->GetString( "#str_07231" ), true );
+					MessageBox( MSG_OK, common->GetLanguageDict()->GetString( "#str_options_apply_notice" ), common->GetLanguageDict()->GetString( "#str_options_3daudio" ), true );
 				}
 			}
 			if ( !vcmd.Icmp( "drivar" ) ) {
@@ -1022,12 +978,6 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 			continue;
 		}
 
-		if ( !idStr::Icmp( cmd, "SetCDKey" ) ) {
-			// we can't do this from inside the HandleMainMenuCommands code, otherwise the message box stuff gets confused
-			cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "promptKey\n" );
-			continue;
-		}
-
 		if ( !idStr::Icmp( cmd, "CheckUpdate" ) ) {
 			idAsyncNetwork::client.SendVersionCheck();
 			continue;
@@ -1035,29 +985,6 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 
 		if ( !idStr::Icmp( cmd, "CheckUpdate2" ) ) {
 			idAsyncNetwork::client.SendVersionCheck( true );
-			continue;
-		}
-
-		if ( !idStr::Icmp( cmd, "checkKeys" ) ) {
-#if ID_ENFORCE_KEY
-			// not a strict check so you silently auth in the background without bugging the user
-			if ( !session->CDKeysAreValid( false ) ) {
-				cmdSystem->BufferCommandText( CMD_EXEC_NOW, "promptKey force" );
-				cmdSystem->ExecuteCommandBuffer();
-			}
-#endif
-			continue;
-		}
-
-		// triggered from mainmenu or mpmain
-		if ( !idStr::Icmp( cmd, "punkbuster" ) ) {
-			idStr vcmd;
-			if ( args.Argc() - icmd >= 1 ) {
-				vcmd = args.Argv( icmd++ );
-			}
-			// filtering PB based on enabled/disabled
-			idAsyncNetwork::client.serverList.ApplyFilter( );
-			SetPbMenuGuiVars();
 			continue;
 		}
 	}
@@ -1287,7 +1214,7 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 	}
 
 	guiMsg->SetStateString( "visible_entry", "0" );
-	guiMsg->SetStateString( "visible_cdkey", "0" );
+
 	switch ( type ) {
 		case MSG_INFO:
 			guiMsg->SetStateString( "mid", "" );
@@ -1296,65 +1223,39 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 			guiMsg->SetStateString( "visible_right", "0" );
 			break;
 		case MSG_OK:
-			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_04339" ) );
+			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_messagebox_ok" ) );
 			guiMsg->SetStateString( "visible_mid", "1" );
 			guiMsg->SetStateString( "visible_left", "0" );
 			guiMsg->SetStateString( "visible_right", "0" );
 			break;
 		case MSG_ABORT:
-			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "mid", common->GetLanguageDict()->GetString( "#str_messagebox_cancel" ) );
 			guiMsg->SetStateString( "visible_mid", "1" );
 			guiMsg->SetStateString( "visible_left", "0" );
 			guiMsg->SetStateString( "visible_right", "0" );
 			break;
 		case MSG_OKCANCEL:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_messagebox_ok" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_messagebox_cancel" ) );
 			guiMsg->SetStateString( "visible_mid", "0" );
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
 			break;
 		case MSG_YESNO:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04341" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04342" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_messagebox_yes" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_messagebox_no" ) );
 			guiMsg->SetStateString( "visible_mid", "0" );
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
 			break;
 		case MSG_PROMPT:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
+			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_messagebox_ok" ) );
+			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_messagebox_cancel" ) );
 			guiMsg->SetStateString( "visible_mid", "0" );
 			guiMsg->SetStateString( "visible_left", "1" );
 			guiMsg->SetStateString( "visible_right", "1" );
 			guiMsg->SetStateString( "visible_entry", "1" );
 			guiMsg->HandleNamedEvent( "Prompt" );
-			break;
-		case MSG_CDKEY:
-			guiMsg->SetStateString( "left", common->GetLanguageDict()->GetString( "#str_04339" ) );
-			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
-			guiMsg->SetStateString( "visible_msgbox", "0" );
-			guiMsg->SetStateString( "visible_cdkey", "1" );
-			guiMsg->SetStateString( "visible_hasxp", fileSystem->HasD3XP() ? "1" : "0" );
-			// the current cdkey / xpkey values may have bad/random data in them
-			// it's best to avoid printing them completely, unless the key is good
-			if ( cdkey_state == CDKEY_OK ) {
-				guiMsg->SetStateString( "str_cdkey", cdkey );
-				guiMsg->SetStateString( "visible_cdchk", "0" );
-			} else {
-				guiMsg->SetStateString( "str_cdkey", "" );
-				guiMsg->SetStateString( "visible_cdchk", "1" );
-			}
-			guiMsg->SetStateString( "str_cdchk", "" );
-			if ( xpkey_state == CDKEY_OK ) {
-				guiMsg->SetStateString( "str_xpkey", xpkey );
-				guiMsg->SetStateString( "visible_xpchk", "0" );
-			} else {
-				guiMsg->SetStateString( "str_xpkey", "" );
-				guiMsg->SetStateString( "visible_xpchk", "1" );
-			}
-			guiMsg->SetStateString( "str_xpchk", "" );
-			guiMsg->HandleNamedEvent( "CDKey" );
 			break;
 		case MSG_WAIT:
 			break;
@@ -1389,20 +1290,6 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 			} else {
 				return NULL;
 			}
-		} else if ( type == MSG_CDKEY ) {
-			if ( msgRetIndex == 0 ) {
-				// the visible_ values distinguish looking at a valid key, or editing it
-				sprintf( msgFireBack[ 0 ], "%1s;%16s;%2s;%1s;%16s;%2s",
-						 guiMsg->State().GetString( "visible_cdchk" ),
-						 guiMsg->State().GetString( "str_cdkey" ),
-						 guiMsg->State().GetString( "str_cdchk" ),
-						 guiMsg->State().GetString( "visible_xpchk" ),
-						 guiMsg->State().GetString( "str_xpkey" ),
-						 guiMsg->State().GetString( "str_xpchk" ) );
-				return msgFireBack[ 0 ].c_str();
-			} else {
-				return NULL;
-			}
 		} else {
 			return msgFireBack[ msgRetIndex ].c_str();
 		}
@@ -1429,7 +1316,6 @@ void idSessionLocal::DownloadProgressBox( backgroundDownload_t *bgl, const char 
 	guiMsg->SetStateString( "visible_waitbox", "0" );
 
 	guiMsg->SetStateString( "visible_entry", "0" );
-	guiMsg->SetStateString( "visible_cdkey", "0" );
 
 	guiMsg->SetStateString( "mid", "Cancel" );
 	guiMsg->SetStateString( "visible_mid", "1" );
@@ -1537,17 +1423,4 @@ void idSessionLocal::HandleMsgCommands( const char *menuCommand ) {
 		msgRetIndex = 1;
 		DispatchCommand( guiActive, msgFireBack[ 1 ].c_str() );
 	}
-}
-
-/*
-===============
-idSessionLocal::SetCDKeyGuiVars
-===============
-*/
-void idSessionLocal::SetCDKeyGuiVars( void ) {
-	if ( !guiMainMenu ) {
-		return;
-	}
-	guiMainMenu->SetStateString( "str_d3key_state", common->GetLanguageDict()->GetString( va( "#str_071%d", 86 + cdkey_state ) ) );
-	guiMainMenu->SetStateString( "str_xpkey_state", common->GetLanguageDict()->GetString( va( "#str_071%d", 86 + xpkey_state ) ) );
 }

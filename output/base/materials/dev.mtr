@@ -1,0 +1,29 @@
+textures/dev/dev_brickwall
+{
+	stone
+	description "Developer Texture Brickwall"
+
+	bumpmap addnormals(textures/dev/dev_brickwall_local, heightmap(textures/dev/dev_brickwall_h, 1))
+	diffusemap textures/dev/dev_brickwal_d
+	specularmap textures/dev/dev_brickwall_s
+}
+
+textures/dev/dev_floor_cross
+{
+	metal
+	description "Developer Texture Cross"
+
+	bumpmap addnormals(textures/dev/dev_floor_cross_local, heightmap(textures/dev/dev_floor_cross_h, 1))
+	diffusemap textures/dev/dev_floor_cross_d
+	specularmap textures/dev/dev_floor_cross_s
+}
+
+textures/dev/dev_floor
+{
+	stone
+	description "Developer Texture Tile"
+
+	bumpmap addnormals(textures/dev/dev_floor_local, heightmap(textures/dev/dev_floor_h, 1))
+	diffusemap textures/dev/dev_floor_d
+	specularmap textures/dev/dev_floor_s
+}

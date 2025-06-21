@@ -1,0 +1,9 @@
+# Fonts
+OpenSans font from the folder fonts are license under the OFL license see fonts/OFL.txt for the full license
+ 
+# Textures
+All textures from the folders brick/, concrete/, nature/, woods/ and skydome/ comes from ambientCG.com
+licensed under the Creative Commons CC0 1.0 Universal License.
+
+# Shaders
+Bloom implementation uses Dentomod's Bloom assets credits goes to JC https://www.moddb.com/mods/dentons-enhanced-doom3-v202

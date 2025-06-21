@@ -1,0 +1,50 @@
+// Simple guides used to simplify material creation
+
+// Water Clean
+// Most basic form of water
+guide basic_water(TextureParm, AlphaParam)
+{
+	discrete
+	noSelfShadow
+	nonSolid
+	twosided
+	translucent
+	noshadows
+	forceoverlays
+	sort decal
+	water
+	
+	//deform turbulent sinTable 0.0175 (time*0.15) 10
+
+	qer_editorimage textures/TextureParm
+	{
+		//vertexProgram			heatHazeWithMask.vfp
+		vertexProgram					heatHazeWithMaskAndVertex.vfp
+		vertexParm              0       time * 0.1 , time * 0.5				// texture scrolling
+		vertexParm              1       1.5									// magnitude of the distortion
+
+		//fragmentProgram			heatHazeWithMask.vfp
+		fragmentProgram					heatHazeWithMaskAndVertex.vfp
+		fragmentMap             0       _currentRender
+		fragmentMap             1       textures/sfx/vp1					// the normal map for distortion
+		fragmentMap 			2		textures/liquids/vp_water.tga
+    }
+	{	
+		maskcolor				
+	    map	makealpha(textures/sfx/vp1)
+	}
+	{
+		blend				gl_dst_alpha, gl_one
+	    maskalpha
+       	cameraCubeMap		env/cloudy
+        texgen				reflect
+	}
+	{
+		blend				blend
+		map					textures/TextureParm
+		translate			time*.0,time*-.01	
+		alpha				AlphaParam
+	}
+
+	specularmap textures/TextureParm
+}

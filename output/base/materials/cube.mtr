@@ -1,0 +1,6 @@
+models/test/cube_material
+{
+	diffusemap	models/test/cube_material_d
+	specularmap	models/test/cube_material_s
+	bumpmap	models/test/cube_material_local
+}

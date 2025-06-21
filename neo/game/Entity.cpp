@@ -287,6 +287,14 @@ idEntity::idEntity() {
 	memset( &refSound, 0, sizeof( refSound ) );
 
 	mpGUIState = -1;
+
+#ifdef _D3XP
+	memset( &xrayEntity, 0, sizeof( xrayEntity ) );
+
+	timeGroup = TIME_GROUP1;
+	xrayEntityHandle = -1;
+	xraySkin = NULL;
+#endif
 }
 
 /*
@@ -331,6 +339,16 @@ void idEntity::Spawn( void ) {
 	gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
 
 	renderEntity.entityNum = entityNumber;
+
+#ifdef _D3XP
+	xraySkin = NULL;
+	renderEntity.xrayIndex = 1;
+
+	idStr str;
+	if ( spawnArgs.GetString( "skin_xray", "", str ) ) {
+		xraySkin = declManager->FindSkin( str.c_str() );
+	}
+#endif
 
 	// go dormant within 5 frames so that when the map starts most monsters are dormant
 	dormantStart = gameLocal.time - DELAY_DORMANT_TIME + gameLocal.msec * 5;
@@ -423,6 +441,10 @@ void idEntity::Spawn( void ) {
 		ConstructScriptObject();
 	}
 
+#ifdef _D3XP
+	// determine time group
+	DetermineTimeGroup( spawnArgs.GetBool( "slowmo", "1" ) );
+#endif
 }
 
 /*
@@ -474,6 +496,13 @@ idEntity::~idEntity( void ) {
 	FreeModelDef();
 	FreeSoundEmitter( false );
 
+#ifdef _D3XP
+	if ( xrayEntityHandle != -1) {
+		gameRenderWorld->FreeEntityDef( xrayEntityHandle );
+		xrayEntityHandle = -1;
+	}
+#endif
+
 	gameLocal.UnregisterEntity( this );
 }
 
@@ -513,6 +542,13 @@ void idEntity::Save( idSaveGame *savefile ) const {
 	entityFlags_s flags = fl;
 	LittleBitField( &flags, sizeof( flags ) );
 	savefile->Write( &flags, sizeof( flags ) );
+
+#ifdef _D3XP
+	savefile->WriteInt( timeGroup );
+	savefile->WriteRenderEntity( xrayEntity );
+	savefile->WriteInt( xrayEntityHandle );
+	savefile->WriteSkin( xraySkin );
+#endif
 
 	savefile->WriteRenderEntity( renderEntity );
 	savefile->WriteInt( modelDefHandle );
@@ -588,6 +624,16 @@ void idEntity::Restore( idRestoreGame *savefile ) {
 
 	savefile->Read( &fl, sizeof( fl ) );
 	LittleBitField( &fl, sizeof( fl ) );
+
+#ifdef _D3XP
+	savefile->ReadInt( timeGroup );
+	savefile->ReadRenderEntity( xrayEntity );
+	savefile->ReadInt( xrayEntityHandle );
+	if ( xrayEntityHandle != -1 ) {
+		xrayEntityHandle =  gameRenderWorld->AddEntityDef( &xrayEntity );
+	}
+	savefile->ReadSkin( xraySkin );
+#endif
 
 	savefile->ReadRenderEntity( renderEntity );
 	savefile->ReadInt( modelDefHandle );
@@ -1065,6 +1111,10 @@ idEntity::UpdateModel
 ================
 */
 void idEntity::UpdateModel( void ) {
+#ifdef _D3XP
+	renderEntity.timeGroup = timeGroup;
+#endif
+
 	UpdateModelTransform();
 
 	// check if the entity has an MD5 model
@@ -1079,6 +1129,21 @@ void idEntity::UpdateModel( void ) {
 
 	// ensure that we call Present this frame
 	BecomeActive( TH_UPDATEVISUALS );
+
+#ifdef _D3XP
+	// If the entity has an xray skin, go ahead and add it
+	if ( xraySkin != NULL ) {
+		xrayEntity = renderEntity;
+		xrayEntity.xrayIndex = 2;
+		xrayEntity.customSkin = xraySkin;
+
+		if ( xrayEntityHandle == -1 ) {
+			xrayEntityHandle = gameRenderWorld->AddEntityDef( &xrayEntity );
+		} else {
+			gameRenderWorld->UpdateEntityDef( xrayEntityHandle, &xrayEntity );
+		}
+	}
+#endif
 }
 
 /*
@@ -1107,7 +1172,7 @@ void idEntity::UpdatePVSAreas( void ) {
 	// FIXME: some particle systems may have huge bounds and end up in many PVS areas
 	// the first MAX_PVS_AREAS may not be visible to a network client and as a result the particle system may not show up when it should
 	if ( localNumPVSAreas > MAX_PVS_AREAS ) {
-		localNumPVSAreas = gameLocal.pvs.GetPVSAreas( idBounds( modelAbsBounds.GetCenter() ).Expand( 64.0f ), localPVSAreas, sizeof( localPVSAreas ) / sizeof( localPVSAreas[0] ) );
+		localNumPVSAreas = gameLocal.pvs.GetPVSAreas( idBounds( renderEntity.origin ).Expand( 64.0f ), localPVSAreas, sizeof( localPVSAreas ) / sizeof( localPVSAreas[0] ) );
 	}
 
 	for ( numPVSAreas = 0; numPVSAreas < MAX_PVS_AREAS && numPVSAreas < localNumPVSAreas; numPVSAreas++ ) {
@@ -1307,6 +1372,10 @@ bool idEntity::UpdateRenderEntity( renderEntity_s *renderEntity, const renderVie
 
 	idAnimator *animator = GetAnimator();
 	if ( animator ) {
+#ifdef _D3XP
+		SetTimeState ts( timeGroup );
+#endif
+
 		return animator->CreateFrame( gameLocal.time, false );
 	}
 
@@ -1477,7 +1546,7 @@ bool idEntity::StartSoundShader( const idSoundShader *shader, const s_channelTyp
 
 	UpdateSound();
 
-	len = refSound.referenceSound->StartSound( shader, channel, diversity, soundShaderFlags );
+	len = refSound.referenceSound->StartSound( shader, channel, diversity, soundShaderFlags, !timeGroup /*_D3XP*/ );
 	if ( length ) {
 		*length = len;
 	}
@@ -2846,6 +2915,10 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		return;
 	}
 
+#ifdef _D3XP
+	SetTimeState ts( timeGroup );
+#endif
+
 	if ( !inflictor ) {
 		inflictor = gameLocal.world;
 	}
@@ -3298,20 +3371,6 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 				continue;
 			}
 
-			if ( !token.Icmp( "turkeyscore" ) ) {
-				if ( src.ReadToken( &token2 ) && entityGui->renderEntity.gui[0] ) {
-					int score = entityGui->renderEntity.gui[0]->State().GetInt( "score" );
-					score += atoi( token2 );
-					entityGui->renderEntity.gui[0]->SetStateInt( "score", score );
-					if ( gameLocal.GetLocalPlayer() && score >= 25000 && !gameLocal.GetLocalPlayer()->inventory.turkeyScore ) {
-						gameLocal.GetLocalPlayer()->GiveEmail( "highScore" );
-						gameLocal.GetLocalPlayer()->inventory.turkeyScore = true;
-					}
-				}
-				continue;
-			}
-
-
 			// handy for debugging GUI stuff
 			if ( !token.Icmp( "print" ) ) {
 				idStr msg;
@@ -3493,6 +3552,10 @@ bool idEntity::TouchTriggers( void ) const {
 		if ( !GetPhysics()->ClipContents( cm ) ) {
 			continue;
 		}
+
+#ifdef _D3XP
+		SetTimeState ts( ent->timeGroup );
+#endif
 
 		numEntities++;
 
@@ -4020,6 +4083,9 @@ idEntity::Event_SetKey
 */
 void idEntity::SetKey( const char *key, const char *value ) {
 	spawnArgs.Set( key, value );
+#ifdef _D3XP
+	UpdateChangeableSpawnArgs( NULL );
+#endif
 }
 
 /*
@@ -4247,6 +4313,80 @@ void idEntity::SetNeverDormant( bool neverDormant ) {
 	fl.neverDormant = ( neverDormant != 0 );
 	dormantStart = 0;
 }
+
+#ifdef _D3XP
+/*
+================
+idEntity::Event_SetGui
+
+BSM Nerve: Allows guis to be changed at runtime. Guis that are
+loaded after the level loads should be precahced using PrecacheGui.
+================
+*/
+void idEntity::SetGui( int guiNum, const char *guiName ) {
+	idUserInterface	**gui = NULL;
+
+	if ( guiNum >= 1 && guiNum <= MAX_RENDERENTITY_GUI ) {
+		gui = &renderEntity.gui[ guiNum-1 ];
+	}
+
+	if( gui ) {
+		*gui = uiManager->FindGui( guiName, true, false );
+		UpdateGuiParms( *gui, &spawnArgs );
+		UpdateChangeableSpawnArgs( NULL );
+		gameRenderWorld->UpdateEntityDef( modelDefHandle, &renderEntity );
+	} else {
+		gameLocal.Error( "Entity '%s' doesn't have a GUI %d", name.c_str(), guiNum );
+	}
+}
+
+/*
+================
+idEntity::Event_PrecacheGui
+
+BSM Nerve: Forces the engine to initialize a gui even if it is not specified as used in a level.
+This is useful for preventing load hitches when switching guis during the game using "setGui"
+================
+*/
+void idEntity::PrecacheGui( const char *guiName ) {
+	uiManager->FindGui( guiName, true, true );
+}
+
+/*
+================
+idEntity::GetGuiParm
+================
+*/
+const char *idEntity::GetGuiParm( int guiNum, const char *key ) {
+	if( renderEntity.gui[ guiNum - 1 ] ) {
+		return renderEntity.gui[ guiNum - 1 ]->GetStateString( key );
+	}
+	return "";
+}
+
+/*
+================
+idEntity::GetGuiParmFloat
+================
+*/
+float idEntity::GetGuiParmFloat( int guiNum, const char *key ) {
+	if( renderEntity.gui[ guiNum - 1 ] ) {
+		return renderEntity.gui[ guiNum - 1 ]->GetStateFloat( key );
+	}
+	return 0.0f;
+}
+
+/*
+================
+idEntity::GuiNamedEvent
+================
+*/
+void idEntity::GuiNamedEvent( int guiNum, const char *event ) {
+	if( renderEntity.gui[ guiNum - 1 ] ) {
+		renderEntity.gui[ guiNum - 1 ]->HandleNamedEvent( event );
+	}
+}
+#endif
 
 /*
 ================
@@ -4554,3 +4694,19 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 
 	return false;
 }
+
+#ifdef _D3XP
+/*
+================
+idEntity::DetermineTimeGroup
+================
+*/
+void idEntity::DetermineTimeGroup( bool slowmo ) {
+	if ( slowmo || gameLocal.isMultiplayer ) {
+		timeGroup = TIME_GROUP1;
+	}
+	else {
+		timeGroup = TIME_GROUP2;
+	}
+}
+#endif

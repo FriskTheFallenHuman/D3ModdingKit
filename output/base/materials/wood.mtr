@@ -1,0 +1,37 @@
+// NOTE:  THIS FILE IS WAS GENERATE BY THE ENGINE
+// MANUAL EDITING MAY BE REQUIERED
+
+textures/wood/planks01
+{
+	diffusemap textures/wood/planks01_d
+	bumpmap addnormals ( textures/wood/planks01_local, heightmap ( textures/wood/planks01_h, 4 ) )
+	specularmap textures/wood/planks01_spec
+}
+
+textures/wood/planks02
+{
+	diffusemap textures/wood/planks02_d
+	bumpmap addnormals ( textures/wood/planks02_local, heightmap ( textures/wood/planks02_h, 4 ) )
+	specularmap textures/wood/planks02_spec
+}
+
+textures/wood/woodfloor01
+{
+	diffusemap textures/wood/woodfloor01_d
+	bumpmap addnormals ( textures/wood/woodfloor01_local, heightmap ( textures/wood/woodfloor01_h, 4 ) )
+	specularmap textures/wood/woodfloor01_spec
+}
+
+textures/wood/woodfloor02
+{
+	diffusemap textures/wood/woodfloor02_d
+	bumpmap addnormals ( textures/wood/woodfloor02_local, heightmap ( textures/wood/woodfloor02_h, 4 ) )
+	specularmap textures/wood/woodfloor02_spec
+}
+
+textures/wood/woodfloor03
+{
+	diffusemap textures/wood/woodfloor03_d
+	bumpmap addnormals ( textures/wood/woodfloor03_local, heightmap ( textures/wood/woodfloor03_h, 4 ) )
+	specularmap textures/wood/woodfloor03_spec
+}

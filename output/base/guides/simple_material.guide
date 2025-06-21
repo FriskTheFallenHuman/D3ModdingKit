@@ -1,0 +1,8 @@
+// Simple guides used to simplify material creation
+
+guide generic_texture(TextureParm)
+{
+	bumpmap addnormals ( textures/TextureParm_local, heightmap ( textures/TextureParm_h, 1 ) )
+	diffusemap	textures/TextureParm_d
+	specularmap	textures/TextureParm_s
+}

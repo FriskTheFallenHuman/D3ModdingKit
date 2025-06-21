@@ -877,7 +877,7 @@ idPhysics_Base::SetWaterLevelf
 	what happens if an object spawns inside a liquid or something?  Nothing, it'll just sit
 	there.  This function sets the water level for an object that's already inside the water.
 
-	This was most noticeable when I had monsters walking into the water and of course, they'd
+	This was most noticeable when I had monsters walking into the water and of course, they'd 
 	sink to the bottom.  After I'd kill them they'd die normally and not float.  After adding
 	this function they float after they're killed.
 

@@ -474,7 +474,7 @@ try_again:
 		}
 
 	#else // SDL2
-		window = SDL_CreateWindow(ENGINE_VERSION,
+		window = SDL_CreateWindow(BUILD_ENGINE_VERSION,
 									SDL_WINDOWPOS_UNDEFINED_DISPLAY(selectedDisplay),
 									SDL_WINDOWPOS_UNDEFINED_DISPLAY(selectedDisplay),
 									parms.width, parms.height, flags);
@@ -632,7 +632,7 @@ try_again:
 #if defined(_WIN32) && defined(ID_ALLOW_TOOLS)
 
 #if ! SDL_VERSION_ATLEAST(2, 0, 0)
-	#error "dhewm3 only supports the tools with SDL2, not SDL1!"
+	#error "we only supports the tools with SDL2, not SDL1!"
 #endif
 
 		// The tools are Win32 specific.  If building the tools
@@ -1073,7 +1073,7 @@ GLimp_SetGamma
 void GLimp_SetGamma(unsigned short red[256], unsigned short green[256], unsigned short blue[256]) {
 #if SDL_VERSION_ATLEAST(3, 0, 0)
 	if ( ! r_gammaInShader.GetBool() ) {
-		common->Warning( "This build of dhewm3 uses SDL3, which does not support hardware gamma." );
+		common->Warning( "This build of the engine uses SDL3, which does not support hardware gamma." );
 		common->Warning( "If you want to adjust gamma or brightness, enable r_gammaInShader" );
 	}
 #else // SDL2 and SDL1.2
@@ -1227,7 +1227,7 @@ bool GLimp_SetWindowResizable( bool enableResizable )
 	SDL_SetWindowResizable( window, (SDL_bool)enableResizable );
 	return true;
 #else
-	common->Warning( "dhewm3 must be built with SDL 2.0.5 or newer to change resizability of existing windows!" );
+	common->Warning( "The engine must be built with SDL 2.0.5 or newer to change resizability of existing windows!" );
 	return false;
 #endif
 }

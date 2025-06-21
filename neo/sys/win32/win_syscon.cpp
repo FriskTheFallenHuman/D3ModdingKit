@@ -335,7 +335,7 @@ void Sys_CreateConsole( void ) {
 
 	s_wcd.hWnd = CreateWindowEx( 0,
 							   DEDCLASS,
-							   GAME_NAME,
+							   BUILD_NAME,
 							   DEDSTYLE,
 							   ( swidth - 850 ) / 2, ( sheight - 550 ) / 2 , rect.right - rect.left + 310, rect.bottom - rect.top + 111,
 							   NULL,
