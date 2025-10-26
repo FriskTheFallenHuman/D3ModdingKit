@@ -2472,6 +2472,15 @@ void RotateVector(idVec3 &v, idVec3 origin, float a, float c, float s) {
 	v[0] = x;
 	v[1] = y;
 }
+
+idRenderModel* CreateStaticModelForMD3( idRenderModelMD3* md3 ) {
+	renderEntity_t ent = { 0 }; // only ent.shaderParms[] is used and those can be 0
+	// TODO: do any of the entities using this support setting the frame(s)?
+	//       if so, they could be set as ent.shaderParms[SHADERPARM_MD3_FRAME] = frame;
+	//       maybe SHADERPARM_MD3_LASTFRAME and SHADERPARM_MD3_BACKLERP could also be used for animation?
+	return md3->InstantiateDynamicModel(&ent, NULL, NULL);
+}
+
 /*
 ================
 Brush_ModelIntersect
@@ -2488,7 +2497,12 @@ bool Brush_ModelIntersect(idEditorBrush *b, idVec3 origin, idVec3 dir,float &sca
 	scale = 0;
 	if (model) {
 		if ( model->IsDynamicModel() != DM_STATIC ) {
-			if ( dynamic_cast<idRenderModelMD5 *>( model ) ) {
+			if ( dynamic_cast<idRenderModelMD3*>(model) ) {
+				model = CreateStaticModelForMD3( dynamic_cast<idRenderModelMD3*>(model) );
+				if ( !model ) {
+					model = renderModelManager->DefaultModel();
+				}
+			} else if ( dynamic_cast<idRenderModelMD5*>(model) ) {
 				// take care of animated models
 				md5 = b->owner->eclass->entityModel;
 
@@ -3830,7 +3844,12 @@ static void Brush_DrawModel( const idEditorBrush *b, bool camera, bool bSelected
 		bool fixedBounds = false;
 
 		if ( model->IsDynamicModel() != DM_STATIC ) {
-			if ( dynamic_cast<idRenderModelMD5 *>( model ) ) {
+			if ( dynamic_cast<idRenderModelMD3*>(model) ) {
+				model2 = CreateStaticModelForMD3( static_cast<idRenderModelMD3*>(model) );
+				if ( !model2 ) {
+					common->Printf("CreateStaticModelForMD3() returned NULL!");
+				}
+			} else if ( dynamic_cast<idRenderModelMD5 *>( model ) ) {
 				const char *classname = b->owner->ValueForKey("classname");
 				if (stricmp(classname, "func_static") == 0) {
 					classname = b->owner->ValueForKey("animclass");
