@@ -133,9 +133,6 @@ const int MAX_EXPRESSION_REGISTERS = 4096;
 // game interface
 #include "framework/Game.h"
 
-// game callbacks interface
-#include "framework/GameCallbacks_local.h"
-
 //-----------------------------------------------------
 
 #ifndef _D3SDK

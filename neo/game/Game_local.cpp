@@ -230,28 +230,6 @@ void idGameLocal::Clear( void ) {
 	memset( lagometer, 0, sizeof( lagometer ) );
 }
 
-
-// DG: hack to support the Demo version of Doom3
-// NOTE: I couldn't just make this a global bool variable that's initialized
-//       in idGameLocal::Init(), because we decide whether it's the demo
-//       after loading and initializing the game DLL (when loading the main menu)
-static bool (*isDemoFnPtr)(void) = NULL;
-bool IsDoom3DemoVersion()
-{
-	bool ret = isDemoFnPtr ? isDemoFnPtr() : false;
-	return ret;
-}
-
-static bool ( *updateDebuggerFnPtr )( idInterpreter *interpreter, idProgram *program, int instructionPointer ) = NULL;
-bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer ) {
-	bool ret = false;
-	if ( interpreter != NULL && program != NULL ) {
-		ret = updateDebuggerFnPtr ? updateDebuggerFnPtr( interpreter, program, instructionPointer ) : false;
-	}
-	return ret;
-}
-
-
 /*
 ===========
 idGameLocal::Init
@@ -332,9 +310,6 @@ void idGameLocal::Init( void ) {
 	gamestate = GAMESTATE_NOMAP;
 
 	Printf( "...%d aas types\n", aasList.Num() );
-
-	// DG: hack to support the Demo version of Doom3
-	common->GetAdditionalFunction( idCommon::FT_IsDemo, ( idCommon::FunctionPointer * ) &isDemoFnPtr, NULL );
 }
 
 /*

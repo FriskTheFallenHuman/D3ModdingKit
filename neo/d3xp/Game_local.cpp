@@ -272,16 +272,6 @@ void idGameLocal::Clear( void ) {
 #endif
 }
 
-static bool ( *updateDebuggerFnPtr )( idInterpreter *interpreter, idProgram *program, int instructionPointer ) = NULL;
-bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer ) {
-	bool ret = false;
-	if ( interpreter != NULL && program != NULL ) {
-		ret = updateDebuggerFnPtr ? updateDebuggerFnPtr( interpreter, program, instructionPointer ) : false;
-	}
-	return ret;
-}
-
-
 /*
 ===========
 idGameLocal::Init

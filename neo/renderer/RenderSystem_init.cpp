@@ -2107,12 +2107,6 @@ void R_VidRestart_f( const idCmdArgs &args ) {
 		}
 	}
 
-	// DG: notify the game DLL about the reloadImages and (non-partial) vid_restart commands
-	if(gameCallbacks.reloadImagesCB != NULL)
-	{
-		gameCallbacks.reloadImagesCB(gameCallbacks.reloadImagesUserArg, args);
-	}
-
 	// this could take a while, so give them the cursor back ASAP
 	Sys_GrabMouseCursor( false );
 

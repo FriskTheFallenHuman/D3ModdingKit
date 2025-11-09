@@ -354,7 +354,8 @@ extern idGameEdit *				gameEdit;
 // v8 - Original Doom 3 version
 // v9 - idCommon::SetCallback() and GetAdditionalFunction() - for Mods
 // v10 - Revert debugger to original Quake 4 implementation
-const int GAME_API_VERSION		= 10;
+// v11 - Remove Game Callbacks system
+const int GAME_API_VERSION		= 11;
 
 typedef struct {
 

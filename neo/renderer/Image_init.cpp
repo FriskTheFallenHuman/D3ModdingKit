@@ -1088,12 +1088,6 @@ void R_ReloadImages_f( const idCmdArgs &args ) {
 	bool	all;
 	bool	checkPrecompressed;
 
-	// DG: notify the game DLL about the reloadImages command
-	if(gameCallbacks.reloadImagesCB != NULL)
-	{
-		gameCallbacks.reloadImagesCB(gameCallbacks.reloadImagesUserArg, args);
-	}
-
 	// this probably isn't necessary...
 	globalImages->ChangeTextureFilter();
 
