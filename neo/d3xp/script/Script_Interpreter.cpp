@@ -31,9 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../Game_local.h"
 
-// HvG: Debugger support
-extern bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer );
-
 /*
 ================
 idInterpreter::idInterpreter()
@@ -1019,12 +1016,12 @@ bool idInterpreter::Execute( void ) {
 		// next statement
 		st = &gameLocal.program.GetStatement( instructionPointer );
 
-		if ( !updateGameDebugger( this, &gameLocal.program, instructionPointer )
-			&& g_debugScript.GetBool( ) )
-		{
+		if ( gameLocal.editors & EDITOR_DEBUGGER ) {
+			common->DebuggerCheckBreakpoint ( this, &gameLocal.program, instructionPointer );
+		} else if ( g_debugScript.GetBool ( ) ) {
 			static int lastLineNumber = -1;
-			if ( lastLineNumber != gameLocal.program.GetStatement ( instructionPointer ).linenumber ) {
-				gameLocal.Printf ( "%s (%d)\n",
+			if ( lastLineNumber != gameLocal.program.GetStatement ( instructionPointer ).linenumber ) {				
+				gameLocal.Printf ( "%s (%d)\n", 
 					gameLocal.program.GetFilename ( gameLocal.program.GetStatement ( instructionPointer ).file ),
 					gameLocal.program.GetStatement ( instructionPointer ).linenumber
 					);
@@ -1897,27 +1894,27 @@ bool idInterpreter::Execute( void ) {
 	return threadDying;
 }
 
-bool idGameEditExt::CheckForBreakPointHit( const idInterpreter *interpreter, const function_t *function1, const function_t *function2, int depth ) const {
+bool idGameEdit::CheckForBreakPointHit( const idInterpreter *interpreter, const function_t *function1, const function_t *function2, int depth ) const {
 	return ( ( interpreter->GetCurrentFunction() == function1 ||
 			   interpreter->GetCurrentFunction() == function2)&&
 			 ( interpreter->GetCallstackDepth()  <= depth) );
 }
 
-bool idGameEditExt::ReturnedFromFunction( const idProgram *program, const idInterpreter *interpreter, int index ) const {
+bool idGameEdit::ReturnedFromFunction( const idProgram *program, const idInterpreter *interpreter, int index ) const {
 
 	return ( const_cast<idProgram *>( program )->GetStatement( index ).op == OP_RETURN && interpreter->GetCallstackDepth() <= 1 );
 }
 
-bool idGameEditExt::GetRegisterValue(const idInterpreter* interpreter, const char* name, idStr& out, int scopeDepth) const
+bool idGameEdit::GetRegisterValue(const idInterpreter* interpreter, const char* name, idStr& out, int scopeDepth) const
 {
 	return const_cast<idInterpreter*>(interpreter)->GetRegisterValue(name, out, scopeDepth);
 }
 
-const idThread *idGameEditExt::GetThread( const idInterpreter *interpreter ) const {
+const idThread *idGameEdit::GetThread( const idInterpreter *interpreter ) const {
 	return interpreter->GetThread();
 }
 
-void idGameEditExt::MSG_WriteCallstackFunc( idBitMsg *msg, const prstack_t *stack, const idProgram *program, int instructionPtr ) {
+void idGameEdit::MSG_WriteCallstackFunc( idBitMsg *msg, const prstack_t *stack, const idProgram *program, int instructionPtr ) {
 	const statement_t*	st;
 	const function_t*	func;
 
@@ -1952,7 +1949,7 @@ void idGameEditExt::MSG_WriteCallstackFunc( idBitMsg *msg, const prstack_t *stac
 	}
 }
 
-void idGameEditExt::MSG_WriteInterpreterInfo( idBitMsg *msg, const idInterpreter *interpreter, const idProgram *program, int instructionPtr ) {
+void idGameEdit::MSG_WriteInterpreterInfo( idBitMsg *msg, const idInterpreter *interpreter, const idProgram *program, int instructionPtr ) {
 	int			i;
 	prstack_s	temp;
 
@@ -1970,10 +1967,10 @@ void idGameEditExt::MSG_WriteInterpreterInfo( idBitMsg *msg, const idInterpreter
 	}
 }
 
-int idGameEditExt::GetInterpreterCallStackDepth( const idInterpreter *interpreter ) {
+int idGameEdit::GetInterpreterCallStackDepth( const idInterpreter *interpreter ) {
 	return interpreter->GetCallstackDepth();
 }
 
-const function_t *idGameEditExt::GetInterpreterCallStackFunction( const idInterpreter *interpreter, int stackDepth/* = -1*/ ) {
+const function_t *idGameEdit::GetInterpreterCallStackFunction( const idInterpreter *interpreter, int stackDepth/* = -1*/ ) {
 	return interpreter->GetCallstack()[ stackDepth > -1 ? stackDepth : interpreter->GetCallstackDepth() ].f;
 }

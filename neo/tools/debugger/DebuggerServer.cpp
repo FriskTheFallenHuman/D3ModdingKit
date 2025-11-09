@@ -231,11 +231,11 @@ bool rvDebuggerServer::ProcessMessages ( void )
 
 			case DBMSG_STEPOVER:
 				mBreakStepOver = true;
-				mBreakStepOverDepth = ((idGameEditExt*) gameEdit)->GetInterpreterCallStackDepth(mBreakInterpreter);
-				mBreakStepOverFunc1 = ((idGameEditExt*) gameEdit)->GetInterpreterCallStackFunction(mBreakInterpreter);
+				mBreakStepOverDepth = gameEdit->GetInterpreterCallStackDepth(mBreakInterpreter);
+				mBreakStepOverFunc1 = gameEdit->GetInterpreterCallStackFunction(mBreakInterpreter);
 				if (mBreakStepOverDepth)
 				{
-					mBreakStepOverFunc2 = ((idGameEditExt*) gameEdit)->GetInterpreterCallStackFunction(mBreakInterpreter,mBreakStepOverDepth - 1);
+					mBreakStepOverFunc2 = gameEdit->GetInterpreterCallStackFunction(mBreakInterpreter,mBreakStepOverDepth - 1);
 				}
 				else
 				{
@@ -318,7 +318,7 @@ void rvDebuggerServer::HandleAddBreakpoint ( idBitMsg* msg )
 	msg->ReadString ( filename, sizeof(filename) );
 
 	//check for statement on requested breakpoint location
-	if (!((idGameEditExt*) gameEdit)->IsLineCode(filename, lineNumber))
+	if (!gameEdit->IsLineCode(filename, lineNumber))
 	{
 		idBitMsg	msgOut;
 		byte		buffer[MAX_MSGLEN];
@@ -404,7 +404,7 @@ void rvDebuggerServer::HandleInspectCallstack ( idBitMsg* msg )
 	msgOut.BeginWriting();
 	msgOut.WriteShort ( (short)DBMSG_INSPECTCALLSTACK );
 
-	((idGameEditExt*) gameEdit)->MSG_WriteInterpreterInfo(&msgOut, mBreakInterpreter, mBreakProgram, mBreakInstructionPointer);
+	gameEdit->MSG_WriteInterpreterInfo(&msgOut, mBreakInterpreter, mBreakProgram, mBreakInstructionPointer);
 
 	SendPacket (msgOut.GetData(), msgOut.GetSize() );
 }
@@ -429,12 +429,12 @@ void rvDebuggerServer::HandleInspectThreads ( idBitMsg* msg )
 	msgOut.WriteShort ( (short)DBMSG_INSPECTTHREADS );
 
 	// Write the number of threads to the message
-	msgOut.WriteShort ((short)((idGameEditExt*) gameEdit)->GetTotalScriptThreads() );
+	msgOut.WriteShort ((short)gameEdit->GetTotalScriptThreads() );
 
 	// Loop through all of the threads and write their name and number to the message
-	for ( i = 0; i < ((idGameEditExt*) gameEdit)->GetTotalScriptThreads(); i ++ )
+	for ( i = 0; i < gameEdit->GetTotalScriptThreads(); i ++ )
 	{
-		((idGameEditExt*) gameEdit)->MSG_WriteThreadInfo(&msgOut,((idGameEditExt*) gameEdit)->GetThreadByIndex(i), mBreakInterpreter);
+		gameEdit->MSG_WriteThreadInfo(&msgOut,gameEdit->GetThreadByIndex(i), mBreakInterpreter);
 	}
 
 	// Send off the inspect threads packet to the debugger client
@@ -474,7 +474,7 @@ void rvDebuggerServer::HandleInspectScripts( idBitMsg* msg )
 	msgOut.BeginWriting();
 	msgOut.WriteShort((short)DBMSG_INSPECTSCRIPTS);
 
-	((idGameEditExt*) gameEdit)->MSG_WriteScriptList( &msgOut );
+	gameEdit->MSG_WriteScriptList( &msgOut );
 
 	SendPacket(msgOut.GetData(), msgOut.GetSize());
 }
@@ -509,7 +509,7 @@ void rvDebuggerServer::HandleInspectVariable ( idBitMsg* msg )
 	msgOut.BeginWriting();
 	msgOut.WriteShort ( (short)DBMSG_INSPECTVARIABLE );
 
-	if (!((idGameEditExt*) gameEdit)->GetRegisterValue(mBreakInterpreter, varname, varvalue, scopeDepth ) )
+	if (!gameEdit->GetRegisterValue(mBreakInterpreter, varname, varvalue, scopeDepth ) )
 	{
 		varvalue = "???";
 	}
@@ -540,8 +540,8 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 
 
 	// Grab the current statement and the filename that it came from
-	filename = ((idGameEditExt*) gameEdit)->GetFilenameForStatement(program, instructionPointer);
-	int linenumber = ((idGameEditExt*) gameEdit)->GetLineNumberForStatement(program, instructionPointer);
+	filename = gameEdit->GetFilenameForStatement(program, instructionPointer);
+	int linenumber = gameEdit->GetLineNumberForStatement(program, instructionPointer);
 
 	// Operate on lines, not statements
 	if ( mLastStatementLine == linenumber && mLastStatementFile == filename)
@@ -555,7 +555,7 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 	mLastStatementLine = linenumber;
 
 	// Reset stepping when the last function on the callstack is returned from
-	if ( ((idGameEditExt*) gameEdit)->ReturnedFromFunction(program, interpreter,instructionPointer))
+	if ( gameEdit->ReturnedFromFunction(program, interpreter,instructionPointer))
 	{
 		mBreakStepOver = false;
 		mBreakStepInto = false;
@@ -573,7 +573,7 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 	if ( mBreakStepOver )
 	{
 		//virtual bool CheckForBreakpointHit(interpreter,function1,function2,depth)
-		if (((idGameEditExt*) gameEdit)->CheckForBreakPointHit(interpreter, mBreakStepOverFunc1, mBreakStepOverFunc2, mBreakStepOverDepth))
+		if (gameEdit->CheckForBreakPointHit(interpreter, mBreakStepOverFunc1, mBreakStepOverFunc2, mBreakStepOverDepth))
 		{
 			Break ( interpreter, program, instructionPointer );
 			return;
@@ -667,8 +667,8 @@ void rvDebuggerServer::Break ( idInterpreter* interpreter, idProgram* program, i
 	mBreakNext     = false;
 
 	// Grab the current statement and the filename that it came from
-	filename = ((idGameEditExt*) gameEdit)->GetFilenameForStatement(program,instructionPointer);
-	int linenumber = ((idGameEditExt*) gameEdit)->GetLineNumberForStatement(program, instructionPointer);
+	filename = gameEdit->GetFilenameForStatement(program,instructionPointer);
+	int linenumber = gameEdit->GetLineNumberForStatement(program, instructionPointer);
 	idStr fileStr = filename;
 	fileStr.BackSlashesToSlashes();
 

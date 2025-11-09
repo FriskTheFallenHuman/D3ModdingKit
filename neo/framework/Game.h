@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "idlib/BitMsg.h"
-#include "idlib/Dict.h"
-#include "idlib/containers/StrList.h"
-#include "framework/UsercmdGen.h"
-#include "renderer/RenderWorld.h"
-#include "sound/sound.h"
-
 class idAASFileManager;
 class idCollisionModelManager;
 class idRenderSystem;
@@ -110,10 +103,10 @@ public:
 	virtual void				SetPersistentPlayerInfo( int clientNum, const idDict &playerInfo ) = 0;
 
 	// Loads a map and spawns all the entities.
-	virtual void				InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed ) = 0;
+	virtual void				InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed, int activeEditors ) = 0;
 
 	// Loads a map from a savegame file.
-	virtual bool				InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile ) = 0;
+	virtual bool				InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile, int activeEditors ) = 0;
 
 	// Saves the current game state, the session may have written some data to the file already.
 	virtual void				SaveGame( idFile *saveGameFile ) = 0;
@@ -128,7 +121,7 @@ public:
 	virtual void				SpawnPlayer( int clientNum ) = 0;
 
 	// Runs a game frame, may return a session command for level changing, etc
-	virtual gameReturn_t		RunFrame( const usercmd_t *clientCmds ) = 0;
+	virtual gameReturn_t		RunFrame( const usercmd_t *clientCmds, int activeEditors ) = 0;
 
 	// Makes rendering and sound system calls to display for a given clientNum.
 	virtual bool				Draw( int clientNum ) = 0;
@@ -300,7 +293,7 @@ public:
 	virtual void				EntitySetColor( idEntity *ent, const idVec3 color );
 
 	// Player methods.
-	virtual bool				PlayerIsValid( ) const;
+	virtual bool				PlayerIsValid() const;
 	virtual void				PlayerGetOrigin( idVec3 &org ) const;
 	virtual void				PlayerGetAxis( idMat3 &axis ) const;
 	virtual void				PlayerGetViewAngles( idAngles &angles ) const;
@@ -316,14 +309,8 @@ public:
 	virtual int					MapGetEntitiesMatchingClassWithString( const char *classname, const char *match, const char *list[], const int max ) const;
 	virtual void				MapRemoveEntity( const char *name ) const;
 	virtual void				MapEntityTranslate( const char *name, const idVec3 &v ) const;
-};
 
-extern idGameEdit *				gameEdit;
-
-// In game script Debugging Support
-class idGameEditExt : public idGameEdit {
-public:
-	virtual						~idGameEditExt( void ) { }
+	// In game script Debugging Support
 	// IdProgram
 	virtual void				GetLoadedScripts( idStrList ** result );
 	virtual bool				IsLineCode( const char* filename, int linenumber) const;
@@ -354,6 +341,7 @@ public:
 	virtual void				MSG_WriteScriptList( idBitMsg* msg );
 };
 
+extern idGameEdit *				gameEdit;
 
 /*
 ===============================================================================
@@ -363,7 +351,10 @@ public:
 ===============================================================================
 */
 
-const int GAME_API_VERSION		= 9;
+// v8 - Original Doom 3 version
+// v9 - idCommon::SetCallback() and GetAdditionalFunction() - for Mods
+// v10 - Revert debugger to original Quake 4 implementation
+const int GAME_API_VERSION		= 10;
 
 typedef struct {
 

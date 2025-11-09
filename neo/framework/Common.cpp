@@ -112,8 +112,6 @@ volatile int	com_ticNumber;			// 60 hz tics
 int				com_editors;			// currently opened editor(s)
 bool			com_editorActive;		//  true if an editor has focus
 
-bool			com_debuggerSupported;	// only set to true when the updateDebugger function is set. see GetAdditionalFunction()
-
 #ifdef _WIN32
 HWND			com_hwndMsg = NULL;
 bool			com_outputMsg = false;
@@ -143,6 +141,7 @@ public:
 	virtual void				ActivateTool( bool active );
 	virtual void				WriteConfigToFile( const char *filename );
 	virtual void				WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd );
+	virtual void				DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer );
 	virtual void				BeginRedirect( char *buffer, int buffersize, void (*flush)( const char * ) );
 	virtual void				EndRedirect( void );
 	virtual void				SetRefreshOnPrint( bool set );
@@ -255,7 +254,6 @@ idCommonLocal::idCommonLocal( void ) {
 	com_refreshOnPrint = false;
 	com_errorEntered = 0;
 	com_shuttingDown = false;
-	com_debuggerSupported = false;
 
 	strcpy( errorMessage, "" );
 
@@ -2804,7 +2802,6 @@ void idCommonLocal::UnloadGameDLL( void ) {
 
 #endif
 
-	com_debuggerSupported = false; // HvG: Reset debugger availability.
 	gameCallbacks.Reset(); // DG: these callbacks are invalid now because DLL has been unloaded
 }
 
@@ -3429,16 +3426,6 @@ static bool isDemo( void )
 	return sessLocal.IsDemoVersion();
 }
 
-static bool updateDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer )
-{
-	if (com_editors & EDITOR_DEBUGGER)
-	{
-		DebuggerServerCheckBreakpoint( interpreter, program, instructionPointer );
-		return true;
-	}
-	return false;
-}
-
 // returns true if that function is available in this version of dhewm3
 // *out_fnptr will be the function (you'll have to cast it probably)
 // *out_userArg will be an argument you have to pass to the function, if appropriate (else NULL)
@@ -3460,15 +3447,16 @@ bool idCommonLocal::GetAdditionalFunction(idCommon::FunctionType ft, idCommon::F
 			// don't set *out_userArg, this function takes no arguments
 			return true;
 
-		case idCommon::FT_UpdateDebugger:
-			*out_fnptr = (idCommon::FunctionPointer)updateDebugger;
-			com_debuggerSupported = true;
-			return true;
-
 		default:
 			*out_fnptr = NULL;
 			Warning("Called idCommon::SetCallback() with unknown FunctionType %d!\n", ft);
 			return false;
+	}
+}
+
+void idCommonLocal::DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer ) {
+	if ( com_enableDebuggerServer.GetBool() ) {
+		DebuggerServerCheckBreakpoint( interpreter, program, instructionPointer );
 	}
 }
 

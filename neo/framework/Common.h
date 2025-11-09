@@ -85,8 +85,6 @@ extern volatile int	com_ticNumber;			// 60 hz tics, incremented by async functio
 extern int			com_editors;			// current active editor(s)
 extern bool			com_editorActive;		// true if an editor has focus
 
-extern bool			com_debuggerSupported;	// only set to true when the updateDebugger function is set. see GetAdditionalFunction()
-
 #ifdef _WIN32
 const char			DMAP_MSGID[] = "DMAPOutput";
 extern HWND			com_hwndMsg;
@@ -111,6 +109,9 @@ struct MemInfo_t {
 	int				modelAssetsTotal;
 	int				soundAssetsTotal;
 };
+
+class idInterpreter;
+class idProgram;
 
 class idCommon {
 public:
@@ -154,6 +155,8 @@ public:
 								// Writes cvars with the given flags to a file.
 	virtual void				WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd ) = 0;
 
+								// Debbugger hook to check if a breakpoint has been hit
+	virtual void				DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer ) = 0;
 
 								// Begins redirection of console output to the given buffer.
 	virtual void				BeginRedirect( char *buffer, int buffersize, void (*flush)( const char * ) ) = 0;
@@ -270,11 +273,6 @@ public:
 		// it returns true if we're currently running the doom3 demo
 		// not relevant for mods, only for game/ aka base.dll/base.so/...
 		FT_IsDemo = 1,
-		// the function's signature is bool fn(idInterpreter,idProgram,int) with arguments:
-		// idInterpreter *interpreter, idProgram *program, int instructionPointer
-		// it returns true if the game debugger is active.
-		// relevant for mods.
-		FT_UpdateDebugger,
 	};
 
 	// returns true if that function is available in this version of dhewm3

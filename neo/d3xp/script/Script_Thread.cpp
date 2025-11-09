@@ -1918,42 +1918,42 @@ void idThread::Event_InfluenceActive( void ) {
 	}
 }
 
-int idGameEditExt::ThreadGetNum(const idThread* thread) const
+int idGameEdit::ThreadGetNum(const idThread* thread) const
 {
 	return const_cast<idThread*>(thread)->GetThreadNum();
 }
 
-const char* idGameEditExt::ThreadGetName(const idThread* thread) const
+const char* idGameEdit::ThreadGetName(const idThread* thread) const
 {
 	return const_cast<idThread*>(thread)->GetThreadName();
 }
 
-int	idGameEditExt::GetTotalScriptThreads() const
+int	idGameEdit::GetTotalScriptThreads() const
 {
 	return idThread::GetThreads().Num();
 }
 
-const idThread* idGameEditExt::GetThreadByIndex(int index) const
+const idThread* idGameEdit::GetThreadByIndex(int index) const
 {
 	return idThread::GetThreads()[index];
 }
 
-bool idGameEditExt::ThreadIsDoneProcessing(const idThread* thread) const
+bool idGameEdit::ThreadIsDoneProcessing(const idThread* thread) const
 {
 	return const_cast<idThread*>(thread)->IsDoneProcessing();
 }
 
-bool idGameEditExt::ThreadIsWaiting(const idThread* thread) const
+bool idGameEdit::ThreadIsWaiting(const idThread* thread) const
 {
 	return const_cast<idThread*>(thread)->IsWaiting();
 }
 
-bool idGameEditExt::ThreadIsDying(const idThread* thread) const
+bool idGameEdit::ThreadIsDying(const idThread* thread) const
 {
 	return const_cast<idThread*>(thread)->IsDying();
 }
 
-void idGameEditExt::MSG_WriteThreadInfo(idBitMsg* msg, const idThread* thread, const idInterpreter* interpreter)
+void idGameEdit::MSG_WriteThreadInfo(idBitMsg* msg, const idThread* thread, const idInterpreter* interpreter)
 {
 	msg->WriteString(const_cast<idThread*>(thread)->GetThreadName());
 	msg->WriteInt(const_cast<idThread*>(thread)->GetThreadNum());
