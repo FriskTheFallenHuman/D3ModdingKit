@@ -136,7 +136,7 @@ bool rvGEViewer::OpenFile ( const char* filename )
 
 	SetFileAttributes ( ospath, FILE_ATTRIBUTE_NORMAL );
 	DeleteFile ( ospath );
-	CopyFile ( filename, ospath, FALSE );
+	CopyFileA ( filename, ospath, FALSE );
 	SetFileAttributes ( ospath, FILE_ATTRIBUTE_NORMAL );
 
 	mInterface = reinterpret_cast< idUserInterfaceLocal* >( uiManager->FindGui( tempfile, true, true ) );

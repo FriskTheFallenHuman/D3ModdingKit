@@ -667,11 +667,11 @@ int rvPropertyGrid::HandleDrawItem ( WPARAM wParam, LPARAM lParam )
 	rText.right = rText.left + mSplitter;
 	rText.left += 2;
 
-	DrawText ( dis->hDC, item->mName, item->mName.Length(), &rText, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
+	DrawTextA ( dis->hDC, item->mName, item->mName.Length(), &rText, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
 
 	rText.left = dis->rcItem.left + mSplitter + 2;
 	rText.right = dis->rcItem.right;
-	DrawText ( dis->hDC, item->mValue, item->mValue.Length(), &rText, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
+	DrawTextA ( dis->hDC, item->mValue, item->mValue.Length(), &rText, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
 
 	return 0;
 }

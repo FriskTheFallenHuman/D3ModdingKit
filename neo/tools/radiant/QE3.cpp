@@ -143,7 +143,7 @@ void ConnectEntities(void) {
 	int i, t;
 
 	if (g_qeglobals.d_select_count < 2) {
-		MessageBox( g_pParentWnd->GetSafeHwnd(), "Must have at least two brushes selected.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
+		MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Must have at least two brushes selected.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
 		return;
 	}
 
@@ -151,14 +151,14 @@ void ConnectEntities(void) {
 
 	for (i = 0; i < g_qeglobals.d_select_count; i++) {
 		if (g_qeglobals.d_select_order[i]->owner == world_entity) {
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "Can't connect to the world.", "Can't Connect Entity", MB_OK | MB_ICONWARNING );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Can't connect to the world.", "Can't Connect Entity", MB_OK | MB_ICONWARNING );
 			return;
 		}
 	}
 
 	for (i = 1; i < g_qeglobals.d_select_count; i++) {
 		if (e1 == g_qeglobals.d_select_order[i]->owner) {
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "Brushes are from same entity.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Brushes are from same entity.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
 			return;
 		}
 	}
@@ -205,7 +205,7 @@ void ConnectEntities(void) {
 bool QE_SingleBrush(bool bQuiet, bool entityOK) {
 	if ((selected_brushes.next == &selected_brushes) || (selected_brushes.next->next != &selected_brushes)) {
 		if (!bQuiet) {
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "You must have a single brush selected.", "Brush Manipulation", MB_OK | MB_ICONERROR );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "You must have a single brush selected.", "Brush Manipulation", MB_OK | MB_ICONERROR );
 		}
 
 		return false;
@@ -213,7 +213,7 @@ bool QE_SingleBrush(bool bQuiet, bool entityOK) {
 
 	if (!entityOK && selected_brushes.next->owner->eclass->fixedsize) {
 		if (!bQuiet) {
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "You cannot manipulate fixed size entities.", "Brush Manipulation", MB_OK | MB_ICONERROR );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "You cannot manipulate fixed size entities.", "Brush Manipulation", MB_OK | MB_ICONERROR );
 		}
 
 		return false;

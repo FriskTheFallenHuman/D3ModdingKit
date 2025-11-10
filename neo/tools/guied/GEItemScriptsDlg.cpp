@@ -295,7 +295,7 @@ bool GEItescriptsDlg_Apply ( HWND hwnd )
 	}
 	catch ( idException &e )
 	{
-		MessageBox ( hwnd, e.error, "Script Error", MB_OK|MB_ICONERROR);
+		MessageBoxA ( hwnd, e.error, "Script Error", MB_OK|MB_ICONERROR);
 		return false;
 	}
 

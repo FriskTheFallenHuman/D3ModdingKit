@@ -68,7 +68,7 @@ bool rvGEWorkspace::SaveFile ( const char* filename )
 
 	fileSystem->CloseFile ( file );
 
-	if ( !CopyFile ( ospath, filename, FALSE ) )
+	if ( !CopyFileA ( ospath, filename, FALSE ) )
 	{
 		DeleteFile ( ospath );
 		SetCursor ( LoadCursor ( NULL, IDC_ARROW ) );
@@ -309,7 +309,7 @@ bool rvGEWorkspace::LoadFile ( const char* filename, idStr* error )
 
 	SetFileAttributes ( ospath, FILE_ATTRIBUTE_NORMAL );
 	DeleteFile ( ospath );
-	if ( !CopyFile ( filename, ospath, FALSE ) )
+	if ( !CopyFileA ( filename, ospath, FALSE ) )
 	{
 		if ( error )
 		{

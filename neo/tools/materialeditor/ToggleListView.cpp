@@ -72,19 +72,19 @@ ToggleListView::~ToggleListView() {
 */
 void ToggleListView::SetToggleIcons(LPCSTR disabled, LPCSTR on, LPCSTR off) {
 	if(on) {
-		onIcon = (HICON)LoadImage ( AfxGetInstanceHandle(), on, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+		onIcon = (HICON)LoadImageA ( AfxGetInstanceHandle(), on, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
 	} else {
 		onIcon = NULL;
 	}
 
 	if(off) {
-		offIcon = (HICON)LoadImage ( AfxGetInstanceHandle(), off, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+		offIcon = (HICON)LoadImageA ( AfxGetInstanceHandle(), off, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
 	} else {
 		offIcon = NULL;
 	}
 
 	if(disabled) {
-		disabledIcon = (HICON)LoadImage ( AfxGetInstanceHandle(), disabled, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+		disabledIcon = (HICON)LoadImageA ( AfxGetInstanceHandle(), disabled, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
 	} else {
 		disabledIcon = NULL;
 	}
@@ -278,7 +278,7 @@ void ToggleListView::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
 
 	int colorIndex = ( (lpDrawItemStruct->itemState & ODS_SELECTED ) ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT );
 	SetTextColor ( lpDrawItemStruct->hDC, GetSysColor ( colorIndex ) );
-	DrawText ( lpDrawItemStruct->hDC, szBuff, strlen(szBuff), &rDraw, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
+	DrawTextA ( lpDrawItemStruct->hDC, szBuff, strlen(szBuff), &rDraw, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
 
 }
 

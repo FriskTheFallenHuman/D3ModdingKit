@@ -502,7 +502,7 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc ( HWND wnd, UINT msg, WPARAM wp
 				t.right -= s4; // a little space between text and "border" to code part of window
 
 				idStr lntxt( iFirstVisibleLine + i + 1);
-				DrawText( dc, lntxt, lntxt.Length(), &t, DT_RIGHT );
+				DrawTextA( dc, lntxt, lntxt.Length(), &t, DT_RIGHT );
 			}
 			DeleteObject( hf );
 
@@ -926,10 +926,10 @@ void rvDebuggerWindow::ResizeImageList(int& widthOut, int& heightOut)
 
 	ImageList_Destroy(mTmpImageList);
 	mTmpImageList = ImageList_Create(width, height, ILC_COLOR | ILC_MASK , 0, 2);
-	ImageList_AddIcon(mTmpImageList, (HICON)LoadImage(mInstance, MAKEINTRESOURCE(IDI_DBG_EMPTY), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
-	ImageList_AddIcon(mTmpImageList, (HICON)LoadImage(mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENT), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
-	ImageList_AddIcon(mTmpImageList, (HICON)LoadImage(mInstance, MAKEINTRESOURCE(IDI_DBG_BREAKPOINT), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
-	ImageList_AddIcon(mTmpImageList, (HICON)LoadImage(mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENTLINE), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
+	ImageList_AddIcon(mTmpImageList, (HICON)LoadImageA(mInstance, MAKEINTRESOURCE(IDI_DBG_EMPTY), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
+	ImageList_AddIcon(mTmpImageList, (HICON)LoadImageA(mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENT), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
+	ImageList_AddIcon(mTmpImageList, (HICON)LoadImageA(mInstance, MAKEINTRESOURCE(IDI_DBG_BREAKPOINT), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
+	ImageList_AddIcon(mTmpImageList, (HICON)LoadImageA(mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENTLINE), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR));
 
 	widthOut = width;
 	heightOut = height;
@@ -1105,10 +1105,10 @@ int rvDebuggerWindow::HandleCreate ( WPARAM wparam, LPARAM lparam )
 	// Create the image list that is used by the threads window, callstack window, and
 	// margin window
 	mImageList = ImageList_Create ( 16, 16, ILC_COLOR|ILC_MASK, 0, 2 );
-	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_EMPTY), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
-	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENT), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
-	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_BREAKPOINT), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
-	ImageList_AddIcon ( mImageList, (HICON)LoadImage ( mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENTLINE), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
+	ImageList_AddIcon ( mImageList, (HICON)LoadImageA ( mInstance, MAKEINTRESOURCE(IDI_DBG_EMPTY), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
+	ImageList_AddIcon ( mImageList, (HICON)LoadImageA ( mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENT), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
+	ImageList_AddIcon ( mImageList, (HICON)LoadImageA ( mInstance, MAKEINTRESOURCE(IDI_DBG_BREAKPOINT), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
+	ImageList_AddIcon ( mImageList, (HICON)LoadImageA ( mInstance, MAKEINTRESOURCE(IDI_DBG_CURRENTLINE), IMAGE_ICON, 16, 16, LR_DEFAULTSIZE|LR_DEFAULTCOLOR) );
 
 	int w, h;
 	ResizeImageList(w, h);
@@ -1208,7 +1208,7 @@ int rvDebuggerWindow::HandleCommand ( WPARAM wparam, LPARAM lparam )
 		filename = gDebuggerApp.GetOptions().GetRecentFile ( gDebuggerApp.GetOptions().GetRecentFileCount() - (LOWORD(wparam)-ID_DBG_FILE_MRU1) - 1 );
 		if ( !OpenScript ( filename ) )
 		{
-			MessageBox ( mWnd, va("Failed to open script '%s'", filename.c_str() ), "Quake 4 Script Debugger", MB_OK );
+			MessageBoxA ( mWnd, va("Failed to open script '%s'", filename.c_str() ), "Quake 4 Script Debugger", MB_OK );
 		}
 		return 0;
 	}
@@ -1904,7 +1904,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc ( HWND wnd, UINT msg, WPARAM wparam, 
 		case WM_CLOSE:
 			if ( window->mClient->IsConnected ( ) )
 			{
-				if ( IDNO == MessageBox ( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO|MB_ICONQUESTION ) )
+				if ( IDNO == MessageBoxA ( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO|MB_ICONQUESTION ) )
 				{
 					return 0;
 				}
@@ -2415,7 +2415,7 @@ int rvDebuggerWindow::HandleActivate ( WPARAM wparam, LPARAM lparam )
 	{
 		if ( mScripts[i]->IsFileModified ( true ) )
 		{
-			if ( IDYES == MessageBox ( mWnd, va("%s\n\nThis file has been modified outside of the debugger.\nDo you want to reload it?", mScripts[i]->GetFilename() ), "Quake 4 Script Debugger", MB_YESNO|MB_ICONQUESTION ) )
+			if ( IDYES == MessageBoxA ( mWnd, va("%s\n\nThis file has been modified outside of the debugger.\nDo you want to reload it?", mScripts[i]->GetFilename() ), "Quake 4 Script Debugger", MB_YESNO|MB_ICONQUESTION ) )
 			{
 				mScripts[i]->Reload ( );
 
@@ -2782,7 +2782,7 @@ int rvDebuggerWindow::HandleDrawItem ( WPARAM wparam, LPARAM lparam )
 			{
 				case 0:
 					SetTextColor ( dis->hDC, GetSysColor ( selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
-					DrawText ( dis->hDC, watch->mVariable, -1, &textrect, DT_LEFT|DT_VCENTER );
+					DrawTextA ( dis->hDC, watch->mVariable, -1, &textrect, DT_LEFT|DT_VCENTER );
 					break;
 
 				case 1:
@@ -2794,7 +2794,7 @@ int rvDebuggerWindow::HandleDrawItem ( WPARAM wparam, LPARAM lparam )
 					{
 						SetTextColor ( dis->hDC, GetSysColor ( selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
 					}
-					DrawText ( dis->hDC, watch->mValue, -1, &textrect, DT_LEFT|DT_VCENTER );
+					DrawTextA ( dis->hDC, watch->mValue, -1, &textrect, DT_LEFT|DT_VCENTER );
 					break;
 			}
 		}

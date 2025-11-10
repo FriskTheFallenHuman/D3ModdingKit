@@ -390,7 +390,7 @@ void RadiantRun( void ) {
 		}
 	}
 	catch( idException &ex ) {
-		::MessageBox( NULL, ex.error, "Exception error", MB_OK );
+		MessageBoxA( NULL, ex.error, "Exception error", MB_OK );
 		RadiantShutdown();
 	}
 }

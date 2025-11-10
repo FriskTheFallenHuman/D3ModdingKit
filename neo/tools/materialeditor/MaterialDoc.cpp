@@ -616,7 +616,7 @@ void MaterialDoc::Save() {
 		assert(manager);
 		manager->MaterialSaved(this);
 	} else {
-		MessageBox(GetMaterialEditorWindow(), va("Unable to save '%s'. It may be read-only", name.c_str()), "Save Error", MB_OK | MB_ICONERROR);
+		MessageBoxA(GetMaterialEditorWindow(), va("Unable to save '%s'. It may be read-only", name.c_str()), "Save Error", MB_OK | MB_ICONERROR);
 	}
 }
 

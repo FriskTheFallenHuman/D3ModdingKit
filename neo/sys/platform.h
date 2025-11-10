@@ -283,7 +283,13 @@ bulk of the codebase, so it is the best place for analyze pragmas.
 #ifdef _WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
-	#undef FindText								// stupid namespace poluting Microsoft monkeys
+
+	// fix stupid namespace poluting Microsoft monkeys
+	#undef FindText
+	#undef MessageBox
+	#undef DrawText
+	#undef CopyFile
+	#undef LoadImage
 #endif
 
 // Apple legacy

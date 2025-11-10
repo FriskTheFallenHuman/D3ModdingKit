@@ -66,12 +66,12 @@ bool rvGENavigator::Create ( HWND parent, bool visible )
 	wndClass.hInstance     = win32.hInstance;
 	RegisterClassEx ( &wndClass );
 
-	mVisibleIcon = (HICON)LoadImage ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_VISIBLE), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
-	mScriptsIcon = (HICON)LoadImage ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_SCRIPTS), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
-	mScriptsLightIcon = (HICON)LoadImage ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_SCRIPTSHI), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
-	mVisibleIconDisabled = (HICON)LoadImage ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_VISIBLEDISABLED), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
-	mExpandIcon = (HICON)LoadImage ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_EXPAND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
-	mCollapseIcon = (HICON)LoadImage ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_COLLAPSE), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+	mVisibleIcon = (HICON)LoadImageA ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_VISIBLE), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+	mScriptsIcon = (HICON)LoadImageA ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_SCRIPTS), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
+	mScriptsLightIcon = (HICON)LoadImageA ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_SCRIPTSHI), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR );
+	mVisibleIconDisabled = (HICON)LoadImageA ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_VISIBLEDISABLED), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+	mExpandIcon = (HICON)LoadImageA ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_EXPAND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
+	mCollapseIcon = (HICON)LoadImageA ( win32.hInstance, MAKEINTRESOURCE(IDI_GUIED_NAV_COLLAPSE), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR|LR_LOADMAP3DCOLORS );
 
 	mWnd = CreateWindowEx ( WS_EX_TOOLWINDOW,
 							"GUIEDITOR_NAVIGATOR_CLASS",
@@ -248,7 +248,7 @@ LRESULT CALLBACK rvGENavigator::WndProc ( HWND hWnd, UINT msg, WPARAM wParam, LP
 
 				int colorIndex = ( (dis->itemState & ODS_SELECTED ) ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT );
 				SetTextColor ( dis->hDC, GetSysColor ( colorIndex ) );
-				DrawText ( dis->hDC, name, name.Length(), &rDraw, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
+				DrawTextA ( dis->hDC, name, name.Length(), &rDraw, DT_LEFT|DT_VCENTER|DT_SINGLELINE );
 
 				if ( wrapper->GetVariableDict().GetNumKeyVals ( ) || wrapper->GetScriptDict().GetNumKeyVals ( ) )
 				{
