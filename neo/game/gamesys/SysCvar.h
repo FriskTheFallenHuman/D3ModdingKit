@@ -94,14 +94,6 @@ extern idCVar	ai_showPaths;
 extern idCVar	ai_showObstacleAvoidance;
 extern idCVar	ai_blockedFailSafe;
 
-#if MD5_ENABLE_LODS > 1 // DEBUG
-extern idCVar	ai_showLevelOfDetail;
-#endif
-
-#if MD5_ENABLE_GIBS > 2 // DEBUG
-extern idCVar	ai_testDismemberment;
-#endif
-
 extern idCVar	g_dvTime;
 extern idCVar	g_dvAmplitude;
 extern idCVar	g_dvFrequency;

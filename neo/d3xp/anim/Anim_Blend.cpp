@@ -715,11 +715,7 @@ const char *idAnim::AddFrameCommand( const idDeclModelDef *modelDef, int framenu
 idAnim::CallFrameCommands
 =====================
 */
-#if MD5_ENABLE_GIBS > 0 // ANIMS DAMAGE
-void idAnim::CallFrameCommands(idEntity* ent, int from, int to, int uses) const {
-#else
-void idAnim::CallFrameCommands(idEntity* ent, int from, int to) const {
-#endif
+void idAnim::CallFrameCommands( idEntity *ent, int from, int to ) const {
 	int index;
 	int end;
 	int frame;
@@ -894,15 +890,7 @@ void idAnim::CallFrameCommands(idEntity* ent, int from, int to) const {
 					break;
 				}
 				case FC_MELEE: {
-					#if MD5_ENABLE_GIBS > 0 // ANIMS DAMAGE
-					if (ent->GetRenderEntity()->gibbedZones && (ent->GetRenderEntity()->gibbedZones & uses)) {
-						ent->ProcessEvent(&AI_AttackMelee, "");
-					} else {
-						ent->ProcessEvent(&AI_AttackMelee, command.string->c_str());
-					}
-					#else
-					ent->ProcessEvent(&AI_AttackMelee, command.string->c_str());
-					#endif
+					ent->ProcessEvent( &AI_AttackMelee, command.string->c_str() );
 					break;
 				}
 				case FC_DIRECTDAMAGE: {
@@ -1802,19 +1790,12 @@ void idAnimBlend::CallFrameCommands( idEntity *ent, int fromtime, int totime ) c
 	md5anim->ConvertTimeToFrame( fromFrameTime, cycle, frame1 );
 	md5anim->ConvertTimeToFrame( toFrameTime, cycle, frame2 );
 
-	#if MD5_ENABLE_GIBS > 0 // ANIMS DAMAGE
-	if (fromFrameTime <= 0) { // make sure first frame is called
-		anim->CallFrameCommands(ent,            -1, frame2.frame1, md5anim->gibLimit);
+	if ( fromFrameTime <= 0 ) {
+		// make sure first frame is called
+		anim->CallFrameCommands( ent, -1, frame2.frame1 );
 	} else {
-		anim->CallFrameCommands(ent, frame1.frame1, frame2.frame1, md5anim->gibLimit);
+		anim->CallFrameCommands( ent, frame1.frame1, frame2.frame1 );
 	}
-	#else
-	if (fromFrameTime <= 0) { // make sure first frame is called
-		anim->CallFrameCommands(ent,            -1, frame2.frame1);
-	} else {
-		anim->CallFrameCommands(ent, frame1.frame1, frame2.frame1);
-	}
-	#endif
 }
 
 /*
@@ -2940,11 +2921,7 @@ const idAnim *idDeclModelDef::GetAnim( int index ) const {
 idDeclModelDef::GetAnim
 =====================
 */
-#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-int idDeclModelDef::GetAnim(const char* name, int gibs) const {
-#else
-int idDeclModelDef::GetAnim(const char* name) const {
-#endif
+int idDeclModelDef::GetAnim( const char *name ) const {
 	int				i;
 	int				which;
 	const int		MAX_ANIMS = 64;
@@ -2958,26 +2935,10 @@ int idDeclModelDef::GetAnim(const char* name) const {
 		return GetSpecificAnim( name );
 	}
 
-	#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-	int fallback = 0;
-	#endif
-
 	// find all animations with same name
 	numAnims = 0;
 	for( i = 0; i < anims.Num(); i++ ) {
 		if ( !strcmp( anims[ i ]->Name(), name ) ) {
-			#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-			int gibLimit = anims[i]->MD5Anim(0)->gibLimit;
-			if (gibLimit & MD5_IS_FALLBACK) {
-				fallback = i + 1; // Use only if no other is permitted.
-				continue;
-			} else if (gibLimit & gibs) { // A required zone is gibbed.
-				if ((gibLimit & MD5_OR_HEADLESS) == 0 || (gibs & MD5_GIBBED_CORE) == 0) { // No exemption on headless.
-					if ((gibLimit & MD5_OR_FALLBACK) != 0 && fallback == 0) fallback = i + 1; // Allow if no other is available.
-					continue;
-				}
-			}
-			#endif
 			animList[ numAnims++ ] = i;
 			if ( numAnims >= MAX_ANIMS ) {
 				break;
@@ -2986,11 +2947,7 @@ int idDeclModelDef::GetAnim(const char* name) const {
 	}
 
 	if ( !numAnims ) {
-		#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-		return fallback;
-		#else
 		return 0;
-		#endif
 	}
 
 	// get a random anim
@@ -3508,20 +3465,12 @@ const idAnim *idAnimator::GetAnim( int index ) const {
 idAnimator::GetAnim
 =====================
 */
-#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-int idAnimator::GetAnim(const char* name, int gibs) const {
-#else
-int idAnimator::GetAnim(const char* name) const {
-#endif
+int idAnimator::GetAnim( const char *name ) const {
 	if ( !modelDef ) {
 		return 0;
 	}
 
-	#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-	return modelDef->GetAnim(name, gibs);
-	#else
-	return modelDef->GetAnim(name);
-	#endif
+	return modelDef->GetAnim( name );
 }
 
 /*

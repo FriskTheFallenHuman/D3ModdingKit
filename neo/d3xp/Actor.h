@@ -170,10 +170,6 @@ public:
 	const char *			WaitState( void ) const;
 	void					SetWaitState( const char *_waitstate );
 	bool					AnimDone( int channel, int blendFrames ) const;
-	#if MD5_ENABLE_GIBS > 0
-	void					Sever(renderEntity_t* entity, int& zone);
-	void					Bleed(int gibbedPart = 0, int gibbedZone = 0);
-	#endif
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
 #ifdef _D3XP
@@ -193,29 +189,8 @@ protected:
 	int						pain_delay;			// time between playing pain sound
 	int						pain_threshold;		// how much damage monster can take at any one time before playing pain animation
 
-	#if MD5_ENABLE_GIBS > 0
-	idList<int>				damageBonesZone;
-	idList<int>				damageZonesBone;
-	idList<int>				damageZonesKill;
-	idList<int>				damageZonesHeap;
-	idList<idVec4>			damageZonesDrop;
-	idList<float>			damageZonesRate;
-	idStrList				damageZonesName;
-	#else
 	idStrList				damageGroups;		// body damage groups
-	idList<float>			damageScales;		// damage scale per damage gruop
-	#endif
-
-	#if MD5_ENABLE_GIBS > 0
-	const idDeclParticle*	damageEmitSever;
-	const idDeclParticle*	damageEmitSpray;
-	int						damageEmitStage;
-	int						damageEmitStart;
-	int						damageEmitDeath;
-	jointHandle_t			damageEmitJoint;
-	idMat3					damageEmitAngle;
-	idVec3					damageEmitShift;
-	#endif
+	idList<float>			damageScale;		// damage scale per damage gruop
 
 	bool						use_combat_bbox;	// whether to use the bounding box for combat collision
 	idEntityPtr<idAFAttachment>	head;
@@ -268,13 +243,55 @@ protected:
 							// copies animation from body to head joints
 	void					CopyJointsFromBodyToHead( void );
 
-private:
+public:
+	void					EnableEyeFocus( void );
+	void					DisableEyeFocus( void );
+	void					Footstep( void );
+	void					EnableWalkIK( void );
+	void					DisableWalkIK( void );
+	void					EnableLegIK( int num );
+	void					DisableLegIK( int num );
+	void					PreventPain( float duration );
+	void					DisablePain( void );
+	void					EnablePain( void );
+	const char *			GetPainAnim( void );
+	void					SetAnimPrefix( const char *prefix );
+	void					StopAnim( int channel, int frames );
+	int						PlayAnim( int channel, const char *animname );
+	int						PlayCycle( int channel, const char *animname );
+	int						IdleAnim( int channel, const char *animname );
+	void					SetSyncedAnimWeight( int channel, int anim, float weight );
+	void					OverrideAnim( int channel );
+	void					EnableAnim( int channel, int blendFrames );
+	void					SetBlendFrames( int channel, int blendFrames );
+	int						GetBlendFrames( int channel );
+	void					FinishAction( const char *actionname );
+	bool					AnimDone( int channel, int blendFrames );
+	float					HasAnim( int channel, const char *animname );
+	void					CheckAnim( int channel, const char *animname );
+	const char *			ChooseAnim( int channel, const char *animname );
+	float					AnimLength( int channel, const char *animname );
+	float					AnimDistance( int channel, const char *animname );
+	idActor *				NextEnemy( idEntity *ent );
+	void					StopSound( int channel, int netSync );
+	void					SetNextState( const char *name );
+	void					ScriptSetState( const char *name );
+	const char *			GetState( void );
+	idEntity *				GetHead( void );
+#ifdef _D3XP
+	void					SetDamageGroupScale( const char *groupName, float scale );
+	void					SetDamageGroupScaleAll( float scale );
+	float					GetDamageGroupScale( const char *groupName );
+	void					SetDamageCap( float _damageCap );
+	const char *			GetWaitState( void );
+#endif
+
 	void					SyncAnimChannels( int channel, int syncToChannel, int blendFrames );
 	void					FinishSetup( void );
 	void					SetupHead( void );
 	void					PlayFootStepSound( void );
-	void					GetFootstepSoundMaterial( const trace_t& trace );
 
+private:
 	void					Script_EnableEyeFocus( void );
 	void					Script_DisableEyeFocus( void );
 	void					Script_Footstep( void );
@@ -322,49 +339,6 @@ private:
 	void					Script_SetDamageCap( float _damageCap );
 	void					Script_SetWaitState( const char* waitState);
 	void					Script_GetWaitState();
-#endif
-
-public:
-	void					EnableEyeFocus( void );
-	void					DisableEyeFocus( void );
-	void					Footstep( void );
-	void					EnableWalkIK( void );
-	void					DisableWalkIK( void );
-	void					EnableLegIK( int num );
-	void					DisableLegIK( int num );
-	void					PreventPain( float duration );
-	void					DisablePain( void );
-	void					EnablePain( void );
-	const char *			GetPainAnim( void );
-	void					SetAnimPrefix( const char *prefix );
-	void					StopAnim( int channel, int frames );
-	int						PlayAnim( int channel, const char *animname );
-	int						PlayCycle( int channel, const char *animname );
-	int						IdleAnim( int channel, const char *animname );
-	void					SetSyncedAnimWeight( int channel, int anim, float weight );
-	void					OverrideAnim( int channel );
-	void					EnableAnim( int channel, int blendFrames );
-	void					SetBlendFrames( int channel, int blendFrames );
-	int						GetBlendFrames( int channel );
-	void					FinishAction( const char *actionname );
-	bool					AnimDone( int channel, int blendFrames );
-	float					HasAnim( int channel, const char *animname );
-	void					CheckAnim( int channel, const char *animname );
-	const char *			ChooseAnim( int channel, const char *animname );
-	float					AnimLength( int channel, const char *animname );
-	float					AnimDistance( int channel, const char *animname );
-	idActor *				NextEnemy( idEntity *ent );
-	void					StopSound( int channel, int netSync );
-	void					SetNextState( const char *name );
-	void					ScriptSetState( const char *name );
-	const char *			GetState( void );
-	idEntity *				GetHead( void );
-#ifdef _D3XP
-	void					SetDamageGroupScale( const char *groupName, float scale );
-	void					SetDamageGroupScaleAll( float scale );
-	float					GetDamageGroupScale( const char *groupName );
-	void					SetDamageCap( float _damageCap );
-	const char *			GetWaitState( void );
 #endif
 };
 

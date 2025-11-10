@@ -1240,11 +1240,7 @@ static void R_AddAmbientDrawsurfs( viewEntity_t *vEntity ) {
 			continue;
 		}
 		shader = surf->shader;
-		#if MD5_ENABLE_GIBS > 1 // SKINS
-		shader = R_RemapShaderBySkin(shader, def->parms.customSkin, def->parms.customShader, model);
-		#else
-		shader = R_RemapShaderBySkin(shader, def->parms.customSkin, def->parms.customShader);
-		#endif
+		shader = R_RemapShaderBySkin( shader, def->parms.customSkin, def->parms.customShader );
 
 		R_GlobalShaderOverride( &shader );
 

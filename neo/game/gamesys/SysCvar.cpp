@@ -155,14 +155,6 @@ idCVar ai_showPaths(				"ai_showPaths",				"0",			CVAR_GAME | CVAR_BOOL, "draws 
 idCVar ai_showObstacleAvoidance(	"ai_showObstacleAvoidance",	"0",			CVAR_GAME | CVAR_INTEGER, "draws obstacle avoidance information for monsters.  if 2, draws obstacles for player, as well", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 idCVar ai_blockedFailSafe(			"ai_blockedFailSafe",		"1",			CVAR_GAME | CVAR_BOOL, "enable blocked fail safe handling" );
 
-#if MD5_ENABLE_LODS > 1 // DEBUG
-idCVar ai_showLevelOfDetail(		"ai_showLevelOfDetail",		"0",			CVAR_GAME | CVAR_INTEGER, "Draws the AI's current LOD above its head.");
-#endif
-
-#if MD5_ENABLE_GIBS > 2 // DEBUG
-idCVar ai_testDismemberment(		"ai_testDismemberment",		"0",			CVAR_GAME | CVAR_INTEGER, "Selects the active gib damage evaluation.");
-#endif
-
 idCVar g_dvTime(					"g_dvTime",					"1",			CVAR_GAME | CVAR_FLOAT, "" );
 idCVar g_dvAmplitude(				"g_dvAmplitude",			"0.001",		CVAR_GAME | CVAR_FLOAT, "" );
 idCVar g_dvFrequency(				"g_dvFrequency",			"0.5",			CVAR_GAME | CVAR_FLOAT, "" );

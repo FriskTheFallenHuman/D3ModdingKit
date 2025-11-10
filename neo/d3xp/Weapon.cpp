@@ -3644,17 +3644,9 @@ bool idWeapon::Melee( void ) {
 					//Only do a quater of the damage mod
 					mod *= 0.25f;
 				}
-				#if MD5_ENABLE_GIBS > 0
-					ent->Damage( owner, owner, globalKickDir, meleeDefName, mod, CLIPMODEL_ID_TO_JOINT_HANDLE( tr.c.id ) );
-				#else
-					ent->Damage( owner, owner, globalKickDir, meleeDefName, mod, tr.c.id );
-				#endif
+				ent->Damage( owner, owner, globalKickDir, meleeDefName, mod, tr.c.id );
 #else
-				#if MD5_ENABLE_GIBS > 0
-					ent->Damage( owner, owner, globalKickDir, meleeDefName, owner->PowerUpModifier( MELEE_DAMAGE ), CLIPMODEL_ID_TO_JOINT_HANDLE( tr.c.id ) );
-				#else
-					ent->Damage( owner, owner, globalKickDir, meleeDefName, owner->PowerUpModifier( MELEE_DAMAGE ), tr.c.id );
-				#endif
+				ent->Damage( owner, owner, globalKickDir, meleeDefName, owner->PowerUpModifier( MELEE_DAMAGE ), tr.c.id );
 #endif
 				hit = true;
 			}

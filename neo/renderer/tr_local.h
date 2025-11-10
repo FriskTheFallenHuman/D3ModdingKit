@@ -566,11 +566,7 @@ void *R_GetCommandBuffer( int bytes );
 bool R_GlobalShaderOverride( const idMaterial **shader );
 
 // this does various checks before calling the idDeclSkin
-#if MD5_ENABLE_GIBS > 1 // SKINS
-const idMaterial* R_RemapShaderBySkin(const idMaterial* shader, const idDeclSkin* customSkin, const idMaterial* customShader, const idRenderModel* model = NULL);
-#else
-const idMaterial *R_RemapShaderBySkin(const idMaterial* shader, const idDeclSkin* customSkin, const idMaterial* customShader);
-#endif
+const idMaterial *R_RemapShaderBySkin( const idMaterial *shader, const idDeclSkin *customSkin, const idMaterial *customShader );
 
 
 //====================================================
@@ -875,15 +871,6 @@ extern idCVar r_useEntityCallbacks;		// if 0, issue the callback immediately at 
 extern idCVar r_lightAllBackFaces;		// light all the back faces, even when they would be shadowed
 extern idCVar r_useDepthBoundsTest;     // use depth bounds test to reduce shadow fill
 
-#if MD5_ENABLE_LODS > 0
-extern idCVar r_lodRangeIncrements;
-#endif
-
-#if MD5_ENABLE_LODS > 1 // DEBUG
-extern idCVar r_lodLevelMaximum;
-extern idCVar r_lodLevelMinimum;
-#endif
-
 extern idCVar r_skipPostProcess;		// skip all post-process renderings
 extern idCVar r_skipSuppress;			// ignore the per-view suppressions
 extern idCVar r_skipInteractions;		// skip all light/surface interaction drawing
@@ -915,9 +902,6 @@ extern idCVar r_ignoreGLErrors;
 extern idCVar r_forceLoadImages;		// draw all images to screen after registration
 extern idCVar r_screenFraction;			// for testing fill rate, the resolution of the entire screen can be changed
 
-#if MD5_ENABLE_LODS > 2 // DEBUG+
-extern idCVar r_testUnsmoothedTangents;
-#endif
 extern idCVar r_showUnsmoothedTangents;	// highlight geometry rendered with unsmoothed tangents
 extern idCVar r_showSilhouette;			// highlight edges that are casting shadow planes
 extern idCVar r_showVertexColor;		// draws all triangles with the solid vertex color
@@ -1512,7 +1496,7 @@ void				R_RemoveUnusedVerts( srfTriangles_t *tri );
 void				R_RangeCheckIndexes( const srfTriangles_t *tri );
 void				R_CreateVertexNormals( srfTriangles_t *tri );	// also called by dmap
 void				R_DeriveFacePlanes( srfTriangles_t *tri );		// also called by renderbump
-void				R_CleanupTriangles( srfTriangles_t *tri, bool createNormals, bool identifySilEdges, bool useUnsmoothedTangents, bool useMikktspace = false ); // RBMIKKT_TANGENT
+void				R_CleanupTriangles( srfTriangles_t *tri, bool createNormals, bool identifySilEdges, bool useUnsmoothedTangents );
 void				R_ReverseTriangles( srfTriangles_t *tri );
 
 // Only deals with vertexes and indexes, not silhouettes, planes, etc.
@@ -1526,24 +1510,6 @@ void				R_DeriveTangents( srfTriangles_t *tri, bool allocFacePlanes = true );
 
 // deformable meshes precalculate as much as possible from a base frame, then generate
 // complete srfTriangles_t from just a new set of vertexes
-#if MD5_BINARY_MESH > 0
-typedef struct deformInfo_s { // NB: Better pointer alignment, adds; numDominantTris, numWeights
-	int				numSourceVerts;
-	int				numOutputVerts;
-	int				numIndexes;
-	int				numSilEdges;
-	int				numDupVerts; // Never seems to be used for a mesh with UnsmoothedTangents.
-	int				numMirroredVerts;
-	int				numDominantTris;
-	int				numHiddenTris; // HINTS
-	glIndex_t*		indexes;
-	glIndex_t*		silIndexes;
-	silEdge_t*		silEdges;
-	int*			dupVerts;
-	int*			mirroredVerts;
-	dominantTri_t*	dominantTris;
-} deformInfo_t;
-#else
 typedef struct deformInfo_s {
 	int				numSourceVerts;
 
@@ -1568,22 +1534,9 @@ typedef struct deformInfo_s {
 
 	dominantTri_t *	dominantTris;
 } deformInfo_t;
-#endif
 
-#if MD5_BINARY_MESH > 0
-deformInfo_t*		R_AllocDeformInfo();
-void				R_AllocDeformInfo(deformInfo_t* deformInfo);
-#endif
 
-#if MD5_BINARY_MESH > 1 // WRITE
-void				R_FreeDeformInfoDominantTris(deformInfo_t* deformInfo);
-#endif
-
-#if MD5_ENABLE_GIBS > 0 // HINTS
-deformInfo_t*		R_BuildDeformInfo(int numVerts, const idDrawVert* verts, int numIndexes, const int* indexes, bool useUnsmoothedTangents, int hintFaces = 0);
-#else
-deformInfo_t *		R_BuildDeformInfo(int numVerts, const idDrawVert *verts, int numIndexes, const int *indexes, bool useUnsmoothedTangents);
-#endif
+deformInfo_t *		R_BuildDeformInfo( int numVerts, const idDrawVert *verts, int numIndexes, const int *indexes, bool useUnsmoothedTangents );
 void				R_FreeDeformInfo( deformInfo_t *deformInfo );
 int					R_DeformInfoMemoryUsed( deformInfo_t *deformInfo );
 
@@ -1670,6 +1623,27 @@ TR_GUISURF
 
 void R_SurfaceToTextureAxis( const srfTriangles_t *tri, idVec3 &origin, idVec3 axis[3] );
 void R_RenderGuiSurf( idUserInterface *gui, drawSurf_t *drawSurf );
+
+/*
+=============================================================
+
+TR_MIKKTSPACE
+
+=============================================================
+*/
+
+#include "libs/mikktspace/mikktspace.h"
+
+// Helper class for loading in the interface functions for mikktspace.
+class idMikkTSpaceInterface {
+public:
+	idMikkTSpaceInterface();
+	SMikkTSpaceInterface mkInterface;
+};
+
+extern idMikkTSpaceInterface mikkTSpaceInterface;
+
+bool R_DeriveMikktspaceTangents( srfTriangles_t *tri );
 
 /*
 =============================================================

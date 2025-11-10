@@ -151,11 +151,6 @@ typedef struct renderEntity_s {
 	int						forceUpdate;			// force an update (NOTE: not a bool to keep this struct a multiple of 4 bytes)
 	int						timeGroup;
 	int						xrayIndex;
-
-	#if MD5_ENABLE_GIBS > 0
-	int						gibbedZones = 0;
-	#endif
-
 } renderEntity_t;
 
 

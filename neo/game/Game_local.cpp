@@ -65,8 +65,8 @@ idGameLocal					gameLocal;
 idGame *					game = &gameLocal;	// statically pointed at an idGameLocal
 
 const char *idGameLocal::sufaceTypeNames[ MAX_SURFACE_TYPES ] = {
-	"none",	"metal", "stone", "flesh", "wood", "cardboard", "liquid", "glass", "tile", "pipe", "plastic",
-	"ricochet", "surftype10", "surftype11", "surftype12", "surftype13"
+	"none",	"metal", "stone", "flesh", "wood", "cardboard", "liquid", "glass", "plastic",
+	"ricochet", "surftype10", "surftype11", "surftype12", "surftype13", "surftype14", "surftype15"
 };
 
 /*
@@ -4406,87 +4406,3 @@ idGameLocal::GetMapLoadingGUI
 ===============
 */
 void idGameLocal::GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] ) { }
-
-/*
-==============
-idGameLocal::MaterialTypeToName
-==============
-*/
-const char* idGameLocal::MaterialTypeToName( surfTypes_t type ) const {
-	return sufaceTypeNames[ type ];
-}
-
-/*
-==============
-idGameLocal::MaterialTypeToKey
-==============
-*/
-const char* idGameLocal::MaterialTypeToKey( const char* prefix, surfTypes_t type ) const {
-	return va( "%s_%s", prefix, MaterialTypeToName( type ) );
-}
-
-/*
-==============
-idGameLocal::MaterialNameToType
-==============
-*/
-surfTypes_t idGameLocal::MaterialNameToType( const char* name ) const {
-	surfTypes_t type = SURFTYPE_NONE;
-
-	for ( int ix = 0; ix < MAX_SURFACE_TYPES; ++ix ) {
-		type = (surfTypes_t)ix;
-		if( idStr::Icmp( name, MaterialTypeToName( type ) ) ) {
-			continue;
-		}
-
-		return type;
-	}
-
-	return SURFTYPE_NONE;
-}
-
-/*
-==============
-idGameLocal::GetMaterialType
-==============
-*/
-surfTypes_t idGameLocal::GetMaterialType( const trace_t& trace, const char* descriptor ) const {
-	return GetMaterialType( gameLocal.GetTraceEntity( trace ), trace.c.material, descriptor );
-}
-
-/*
-==============
-idGameLocal::GetMaterialType
-==============
-*/
-surfTypes_t idGameLocal::GetMaterialType( const idEntity *ent, const idMaterial *material, const char* descriptor ) const {
-	surfTypes_t type = SURFTYPE_NONE;
-	const char *matterName = NULL;
-	const idMaterial *remapped = material;
-
-	// If the entityDef has a material specified, always use it
-	// Otherwise, use the materials type.  If none, default to stone.
-	if ( ent && ent->spawnArgs.GetString( "matter", NULL, &matterName ) ) {
-		type = MaterialNameToType( matterName );
-	} else {
-		if ( ent && ent->GetSkin() ) {
-			remapped = ent->GetSkin()->RemapShaderBySkin( material );
-		}
-		type = (remapped != NULL) ? remapped->GetSurfaceType() : SURFTYPE_STONE;
-	}
-
-	// OBS: Will never happen
-	if( !type ) {
-		type = SURFTYPE_STONE;
-	}
-
-#ifdef _DEBUG
-	Printf( "%s: [%s] ent=[%s] mat=[%s]\n",
-		descriptor,
-		MaterialTypeToName( type ),
-		ent ? ent->GetName() : "none",
-		material ? material->GetName() : "none" );
-#endif // _DEBUG
-
-	return type;
-}

@@ -660,7 +660,7 @@ void idRenderModelStatic::FinishSurfaces() {
 	for ( i = 0 ; i < surfaces.Num() ; i++ ) {
 		const modelSurface_t	*surf = &surfaces[i];
 
-		R_CleanupTriangles( surf->geometry, surf->geometry->generateNormals, true, surf->shader->UseUnsmoothedTangents(), surf->shader->UseMikkTSpace()); // RBMIKKT_TANGENT
+		R_CleanupTriangles( surf->geometry, surf->geometry->generateNormals, true, surf->shader->UseUnsmoothedTangents() );
 		if ( surf->shader->SurfaceCastsShadow() ) {
 			totalVerts += surf->geometry->numVerts;
 			totalIndexes += surf->geometry->numIndexes;

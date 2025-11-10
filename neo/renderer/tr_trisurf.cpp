@@ -30,7 +30,6 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "tr_local.h"
-#include <libs/mikktspace/mikktspace.h> // RBMIKKT_TANGENT
 
 /*
 ==============================================================================
@@ -149,35 +148,6 @@ static idDynamicAlloc<int, 1<<16, 1<<10>				triMirroredVertAllocator;
 static idDynamicAlloc<int, 1<<16, 1<<10>				triDupVertAllocator;
 #endif
 
-// RBMIKKT_TANGENT...
-
-// Mikktspace is a standard that should be used for new assets. If you'd like to use the original
-// method of calculating tangent spaces for the original game's normal maps, disable mikktspace before
-// loading in the model.
-// see http://www.mikktspace.com/
-//idCVar r_useMikktspace( "r_useMikktspace", "1", CVAR_RENDERER | CVAR_BOOL, "Use the mikktspace standard to derive tangents" );
-
-static void* mkAlloc(int bytes);
-static void mkFree(void* mem);
-static int mkGetNumFaces(const SMikkTSpaceContext* pContext);
-static int mkGetNumVerticesOfFace(const SMikkTSpaceContext* pContext, const int iFace);
-static void mkGetPosition(const SMikkTSpaceContext* pContext, float fvPosOut[], const int iFace, const int iVert);
-static void mkGetNormal(const SMikkTSpaceContext* pContext, float fvNormOut[], const int iFace, const int iVert);
-static void mkGetTexCoord(const SMikkTSpaceContext* pContext, float fvTexcOut[], const int iFace, const int iVert);
-static void mkSetTSpaceBasic(const SMikkTSpaceContext* pContext, const float fvTangent[], const float fSign, const int iFace, const int iVert);
-
-// Helper class for loading in the interface functions for mikktspace.
-class idMikkTSpaceInterface {
-public:
-	idMikkTSpaceInterface();
-	SMikkTSpaceInterface mkInterface;
-};
-
-static idMikkTSpaceInterface mikkTSpaceInterface;
-
-static void SetUpMikkTSpaceContext(SMikkTSpaceContext* context);
-
-// ...RBMIKKT_TANGENT
 
 /*
 ===============
@@ -1060,11 +1030,7 @@ can never create silhouette plains, and can be omited
 int	c_coplanarSilEdges;
 int	c_totalSilEdges;
 
-#if MD5_ENABLE_GIBS > 0 // HINTS
-void R_IdentifySilEdges(srfTriangles_t* tri, bool omitCoplanarEdges, int hintFaces = 0) {
-#else
-void R_IdentifySilEdges(srfTriangles_t *tri, bool omitCoplanarEdges) {
-#endif
+void R_IdentifySilEdges( srfTriangles_t *tri, bool omitCoplanarEdges ) {
 	int		i;
 	int		numTris;
 	int		shared, single;
@@ -1072,10 +1038,6 @@ void R_IdentifySilEdges(srfTriangles_t *tri, bool omitCoplanarEdges) {
 	omitCoplanarEdges = false;	// optimization doesn't work for some reason
 
 	numTris = tri->numIndexes / 3;
-
-	#if MD5_ENABLE_GIBS > 0 // HINTS
-	numTris -= hintFaces;
-	#endif
 
 	numSilEdges = 0;
 	silEdgeHash.Clear();
@@ -1416,28 +1378,6 @@ static void	R_DuplicateMirroredVertexes( srfTriangles_t *tri ) {
 	Mem_FreeA( tverts, tvertsOnStack );
 }
 
-// RBMIKKT_TANGENT...
-
-/*
-============
-R_DeriveMikktspaceTangents
-
-Derives the tangent space for the given triangles using the Mikktspace standard.
-Normals must be calculated beforehand.
-============
-*/
-static bool R_DeriveMikktspaceTangents(srfTriangles_t* tri) {
-
-	SMikkTSpaceContext context;
-	SetUpMikkTSpaceContext(&context);
-	context.m_pUserData = tri;
-
-	return (genTangSpaceDefault(&context) != 0);
-
-}
-
-// ...RBMIKKT_TANGENT
-
 /*
 =================
 R_DeriveTangentsWithoutNormals
@@ -1472,20 +1412,16 @@ to save space or speed transforms?
 this version only handles bilateral symetry
 =================
 */
-void R_DeriveTangentsWithoutNormals( srfTriangles_t *tri, bool useMikktspace) { // RBMIKKT_TANGENT
-
-	 // RBMIKKT_TANGENT...
-	if (useMikktspace) {
-		if (!R_DeriveMikktspaceTangents(tri)) {
-			idLib::Warning("Mikkelsen tangent space calculation failed");
-		} else {
-			idLib::Warning("Mikkelsen tangent space calculation success");
-			tri->tangentsCalculated = true;
-			return;
-		}
+void R_DeriveTangentsWithoutNormals( srfTriangles_t *tri ) {
+#if 1	// New Normal Calculation - Mikktspace
+	if ( !R_DeriveMikktspaceTangents( tri ) ) {
+		idLib::Warning( "Mikkelsen tangent space calculation failed" );
+	} else {
+		idLib::Warning( "Mikkelsen tangent space calculation success" );
+		tri->tangentsCalculated = true;
+		return;
 	}
-	// ...RBMIKKT_TANGENT
-
+#else // Old Idsoftware normal calculation
 	int			i, j;
 	faceTangents_t	*faceTangents;
 	faceTangents_t	*ft;
@@ -1553,6 +1489,7 @@ void R_DeriveTangentsWithoutNormals( srfTriangles_t *tri, bool useMikktspace) { 
 	tri->tangentsCalculated = true;
 
 	Mem_FreeA( faceTangents, faceTangentsOnStack );
+#endif
 }
 
 static ID_INLINE void VectorNormalizeFast2( const idVec3 &v, idVec3 &out) {
@@ -1767,11 +1704,7 @@ void R_DeriveTangents( srfTriangles_t *tri, bool allocFacePlanes ) {
 	int				i;
 	idPlane			*planes;
 
-	#if MD5_ENABLE_LODS > 2 // DEBUG+
-	if (tri->dominantTris != NULL && r_testUnsmoothedTangents.GetInteger() != 1) {
-	#else
-	if (tri->dominantTris != NULL) {
-	#endif
+	if ( tri->dominantTris != NULL ) {
 		R_DeriveUnsmoothedTangents( tri );
 		return;
 	}
@@ -2222,7 +2155,7 @@ R_CleanupTriangles
 FIXME: allow createFlat and createSmooth normals, as well as explicit
 =================
 */
-void R_CleanupTriangles( srfTriangles_t *tri, bool createNormals, bool identifySilEdges, bool useUnsmoothedTangents, bool useMikktspace ) { // RBMIKKT_TANGENT
+void R_CleanupTriangles( srfTriangles_t *tri, bool createNormals, bool identifySilEdges, bool useUnsmoothedTangents ) {
 	R_RangeCheckIndexes( tri );
 
 	R_CreateSilIndexes( tri );
@@ -2254,7 +2187,7 @@ void R_CleanupTriangles( srfTriangles_t *tri, bool createNormals, bool identifyS
 		R_DeriveUnsmoothedTangents( tri );
 	} else if ( !createNormals ) {
 		R_DeriveFacePlanes( tri );
-		R_DeriveTangentsWithoutNormals(tri, useMikktspace); // RBMIKKT_TANGENT
+		R_DeriveTangentsWithoutNormals( tri );
 	} else {
 		R_DeriveTangents( tri );
 	}
@@ -2273,11 +2206,7 @@ DEFORMED SURFACES
 R_BuildDeformInfo
 ===================
 */
-#if MD5_ENABLE_GIBS > 0 // HINTS
-deformInfo_t* R_BuildDeformInfo(int numVerts, const idDrawVert* verts, int numIndexes, const int* indexes, bool useUnsmoothedTangents, int hintFaces) {
-#else
-deformInfo_t *R_BuildDeformInfo(int numVerts, const idDrawVert *verts, int numIndexes, const int *indexes, bool useUnsmoothedTangents) {
-#endif
+deformInfo_t *R_BuildDeformInfo( int numVerts, const idDrawVert *verts, int numIndexes, const int *indexes, bool useUnsmoothedTangents ) {
 	deformInfo_t	*deform;
 	srfTriangles_t	tri;
 	int				i;
@@ -2304,11 +2233,8 @@ deformInfo_t *R_BuildDeformInfo(int numVerts, const idDrawVert *verts, int numIn
 //	R_RemoveDuplicatedTriangles( &tri );
 //	R_RemoveDegenerateTriangles( &tri );
 //	R_RemoveUnusedVerts( &tri );
-	#if MD5_ENABLE_GIBS > 0 // HINTS
-	R_IdentifySilEdges(&tri, false, hintFaces);
-	#else
-	R_IdentifySilEdges(&tri, false);			// we cannot remove coplanar edges, because they can deform to silhouettes
-	#endif
+	R_IdentifySilEdges( &tri, false );			// we cannot remove coplanar edges, because
+												// they can deform to silhouettes
 
 	R_DuplicateMirroredVertexes( &tri );		// split mirror points into multiple points
 
@@ -2349,50 +2275,6 @@ deformInfo_t *R_BuildDeformInfo(int numVerts, const idDrawVert *verts, int numIn
 
 	return deform;
 }
-
-#if MD5_BINARY_MESH > 0
-
-/* ===================
-R_AllocDeformInfo
-=================== */
-deformInfo_t* R_AllocDeformInfo() {
-
-	return (deformInfo_t*)R_ClearedStaticAlloc(sizeof(deformInfo_t));
-
-}
-
-/* ===================
-R_AllocDeformInfo
-=================== */
-void R_AllocDeformInfo(deformInfo_t* deformInfo) {
-
-	if (deformInfo->numIndexes         ) deformInfo->indexes       = triIndexAllocator.Alloc(deformInfo->numIndexes             );
-	if (deformInfo->numIndexes         ) deformInfo->silIndexes    = triSilIndexAllocator.Alloc(deformInfo->numIndexes          );
-	if (deformInfo->numSilEdges        ) deformInfo->silEdges      = triSilEdgeAllocator.Alloc(deformInfo->numSilEdges          );
-	if (deformInfo->numDupVerts        ) deformInfo->dupVerts      = triDupVertAllocator.Alloc(deformInfo->numDupVerts * 2      );
-	if (deformInfo->numMirroredVerts   ) deformInfo->mirroredVerts = triMirroredVertAllocator.Alloc(deformInfo->numMirroredVerts);
-	if (deformInfo->numDominantTris > 0) deformInfo->dominantTris  = triDominantTrisAllocator.Alloc(deformInfo->numDominantTris );
-
-}
-
-#endif
-
-#if MD5_BINARY_MESH > 1 // WRITE
-
-/* ===================
-R_FreeDeformInfoDominantTris
-=================== */
-void R_FreeDeformInfoDominantTris(deformInfo_t* deformInfo) {
-
-	deformInfo->numDominantTris = 0;
-
-	if (deformInfo->dominantTris) triDominantTrisAllocator.Free(deformInfo->dominantTris);
-
-	deformInfo->dominantTris = NULL;
-
-}
-
-#endif
 
 /*
 ===================
@@ -2451,109 +2333,3 @@ int R_DeformInfoMemoryUsed( deformInfo_t *deformInfo ) {
 	total += sizeof( *deformInfo );
 	return total;
 }
-
-// RBMIKKT_TANGENT...
-
-static void* mkAlloc(int bytes) {
-
-	return R_StaticAlloc(bytes);
-
-}
-
-static void mkFree(void* mem) {
-
-	R_StaticFree(mem);
-
-}
-
-static int mkGetNumFaces(const SMikkTSpaceContext* pContext) {
-
-	srfTriangles_t* tris = reinterpret_cast<srfTriangles_t*>(pContext->m_pUserData);
-
-	return tris->numIndexes / 3;
-
-}
-
-static int mkGetNumVerticesOfFace(const SMikkTSpaceContext* pContext, const int iFace) {
-
-	return 3;
-
-}
-
-static void mkGetPosition(const SMikkTSpaceContext* pContext, float fvPosOut[], const int iFace, const int iVert) {
-
-	srfTriangles_t* tris = reinterpret_cast<srfTriangles_t*>(pContext->m_pUserData);
-
-	const int vertIndex = iFace * 3;
-	const int index = tris->indexes[vertIndex + iVert];
-	const idDrawVert& vert = tris->verts[index];
-
-	fvPosOut[0] = vert.xyz[0];
-	fvPosOut[1] = vert.xyz[1];
-	fvPosOut[2] = vert.xyz[2];
-
-}
-
-static void mkGetNormal(const SMikkTSpaceContext* pContext, float fvNormOut[], const int iFace, const int iVert) {
-
-	srfTriangles_t* tris = reinterpret_cast<srfTriangles_t*>(pContext->m_pUserData);
-
-	const int vertIndex = iFace * 3;
-	const int index = tris->indexes[vertIndex + iVert];
-	const idDrawVert& vert = tris->verts[index];
-
-	idVec3 norm = vert.normal; norm.Normalize();
-	fvNormOut[0] = norm.x;
-	fvNormOut[1] = norm.y;
-	fvNormOut[2] = norm.z;
-
-}
-
-static void mkGetTexCoord(const SMikkTSpaceContext* pContext, float fvTexcOut[], const int iFace, const int iVert) {
-
-	srfTriangles_t* tris = reinterpret_cast<srfTriangles_t*>(pContext->m_pUserData);
-
-	const int vertIndex = iFace * 3;
-	const int index = tris->indexes[vertIndex + iVert];
-	const idDrawVert& vert = tris->verts[index];
-
-	const idVec2 texCoord = vert.st;
-	fvTexcOut[0] = texCoord.x;
-	fvTexcOut[1] = texCoord.y;
-
-}
-
-static void mkSetTSpaceBasic(const SMikkTSpaceContext* pContext, const float fvTangent[], const float fSign, const int iFace, const int iVert) {
-
-	srfTriangles_t* tris = reinterpret_cast<srfTriangles_t*>(pContext->m_pUserData);
-
-	const int vertIndex = iFace * 3;
-	const int index = tris->indexes[vertIndex + iVert];
-
-	const idVec3 tangent(fvTangent[0], fvTangent[1], fvTangent[2]);
-//	tris->verts[index].SetTangent(tangent);
-//	tris->verts[index].SetBiTangentSign(fSign);
-	tris->verts[index].SetTangent(tangent, fSign);
-
-}
-
-idMikkTSpaceInterface::idMikkTSpaceInterface() : mkInterface() {
-
-	mkInterface.m_alloc = mkAlloc;
-	mkInterface.m_free = mkFree;
-	mkInterface.m_getNumFaces = mkGetNumFaces;
-	mkInterface.m_getNumVerticesOfFace = mkGetNumVerticesOfFace;
-	mkInterface.m_getPosition = mkGetPosition;
-	mkInterface.m_getNormal = mkGetNormal;
-	mkInterface.m_getTexCoord = mkGetTexCoord;
-	mkInterface.m_setTSpaceBasic = mkSetTSpaceBasic;
-
-}
-
-static void SetUpMikkTSpaceContext(SMikkTSpaceContext* context) {
-
-	context->m_pInterface = &mikkTSpaceInterface.mkInterface;
-
-}
-
-// ...RBMIKKT_TANGENT

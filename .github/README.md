@@ -4,20 +4,11 @@
 
 [![](https://dcbadge.limes.pink/api/server/https://discord.gg/fEehA3hCTg?style=flat)](https://discord.gg/fEehA3hCTg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=flat&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?flat&logo=linux&logoColor=black) ![macOS](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=macos&logoColor=F0F0F0) ![GitHub Repo stars](https://img.shields.io/github/stars/FriskTheFallenHuman/D3ModdingKit?style=flat&logo=Github)
 
-
 # About
 
 Doom 3 Modding Kit is basically a kit oriented for modders and people that wants to make total conversion mods.
 
-This fork is base on Defunk's MD5 changes for D3Quest such has:
 
-- Gibs
-- Level of Detail
-- Binary Mesh
-- Binary Animations
-- PNG has default image format
-- Mikktspace
-- ImGui
 
 # CHANGES
 

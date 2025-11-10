@@ -1031,11 +1031,6 @@ static void RB_ShowUnsmoothedTangents( drawSurf_t **drawSurfs, int numDrawSurfs 
 	if ( !r_showUnsmoothedTangents.GetBool() ) {
 		return;
 	}
-
-	#if MD5_ENABLE_LODS > 2 // DEBUG+
-	if (r_testUnsmoothedTangents.GetBool()) return;
-	#endif
-
 	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
 	globalImages->BindNull();
 	qglDisable( GL_STENCIL_TEST );

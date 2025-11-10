@@ -234,9 +234,6 @@ private:
 	mutable int				ref_count;
 
 public:
-	#if MD5_ENABLE_GIBS > 0 // ANIMS
-	int						gibLimit;
-	#endif
 							idMD5Anim();
 							~idMD5Anim();
 
@@ -244,11 +241,6 @@ public:
 	bool					Reload( void );
 	size_t					Allocated( void ) const;
 	size_t					Size( void ) const { return sizeof( *this ) + Allocated(); };
-	#if MD5_BINARY_ANIM > 0
-	bool					LoadBinary(const char* filename, const char* baseFolder);
-	int						ZoneParse(const char* zone, int& step);
-	void					ParseZone(const char* zone);
-	#endif
 	bool					LoadAnim( const char *filename );
 
 	void					IncreaseRefs( void ) const;
@@ -309,11 +301,7 @@ public:
 	bool						GetOriginRotation( idQuat &rotation, int animNum, int currentTime, int cyclecount ) const;
 	bool						GetBounds( idBounds &bounds, int animNum, int time, int cyclecount ) const;
 	const char					*AddFrameCommand( const class idDeclModelDef *modelDef, int framenum, idLexer &src, const idDict *def );
-	#if MD5_ENABLE_GIBS > 0 // ANIMS DAMAGE
-	void						CallFrameCommands(idEntity* ent, int from, int to, int uses = 0) const;
-	#else
-	void						CallFrameCommands(idEntity* ent, int from, int to) const;
-	#endif
+	void						CallFrameCommands( idEntity *ent, int from, int to ) const;
 	bool						HasFrameCommands( void ) const;
 
 								// returns first frame (zero based) that command occurs.  returns -1 if not found.
@@ -352,11 +340,7 @@ public:
 	int							NumAnims( void ) const;
 	const idAnim *				GetAnim( int index ) const;
 	int							GetSpecificAnim( const char *name ) const;
-	#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-	int							GetAnim(const char* name, int gibs = 0) const;
-	#else
-	int							GetAnim(const char* name) const;
-	#endif
+	int							GetAnim( const char *name ) const;
 	bool						HasAnim( const char *name ) const;
 	const idDeclSkin *			GetSkin( void ) const;
 	const char *				GetModelName( void ) const;
@@ -514,11 +498,7 @@ public:
 
 	int							NumAnims( void ) const;
 	const idAnim				*GetAnim( int index ) const;
-	#if MD5_ENABLE_GIBS > 0 // ANIMS PERMIT
-	int							GetAnim(const char* name, int gibs = 0) const;
-	#else
-	int							GetAnim(const char* name) const;
-	#endif
+	int							GetAnim( const char *name ) const;
 	bool						HasAnim( const char *name ) const;
 
 	void						ServiceAnims( int fromtime, int totime );

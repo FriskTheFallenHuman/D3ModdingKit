@@ -1794,16 +1794,3 @@ idLexer::HadError
 bool idLexer::HadError( void ) const {
 	return hadError;
 }
-
-#if MD5_BINARY_ANIM > 0 || 1
-
-/*
-================
-idLexer::GetBaseFolder
-================
-*/
-const char* idLexer::GetBaseFolder(void) {
-	return baseFolder;
-}
-
-#endif

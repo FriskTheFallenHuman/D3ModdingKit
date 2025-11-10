@@ -155,20 +155,8 @@ idCVar r_forceLoadImages( "r_forceLoadImages", "0", CVAR_RENDERER | CVAR_ARCHIVE
 idCVar r_orderIndexes( "r_orderIndexes", "1", CVAR_RENDERER | CVAR_BOOL, "perform index reorganization to optimize vertex use" );
 idCVar r_lightAllBackFaces( "r_lightAllBackFaces", "0", CVAR_RENDERER | CVAR_BOOL, "light all the back faces, even when they would be shadowed" );
 
-#if MD5_ENABLE_LODS > 0
-idCVar r_lodRangeIncrements("r_lodRangeIncrements", "120.00", CVAR_RENDERER | CVAR_FLOAT, "Range increment for each LOD level (in inches).");
-#endif
-
-#if MD5_ENABLE_LODS > 1 // DEBUG
-idCVar r_lodLevelMaximum("r_lodLevelMaximum", "9.00", CVAR_RENDERER | CVAR_FLOAT, "", 0.00f, 9.00f);
-idCVar r_lodLevelMinimum("r_lodLevelMinimum", "0.00", CVAR_RENDERER | CVAR_FLOAT, "", 0.00f, 9.00f);
-#endif
-
 // visual debugging info
 idCVar r_showPortals( "r_showPortals", "0", CVAR_RENDERER | CVAR_BOOL, "draw portal outlines in color based on passed / not passed" );
-#if MD5_ENABLE_LODS > 2 // DEBUG+
-idCVar r_testUnsmoothedTangents("r_testUnsmoothedTangents", "0", CVAR_RENDERER | CVAR_INTEGER, "Globally disable (1) or force (2) unsmoothed tangents.");
-#endif
 idCVar r_showUnsmoothedTangents( "r_showUnsmoothedTangents", "0", CVAR_RENDERER | CVAR_BOOL, "if 1, put all nvidia register combiner programming in display lists" );
 idCVar r_showSilhouette( "r_showSilhouette", "0", CVAR_RENDERER | CVAR_BOOL, "highlight edges that are casting shadow planes" );
 idCVar r_showVertexColor( "r_showVertexColor", "0", CVAR_RENDERER | CVAR_BOOL, "draws all triangles with the solid vertex color" );

@@ -1414,10 +1414,6 @@ bool idEntity::StartSound( const char *soundName, const s_channelType channel, i
 		return false;
 	}
 
-	#if MD5_ENABLE_GIBS > 0
-	if (channel == SND_CHANNEL_VOICE && (renderEntity.gibbedZones & MD5_GIBBED_CORE)) return true;
-	#endif
-
 	if ( !gameLocal.isNewFrame ) {
 		// don't play the sound, but don't report an error
 		return true;
@@ -1443,10 +1439,6 @@ bool idEntity::StartSoundShader( const idSoundShader *shader, const s_channelTyp
 	if ( !shader ) {
 		return false;
 	}
-
-	#if MD5_ENABLE_GIBS > 0
-	if (channel == SND_CHANNEL_VOICE && (renderEntity.gibbedZones & MD5_GIBBED_CORE)) return true;
-	#endif
 
 	if ( !gameLocal.isNewFrame ) {
 		return true;

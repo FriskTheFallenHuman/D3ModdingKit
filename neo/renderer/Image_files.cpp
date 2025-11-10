@@ -32,10 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 // DG: replace libjpeg with stb_image.h because it causes fewer headaches
 #define STBI_NO_HDR
 #define STBI_NO_LINEAR
-#define STBI_ONLY_JPEG // at least for now, only use it for JPEG
-#if IMG_ENABLE_PNGS > 0
-#define STBI_ONLY_PNG
-#endif
 #define STBI_NO_STDIO  // images are passed as buffers
 #include "stb_image.h"
 
@@ -833,6 +829,21 @@ If pic is NULL, the image won't actually be loaded, it will just find the
 timestamp.
 =================
 */
+
+typedef struct {
+	const char *ext;
+	void (*ImageLoader)( const char *filename, byte **pic, int *width, int *height, ID_TIME_T *timestamp );
+} imageExtToLoader_t;
+
+static imageExtToLoader_t imageLoaders[] = {
+	{ "tga", LoadTGA },
+	{ "jpg", LoadJPG },
+	{ "pcx", LoadPCX32 },
+	{ "bmp", LoadBMP },
+};
+
+static const int numImageLoaders = sizeof( imageLoaders ) / sizeof( imageLoaders[0] );
+
 void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIME_T *timestamp, bool makePowerOf2 ) {
 	idStr name = cname;
 
@@ -859,30 +870,38 @@ void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIM
 	idStr ext;
 	name.ExtractFileExtension( ext );
 
-	if ( ext == "tga" ) {
-		#if IMG_ENABLE_PNGS > 0
-		name.StripFileExtension();
-		name.DefaultFileExtension(".png");
-		LoadJPG(name.c_str(), pic, width, height, timestamp); // Will also load a PNG.
-		if ((pic && *pic == 0) || (timestamp && *timestamp == FILE_NOT_FOUND_TIMESTAMP)) {
-			name.StripFileExtension();
-			name.DefaultFileExtension(".tga");
-		#endif
-			LoadTGA( name.c_str(), pic, width, height, timestamp );            // try tga first
-			if ( ( pic && *pic == 0 ) || ( timestamp && *timestamp == FILE_NOT_FOUND_TIMESTAMP ) ) {
-				name.StripFileExtension();
-				name.DefaultFileExtension( ".jpg" );
-				LoadJPG( name.c_str(), pic, width, height, timestamp );
+retry:
+
+	// try
+	if ( !ext.IsEmpty() ) {
+		// try only the image with the specified extension: default .tga
+		int i;
+		for ( i = 0; i < numImageLoaders; i++ ) {
+			if ( !ext.Icmp( imageLoaders[i].ext ) ) {
+				imageLoaders[i].ImageLoader( name.c_str(), pic, width, height, timestamp );
+				break;
 			}
-		#if IMG_ENABLE_PNGS > 0
 		}
-		#endif
-	} else if ( ext == "pcx" ) {
-		LoadPCX32( name.c_str(), pic, width, height, timestamp );
-	} else if ( ext == "bmp" ) {
-		LoadBMP( name.c_str(), pic, width, height, timestamp );
-	} else if ( ext == "jpg" ) {
-		LoadJPG( name.c_str(), pic, width, height, timestamp );
+
+		if ( i < numImageLoaders ) {
+			if ( ( pic && *pic == NULL ) || ( timestamp && *timestamp == FILE_NOT_FOUND_TIMESTAMP ) ) {
+				// image with the specified extension was not found so try all extensions
+				for ( i = 0; i < numImageLoaders; i++ )	{
+					name.SetFileExtension( imageLoaders[i].ext );
+					imageLoaders[i].ImageLoader( name.c_str(), pic, width, height, timestamp );
+
+					if( pic && *pic != NULL ) {
+						//idLib::Warning( "image %s failed to load, using %s instead", origName.c_str(), name.c_str());
+						break;
+					}
+
+					if ( !pic && timestamp && *timestamp != FILE_NOT_FOUND_TIMESTAMP ) {
+						// we are only interested in the timestamp and we got one
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	if ( ( width && *width < 1 ) || ( height && *height < 1 ) ) {

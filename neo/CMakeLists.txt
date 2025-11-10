@@ -545,6 +545,7 @@ set(src_renderer
 	renderer/tr_subview.cpp
 	renderer/tr_trace.cpp
 	renderer/tr_trisurf.cpp
+	renderer/tr_mikktspace.cpp
 	renderer/tr_turboshadow.cpp
 )
 
