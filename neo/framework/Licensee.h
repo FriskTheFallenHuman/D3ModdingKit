@@ -49,7 +49,11 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 // paths
-#define	BASE_GAMEDIR					"base"
+#ifdef ID_DEMO_BUILD
+	#define BASE_GAMEDIR				"demo"
+#else
+	#define	BASE_GAMEDIR				"base"
+#endif
 
 // filenames
 #ifndef CONFIG_FILE
@@ -107,7 +111,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // Linux info
 #ifndef LINUX_DEFAULT_PATH // allow overriding it from the build system with -DLINUX_DEFAULT_PATH="/bla/foo/whatever"
-	#define LINUX_DEFAULT_PATH				"/usr/local/games/doom3"
+	#ifdef ID_DEMO_BUILD
+		#define LINUX_DEFAULT_PATH			"/usr/local/games/dhewm3-demo"
+	#else
+		#define LINUX_DEFAULT_PATH			"/usr/local/games/dhewm3"
+	#endif
 #endif
 
 // CD Key file info

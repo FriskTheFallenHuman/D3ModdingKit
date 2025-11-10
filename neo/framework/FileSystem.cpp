@@ -443,6 +443,7 @@ private:
 	void					AddGameDirectory( const char *path, const char *dir );
 	void					SetupGameDirectories( const char *gameName );
 	void					Startup( void );
+	void					SetRestrictions( void );
 							// some files can be obtained from directories without compromising si_pure
 	bool					FileAllowedFromDir( const char *path );
 							// searches all the paks, no pure check
@@ -842,6 +843,18 @@ const char *idFileSystemLocal::OSPathToRelativePath( const char *OSPath ) {
 	// "//Purgatory/purgatory/doom/base/models/mapobjects/bitch/hologirl.tga"
 	// which won't match any of our drive letter based search paths
 	// look for the first complete directory name
+	bool ignoreWarning = false;
+#ifdef ID_DEMO_BUILD
+	base = strstr( OSPath, BASE_GAMEDIR );
+	idStr tempStr = OSPath;
+	tempStr.ToLower();
+	if ( ( strstr( tempStr, "//" ) || strstr( tempStr, "w:" ) ) && strstr( tempStr, "/doom/" BASE_GAMEDIR "/") ) {
+		// will cause a warning but will load the file. ase models have
+		// hard coded doom/base/ in the material names
+		base = strstr( OSPath, BASE_GAMEDIR );
+		ignoreWarning = true;
+	}
+#else
 	base = strstr( OSPath, BASE_GAMEDIR );
 	while ( base ) {
 		char c1 = '\0', c2;
@@ -854,7 +867,7 @@ const char *idFileSystemLocal::OSPathToRelativePath( const char *OSPath ) {
 		}
 		base = strstr( base + 1, BASE_GAMEDIR );
 	}
-
+#endif
 	// fs_game and fs_game_base support - look for first complete name with a mod path
 	// ( fs_game searched before fs_game_base )
 	const char *fsgame = NULL;
@@ -905,7 +918,9 @@ const char *idFileSystemLocal::OSPathToRelativePath( const char *OSPath ) {
 		}
 	}
 
-	common->Warning( "idFileSystem::OSPathToRelativePath failed on %s", OSPath );
+	if ( !ignoreWarning ) {
+		common->Warning( "idFileSystem::OSPathToRelativePath failed on %s", OSPath );
+	}
 
 	strcpy( relativePath, "" );
 	return relativePath;
@@ -2378,6 +2393,31 @@ void idFileSystemLocal::Startup( void ) {
 }
 
 /*
+===================
+idFileSystemLocal::SetRestrictions
+
+Looks for product keys and restricts media add on ability
+if the full version is not found
+===================
+*/
+void idFileSystemLocal::SetRestrictions( void ) {
+#ifdef ID_DEMO_BUILD
+	common->Printf( "\nRunning in restricted demo mode.\n\n" );
+	// make sure that the pak file has the header checksum we expect
+	searchpath_t	*search;
+	for ( search = searchPaths; search; search = search->next ) {
+		if ( search->pack ) {
+			// a tiny attempt to keep the checksum from being scannable from the exe
+			if ( ( search->pack->checksum ^ 0x84268436u ) != ( DEMO_PAK_CHECKSUM ^ 0x84268436u ) ) {
+				common->FatalError( "Corrupted %s: 0x%x", search->pack->pakFilename.c_str(), search->pack->checksum );
+			}
+		}
+	}
+	cvarSystem->SetCVarBool( "fs_restrict", true );
+#endif
+}
+
+/*
 =====================
 idFileSystemLocal::UpdatePureServerChecksums
 =====================
@@ -2689,23 +2729,18 @@ void idFileSystemLocal::Init( void ) {
 	// try to start up normally
 	Startup( );
 
+	// see if we are going to allow add-ons
+	SetRestrictions();
+
 	// spawn a thread to handle background file reads
 	StartBackgroundDownloadThread();
 
+	// if we can't find default.cfg, assume that the paths are
+	// busted and error out now, rather than getting an unreadable
+	// graphics screen when the font fails to load
+	// Dedicated servers can run with no outside files at all
 	if ( ReadFile( "default.cfg", NULL, NULL ) <= 0 ) {
-		// DG: the demo gamedata is in demo/ instead of base/. to make it "just work", add a fallback for that
-		if(fs_game.GetString()[0] == '\0' || idStr::Icmp(fs_game.GetString(), BASE_GAMEDIR) == 0) {
-			common->Warning("Couldn't find default.cfg in %s/, trying again with demo/\n", BASE_GAMEDIR);
-			fs_game.SetString("demo");
-			fs_game_base.SetString("demo");
-			Restart();
-		} else {
-			// if we can't find default.cfg, assume that the paths are
-			// busted and error out now, rather than getting an unreadable
-			// graphics screen when the font fails to load
-			// Dedicated servers can run with no outside files at all
-			common->FatalError( "Couldn't load default.cfg" );
-		}
+		common->FatalError( "Couldn't load default.cfg" );
 	}
 }
 
@@ -2720,8 +2755,8 @@ void idFileSystemLocal::Restart( void ) {
 
 	Startup( );
 
-	// spawn a thread to handle background file reads
-	StartBackgroundDownloadThread();
+	// see if we are going to allow add-ons
+	SetRestrictions();
 
 	// if we can't find default.cfg, assume that the paths are
 	// busted and error out now, rather than getting an unreadable

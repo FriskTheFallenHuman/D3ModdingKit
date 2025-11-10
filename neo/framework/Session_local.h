@@ -335,12 +335,6 @@ public:
 	void				SetMainMenuSkin( void );
 	void				SetPbMenuGuiVars( void );
 
-	// DG: true if running the Demo version of Doom3 (for FT_IsDemo, see Common.h)
-	bool				IsDemoVersion()
-	{
-		return demoversion;
-	}
-
 private:
 	bool				BoxDialogSanityCheck( void );
 	void				EmitGameAuth( void );
@@ -366,8 +360,6 @@ private:
 	idStr				authMsg;
 
 	int					lastTicMsec;
-
-	bool				demoversion; // DG: true if running the Demo version of Doom3, for FT_IsDemo (see Common.h)
 };
 
 extern idSessionLocal	sessLocal;

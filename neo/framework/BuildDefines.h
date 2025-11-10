@@ -70,15 +70,19 @@ If you have questions concerning this license or the applicable additional terms
 // compiled out.
 //#define ID_DEDICATED
 
+// if this is defined, the executable positively won't work with any paks other
+// than the demo pak, even if productid is present.
+//#define ID_DEMO_BUILD
+
 // don't define ID_ALLOW_TOOLS when we don't want tool code in the executable. - DG: defined in cmake now
-#if 0 // defined( _WIN32 ) && defined(_MFC_VER) && !defined( ID_DEDICATED )
-	#define	ID_ALLOW_TOOLS
+#if !defined( ID_DEMO_BUILD )
+	#undef ID_ALLOW_TOOLS
 #endif
 
 #define ID_ENFORCE_KEY 0
 
 #ifndef ID_ENFORCE_KEY
-#	if !defined( ID_DEDICATED )
+#	if !defined( ID_DEDICATED ) && !defined( ID_DEMO_BUILD )
 #		define ID_ENFORCE_KEY 1
 #	else
 #		define ID_ENFORCE_KEY 0

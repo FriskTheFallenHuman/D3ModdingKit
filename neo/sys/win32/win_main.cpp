@@ -424,7 +424,11 @@ extern "C" { // DG: I need this in SDL_win32_main.c
 		if (len == 0)
 			return 0;
 
+#if defined( ID_DEMO_BUILD )
+		idStr::Append(dst, size, "/My Games/dhewm3-demo");
+#else
 		idStr::Append(dst, size, "/My Games/dhewm3");
+#endif
 
 		return len;
 	}
@@ -463,67 +467,41 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 	idStr s;
 
 	switch(type) {
-	case PATH_BASE:
-		// try <path to exe>/base first
-		if (Sys_GetPath(PATH_EXE, path)) {
-			path.StripFilename();
+		case PATH_BASE: {
+			// try next to the executable..
+			if (Sys_GetPath(PATH_EXE, path)) {
+				path.StripFilename();
 
-			s = path;
-			s.AppendPath(BASE_GAMEDIR);
-			if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFDIR)) {
-#ifdef _DEBUG
-				common->Warning( "using path of executable: %s", path.c_str() );
-#endif // _DEBUG
-				return true;
-			} else {
-				s = path + "/demo/demo00.pk4";
-				if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFREG)) {
-#ifdef _DEBUG
-					common->Warning("using path of executable (seems to contain demo game data): %s ", path.c_str());
-#endif // _DEBUG
+				s = path;
+				s.AppendPath(BASE_GAMEDIR);
+				if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFDIR)) {
+	#ifdef _DEBUG
+					common->Warning( "using path of executable: %s", path.c_str() );
+	#endif // _DEBUG
 					return true;
+				} else {
+					path.Clear();
 				}
 			}
 
-			common->Warning("base path '%s' does not exist", s.c_str());
+			return false;
 		}
+		case PATH_CONFIG:
+		case PATH_SAVE: {
+			if (Win_GetHomeDir(buf, sizeof(buf)) < 1) {
+				Sys_Error("ERROR: Couldn't get dir to home path");
+				return false;
+			}
 
-		// Note: apparently there is no registry entry for the Doom 3 Demo
-
-		// fallback to vanilla doom3 cd install
-		if (GetRegistryPath(buf, sizeof(buf), L"SOFTWARE\\id\\Doom 3", L"InstallPath") > 0) {
 			path = buf;
 			return true;
 		}
-
-		// fallback to steam doom3 install
-		if (GetRegistryPath(buf, sizeof(buf), L"SOFTWARE\\Valve\\Steam", L"InstallPath") > 0) {
+		case PATH_EXE: {
+			GetModuleFileName(NULL, buf, sizeof(buf) - 1);
 			path = buf;
-			path.AppendPath("steamapps\\common\\doom 3");
-
-			if (_stat(path.c_str(), &st) != -1 && st.st_mode & _S_IFDIR)
-				return true;
+			path.BackSlashesToSlashes();
+			return true;
 		}
-
-		common->Warning("vanilla doom3 path not found either");
-
-		return false;
-
-	case PATH_CONFIG:
-	case PATH_SAVE:
-		if (Win_GetHomeDir(buf, sizeof(buf)) < 1) {
-			Sys_Error("ERROR: Couldn't get dir to home path");
-			return false;
-		}
-
-		path = buf;
-		return true;
-
-	case PATH_EXE:
-		GetModuleFileName(NULL, buf, sizeof(buf) - 1);
-		path = buf;
-		path.BackSlashesToSlashes();
-		return true;
 	}
 
 	return false;
