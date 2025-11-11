@@ -862,15 +862,13 @@ void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIM
 
 	name.DefaultFileExtension( ".tga" );
 
-	if (name.Length()<5) {
+	if ( name.Length() < 5 ) {
 		return;
 	}
 
 	name.ToLower();
 	idStr ext;
 	name.ExtractFileExtension( ext );
-
-retry:
 
 	// try
 	if ( !ext.IsEmpty() ) {

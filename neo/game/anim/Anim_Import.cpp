@@ -86,7 +86,7 @@ void idModelExport::LoadMayaDll( void ) {
 	exporterDLLEntry_t	dllEntry;
 	char				dllPath[ MAX_OSPATH ];
 
-	fileSystem->FindDLL( va( "MayaImport%d", MAYA_DLL_VERSION ), dllPath );
+	fileSystem->FindDLL( va( "MayaImport%d", MAYA_DLL_VERSION ), dllPath, false );
 	if ( !dllPath[ 0 ] ) {
 		return;
 	}

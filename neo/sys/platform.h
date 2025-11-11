@@ -82,6 +82,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // Win32
 #if defined( WIN32 ) || defined( _WIN32 )
+	#define BUILD_OS_ID					0
+
 	#ifdef __MINGW32__
 	  #undef _alloca // in mingw _alloca is a #define
 	  // NOTE: Do *not* use __builtin_alloca_with_align(), unlike regular alloca it frees at end of block instead of end of function !
@@ -126,6 +128,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // Mac OSX
 #if defined(MACOS_X) || defined(__APPLE__)
+	#define BUILD_OS_ID					1
+	
 	#ifdef GAME_DLL
 		#define ID_GAME_API					__attribute__((visibility ("default")))
 	#else
@@ -156,6 +160,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // Unix
 #ifdef __unix__
+	#define BUILD_OS_ID					3
+	
 	#ifdef	__GNUC__
 	  // NOTE: Do *not* use __builtin_alloca_with_align(), unlike regular alloca it frees at end of block instead of end of function !
 	  #define _alloca16( x )			(({assert( (x)<ID_MAX_ALLOCA_SIZE );}),((void *)((((uintptr_t)__builtin_alloca( (x)+15 )) + 15) & ~15)))

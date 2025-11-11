@@ -63,6 +63,7 @@ idCVar				idAsyncNetwork::master3( "net_master3", "", CVAR_SYSTEM | CVAR_ARCHIVE
 idCVar				idAsyncNetwork::master4( "net_master4", "", CVAR_SYSTEM | CVAR_ARCHIVE, "4th master server address" );
 idCVar				idAsyncNetwork::LANServer( "net_LANServer", "0", CVAR_SYSTEM | CVAR_BOOL | CVAR_NOCHEAT, "config LAN games only - affects clients and servers" );
 idCVar				idAsyncNetwork::serverReloadEngine( "net_serverReloadEngine", "0", CVAR_SYSTEM | CVAR_INTEGER | CVAR_NOCHEAT, "perform a full reload on next map restart (including flushing referenced pak files) - decreased if > 0" );
+idCVar				idAsyncNetwork::serverAllowServerMod( "net_serverAllowServerMod", "0", CVAR_SYSTEM | CVAR_BOOL | CVAR_NOCHEAT, "allow server-side mods" );
 idCVar				idAsyncNetwork::idleServer( "si_idleServer", "0", CVAR_SYSTEM | CVAR_BOOL | CVAR_INIT | CVAR_SERVERINFO, "game clients are idle" );
 idCVar				idAsyncNetwork::clientDownload( "net_clientDownload", "1", CVAR_SYSTEM | CVAR_INTEGER | CVAR_ARCHIVE, "client pk4 downloads policy: 0 - never, 1 - ask, 2 - always (will still prompt for binary code)" );
 
@@ -135,7 +136,7 @@ bool idAsyncNetwork::GetMasterAddress( int index, netadr_t &adr ) {
 	if ( !masters[ index ].resolved || masters[ index ].var->IsModified() ) {
 		masters[ index ].var->ClearModified();
 		if ( !Sys_StringToNetAdr( masters[ index ].var->GetString(), &masters[ index ].address, true ) ) {
-			common->Printf( "Failed to resolve master%d: %s\n", index, masters[ index ].var->GetString() );
+			common->Printf( "Failed to resolve master %d: %s\n", index, masters[ index ].var->GetString() );
 			memset( &masters[ index ].address, 0, sizeof( netadr_t ) );
 			masters[ index ].resolved = true;
 			return false;

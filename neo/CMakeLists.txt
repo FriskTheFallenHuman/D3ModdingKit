@@ -1420,39 +1420,39 @@ if(TOOLS AND MAYA_IMPORT)
 		${src_enginestub}
 	)
 
-	add_dependencies(MayaImport${MAYA_VERSION} MayaDevKit)
+	add_dependencies(MayaImport${MAYA_VERSION}${cpu} MayaDevKit)
 	
 	if(MSVC)
-		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}${cpu} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
 	endif()
 	
-	target_precompile_headers(MayaImport${MAYA_VERSION} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories(MayaImport${MAYA_VERSION} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
 		if (MSVC)
-			set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__declspec(dllexport)")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__declspec(dllexport)")
 		else()
-			set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
 		endif()
-		target_include_directories(MayaImport${MAYA_VERSION} PRIVATE ${game_includes})
+		target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE ${game_includes})
 	else()
 		if (MSVC)
-			set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__declspec(dllexport)")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__declspec(dllexport)")
 		else()
-			set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
 		endif()
 	endif()
-	set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES LINK_FLAGS "${ldflags}")
-	target_include_directories(MayaImport${MAYA_VERSION} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/include")
-	target_link_directories(MayaImport${MAYA_VERSION} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/lib")
-	target_link_libraries(MayaImport${MAYA_VERSION} idlib Foundation OpenMaya OpenMayaAnim)
-	set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES FOLDER "dlls")
-	set_target_properties(MayaImport${MAYA_VERSION} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
+	target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/include")
+	target_link_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/lib")
+	target_link_libraries(MayaImport${MAYA_VERSION}${cpu} idlib Foundation OpenMaya OpenMayaAnim)
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES FOLDER "dlls")
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 
 	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS MayaImport${MAYA_VERSION}
+		install(TARGETS MayaImport${MAYA_VERSION}${cpu}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
@@ -1463,28 +1463,28 @@ endif()
 # ============================== Doom 3 ================================
 
 if(BASE AND NOT HARDLINK_GAME)
-	add_library(base SHARED ${src_game})
+	add_library(Game${cpu} SHARED ${src_game})
 	
 	if (MSVC)
-		target_sources(base PRIVATE "sys/win32/natvis/game.natvis")
+		target_sources(Game${cpu} PRIVATE "sys/win32/natvis/game.natvis")
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game})
 	endif()
 	
-	target_precompile_headers(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 	
-	set_target_properties(base PROPERTIES PREFIX "")
-	set_target_properties(base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
-	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/game")
-	set_target_properties(base PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(base PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(base idlib)
-	set_target_properties(base PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
-	set_target_properties(base PROPERTIES FOLDER "dlls")
+	set_target_properties(Game${cpu} PROPERTIES PREFIX "")
+	set_target_properties(Game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
+	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/game")
+	set_target_properties(Game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(Game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(Game${cpu} idlib)
+	set_target_properties(Game${cpu} PROPERTIES OUTPUT_NAME "game${cpu}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
+	set_target_properties(Game${cpu} PROPERTIES FOLDER "dlls")
 
 	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS base
+		install(TARGETS Game${cpu}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
@@ -1495,28 +1495,28 @@ endif()
 # ============================== Doom 3: RoE ================================
 
 if(D3XP AND NOT HARDLINK_GAME)
-	add_library(d3xp SHARED ${src_d3xp})
-
+	add_library(Game${cpu}-d3xp SHARED ${src_d3xp})
+	
 	if (MSVC)
-		target_sources(d3xp PRIVATE "sys/win32/natvis/game.natvis")
+		target_sources(Game${cpu}-d3xp PRIVATE "sys/win32/natvis/game.natvis")
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_d3xp})
 	endif()
-
-	target_precompile_headers(d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories(d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_precompile_headers(Game${cpu}-d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 
-	set_target_properties(d3xp PROPERTIES PREFIX "")
-	set_target_properties(d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
-	target_include_directories(d3xp PRIVATE "${CMAKE_SOURCE_DIR}/d3xp")
-	set_target_properties(d3xp PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(d3xp PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(d3xp idlib)
-	set_target_properties(d3xp PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
-	set_target_properties(d3xp PROPERTIES FOLDER "dlls")
+	target_include_directories(Game${cpu}-d3xp PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+
+	set_target_properties(Game${cpu}-d3xp PROPERTIES PREFIX "")
+	set_target_properties(Game${cpu}-d3xp PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;_D3XP;CTF")
+	target_include_directories(Game${cpu}-d3xp PRIVATE "${CMAKE_SOURCE_DIR}/d3xp")
+	set_target_properties(Game${cpu}-d3xp PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(Game${cpu}-d3xp PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(Game${cpu}-d3xp idlib)
+	set_target_properties(Game${cpu}-d3xp PROPERTIES OUTPUT_NAME "game${cpu}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/d3xp LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/d3xp)
+	set_target_properties(Game${cpu}-d3xp PROPERTIES FOLDER "dlls")
 
 	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS d3xp
+		install(TARGETS Game${cpu}-d3xp
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"

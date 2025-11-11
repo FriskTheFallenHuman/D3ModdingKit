@@ -192,7 +192,6 @@ private:
 	void						WriteConfiguration( void );
 	void						DumpWarnings( void );
 	void						LoadGameDLL( void );
-	void						LoadGameDLLbyName( const char *dll, idStr& s );
 	void						UnloadGameDLL( void );
 	void						PrintLoadingMessage( const char *msg );
 	void						FilterLangList( idStrList* list, idStr lang );
@@ -2618,106 +2617,31 @@ void idCommonLocal::GUIFrame( bool execCmd, bool network ) {
 
 /*
 =================
-idCommonLocal::LoadGameDLLbyName
-
-Helper for LoadGameDLL() to make it less painful to try different dll names.
-=================
-*/
-void idCommonLocal::LoadGameDLLbyName( const char *dll, idStr& s ) {
-	s.CapLength(0);
-	// try next to the binary first (build tree)
-	if (Sys_GetPath(PATH_EXE, s)) {
-		// "s = " seems superfluous, but works around g++ 4.7 bug else StripFilename()
-		// (and possibly even CapLength()) seems to be "optimized" away and the string contains garbage
-		s = s.StripFilename();
-		s.AppendPath(dll);
-		gameDLL = sys->DLL_Load(s);
-	}
-
-	#if defined(_WIN32)
-		// then the lib/ dir relative to the binary on windows
-		if (!gameDLL && Sys_GetPath(PATH_EXE, s)) {
-			s.StripFilename();
-			s.AppendPath("lib");
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-	#elif defined(MACOS_X)
-		// then the binary dir in the bundle on osx
-		if (!gameDLL && Sys_GetPath(PATH_EXE, s)) {
-			s.StripFilename();
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-
-		// if not found in the bundle's directory, try in the bundle itself
-		if (!gameDLL && Sys_GetPath(PATH_EXE, s)) {
-			s.AppendPath("Contents/MacOS/base");
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-	#else
-		// then the install folder on *nix
-		if (!gameDLL) {
-			s = BUILD_LIBDIR;
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-	#endif
-}
-
-/*
-=================
 idCommonLocal::LoadGameDLL
 =================
 */
 void idCommonLocal::LoadGameDLL( void ) {
 #ifdef __DOOM_DLL__
-	const char		*fs_game;
-	char			dll[MAX_OSPATH];
-	idStr			s;
+	char			dllPath[ MAX_OSPATH ];
 
 	gameImport_t	gameImport;
 	gameExport_t	gameExport;
 	GetGameAPI_t	GetGameAPI;
 
-	fs_game = cvarSystem->GetCVarString("fs_game");
-	if (!fs_game || !fs_game[0])
-		fs_game = BASE_GAMEDIR;
+	fileSystem->FindDLL( "game" D3_ARCH, dllPath, true );
 
-	gameDLL = 0;
-
-	sys->DLL_GetFileName(fs_game, dll, sizeof(dll));
-	LoadGameDLLbyName(dll, s);
-
-	// there was no gamelib for this mod, use default one from base game
-	if (!gameDLL) {
-		common->Printf( "\n" );
-
-		const char *fs_base = cvarSystem->GetCVarString("fs_game_base");
-		if (fs_base && fs_base[0]) {
-			common->Warning( "couldn't load mod-specific %s, defaulting to library of fs_game_base (%s)!\n", dll, fs_base);
-			sys->DLL_GetFileName(fs_base, dll, sizeof(dll));
-			LoadGameDLLbyName(dll, s);
-			if ( !gameDLL ) {
-				common->Warning( "couldn't load fs_game_base lib %s either, defaulting to base game's library!\n", dll);
-			}
-		} else {
-			common->Warning( "couldn't load mod-specific %s, defaulting to base game's library!\n", dll );
-		}
-
-		if ( !gameDLL ) {
-			sys->DLL_GetFileName(BASE_GAMEDIR, dll, sizeof(dll));
-			LoadGameDLLbyName(dll, s);
-		}
-	}
-
-	if ( !gameDLL ) {
-		common->FatalError( "couldn't load game dynamic library '%s'", dll );
+	if ( !dllPath[ 0 ] ) {
+		common->FatalError( "couldn't find game dynamic library" );
 		return;
 	}
 
-	common->Printf("loaded game library '%s'.\n", s.c_str());
+	common->DPrintf( "Loading game DLL: '%s'\n", dllPath );
+	gameDLL = sys->DLL_Load( dllPath );
+
+	if ( !gameDLL ) {
+		common->FatalError( "couldn't load game dynamic library" );
+		return;
+	}
 
 	GetGameAPI = (GetGameAPI_t) Sys_DLL_GetProcAddress( gameDLL, "GetGameAPI" );
 	if ( !GetGameAPI ) {

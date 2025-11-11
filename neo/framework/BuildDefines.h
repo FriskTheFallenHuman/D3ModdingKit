@@ -60,6 +60,11 @@ If you have questions concerning this license or the applicable additional terms
 	#define ID_ALLOW_CHEATS 0
 #endif
 
+// fake a pure client. useful to connect an all-debug client to a server
+#ifndef ID_FAKE_PURE
+	#define ID_FAKE_PURE 0
+#endif
+
 // verify checksums in clientinfo traffic
 // NOTE: this makes the network protocol incompatible
 #ifndef ID_CLIENTINFO_TAGS
@@ -75,7 +80,7 @@ If you have questions concerning this license or the applicable additional terms
 //#define ID_DEMO_BUILD
 
 // don't define ID_ALLOW_TOOLS when we don't want tool code in the executable. - DG: defined in cmake now
-#if !defined( ID_DEMO_BUILD )
+#if defined( ID_DEMO_BUILD )
 	#undef ID_ALLOW_TOOLS
 #endif
 
@@ -106,10 +111,9 @@ DOOM III gold:	33
 1.2 XP:			36-39
 1.3 patch:		40
 1.3.1:			41
-
-dhewm WIP		42
+Dhewm3:			42
 */
-#define ASYNC_PROTOCOL_MINOR	(42)
+#define ASYNC_PROTOCOL_MINOR	(41)
 #define ASYNC_PROTOCOL_VERSION	(( ASYNC_PROTOCOL_MAJOR << 16 ) + ASYNC_PROTOCOL_MINOR)
 
 #define MAX_ASYNC_CLIENTS		(32)
