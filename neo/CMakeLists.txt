@@ -574,6 +574,7 @@ set(src_framework
 	framework/Common.cpp
 	framework/Compressor.cpp
 	framework/Console.cpp
+	framework/ConsoleHistory.cpp
 	framework/DemoFile.cpp
 	framework/DeclAF.cpp
 	framework/DeclEntityDef.cpp

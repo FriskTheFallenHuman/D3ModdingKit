@@ -3027,9 +3027,6 @@ void idCommonLocal::Init( int argc, char **argv ) {
 		// Initialize our sound thread.
 		static std::thread updateThread( idSoundThread );
 
-		// load the persistent console history
-		console->LoadHistory();
-
 		com_fullyInitialized = true;
 	}
 
@@ -3049,9 +3046,6 @@ void idCommonLocal::Shutdown( void ) {
 
 	idAsyncNetwork::server.Kill();
 	idAsyncNetwork::client.Shutdown();
-
-	// save persistent console history
-	console->SaveHistory();
 
 	// game specific shut down
 	ShutdownGame( false );

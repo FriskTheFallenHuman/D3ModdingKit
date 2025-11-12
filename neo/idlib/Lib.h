@@ -192,6 +192,7 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 #include "CmdArgs.h"
 
 // containers
+#include "containers/Array.h"
 #include "containers/BTree.h"
 #include "containers/BinSearch.h"
 #include "containers/HashIndex.h"
