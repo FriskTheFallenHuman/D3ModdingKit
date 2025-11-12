@@ -2,7 +2,7 @@ name: Linux Auto-Builds
 on:
   push:
     branches:
-      - 'master'
+      - "master"
   pull_request:
     types:
       - edited
@@ -23,7 +23,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - name: Download dependencies
-        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build
+        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev
 
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -G Ninja -DDEDICATED=ON ../neo/
+          cmake -G Ninja -DD3XP=OFF -DFREETYPE=OFF -DDEDICATED=ON ../neo/
           ninja
 
       - name: Copy base files to linux/
