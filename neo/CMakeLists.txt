@@ -16,7 +16,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules")
 
-project(dhewm3 CXX C)
+project(D3ModdingKit CXX C)
 
 # build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -38,7 +38,7 @@ if(MSVC)
 	option(MAYA_IMPORT				"Build the include maya import tool (Requires MayaSDK)." OFF)
 endif()
 option(BASE						"Build the base game code" ON)
-option(D3XP						"Build the d3xp game code" ON)
+option(D3XP						"Build the d3xp game code" OFF)
 option(ONATIVE						"Optimize for the host CPU" OFF)
 option(SDL3							"Use SDL3 instead of SDL2" OFF)
 option(IMGUI						"Build with Dear ImGui integration - requires SDL2/SDL3 and C++11" ON)
