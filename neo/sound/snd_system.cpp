@@ -79,11 +79,11 @@ idCVar idSoundSystemLocal::s_useEAXReverb( "s_useEAXReverb", "0", CVAR_SOUND | C
 idCVar idSoundSystemLocal::s_decompressionLimit( "s_decompressionLimit", "6", CVAR_SOUND | CVAR_INTEGER | CVAR_ROM, "specifies maximum uncompressed sample length in seconds" );
 #endif
 
-idCVar idSoundSystemLocal::s_alReverbGain( "s_alReverbGain", "0.5", CVAR_SOUND | CVAR_FLOAT | CVAR_ARCHIVE, "reduce reverb strength (0.0 to 1.0)", 0.0f, 1.0f );
+idCVar idSoundSystemLocal::s_alReverbGain( "s_alReverbGain", "0.5", CVAR_SOUND | CVAR_FLOAT | CVAR_ARCHIVE | CVAR_NEW, "reduce reverb strength (0.0 to 1.0)", 0.0f, 1.0f );
 
-idCVar idSoundSystemLocal::s_scaleDownAndClamp( "s_scaleDownAndClamp", "1", CVAR_SOUND | CVAR_BOOL | CVAR_ARCHIVE, "Clamp and reduce volume of all sounds to prevent clipping or temporary downscaling by OpenAL. When disabling this, you probably want to explicitly disable s_alOutputLimiter" );
-idCVar idSoundSystemLocal::s_alOutputLimiter( "s_alOutputLimiter", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE, "Configure OpenAL's output-limiter. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
-idCVar idSoundSystemLocal::s_alHRTF( "s_alHRTF", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE, "Enable HRTF for better surround sound with stereo *headphones*. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
+idCVar idSoundSystemLocal::s_scaleDownAndClamp( "s_scaleDownAndClamp", "1", CVAR_SOUND | CVAR_BOOL | CVAR_ARCHIVE | CVAR_NEW, "Clamp and reduce volume of all sounds to prevent clipping or temporary downscaling by OpenAL. When disabling this, you probably want to explicitly disable s_alOutputLimiter" );
+idCVar idSoundSystemLocal::s_alOutputLimiter( "s_alOutputLimiter", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE | CVAR_NEW, "Configure OpenAL's output-limiter. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
+idCVar idSoundSystemLocal::s_alHRTF( "s_alHRTF", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE | CVAR_NEW, "Enable HRTF for better surround sound with stereo *headphones*. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
 
 bool idSoundSystemLocal::useEFXReverb = false;
 int idSoundSystemLocal::EFXAvailable = -1;

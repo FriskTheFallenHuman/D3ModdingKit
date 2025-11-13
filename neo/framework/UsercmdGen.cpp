@@ -359,14 +359,6 @@ private:
 
 	void			Key( int keyNum, bool down );
 
-	// DG: if in_allowAlwaysRunInSP is set, you can use always run or toggle run even in SP.
-	//     Why not, we're all adults here, if you run out of stamina it's your problem
-	//     (though I'll probably add another CVar to disable stamina in SP)
-	inline bool AlwaysRunAllowed() const
-	{
-		return in_allowAlwaysRunInSP.GetBool() || idAsyncNetwork::IsActive();
-	}
-
 	idVec3			viewangles;
 	int				flags;
 	int				impulse;
@@ -404,7 +396,6 @@ private:
 	static idCVar	in_pitchSpeed;
 	static idCVar	in_angleSpeedKey;
 	static idCVar	in_freeLook;
-	static idCVar	in_allowAlwaysRunInSP; // DG: I don't care, I'm not a cop
 	static idCVar	in_alwaysRun;
 	static idCVar	in_toggleRun;
 	static idCVar	in_toggleCrouch;
@@ -423,9 +414,8 @@ idCVar idUsercmdGenLocal::in_yawSpeed( "in_yawspeed", "140", CVAR_SYSTEM | CVAR_
 idCVar idUsercmdGenLocal::in_pitchSpeed( "in_pitchspeed", "140", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "pitch change speed when holding down look _lookUp or _lookDown button" );
 idCVar idUsercmdGenLocal::in_angleSpeedKey( "in_anglespeedkey", "1.5", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "angle change scale when holding down _speed button" );
 idCVar idUsercmdGenLocal::in_freeLook( "in_freeLook", "1", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "look around with mouse (reverse _mlook button)" );
-idCVar idUsercmdGenLocal::in_allowAlwaysRunInSP ( "in_allowAlwaysRunInSP", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "Allow always run and toggle run in Single Player as well - keep in mind you may run out of stamina!" );
-idCVar idUsercmdGenLocal::in_alwaysRun( "in_alwaysRun", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "always run (reverse _speed button) - only in MP, unless in_allowAlwaysRunInSP is set" );
-idCVar idUsercmdGenLocal::in_toggleRun( "in_toggleRun", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "pressing _speed button toggles run on/off - only in MP, unless in_allowAlwaysRunInSP is set" );
+idCVar idUsercmdGenLocal::in_alwaysRun( "in_alwaysRun", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "always run (reverse _speed button)" );
+idCVar idUsercmdGenLocal::in_toggleRun( "in_toggleRun", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "pressing _speed button toggles run on/off" );
 idCVar idUsercmdGenLocal::in_toggleCrouch( "in_toggleCrouch", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "pressing _movedown button toggles player crouching/standing" );
 idCVar idUsercmdGenLocal::in_toggleZoom( "in_toggleZoom", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_BOOL, "pressing _zoom button toggles zoom on/off" );
 idCVar idUsercmdGenLocal::sensitivity( "sensitivity", "5", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_FLOAT, "mouse view sensitivity" );
@@ -435,7 +425,7 @@ idCVar idUsercmdGenLocal::m_strafeScale( "m_strafeScale", "6.25", CVAR_SYSTEM | 
 idCVar idUsercmdGenLocal::m_smooth( "m_smooth", "1", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_INTEGER, "number of samples blended for mouse viewing", 1, 8, idCmdSystem::ArgCompletion_Integer<1,8> );
 idCVar idUsercmdGenLocal::m_strafeSmooth( "m_strafeSmooth", "4", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_INTEGER, "number of samples blended for mouse moving", 1, 8, idCmdSystem::ArgCompletion_Integer<1,8> );
 idCVar idUsercmdGenLocal::m_showMouseRate( "m_showMouseRate", "0", CVAR_SYSTEM | CVAR_BOOL, "shows mouse movement" );
-idCVar idUsercmdGenLocal::m_invertLook( "m_invertLook", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_INTEGER, "invert mouse look 0: don't invert, 1: invert up/down (flight controls), 2: invert left/right, 3: invert both", 0, 3, idCmdSystem::ArgCompletion_Integer<0,3>  );
+idCVar idUsercmdGenLocal::m_invertLook( "m_invertLook", "0", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_INTEGER | CVAR_NEW, "invert mouse look 0: don't invert, 1: invert up/down (flight controls), 2: invert left/right, 3: invert both", 0, 3, idCmdSystem::ArgCompletion_Integer<0,3>  );
 
 idCVar joy_triggerThreshold( "joy_triggerThreshold", "0.05", CVAR_FLOAT | CVAR_ARCHIVE, "how far the joystick triggers have to be pressed before they register as down" );
 idCVar joy_deadZone( "joy_deadZone", "0.25", CVAR_FLOAT | CVAR_ARCHIVE, "specifies how large the dead-zone is on the joystick" );
@@ -449,7 +439,7 @@ idCVar joy_invertLook( "joy_invertLook", "0", CVAR_ARCHIVE | CVAR_BOOL, "inverts
 idCVar joy_dampenLook( "joy_dampenLook", "1", CVAR_BOOL | CVAR_ARCHIVE, "Do not allow full acceleration on look" );
 idCVar joy_deltaPerMSLook( "joy_deltaPerMSLook", "0.003", CVAR_FLOAT | CVAR_ARCHIVE, "Max amount to be added on look per MS" );
 
-idCVar in_useGamepad( "in_useGamepad", "1", CVAR_ARCHIVE | CVAR_BOOL, "enables/disables the gamepad for PC use" );
+idCVar in_useGamepad( "in_useGamepad", "1", CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "enables/disables the gamepad for PC use" );
 
 // TODO idCVar in_mouseInvertLook( "in_mouseInvertLook", "0", CVAR_ARCHIVE | CVAR_BOOL, "inverts the look controls so the forward looks up (flight controls) - the proper way to play games!" );
 
@@ -567,7 +557,7 @@ Moves the local angle positions
 void idUsercmdGenLocal::AdjustAngles( void ) {
 	float	speed;
 
-	if ( toggled_run.on ^ ( in_alwaysRun.GetBool() && AlwaysRunAllowed() ) ) { // DG: always run in SP
+	if ( toggled_run.on ^ ( in_alwaysRun.GetBool() ) ) {
 		speed = idMath::M_MS2SEC * USERCMD_MSEC * in_angleSpeedKey.GetFloat();
 	} else {
 		speed = idMath::M_MS2SEC * USERCMD_MSEC;
@@ -981,7 +971,7 @@ void idUsercmdGenLocal::CmdButtons( void ) {
 	}
 
 	// check the run button
-	if ( toggled_run.on ^ ( in_alwaysRun.GetBool() && AlwaysRunAllowed() ) ) { // DG: always run in SP
+	if ( toggled_run.on ^ ( in_alwaysRun.GetBool() ) ) {
 		cmd.buttons |= BUTTON_RUN;
 	}
 
@@ -1013,7 +1003,7 @@ void idUsercmdGenLocal::InitCurrent( void ) {
 	memset( &cmd, 0, sizeof( cmd ) );
 	cmd.flags = flags;
 	cmd.impulse = impulse;
-	cmd.buttons |= ( in_alwaysRun.GetBool() && AlwaysRunAllowed() ) ? BUTTON_RUN : 0; // DG: always run in SP
+	cmd.buttons |= ( in_alwaysRun.GetBool() ) ? BUTTON_RUN : 0;
 	cmd.buttons |= in_freeLook.GetBool() ? BUTTON_MLOOK : 0;
 }
 
@@ -1033,8 +1023,8 @@ void idUsercmdGenLocal::MakeCurrent( void ) {
 	if ( !Inhibited() ) {
 		// update toggled key states
 		toggled_crouch.SetKeyState( ButtonState( UB_DOWN ), in_toggleCrouch.GetBool() );
-		// DG: allow toggle run in SP (of in_allowAlwaysRun is set)
-		toggled_run.SetKeyState( ButtonState( UB_SPEED ), in_toggleRun.GetBool() && AlwaysRunAllowed() );
+		// DG: allow toggle run in SP
+		toggled_run.SetKeyState( ButtonState( UB_SPEED ), in_toggleRun.GetBool() );
 		toggled_zoom.SetKeyState( ButtonState( UB_ZOOM ), in_toggleZoom.GetBool() );
 
 		// keyboard angle adjustment

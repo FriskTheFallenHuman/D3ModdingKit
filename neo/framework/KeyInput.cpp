@@ -189,7 +189,7 @@ static const keyname_t keynames[] =
 	{NULL,				0,					NULL}
 };
 
-idCVar in_namePressed( "in_namePressed", "0", CVAR_BOOL|CVAR_SYSTEM, "print the name of the key/button pressed" );
+idCVar in_namePressed( "in_namePressed", "0", CVAR_BOOL|CVAR_SYSTEM|CVAR_NEW, "print the name of the key/button pressed" );
 
 static const int	MAX_KEYS = K_LAST_KEY+1; // DG: was 256, made it more flexible
 

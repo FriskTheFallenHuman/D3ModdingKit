@@ -95,7 +95,7 @@ static void AddDescrTooltip( const char* description )
 
 struct BindingEntry;
 static BindingEntry* FindBindingEntryForKey( int keyNum );
-static idCVar imgui_numBindingColumns( "imgui_numBindingColumns", "3", CVAR_ARCHIVE|CVAR_SYSTEM|CVAR_INTEGER, "Number of columns with bindings in Dhewm3SettingsMenu's Bindings tab", 1, 10 );
+static idCVar imgui_numBindingColumns( "imgui_numBindingColumns", "3", CVAR_ARCHIVE|CVAR_SYSTEM|CVAR_INTEGER|CVAR_NEW, "Number of columns with bindings in Dhewm3SettingsMenu's Bindings tab", 1, 10 );
 
 static int rebindKeyNum = -1; // only used for HandleRebindPopup()
 static BindingEntry* rebindOtherEntry = nullptr; // ditto
@@ -2345,9 +2345,9 @@ static void DrawAudioOptionsMenu()
 
 static CVarOption gameOptions[] = {
 	CVarOption( "Movement and Weapons" ),
-	CVarOption( "in_alwaysRun", "Always Run (Multiplayer-only by default)", OT_BOOL ),
-	CVarOption( "in_allowAlwaysRunInSP", "Allow Always Run and Toggle Run in Singleplayer\n(Stamina is still limited!)", OT_BOOL ),
-	CVarOption( "in_toggleRun", "Toggle Run (Multiplayer-only by default)", OT_BOOL ),
+	CVarOption( "in_alwaysRun", "Always Run", OT_BOOL ),
+	CVarOption( "in_toggleCrouch", "Toggle Crouch", OT_BOOL ),
+	CVarOption( "in_toggleRun", "Toggle Run", OT_BOOL ),
 	CVarOption( "in_toggleCrouch", "Toggle Crouch", OT_BOOL ),
 	CVarOption( "in_toggleZoom", "Toggle Zoom", OT_BOOL ),
 	CVarOption( "ui_autoReload", "Auto Weapon Reload", OT_BOOL ),

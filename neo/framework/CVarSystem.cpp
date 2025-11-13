@@ -1068,6 +1068,7 @@ void idCVarSystemLocal::ListByFlags( const idCmdArgs &args, cvarFlags_t flags ) 
 	idStr match, indent, string;
 	const idInternalCVar *cvar;
 	idList<const idInternalCVar *>cvarList;
+	bool onlyNew = false;
 
 	enum {
 		SHOW_VALUE,
@@ -1092,6 +1093,16 @@ void idCVarSystemLocal::ListByFlags( const idCmdArgs &args, cvarFlags_t flags ) 
 		}
 	}
 
+
+	// Show only the new cvars added by the source port.
+	for ( int i = 1; i < args.Argc(); i++ ) {
+		idStr option = args.Argv( i );
+		if ( option.Icmp( "new" ) == 0 ) {
+			onlyNew = true;
+			argNum = i + 1;
+		}
+	}
+
 	if ( args.Argc() > argNum ) {
 		match = args.Args( argNum, -1 );
 		match.Replace( " ", "" );
@@ -1103,6 +1114,10 @@ void idCVarSystemLocal::ListByFlags( const idCmdArgs &args, cvarFlags_t flags ) 
 		cvar = localCVarSystem.cvars[i];
 
 		if ( !( cvar->GetFlags() & flags ) ) {
+			continue;
+		}
+
+		if ( onlyNew && !( cvar->GetFlags() & CVAR_NEW ) ) {
 			continue;
 		}
 
@@ -1214,7 +1229,8 @@ void idCVarSystemLocal::ListByFlags( const idCmdArgs &args, cvarFlags_t flags ) 
 	common->Printf(	"listCvar [search string]          = list cvar values\n"
 				"listCvar -help [search string]    = list cvar descriptions\n"
 				"listCvar -type [search string]    = list cvar types\n"
-				"listCvar -flags [search string]   = list cvar flags\n" );
+				"listCvar -flags [search string]   = list cvar flags\n"
+				"listCvar -new [search string]     = list newly added cvar vars\n" );
 }
 
 /*
