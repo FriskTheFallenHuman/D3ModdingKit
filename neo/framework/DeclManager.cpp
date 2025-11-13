@@ -635,10 +635,10 @@ int idDeclFile::LoadAndParse() {
 	idStr finalPreprocessedBuffer;
 
 	// load the text
-	common->DPrintf( "Loading " S_COLOR_GREEN "'%s'\n", fileName.c_str() );
+	common->DPrintf( "...loading " S_COLOR_CYAN "'%s'\n", fileName.c_str() );
 	length = fileSystem->ReadFile( fileName, (void **)&buffer, &timestamp );
 	if ( length == -1 ) {
-		common->FatalError( "couldn't load " S_COLOR_GREEN "%s", fileName.c_str() );
+		common->FatalError( "couldn't load " S_COLOR_CYAN "%s", fileName.c_str() );
 		return 0;
 	}
 
@@ -650,7 +650,7 @@ int idDeclFile::LoadAndParse() {
 	}
 
 	if ( !src.LoadMemory( finalPreprocessedBuffer.c_str(), finalPreprocessedBuffer.Length(), fileName ) ) {
-		common->Error( "Couldn't parse" S_COLOR_GREEN "%s", fileName.c_str() );
+		common->Error( "Couldn't parse" S_COLOR_CYAN "%s", fileName.c_str() );
 		Mem_Free( buffer );
 		return 0;
 	}

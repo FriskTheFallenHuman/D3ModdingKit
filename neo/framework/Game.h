@@ -29,14 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_H__
 #define __GAME_H__
 
-class idAASFileManager;
-class idCollisionModelManager;
-class idRenderSystem;
-class idRenderModelManager;
-class idUserInterface;
-class idUserInterfaceManager;
-class idNetworkSystem;
-
 /*
 ===============================================================================
 

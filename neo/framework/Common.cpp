@@ -461,7 +461,7 @@ void idCommonLocal::VerbosePrintf( const char* fmt, ... )
 ==================
 idCommonLocal::DPrintf
 
-prints message in cyan that only shows up if the "developer" cvar is set
+prints message that only shows up if the "developer" cvar is set
 ==================
 */
 void idCommonLocal::DPrintf( const char *fmt, ... ) {
@@ -481,7 +481,7 @@ void idCommonLocal::DPrintf( const char *fmt, ... ) {
 	bool temp = com_refreshOnPrint;
 	com_refreshOnPrint = false;
 
-	Printf( S_COLOR_CYAN "[INFO]: " S_COLOR_WHITE "%s", msg );
+	Printf( S_COLOR_GRAY"%s", msg );
 
 	com_refreshOnPrint = temp;
 }
@@ -490,7 +490,7 @@ void idCommonLocal::DPrintf( const char *fmt, ... ) {
 ==================
 idCommonLocal::DWarning
 
-prints warning message in magenta that only shows up if the "developer" cvar is set
+prints warning message in yellow that only shows up if the "developer" cvar is set
 ==================
 */
 void idCommonLocal::DWarning( const char *fmt, ... ) {
@@ -506,14 +506,14 @@ void idCommonLocal::DWarning( const char *fmt, ... ) {
 	va_end( argptr );
 	msg[sizeof(msg)-1] = '\0';
 
-	Printf( S_COLOR_MAGENTA "[WARNING]: " S_COLOR_WHITE "%s\n", msg );
+	Printf( S_COLOR_YELLOW"WARNING: %s\n", msg );
 }
 
 /*
 ==================
 idCommonLocal::Warning
 
-prints WARNING %s message in yellow and adds the warning message to a queue to be printed later on
+prints WARNING %s and adds the warning message to a queue to be printed later on
 ==================
 */
 void idCommonLocal::Warning( const char *fmt, ... ) {
@@ -525,7 +525,7 @@ void idCommonLocal::Warning( const char *fmt, ... ) {
 	va_end( argptr );
 	msg[sizeof(msg)-1] = 0;
 
-	Printf( S_COLOR_YELLOW "[WARNING]: " S_COLOR_WHITE "%s\n", msg );
+	Printf( S_COLOR_YELLOW "WARNING: " S_COLOR_RED "%s\n", msg );
 
 	if ( warningList.Num() < MAX_WARNING_LIST ) {
 		warningList.AddUnique( msg );
@@ -550,7 +550,7 @@ void idCommonLocal::PrintWarnings( void ) {
 	Printf( "during %s...\n", warningCaption.c_str() );
 
 	for ( i = 0; i < warningList.Num(); i++ ) {
-		Printf( S_COLOR_BLUE "[RUN WARNS]: " S_COLOR_WHITE "%s\n", warningList[i].c_str() );
+		Printf( S_COLOR_YELLOW "WARNING: " S_COLOR_RED "%s\n", warningList[i].c_str() );
 	}
 	if ( warningList.Num() ) {
 		if ( warningList.Num() >= MAX_WARNING_LIST ) {
@@ -596,7 +596,7 @@ void idCommonLocal::DumpWarnings( void ) {
 		warningList.Sort();
 		for ( i = 0; i < warningList.Num(); i++ ) {
 			warningList[i].RemoveColors();
-			warningFile->Printf( "[WARNING]: %s\n", warningList[i].c_str() );
+			warningFile->Printf( "WARNING: %s\n", warningList[i].c_str() );
 		}
 		if ( warningList.Num() >= MAX_WARNING_LIST ) {
 			warningFile->Printf("----- more than %d warnings -----\n", MAX_WARNING_LIST );
@@ -612,7 +612,7 @@ void idCommonLocal::DumpWarnings( void ) {
 		errorList.Sort();
 		for ( i = 0; i < errorList.Num(); i++ ) {
 			errorList[i].RemoveColors();
-			warningFile->Printf( "[ERROR]: %s", errorList[i].c_str() );
+			warningFile->Printf( "ERROR: %s", errorList[i].c_str() );
 		}
 
 		warningFile->ForceFlush();
