@@ -36,6 +36,11 @@ enum justify_t {
 	JUSTIFY_CENTER_RIGHT
 };
 
+enum textSize_t {
+	TEXTSIZE_SMALL,
+	TEXTSIZE_LARGE
+};
+
 class idOverlayHandle {
 friend class idConsoleLocal;
 public:
@@ -82,7 +87,7 @@ public:
 	virtual void	Draw( bool forceFullScreen ) = 0;
 	virtual void	Print( const char *text ) = 0;
 
-	virtual void	PrintOverlay( idOverlayHandle & handle, justify_t justify, VERIFY_FORMAT_STRING const char * text, ... ) = 0;
+	virtual void	PrintOverlay( idOverlayHandle & handle, justify_t justify, VERIFY_FORMAT_STRING const char * text, bool showbackground, textSize_t size, ... ) = 0;
 };
 
 extern idConsole *	console;	// statically initialized to an idConsoleLocal

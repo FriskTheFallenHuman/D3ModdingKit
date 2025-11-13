@@ -43,7 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 struct overlayText_t {
 	idStr			text;
 	justify_t		justify;
+	textSize_t		size;
 	int				time;
+	bool			showbackground = false;
 };
 
 // the console will query the cvar and command systems for
@@ -61,7 +63,7 @@ public:
 	virtual	void		Print( const char *text );
 	virtual	void		Draw( bool forceFullScreen );
 
-	virtual void		PrintOverlay( idOverlayHandle &handle, justify_t justify, const char *text, ... );
+	virtual void		PrintOverlay( idOverlayHandle &handle, justify_t justify, const char *text, bool showbackground, textSize_t size, ... );
 
 	void				Dump( const char *toFile );
 	void				Clear();
@@ -87,8 +89,10 @@ private:
 	void				SetDisplayFraction( float frac );
 	void				UpdateDisplayFraction( void );
 
-	void				DrawTextLeftAlign( float x, float &y, const char *text, ... );
-	void				DrawTextRightAlign( float x, float &y, const char *text, ... );
+	void				DrawTextSmallLeftAlign( float x, float &y, const char *text, ... );
+	void				DrawTextSmallRightAlign( float x, float &y, const char *text, ... );
+	void				DrawTextBigLeftAlign( float x, float &y, const char *text, ... );
+	void				DrawTextBigRightAlign( float x, float &y, const char *text, ... );
 
 	float				DrawFPS( float y );
 	float				DrawMemoryUsage( float y );
@@ -188,32 +192,62 @@ idCVar idConsoleLocal::con_noBackground( "con_noBackground", "0", CVAR_BOOL | CV
 
 /*
 ==================
-idConsoleLocal::DrawTextLeftAlign
+idConsoleLocal::DrawSmallTextLeftAlign
 ==================
 */
-void idConsoleLocal::DrawTextLeftAlign( float x, float &y, const char *text, ... ) {
+void idConsoleLocal::DrawTextSmallLeftAlign( float x, float &y, const char *text, ... ) {
 	char string[MAX_STRING_CHARS];
 	va_list argptr;
 	va_start( argptr, text );
 	idStr::vsnPrintf( string, sizeof( string ), text, argptr );
 	va_end( argptr );
-	renderSystem->DrawSmallStringExt( x, y + 2, string, colorWhite, true, localConsole.charSetShader );
+	renderSystem->DrawSmallStringExt( x, y + 2, string, colorWhite, true, true, idStr::Length( string ), localConsole.charSetShader );
 	y += SMALLCHAR_HEIGHT + 4;
 }
 
 /*
 ==================
-idConsoleLocal::DrawTextRightAlign
+idConsoleLocal::DrawTextSmallRightAlign
 ==================
 */
-void idConsoleLocal::DrawTextRightAlign( float x, float &y, const char *text, ... ) {
+void idConsoleLocal::DrawTextSmallRightAlign( float x, float &y, const char *text, ... ) {
 	char string[MAX_STRING_CHARS];
 	va_list argptr;
 	va_start( argptr, text );
 	int i = idStr::vsnPrintf( string, sizeof( string ), text, argptr );
 	va_end( argptr );
-	renderSystem->DrawSmallStringExt( x - i * SMALLCHAR_WIDTH, y + 2, string, colorWhite, true, localConsole.charSetShader );
+	renderSystem->DrawSmallStringExt( x - i * SMALLCHAR_WIDTH, y + 2, string, colorWhite, true, true, idStr::Length( string ), localConsole.charSetShader);
 	y += SMALLCHAR_HEIGHT + 4;
+}
+
+/*
+==================
+idConsoleLocal::DrawTextBigLeftAlign
+==================
+*/
+void idConsoleLocal::DrawTextBigLeftAlign( float x, float &y, const char *text, ... ) {
+	char string[MAX_STRING_CHARS];
+	va_list argptr;
+	va_start( argptr, text );
+	idStr::vsnPrintf( string, sizeof( string ), text, argptr );
+	va_end( argptr );
+	renderSystem->DrawBigStringExt( x, y + 2, string, colorWhite, true, true, idStr::Length( string ), localConsole.charSetShader );
+	y += BIGCHAR_HEIGHT + 4;
+}
+
+/*
+==================
+idConsoleLocal::DrawTextBigRightAlign
+==================
+*/
+void idConsoleLocal::DrawTextBigRightAlign( float x, float &y, const char *text, ... ) {
+	char string[MAX_STRING_CHARS];
+	va_list argptr;
+	va_start( argptr, text );
+	int i = idStr::vsnPrintf( string, sizeof( string ), text, argptr );
+	va_end( argptr );
+	renderSystem->DrawBigStringExt( x - i * BIGCHAR_WIDTH, y + 2, string, colorWhite, true, true, idStr::Length( string ), localConsole.charSetShader);
+	y += BIGCHAR_HEIGHT + 4;
 }
 
 /*
@@ -248,9 +282,9 @@ float idConsoleLocal::DrawFPS( float y ) {
 		fps = ( fps + 500 ) / 1000;
 
 		const char * s = va( "%ifps", fps );
-		int w = strlen( s ) * BIGCHAR_WIDTH;
 
-		renderSystem->DrawBigStringExt( LOCALSAFE_RIGHT - w, idMath::Ftoi( y ) + 2, s, colorWhite, true, localConsole.charSetShader );
+		static idOverlayHandle handle;
+		PrintOverlay( handle, JUSTIFY_RIGHT, s, false, TEXTSIZE_LARGE );
 	}
 
 	return y + BIGCHAR_HEIGHT + 4;
@@ -265,14 +299,17 @@ float idConsoleLocal::DrawMemoryUsage( float y ) {
 	memoryStats_t allocs, frees;
 
 	Mem_GetStats( allocs );
-	DrawTextRightAlign( LOCALSAFE_RIGHT, y, "total allocated memory: %4d, %4dkB", allocs.num, allocs.totalSize>>10 );
+	idStr s = va( "total allocated memory: %4d, %4dkB\n", allocs.num, allocs.totalSize >> 10 );
 
 	Mem_GetFrameStats( allocs, frees );
-	DrawTextRightAlign( LOCALSAFE_RIGHT, y, "frame alloc: %4d, %4dkB  frame free: %4d, %4dkB", allocs.num, allocs.totalSize>>10, frees.num, frees.totalSize>>10 );
+	s += va( "frame alloc: %4d, %4dkB  frame free: %4d, %4dkB", allocs.num, allocs.totalSize>>10, frees.num, frees.totalSize>>10 );
 
 	Mem_ClearFrameStats();
 
-	return y;
+	static idOverlayHandle handle;
+	PrintOverlay( handle, JUSTIFY_LEFT, s.c_str(), false, TEXTSIZE_SMALL );
+
+	return y + BIGCHAR_HEIGHT + 4;
 }
 
 /*
@@ -283,12 +320,13 @@ idConsoleLocal::DrawAsyncStats
 float idConsoleLocal::DrawAsyncStats( float y ) {
 	int i, outgoingRate, incomingRate;
 	float outgoingCompression, incomingCompression;
+	idStr s;
 
 	if ( idAsyncNetwork::server.IsActive() ) {
 
-		DrawTextRightAlign( LOCALSAFE_RIGHT, y, "server delay = %d msec", idAsyncNetwork::server.GetDelay() );
-		DrawTextRightAlign( LOCALSAFE_RIGHT, y, "total outgoing rate = %d KB/s", idAsyncNetwork::server.GetOutgoingRate() >> 10 );
-		DrawTextRightAlign( LOCALSAFE_RIGHT, y, "total incoming rate = %d KB/s", idAsyncNetwork::server.GetIncomingRate() >> 10 );
+		s = va( "server delay = %d msec\n", idAsyncNetwork::server.GetDelay() );
+		s += va( "total outgoing rate = %d KB/s\n", idAsyncNetwork::server.GetOutgoingRate() >> 10 );
+		s += va( "total incoming rate = %d KB/s\n", idAsyncNetwork::server.GetIncomingRate() >> 10 );
 
 		for ( i = 0; i < MAX_ASYNC_CLIENTS; i++ ) {
 
@@ -298,14 +336,14 @@ float idConsoleLocal::DrawAsyncStats( float y ) {
 			incomingCompression = idAsyncNetwork::server.GetClientIncomingCompression( i );
 
 			if ( outgoingRate != -1 && incomingRate != -1 ) {
-				DrawTextRightAlign( LOCALSAFE_RIGHT, y, "client %d: out rate = %d B/s (% -2.1f%%), in rate = %d B/s (% -2.1f%%)",
-											i, outgoingRate, outgoingCompression, incomingRate, incomingCompression );
+				s += va( "client %d: out rate = %d B/s (% -2.1f%%), in rate = %d B/s (% -2.1f%%)\n",
+								i, outgoingRate, outgoingCompression, incomingRate, incomingCompression );
 			}
 		}
 
 		idStr msg;
 		idAsyncNetwork::server.GetAsyncStatsAvgMsg( msg );
-		DrawTextRightAlign( LOCALSAFE_RIGHT, y, "%s", msg.c_str() );
+		s += va( "%s", msg.c_str() );
 
 	} else if ( idAsyncNetwork::client.IsActive() ) {
 
@@ -315,18 +353,20 @@ float idConsoleLocal::DrawAsyncStats( float y ) {
 		incomingCompression = idAsyncNetwork::client.GetIncomingCompression();
 
 		if ( outgoingRate != -1 && incomingRate != -1 ) {
-			DrawTextRightAlign( LOCALSAFE_RIGHT, y, "out rate = %d B/s (% -2.1f%%), in rate = %d B/s (% -2.1f%%)",
-										outgoingRate, outgoingCompression, incomingRate, incomingCompression );
+			s += va( "out rate = %d B/s (% -2.1f%%), in rate = %d B/s (% -2.1f%%)\n",
+							outgoingRate, outgoingCompression, incomingRate, incomingCompression );
 		}
 
-		DrawTextRightAlign( LOCALSAFE_RIGHT, y, "packet loss = %d%%, client prediction = %d",
-									(int)idAsyncNetwork::client.GetIncomingPacketLoss(), idAsyncNetwork::client.GetPrediction() );
+		s += va( "packet loss = %d%%, client prediction = %d\n",
+							(int)idAsyncNetwork::client.GetIncomingPacketLoss(), idAsyncNetwork::client.GetPrediction() );
 
-		DrawTextRightAlign( LOCALSAFE_RIGHT, y, "predicted frames: %d", idAsyncNetwork::client.GetPredictedFrames() );
+		s += va( "predicted frames: %d\n", idAsyncNetwork::client.GetPredictedFrames() );
 
+		static idOverlayHandle handle;
+		PrintOverlay( handle, JUSTIFY_LEFT, s.c_str(), false, TEXTSIZE_SMALL );
 	}
 
-	return y;
+	return y + BIGCHAR_HEIGHT + 4;
 }
 
 /*
@@ -335,6 +375,7 @@ idConsoleLocal::DrawSoundDecoders
 ==================
 */
 float idConsoleLocal::DrawSoundDecoders( float y ) {
+	const char* decoder;
 	int index, numActiveDecoders;
 	soundDecoderInfo_t decoderInfo;
 
@@ -353,10 +394,14 @@ float idConsoleLocal::DrawSoundDecoders( float y ) {
 		} else {
 			percent = localTime * 100 / sampleTime;
 		}
-		DrawTextLeftAlign( LOCALSAFE_RIGHT, y, "%3d: %3d%% (%1.2f) %s: %s (%dkB)", numActiveDecoders, percent, decoderInfo.lastVolume, decoderInfo.format.c_str(), decoderInfo.name.c_str(), decoderInfo.numBytes >> 10 );
+		decoder = va( "%3d: %3d%% (%1.2f) %s: %s (%dkB)", numActiveDecoders, percent, decoderInfo.lastVolume, decoderInfo.format.c_str(), decoderInfo.name.c_str(), decoderInfo.numBytes >> 10 );
+
+		static idOverlayHandle handle;
+		PrintOverlay( handle, JUSTIFY_LEFT, decoder, false, TEXTSIZE_SMALL );
+
 		numActiveDecoders++;
 	}
-	return y;
+	return y + BIGCHAR_HEIGHT + 4;
 }
 
 //=========================================================================
@@ -1553,7 +1598,7 @@ void	idConsoleLocal::Draw( bool forceFullScreen ) {
 idConsoleLocal::PrintOverlay 
 ========================
 */
-void idConsoleLocal::PrintOverlay( idOverlayHandle &handle, justify_t justify, const char *text, ... ) {
+void idConsoleLocal::PrintOverlay( idOverlayHandle &handle, justify_t justify, const char *text, bool showbackground, textSize_t size, ... ) {
 	if ( handle.index >= 0 && handle.index < overlayText.Num() ) {
 		if ( overlayText[handle.index].time == handle.time ) {
 			return;
@@ -1562,14 +1607,16 @@ void idConsoleLocal::PrintOverlay( idOverlayHandle &handle, justify_t justify, c
 
 	char string[MAX_PRINT_MSG];
 	va_list argptr;
-	va_start( argptr, text );
+	va_start( argptr, size );
 	idStr::vsnPrintf( string, sizeof( string ), text, argptr );
 	va_end( argptr );
 
 	overlayText_t &overlay = overlayText.Alloc();
 	overlay.text = string;
 	overlay.justify = justify;
+	overlay.size = size;
 	overlay.time = Sys_Milliseconds();
+	overlay.showbackground = showbackground;
 
 	handle.index = overlayText.Num() - 1;
 	handle.time = overlay.time;
@@ -1597,25 +1644,28 @@ void idConsoleLocal::DrawOverlayText( float & leftY, float & rightY, float & cen
 			}
 		}
 
-		idVec4 bgColor( 0.0f, 0.0f, 0.0f, 0.75f );
-
 		const float width = maxWidth * SMALLCHAR_WIDTH;
 		const float height = numLines * ( SMALLCHAR_HEIGHT + 4 );
-		const float bgAdjust = - 0.5f * SMALLCHAR_WIDTH;
-		if ( overlayText[i].justify == JUSTIFY_LEFT ) {
-			renderSystem->SetColor( bgColor );
-			renderSystem->DrawStretchPic( LOCALSAFE_LEFT + bgAdjust, leftY, width, height, 0, 0, 0, 0, whiteShader );
-			renderSystem->SetColor( bgColor );
-		} else if ( overlayText[i].justify == JUSTIFY_RIGHT ) {
-			renderSystem->SetColor( bgColor );
-			renderSystem->DrawStretchPic( LOCALSAFE_RIGHT - width + bgAdjust, rightY, width, height, 0, 0, 0, 0, whiteShader );
-			renderSystem->SetColor( bgColor );
-		} else if ( overlayText[i].justify == JUSTIFY_CENTER_LEFT || overlayText[i].justify == JUSTIFY_CENTER_RIGHT ) {
-			renderSystem->SetColor( bgColor );
-			renderSystem->DrawStretchPic( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH - width + bgAdjust ) * 0.5f, centerY, width, height, 0, 0, 0, 0, whiteShader );
-			renderSystem->SetColor( bgColor );
-		} else {
-			assert( false );
+
+		if ( overlayText[i].showbackground ) {
+			idVec4 bgColor( 0.0f, 0.0f, 0.0f, 0.75f );
+
+			const float bgAdjust = - 0.5f * SMALLCHAR_WIDTH;
+			if ( overlayText[i].justify == JUSTIFY_LEFT ) {
+				renderSystem->SetColor( bgColor );
+				renderSystem->DrawStretchPic( LOCALSAFE_LEFT + bgAdjust, leftY, width, height, 0, 0, 0, 0, whiteShader );
+				renderSystem->SetColor( bgColor );
+			} else if ( overlayText[i].justify == JUSTIFY_RIGHT ) {
+				renderSystem->SetColor( bgColor );
+				renderSystem->DrawStretchPic( LOCALSAFE_RIGHT - width + bgAdjust, rightY, width, height, 0, 0, 0, 0, whiteShader );
+				renderSystem->SetColor( bgColor );
+			} else if ( overlayText[i].justify == JUSTIFY_CENTER_LEFT || overlayText[i].justify == JUSTIFY_CENTER_RIGHT ) {
+				renderSystem->SetColor( bgColor );
+				renderSystem->DrawStretchPic( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH - width + bgAdjust ) * 0.5f, centerY, width, height, 0, 0, 0, 0, whiteShader );
+				renderSystem->SetColor( bgColor );
+			} else {
+				assert( false );
+			}
 		}
 
 		idStr singleLine;
@@ -1624,16 +1674,30 @@ void idConsoleLocal::DrawOverlayText( float & leftY, float & rightY, float & cen
 			for ( int k = j; k < text.Length() && text[k] != '\n'; k++ ) {
 				singleLine.Append( text[k] );
 			}
-			if ( overlayText[i].justify == JUSTIFY_LEFT ) {
-				DrawTextLeftAlign( LOCALSAFE_LEFT, leftY, "%s", singleLine.c_str() );
-			} else if ( overlayText[i].justify == JUSTIFY_RIGHT ) {
-				DrawTextRightAlign( LOCALSAFE_RIGHT, rightY, "%s", singleLine.c_str() );
-			} else if ( overlayText[i].justify == JUSTIFY_CENTER_LEFT ) {
-				DrawTextLeftAlign( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH - width ) * 0.5f, centerY, "%s", singleLine.c_str() );
-			} else if ( overlayText[i].justify == JUSTIFY_CENTER_RIGHT ) {
-				DrawTextRightAlign( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH + width ) * 0.5f, centerY, "%s", singleLine.c_str() );
+			if ( overlayText[i].size == TEXTSIZE_SMALL ) {
+				if ( overlayText[i].justify == JUSTIFY_LEFT ) {
+					DrawTextSmallLeftAlign( LOCALSAFE_LEFT, leftY, "%s", singleLine.c_str() );
+				} else if ( overlayText[i].justify == JUSTIFY_RIGHT ) {
+					DrawTextSmallRightAlign( LOCALSAFE_RIGHT, rightY, "%s", singleLine.c_str() );
+				} else if ( overlayText[i].justify == JUSTIFY_CENTER_LEFT ) {
+					DrawTextSmallLeftAlign( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH - width ) * 0.5f, centerY, "%s", singleLine.c_str() );
+				} else if ( overlayText[i].justify == JUSTIFY_CENTER_RIGHT ) {
+					DrawTextSmallRightAlign( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH + width ) * 0.5f, centerY, "%s", singleLine.c_str() );
+				} else {
+					assert( false );
+				}	
 			} else {
-				assert( false );
+				if ( overlayText[i].justify == JUSTIFY_LEFT ) {
+					DrawTextBigLeftAlign( LOCALSAFE_LEFT, leftY, "%s", singleLine.c_str() );
+				} else if ( overlayText[i].justify == JUSTIFY_RIGHT ) {
+					DrawTextBigRightAlign( LOCALSAFE_RIGHT, rightY, "%s", singleLine.c_str() );
+				} else if ( overlayText[i].justify == JUSTIFY_CENTER_LEFT ) {
+					DrawTextBigLeftAlign( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH - width ) * 0.5f, centerY, "%s", singleLine.c_str() );
+				} else if ( overlayText[i].justify == JUSTIFY_CENTER_RIGHT ) {
+					DrawTextBigRightAlign( LOCALSAFE_LEFT + ( LOCALSAFE_WIDTH + width ) * 0.5f, centerY, "%s", singleLine.c_str() );
+				} else {
+					assert( false );
+				}	
 			}
 		}
 	}
