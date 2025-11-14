@@ -84,6 +84,7 @@ extern int			com_frameTime;			// time for the current frame in milliseconds
 extern volatile int	com_ticNumber;			// 60 hz tics, incremented by async function
 extern int			com_editors;			// current active editor(s)
 extern bool			com_editorActive;		// true if an editor has focus
+extern bool			com_editorCMDActive;	// same as com_editors but for cmd tools
 
 #ifdef _WIN32
 const char			DMAP_MSGID[] = "DMAPOutput";

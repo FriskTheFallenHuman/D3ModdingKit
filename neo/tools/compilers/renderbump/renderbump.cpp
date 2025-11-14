@@ -1172,6 +1172,8 @@ void RenderBump_f( const idCmdArgs &args ) {
 	renderBump_t	opt;
 	int		startTime, endTime;
 
+	com_editorCMDActive = true;
+
 	// update the screen as we print
 	common->SetRefreshOnPrint( true );
 
@@ -1322,6 +1324,8 @@ void RenderBump_f( const idCmdArgs &args ) {
 
 	// stop updating the screen as we print
 	common->SetRefreshOnPrint( false );
+
+	com_editorCMDActive = false;
 }
 
 
@@ -1349,6 +1353,8 @@ void RenderBumpFlat_f( const idCmdArgs &args ) {
 	int		i;
 	idBounds	bounds;
 	srfTriangles_t	*mesh;
+
+	com_editorCMDActive = true;
 
 	// update the screen as we print
 	common->SetRefreshOnPrint( true );
@@ -1380,7 +1386,8 @@ void RenderBumpFlat_f( const idCmdArgs &args ) {
 	}
 
 	if ( i != ( args.Argc() - 1 ) ) {
-		common->Error( "usage: renderBumpFlat [-size width height] asefile" );
+		common->Warning( "usage: renderBumpFlat [-size width height] asefile" );
+		com_editorCMDActive = false;
 		return;
 	}
 
@@ -1636,5 +1643,7 @@ void RenderBumpFlat_f( const idCmdArgs &args ) {
 	// stop updating the screen as we print
 	common->SetRefreshOnPrint( false );
 
-	common->Error( "Completed." );
+	common->Printf( "Completed." );
+
+	com_editorCMDActive = false;
 }

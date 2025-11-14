@@ -418,6 +418,7 @@ Dmap_f
 ============
 */
 void Dmap_f( const idCmdArgs &args ) {
+	com_editorCMDActive = true;
 
 	if ( !dmapGlobals.noStats ) {
 		// Reset the timers
@@ -456,4 +457,6 @@ void Dmap_f( const idCmdArgs &args ) {
 		printTimingsStats( dmapGlobals.timingOptimize,              "Optimize         " );
 		printTimingsStats( dmapGlobals.timingFixTJunctions,         "Fix T Junctions  " );
 	}
+
+	com_editorCMDActive = false;
 }

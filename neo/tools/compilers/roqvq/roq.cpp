@@ -844,8 +844,11 @@ int roq::NumberOfFrames( void ) {
 }
 
 void RoQFileEncode_f( const idCmdArgs &args ) {
+	com_editorCMDActive = true;
+
 	if ( args.Argc() != 2 ) {
 		common->Printf( "Usage: roq <paramfile>\n" );
+		com_editorCMDActive = false;
 		return;
 	}
 	theRoQ = new roq;
@@ -854,4 +857,5 @@ void RoQFileEncode_f( const idCmdArgs &args ) {
 	int		stopMsec = Sys_Milliseconds();
 	common->Printf( "total encoding time: %i second\n", ( stopMsec - startMsec ) / 1000 );
 
+	com_editorCMDActive = false;
 }

@@ -882,12 +882,16 @@ void RunAAS_f( const idCmdArgs &args ) {
 	idAASSettings settings;
 	idStr mapName;
 
+	com_editorCMDActive = true;
+
 	if ( args.Argc() <= 1 ) {
 		common->Printf( "runAAS [options] <mapfile>\n"
 					"options:\n"
 					"  -usePatches        = use bezier patches for collision detection.\n"
 					"  -writeBrushMap     = write a brush map with the AAS geometry.\n"
 					"  -playerFlood       = use player spawn points as valid AAS positions.\n" );
+
+		com_editorCMDActive = false;
 		return;
 	}
 
@@ -924,6 +928,8 @@ void RunAAS_f( const idCmdArgs &args ) {
 	}
 	common->SetRefreshOnPrint( false );
 	common->PrintWarnings();
+
+	com_editorCMDActive = false;
 }
 
 /*
@@ -937,8 +943,11 @@ void RunAASDir_f( const idCmdArgs &args ) {
 	idAASSettings settings;
 	idFileList *mapFiles;
 
+	com_editorCMDActive = true;
+
 	if ( args.Argc() <= 1 ) {
 		common->Printf( "runAASDir <folder>\n" );
+		com_editorCMDActive = false;
 		return;
 	}
 
@@ -950,6 +959,7 @@ void RunAASDir_f( const idCmdArgs &args ) {
 	const idDict *dict = gameEdit->FindEntityDefDict( "aas_types", false );
 	if ( !dict ) {
 		common->Error( "Unable to find entityDef for 'aas_types'" );
+		com_editorCMDActive = false;
 	}
 
 	// scan for .map files
@@ -982,6 +992,8 @@ void RunAASDir_f( const idCmdArgs &args ) {
 
 	common->SetRefreshOnPrint( false );
 	common->PrintWarnings();
+
+	com_editorCMDActive = false;
 }
 
 /*
@@ -994,8 +1006,11 @@ void RunReach_f( const idCmdArgs &args ) {
 	idAASBuild aas;
 	idAASSettings settings;
 
+	com_editorCMDActive = true;
+
 	if ( args.Argc() <= 1 ) {
 		common->Printf( "runReach [options] <mapfile>\n" );
+		com_editorCMDActive = false;
 		return;
 	}
 
@@ -1007,6 +1022,7 @@ void RunReach_f( const idCmdArgs &args ) {
 	const idDict *dict = gameEdit->FindEntityDefDict( "aas_types", false );
 	if ( !dict ) {
 		common->Error( "Unable to find entityDef for 'aas_types'" );
+		com_editorCMDActive = false;
 	}
 
 	const idKeyValue *kv = dict->MatchPrefix( "type" );
@@ -1028,4 +1044,6 @@ void RunReach_f( const idCmdArgs &args ) {
 
 	common->SetRefreshOnPrint( false );
 	common->PrintWarnings();
+
+	com_editorCMDActive = false;
 }

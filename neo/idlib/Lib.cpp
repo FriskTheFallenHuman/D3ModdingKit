@@ -55,11 +55,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
   #if D3_IS_BIG_ENDIAN != 1
-    #error "CMake (which sets D3_IS_BIG_ENDIAN) and SDL disagree about the endianess! CMake says little, SDL says big"
+	#error "CMake (which sets D3_IS_BIG_ENDIAN) and SDL disagree about the endianess! CMake says little, SDL says big"
   #endif
 #elif SDL_BYTEORDER == SDL_LIL_ENDIAN
   #if D3_IS_BIG_ENDIAN != 0
-    #error "CMake (which sets D3_IS_BIG_ENDIAN) and SDL disagree about the endianess! CMake says big, SDL says little"
+	#error "CMake (which sets D3_IS_BIG_ENDIAN) and SDL disagree about the endianess! CMake says big, SDL says little"
   #endif
 #else
   #error "According to SDL, endianess is neither Big nor Little - dhewm3 doesn't support other byteorders!"
@@ -247,6 +247,28 @@ void UnpackColor( const dword color, idVec3 &unpackedColor ) {
 
 /*
 ===============
+idLib::FatalError
+===============
+*/
+void idLib::FatalError( const char* fmt, ... )
+{
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->FatalError( "%s", text );
+
+#if !defined( _WIN32 )
+	// SRS - Added exit to silence build warning since FatalError has attribute noreturn
+	exit( EXIT_FAILURE );
+#endif
+}
+
+/*
+===============
 idLib::Error
 ===============
 */
@@ -280,6 +302,93 @@ void idLib::Warning( const char *fmt, ... ) {
 	va_end( argptr );
 
 	common->Warning( "%s", text );
+}
+
+/*
+===============
+idLib::WarningIf
+===============
+*/
+void idLib::WarningIf( const bool test, const char *fmt, ... ) {
+	if ( !test ) {
+		return;
+	}
+
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->Warning( "%s", text );
+}
+
+/*
+===============
+idLib::DWarning
+===============
+*/
+void idLib::DWarning( const char *fmt, ... ) {
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->DWarning( "%s", text );
+}
+
+/*
+===============
+idLib::DWarningIf
+===============
+*/
+void idLib::DWarningIf( const bool test, const char *fmt, ... ) {
+	if ( !test ) {
+		return;
+	}
+
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->DWarning( "%s", text );
+}
+
+
+/*
+===============
+idLib::Printf
+===============
+*/
+void idLib::Printf( const char *fmt, ... ) {
+	va_list		argptr;
+	va_start( argptr, fmt );
+	if ( common ) {
+		common->VPrintf( fmt, argptr );
+	}
+	va_end( argptr );
+}
+
+/*
+===============
+idLib::PrintfIf
+===============
+*/
+void idLib::PrintfIf( const bool test, const char *fmt, ... ) {
+	if ( !test ) {
+		return;
+	}
+
+	va_list		argptr;
+	va_start( argptr, fmt );
+	common->VPrintf( fmt, argptr );
+	va_end( argptr );
 }
 
 /*

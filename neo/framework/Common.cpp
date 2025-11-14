@@ -111,6 +111,7 @@ int				com_frameNumber;		// variable frame number
 volatile int	com_ticNumber;			// 60 hz tics
 int				com_editors;			// currently opened editor(s)
 bool			com_editorActive;		//  true if an editor has focus
+bool			com_editorCMDActive = false;	// same as com_editors but for cmd tools
 
 #ifdef _WIN32
 HWND			com_hwndMsg = NULL;
@@ -506,7 +507,7 @@ void idCommonLocal::DWarning( const char *fmt, ... ) {
 	va_end( argptr );
 	msg[sizeof(msg)-1] = '\0';
 
-	Printf( S_COLOR_YELLOW"WARNING: %s\n", msg );
+	Printf( S_COLOR_YELLOW"WARNING: " S_COLOR_GRAY "%s\n", msg );
 }
 
 /*
@@ -714,6 +715,9 @@ void idCommonLocal::Error( const char *fmt, ... ) {
 	if ( cvarSystem->GetCVarBool( "r_fullscreen" ) ) {
 		cmdSystem->BufferCommandText( CMD_EXEC_NOW, "vid_restart partial windowed\n" );
 	}
+
+	// make sure no cmd tools are active
+	com_editorCMDActive = false;
 
 	Shutdown();
 

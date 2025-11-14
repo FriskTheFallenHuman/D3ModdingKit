@@ -39,8 +39,11 @@ MatBuildDir_f
 ================
 */
 void MatBuildDir_f( const idCmdArgs &args ) {
+	com_editorCMDActive = true;
+
 	if ( args.Argc() < 2 ) {
-		common->Warning( "Usage: matbuilddir <folder>\n" );
+		common->Printf( "Usage: matbuilddir <folder>\n" );
+		com_editorCMDActive = false;
 		return;
 	}
 
@@ -87,4 +90,6 @@ void MatBuildDir_f( const idCmdArgs &args ) {
 
 	idStr mtrName = args.Argv( 1 );
 	fileSystem->WriteFile( va( "materials/%s.mtr", mtrName.c_str() ), mtrBuffer.c_str(), mtrBuffer.Length(), "fs_basepath" );
+
+	com_editorCMDActive = false;
 }
