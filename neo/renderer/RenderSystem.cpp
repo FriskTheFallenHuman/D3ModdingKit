@@ -269,7 +269,7 @@ static void R_CheckCvars( void ) {
 idRenderSystemLocal::idRenderSystemLocal
 =============
 */
-idRenderSystemLocal::idRenderSystemLocal( void ) {
+idRenderSystemLocal::idRenderSystemLocal( void ) : backEndRendererMaxLight(999) {
 	Clear();
 }
 

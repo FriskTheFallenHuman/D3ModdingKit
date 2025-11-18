@@ -281,7 +281,7 @@ float idConsoleLocal::DrawFPS( float y ) {
 		int fps = 1000000 * FPS_FRAMES / total;
 		fps = ( fps + 500 ) / 1000;
 
-		const char * s = va( "%ifps", fps );
+		const char * s = va( "%3dfps / %7.3fms", fps, static_cast<float>(total) / FPS_FRAMES);
 
 		static idOverlayHandle handle;
 		PrintOverlay( handle, JUSTIFY_RIGHT, s, false, TEXTSIZE_LARGE );
@@ -1191,7 +1191,10 @@ void idConsoleLocal::DrawNotify() {
 				currentColor = idStr::ColorIndex(text_p[x]>>8);
 				renderSystem->SetColor( idStr::ColorForIndex( currentColor ) );
 			}
-			renderSystem->DrawSmallChar( LOCALSAFE_LEFT + (x+1)*SMALLCHAR_WIDTH, v, text_p[x] & 0xff, localConsole.charSetShader );
+			//renderSystem->DrawSmallChar( LOCALSAFE_LEFT + (x+1)*SMALLCHAR_WIDTH, v, text_p[x] & 0xff, localConsole.charSetShader );
+
+			int length = idStr::Length( va( "%c", text_p[x] & 0xff ) );
+			renderSystem->DrawSmallStringExt( LOCALSAFE_LEFT + (x+1)*SMALLCHAR_WIDTH, v, va( "%c", text_p[x] & 0xff ), idStr::ColorForIndex( currentColor ), false, true, length, localConsole.charSetShader);
 		}
 
 		v += SMALLCHAR_HEIGHT;

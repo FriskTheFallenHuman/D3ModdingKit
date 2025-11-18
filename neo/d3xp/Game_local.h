@@ -507,16 +507,9 @@ public:
 	void					SetGibTime( int _time ) { nextGibTime = _time; };
 	int						GetGibTime() { return nextGibTime; };
 
-
-	const char*				MaterialTypeToName( surfTypes_t type ) const;
-	const char*				MaterialTypeToKey( const char* prefix, surfTypes_t type ) const;
-	surfTypes_t				MaterialNameToType( const char* name ) const;
-	surfTypes_t				GetMaterialType( const trace_t& trace, const char* descriptor = "impact" ) const;
-	surfTypes_t				GetMaterialType( const idEntity *ent, const idMaterial *material, const char* descriptor = "impact" ) const;
-
 private:
 	const static int		INITIAL_SPAWN_COUNT = 1;
-	const static int		INTERNAL_SAVEGAME_VERSION = 1; // DG: added this for >= 1305 savegames
+	const static int		INTERNAL_SAVEGAME_VERSION = 1; // DG: added this for >= 1304 savegames
 
 	idStr					mapFileName;			// name of the map, empty string if no map loaded
 	idMapFile *				mapFile;				// will be NULL during the game unless in-game editing is used

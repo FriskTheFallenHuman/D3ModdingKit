@@ -1223,8 +1223,8 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 	savegame.ReadBuildNumber();
 
 	// DG: I enhanced the information in savegames a bit for dhewm3 1.5.1
-	//     for which I bumped th BUILD_NUMBER to 1305
-	if( savegame.GetBuildNumber() >= 1305 )
+	//     for which I bumped th BUILD_NUMBER to 1304
+	if( savegame.GetBuildNumber() >= 1304 )
 	{
 		savegame.ReadInternalSavegameVersion();
 		if( savegame.GetInternalSavegameVersion() > INTERNAL_SAVEGAME_VERSION ) {

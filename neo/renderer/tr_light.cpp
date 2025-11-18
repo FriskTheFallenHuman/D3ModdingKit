@@ -70,6 +70,25 @@ bool R_CreateAmbientCache( srfTriangles_t *tri, bool needsLighting ) {
 
 /*
 ==================
+R_CreateLightingCache
+
+Returns false if the cache couldn't be allocated, in which case the surface should be skipped.
+==================
+*/
+bool R_CreateLightingCache( const idRenderEntityLocal *ent, const idRenderLightLocal *light, srfTriangles_t *tri ) {
+	idVec3		localLightOrigin;
+
+	// fogs and blends don't need light vectors
+	if ( light->lightShader->IsFogLight() || light->lightShader->IsBlendLight() ) {
+		return true;
+	}
+
+	// not needed if we have vertex programs
+	return true;
+}
+
+/*
+==================
 R_CreatePrivateShadowCache
 
 This is used only for a specific light

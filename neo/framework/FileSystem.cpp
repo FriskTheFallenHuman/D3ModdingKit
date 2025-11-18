@@ -109,24 +109,6 @@ can still be written out in restricted mode, so screenshots and demos are allowe
 Restricted mode can be tested by setting "+set fs_restrict 1" on the command line, even
 if there is a valid product.txt under the basepath or cdpath.
 
-If the "fs_copyfiles" cvar is set to 1, then every time a file is sourced from the cd
-path, it will be copied over to the save path. This is a development aid to help build
-test releases and to copy working sets of files.
-
-If the "fs_copyfiles" cvar is set to 2, any file found in fs_cdpath that is newer than
-it's fs_savepath version will be copied to fs_savepath (in addition to the fs_copyfiles 1
-behaviour).
-
-If the "fs_copyfiles" cvar is set to 3, files from both basepath and cdpath will be copied
-over to the save path. This is useful when copying working sets of files mainly from base
-path with an additional cd path (which can be a slower network drive for instance).
-
-If the "fs_copyfiles" cvar is set to 4, files that exist in the cd path but NOT the base path
-will be copied to the save path
-
-NOTE: fs_copyfiles and case sensitivity. On fs_caseSensitiveOS 0 filesystems ( win32 ), the
-copied files may change casing when copied over.
-
 The relative path "sound/newstuff/test.wav" would be searched for in the following places:
 
 for save path, dev path, base path, cd path:
@@ -479,7 +461,7 @@ private:
 
 idCVar	idFileSystemLocal::fs_restrict( "fs_restrict", "", CVAR_SYSTEM | CVAR_INIT | CVAR_BOOL, "" );
 idCVar	idFileSystemLocal::fs_debug( "fs_debug", "0", CVAR_SYSTEM | CVAR_INTEGER, "", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
-idCVar	idFileSystemLocal::fs_copyfiles( "fs_copyfiles", "0", CVAR_SYSTEM | CVAR_INIT | CVAR_INTEGER, "", 0, 4, idCmdSystem::ArgCompletion_Integer<0,3> );
+idCVar	idFileSystemLocal::fs_copyfiles( "fs_copyfiles", "0", CVAR_SYSTEM | CVAR_INIT | CVAR_BOOL, "Copy every file touched to fs_savepath" );
 idCVar	idFileSystemLocal::fs_basepath( "fs_basepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_configpath( "fs_configpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_savepath( "fs_savepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
@@ -3258,7 +3240,7 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 			}
 
 			// if fs_copyfiles is set
-			if ( allowCopyFiles && fs_copyfiles.GetInteger() ) {
+			if ( allowCopyFiles ) {
 
 				idStr copypath;
 				idStr name;
@@ -3268,49 +3250,8 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 				copypath += PATHSEPERATOR_STR;
 				copypath += name;
 
-				bool isFromCDPath = !dir->path.Cmp( fs_cdpath.GetString() );
-				bool isFromSavePath = !dir->path.Cmp( fs_savepath.GetString() );
-				bool isFromBasePath = !dir->path.Cmp( fs_basepath.GetString() );
-
-				switch ( fs_copyfiles.GetInteger() ) {
-					case 1:
-						// copy from cd path only
-						if ( isFromCDPath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-					case 2:
-						// from cd path + timestamps
-						if ( isFromCDPath ) {
-							CopyFile( netpath, copypath );
-						} else if ( isFromSavePath || isFromBasePath ) {
-							idStr sourcepath;
-							sourcepath = BuildOSPath( fs_cdpath.GetString(), dir->gamedir, relativePath );
-							FILE *f1 = OpenOSFile( sourcepath, "r" );
-							if ( f1 ) {
-								ID_TIME_T t1 = Sys_FileTimeStamp( f1 );
-								fclose( f1 );
-								FILE *f2 = OpenOSFile( copypath, "r" );
-								if ( f2 ) {
-									ID_TIME_T t2 = Sys_FileTimeStamp( f2 );
-									fclose( f2 );
-									if ( t1 > t2 ) {
-										CopyFile( sourcepath, copypath );
-									}
-								}
-							}
-						}
-						break;
-					case 3:
-						if ( isFromCDPath || isFromBasePath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-					case 4:
-						if ( isFromCDPath && !isFromBasePath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
+				if ( fs_copyfiles.GetBool() ) {
+					CopyFile( netpath, copypath );
 				}
 			}
 
@@ -3814,7 +3755,7 @@ idFileSystemLocal::PerformingCopyFiles
 =================
 */
 bool idFileSystemLocal::PerformingCopyFiles( void ) const {
-	return fs_copyfiles.GetInteger() > 0;
+	return fs_copyfiles.GetBool();
 }
 
 /*

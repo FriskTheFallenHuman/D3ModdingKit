@@ -1180,7 +1180,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 		if (  !token.Icmp( "screen2" ) ) {
-			ts->texgen = TG_SCREEN2;
+			ts->texgen = TG_SCREEN;
 			continue;
 		}
 		if (  !token.Icmp( "glassWarp" ) ) {
@@ -1976,6 +1976,11 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		// unsmoothedTangents
 		else if ( !token.Icmp( "unsmoothedTangents" ) ) {
 			unsmoothedTangents = true;
+			continue;
+		}
+
+		else if( !token.Icmp( "unlit" ) ) {
+			SetMaterialFlag( MF_UNLIT );
 			continue;
 		}
 		// lightFallofImage <imageprogram>

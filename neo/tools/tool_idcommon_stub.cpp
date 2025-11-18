@@ -26,13 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
 #include "sys/sys_local.h"
-#include "framework/Common.h"
-#include "framework/FileSystem.h"
-#include "framework/Session.h"
-#include "framework/EventLoop.h"
-#include "framework/Licensee.h"
+#pragma hdrstop
 
 #ifdef _WIN32
 	#include <io.h>
@@ -302,6 +298,7 @@ public:
 	virtual void			ActivateTool( bool active ) {}
 	virtual void			WriteConfigToFile( const char *filename ) {}
 	virtual void			WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd ) {}
+	virtual void			DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer ) {}
 	virtual void			BeginRedirect( char *buffer, int buffersize, void (*flush)( const char * ) ) {}
 	virtual void			EndRedirect( void ) {}
 	virtual void			SetRefreshOnPrint( bool set ) {}
@@ -320,8 +317,6 @@ public:
 	virtual const char *	BindingFromKey( const char *key ) { return NULL; }
 	virtual int				ButtonState( int key ) { return 0; }
 	virtual int				KeyState( int key ) { return 0; }
-	virtual bool			SetCallback( idCommon::CallbackType cbt, idCommon::FunctionPointer cb, void* userArg ) { return true; }
-	virtual bool			GetAdditionalFunction( idCommon::FunctionType ft, idCommon::FunctionPointer* out_fnptr, void** out_userArg ) { return true; }
 	virtual float			Get_com_engineHz_latched( void ) { return 1.0f; }
 	virtual int64_t			Get_com_engineHz_numerator( void ) { return NULL; }
 	virtual int64_t			Get_com_engineHz_denominator( void ) { return NULL; }

@@ -157,7 +157,7 @@ public:
 		ReadInt( internalSavegameVersion );
 	}
 
-	// if it's 0, this is from a GetBuildNumber() < 1305 savegame
+	// if it's 0, this is from a GetBuildNumber() < 1304 savegame
 	// otherwise, compare it to idGameLocal::INTERNAL_SAVEGAME_VERSION
 	int						GetInternalSavegameVersion( void ) const
 	{

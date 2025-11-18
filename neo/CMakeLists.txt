@@ -1424,7 +1424,7 @@ if(TOOLS AND MAYA_IMPORT)
 	add_dependencies(MayaImport${MAYA_VERSION}${cpu} MayaDevKit)
 	
 	if(MSVC)
-		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}${cpu} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
 	endif()
 	
 	target_precompile_headers(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
