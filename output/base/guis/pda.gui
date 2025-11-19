@@ -1,0 +1,5747 @@
+windowDef Desktop
+{
+	//arl; start
+	#include "guis/_cst_anchor.pd"
+	//arl; end
+	rect	0,0,640,480
+	float	"ddset"	1
+	float	"runonce" 0
+	float	"personalClick" 1
+	menugui 1
+	
+	onActivate {
+		resetTime "ActivateAnim" "0" ;
+	}
+
+	onNamedEvent showPDATip {
+		resetTime "TutorialAnim1" "0" ;
+	}
+		
+	onNamedEvent playerPDANotActive {
+		if ("desktop::personalClick" == 1) { 
+			set "desktop::personalClick" "0" ;
+			set "DDUserBox2::rect" "149 182 512 0" ;
+			set "ObjectivesWinBG::rect" "149 182 512 0";
+			if ("desktop::Ddset" != 1) {
+				transition "DDText1::matcolor" "1 1 1 1" "0.6 0.7 0.7 1" "200" ;
+				transition "DDText1::rect" "0 12 137 16" "0 12 162 16" "200" "0" "1" ;
+				transition "DDText1BG::rect" "2 12 134 15" "2 12 160 15" "200" "0" "1" ;	
+				transition "DDText1BG2::rect" "2 12 1 15" "11 12 1 15" "100" "0" "1" ;
+				transition "DDText1BG3::rect" "135 12 1 13" "162 12 1 15" "200" "0" "1" ;
+			} 					
+			if ("desktop::Ddset" == 4) {
+				transition "DDText3BG::rect" "2 56 160 15" "2 56 133 15" "200" "0" "1" ;
+				transition "DDText3BG2::rect" "11 56 1 13" "5 56 1 15" "200" "0" "1" ;
+				transition "DDText3BG3::rect" "162 56 1 13" "135 56 1 15" "200" "0" "1" ;
+				transition "DDWinHighlight::rect" "3 58 6 11" "3 14 6 11" "200" "0" "0.8" ;
+				set "desktop::ddset" "1" ;
+				set "DDLList2::noevents" "1" ;
+				transition "DDText1::matcolor" "1 1 1 1" "0.6 0.7 0.7 1" "200" ;
+				transition "DDText1::rect" "0 12 137 16" "0 12 162 16" "200" "0" "1" ;
+				transition "DDText1BG::rect" "2 12 134 15" "2 12 160 15" "200" "0" "1" ;	
+				transition "DDText1BG2::rect" "2 12 1 15" "11 12 1 15" "100" "0" "1" ;
+				transition "DDText1BG3::rect" "135 12 1 13" "162 12 1 15" "200" "0" "1" ;
+				set "DDtext2::matcolor" "1 1 1 0" ;
+				set "DDtext2a::matcolor" "1 1 1 0" ;
+				set "DDtext3::matcolor" "1 1 1 0" ;
+				set "DDText1::noevents" "1" ;
+				set "DDText2::noevents" "0" ;
+				set "DDText2a::noevents" "0" ;
+				set "DDText3::noevents" "0" ;
+				set "DDtext2::forecolor" "0.6 1 1 1" ;
+				set "DDtext2a::forecolor" "0.6 1 1 1" ;
+				set "DDtext3::forecolor" "0.6 1 1 1" ;
+				resetTime "DDColorSwitch1" "0" ;
+				set "DDtext2::rect" "0 34 136 16" ;
+				set "DDtext2a::rect" "0 34 136 16" ;
+				set "DDtext3::rect" "0 56 136 16" ;
+				resetTime "DDUIDAtom" "0" ;
+				set "DDUIDPrintglow::matcolor" "0 0 0 0" ;
+			}
+
+			if ("desktop::Ddset" == 3) {
+				transition "DDText2BG::rect" "2 34 160 15" "2 34 133 15" "200" "0" "1" ;
+				transition "DDText2BG2::rect" "11 34 1 13" "5 34 1 15" "200" "0" "1" ;
+				transition "DDText2BG3::rect" "162 34 1 13" "135 34 1 15" "200" "0" "1" ;
+				transition "DDWinHighlight::rect" "3 36 6 11" "3 14 6 11" "200" "0" "0.8" ;
+
+				transition "DDUB1aT::rect" "128 0 249 128" "128 0 160 128" "200" "0" "0.8" ;
+				transition "DDUB1aTR::rect" "377 2 -128 -32" "288 2 -128 -32" "200" "0" "0.8" ;
+				transition "DDUB1aB::rect" "128 128 249 32" "128 128 160 32" "200" "0" "0.8" ;
+				transition "DDUB1aBR::rect" "377 34 -128 -128" "288 34 -128 -128" "200" "0" "0.8" ;						
+				set "desktop::ddset" "1" ;
+			}
+			set "DDLList2::noevents" "1" ;
+			set "DDtext2::matcolor" "1 1 1 0" ;
+			set "DDtext2a::matcolor" "1 1 1 0" ;
+			set "DDtext3::matcolor" "1 1 1 0" ;
+			set "DDText1::noevents" "1" ;
+			set "DDText2::noevents" "0" ;
+			set "DDText2a::noevents" "0" ;
+			set "DDText3::noevents" "0" ;
+			set "DDtext2::forecolor" "0.6 1 1 1" ;
+			set "DDtext2a::forecolor" "0.6 1 1 1" ;
+			set "DDtext3::forecolor" "0.6 1 1 1" ;
+			resetTime "DDColorSwitch1" "0" ;
+			set "DDtext2::rect" "0 34 136 16" ;
+			set "DDtext2a::rect" "0 34 136 16" ;
+			set "DDtext3::rect" "0 56 136 16" ;
+			resetTime "DDUIDAtom" "0" ;
+			set "DDUIDPrintglow::matcolor" "0 0 0 0" ;
+		}
+	}
+	onNamedEvent playerPDAActive {
+		if ("desktop::personalClick" == 0) { 
+			set "desktop::personalClick" "1" ;
+			set "DDUserBox2::rect" "149 182 512 0" ;
+			set "ObjectivesWinBG::rect" "149 182 512 0";
+			if ("desktop::Ddset" != 1) {
+				transition "DDText1::matcolor" "1 1 1 1" "0.6 0.7 0.7 1" "200" ;
+				transition "DDText1::rect" "0 12 137 16" "0 12 162 16" "200" "0" "1" ;
+				transition "DDText1BG::rect" "2 12 134 15" "2 12 160 15" "200" "0" "1" ;	
+				transition "DDText1BG2::rect" "2 12 1 15" "11 12 1 15" "100" "0" "1" ;
+				transition "DDText1BG3::rect" "135 12 1 13" "162 12 1 15" "200" "0" "1" ;
+			} 					
+			if ("desktop::Ddset" == 3) {
+				transition "DDText2BG::rect" "2 34 160 15" "2 34 133 15" "200" "0" "1" ;
+				transition "DDText2BG2::rect" "11 34 1 13" "5 34 1 15" "200" "0" "1" ;
+				transition "DDText2BG3::rect" "162 34 1 13" "135 34 1 15" "200" "0" "1" ;
+				transition "DDWinHighlight::rect" "3 36 6 11" "3 14 6 11" "200" "0" "0.8" ;
+
+				transition "DDUB1aT::rect" "128 0 249 128" "128 0 160 128" "200" "0" "0.8" ;
+				transition "DDUB1aTR::rect" "377 2 -128 -32" "288 2 -128 -32" "200" "0" "0.8" ;
+				transition "DDUB1aB::rect" "128 128 249 32" "128 128 160 32" "200" "0" "0.8" ;
+				transition "DDUB1aBR::rect" "377 34 -128 -128" "288 34 -128 -128" "200" "0" "0.8" ;
+				set "desktop::ddset" "1" ;
+			}
+			set "DDLList2::noevents" "1" ;
+			set "DDtext2::matcolor" "1 1 1 0" ;
+			set "DDtext2a::matcolor" "1 1 1 0" ;
+			set "DDtext3::matcolor" "1 1 1 0" ;
+			set "DDText1::noevents" "1" ;
+			set "DDText2::noevents" "0" ;
+			set "DDText2a::noevents" "0" ;
+			set "DDText3::noevents" "0" ;
+			set "DDtext2::forecolor" "0.6 1 1 1" ;
+			set "DDtext2a::forecolor" "0.6 1 1 1" ;
+			set "DDtext3::forecolor" "0.6 1 1 1" ;
+			resetTime "DDColorSwitch1" "0" ;
+			set "DDtext2::rect" "0 34 136 16" ;
+			set "DDtext2a::rect" "0 34 136 16" ;
+			set "DDtext3::rect" "0 56 136 16" ;
+			resetTime "DDUIDAtom" "0" ;
+			set "DDUIDPrintglow::matcolor" "0 0 0 0" ;
+		}
+	}	
+	
+/*	
+	onDeactivate {
+		set "cmd" "StopPDAVideo" ;
+		set "PDAUB2Still::visible" "0" ;
+		set "PDAUB2StillText::visible" "1" ;		
+		set "DDText3BG::rect" "2 56 133 15" ;
+		set "DDText3BG2::rect" "5 56 1 15" ;
+		set "DDText3BG3::rect" "135 56 1 15" ;
+		set "DDWinHighlight::rect" "4 14 6 11" ;
+		set "DDUB1aT::rect" "128 0 160 128" ;
+		set "DDUB1aTR::rect" "288 2 -128 -32" ;
+		set "DDUB1aB::rect" "128 128 160 32" ;
+		set "DDUB1aBR::rect" "288 34 -128 -128" ;
+		set "DDText2BG::rect" "2 34 133 15" ;
+		set "DDText2BG2::rect" "5 34 1 15" ;
+		set "DDText2BG3::rect" "135 34 1 15" ;
+		set "DDWinHighlight::rect" "4 14 6 11" ;
+		set "desktop::ddset" "1" ;
+		set "DDText1::matcolor" "0.5 0.6 0.6 0.8" ;
+		set "DDText1::rect" "0 12 162 15" ;
+		set "DDText1BG::rect" "2 12 160 15" ;	
+		set "DDText1BG2::rect" "11 12 1 15" ;
+		set "DDText1BG3::rect" "162 12 1 15" ;
+		set "DDtext2::matcolor" "1 1 1 0" ;
+		set "DDtext2a::matcolor" "1 1 1 0" ;
+		set "DDtext3::matcolor" "1 1 1 0" ;
+		set "DDText1::noevents" "1" ;
+		set "DDText2::noevents" "0" ;
+		set "DDText2a::noevents" "0" ;
+		set "DDText3::noevents" "0" ;
+		set "DDtext2::forecolor" "0.6 1 1 1" ;
+		set "DDtext2a::forecolor" "0.6 1 1 1" ;
+		set "DDtext3::forecolor" "0.6 1 1 1" ;
+		set "DDtext2::rect" "0 34 136 15" ;
+		set "DDtext2a::rect" "0 34 136 15" ;
+		set "DDtext3::rect" "0 56 136 15" ;
+		set "DDAudio::visible" "0" ;
+		set "PDVideo::visible" "0" ;
+		set "DDEmail::visible" "0" ;
+		set "DDUserBox1b::visible" "0" ;
+		set "DDUserBox2::visible" "0" ;
+		set "PDAUserBox2::visible" "0" ;
+		set "DDUB2Audio::visible" "0" ;
+		set "DDUserID::visible" "1" ;
+		set "DDUserID::rect" "180 57 353 132" ;
+		set "DDUIDBG::visible" "1" ;
+		set "DDUIDPrint::visible" "1" ;
+		set "DDUIDText1::forecolor" "1 1 1 1" ;
+		set "DDUIDText1::visible" "1" ;
+		set "DDUIDText2::forecolor" "1 1 1 0.6" ;
+		set "DDUIDText2::visible" "1" ;
+		set "DDUIDText3::forecolor" "1 1 1 0.6" ;
+		set "DDUIDText3::visible" "1" ;
+		set "DDUIDText4::forecolor" "1 1 1 0.6" ;
+		set "DDUIDText4::visible" "1" ;
+		set "DDUIDText5::forecolor" "1 1 1 0.6" ;
+		set "DDUIDText5::visible" "1" ;
+		set "DDUIDPrintglow::matcolor" "0.6 0.8 0.8 1" ;
+		set "PDABGLogo::rect" "-117 -119 643 596" ;
+	}
+
+		windowDef DDWaveFormTest2 {
+			rect		22, 100, 100, 40
+			matcolor 	1, 1, 1, 1
+			background "gui/wav"
+			bordercolor 0.2, 0.4, 0.3, 1
+			visible	1
+		}
+*/
+windowDef ActivateAnim {
+	rect 0,0,0,0
+	notime 1
+	
+	onTime 0 {
+		set "TextWeapName::forecolor" "1 1 1 0" ;
+		set "CircClip::rect" "177 60 285 326" ;
+	//	set "PDAUB2Still::visible" "0" ;
+	//	set "PDAUB2StillText::visible" "1" ;
+		set "DDLList2::rect" "-125 155 125 223" ;
+		set "MainBoxParent::rect" "640 31 494 250" ;
+		set "DDWin1::rect" "-165 31 165 82" ;
+		set "PdaFilesBox::rect" "-140 0 150 480" ;
+		set "weaponStripBG::rect" "253 480 296 44" ;
+		set "weaponBtnLeft::rect" "243 480 8 44" ;
+		set "weaponBtnRight::rect" "551 480 8 44" ;
+		set "ObjectiveBgclip::rect" "-240 417 240 480" ;
+		set "ItemStripBG::rect" "568 480 63 44";
+		
+		set "DDBumper::rect" "480 -11 640 480" ;
+		set "weaponStripClip::rect" "253 480 295 44";
+		set "ItemIconBG::rect" "570 480 59 40" ;		
+
+		set "TextTitleObjectives::foreColor" "1 1 1 0" ;
+		set "TextTitlePDA::foreColor" "1 1 1 0" ;
+		set "TextTitleTop1::foreColor" "1 1 1 0" ;
+		set "TextTitleTop2::foreColor" "1 1 1 0" ;
+		set "TextTitleWeapons::foreColor" "1 1 1 0" ;
+		set "TextTitleItems::foreColor" "1 1 1 0" ;
+		
+		set "PDABGLogo::rect" "-117 -119 643 596" ;
+	
+		resetTime "Circ1" "0" ;
+		transition "TopBorderFill::rect" "0 0 640 178" "0 0 640 0" "400" "0" "0.6" ;
+		transition "TopBorder1::rect" "0 178 377 64" "0 0 377 64" "400" "0" "0.6" ;
+		transition "TopBorder2::rect" "377 178 32 64" "377 0 32 64" "400" "0" "0.6" ;
+		transition "TopBorder3::rect" "409 178 231 64" "409 0 231 64" "400" "0" "0.6" ;
+		transition "BtmBorderFill::rect" "0 326 640 155" "0 464 640 16" "400" "0" "0.6" ;
+		transition "BtmBorder1::rect" "0 262 217 64" "0 400 217 64" "400" "0" "0.6" ;
+		transition "BtmBorder2::rect" "217 262 32 64" "217 400 32 64" "400" "0" "0.6" ;
+		transition "BtmBorder3::rect" "249 262 391 64" "249 400 391 64" "400" "0" "0.6" ;
+		transition "BorderFill1::rect" "-13 193 105 7" "-14 14 141 7" "400" "0" "0.6" ;
+		transition "BorderFill2::rect" "97 193 289 10" "131 14 256 10" "400" "0" "0.6" ;
+		transition "BorderFIll3::rect" "106 205 291 7" "313 26 84 7" "400" "0" "0.6" ;
+		transition "BorderFill4::rect" "347 273 296 5" "236 412 0 5" "400" "0" "0.6" ;
+		transition "CenterFill::rect" "0 214 640 57" "0 242 640 0" "400" "0" "0.6" ;
+		transition "OpenTitle::forecolor" "1 1 1 1" "1 1 1 0" "400" ;
+		if ("desktop::Ddset" == 1) { //if ("desktop::runonce" == 0) { 
+		//	if ( "gui::pda_personal" == 1 ) {
+				set "desktop::runonce" "1" ;
+				resetTime "DDUIDAtomScan" "0" ;
+		//	}
+		}
+		
+	}
+	onTime 250 {
+		transition "DDLList2::rect" "-125 155 125 223" "1 155 125 223" "600" "0.6" "0" ;
+		transition "MainBoxParent::rect" "640 31 494 250" "145 31 494 250" "600" "0.6" "0" ;
+		transition "DDWin1::rect" "-165 31 165 82" "0 31 165 82" "600" "0.6" "0" ;
+		transition "PdaFilesBox::rect" "-140 0 150 480" "0 0 150 480" "600" "0.6" "0" ;
+		transition "weaponStripBG::rect" "253 480 296 44" "253 432 296 44" "600" "0.6" "0" ;
+		transition "weaponBtnLeft::rect" "243 480 8 44" "243 432 8 44"  "600" "0.6" "0" ;
+		transition "weaponBtnRight::rect" "551 480 8 44" "551 432 8 44"  "600" "0.6" "0" ;
+		transition "ObjectiveBgclip::rect" "-240 417 240 480" "0 417 240 480" "600" "0.6" "0" ;
+		transition "ItemStripBG::rect" "568 480 63 44" "568 432 63 44" "600" "0.6" "0" ;
+		
+		transition "DDBumper::rect" "480 -11 640 420" "0 -11 640 420" "600" "0.6" "0" ;
+		transition "weaponStripClip::rect" "253 480 295 44" "253 432 295 44" "600" "0.6" "0" ;
+		transition "ItemIconBG::rect" "570 480 59 40" "570 434 59 40" "600" "0.6" "0" ;		
+
+		transition "TextTitleObjectives::foreColor" "1 1 1 0" "0.8 1 1 0.25" "1500" ;
+		transition "TextTitlePDA::foreColor" "1 1 1 0" "1 1 1 1" "1500" ;
+		transition "TextTitleTop1::foreColor" "1 1 1 0" "1 1 1 1" "1500" ;
+		transition "TextTitleTop2::foreColor" "1 1 1 0" "1 1 1 0.6" "1500" ;
+		transition "TextTitleWeapons::foreColor" "1 1 1 0" "1 1 1 0.3" "1500" ;
+		transition "TextTitleItems::foreColor" "1 1 1 0" "1 1 1 0.3" "1500" ;
+		
+		transition "PDABGLogo::rect" "-117 -119 643 596" "121 -15 512 512" "600" "0.2" "0.8" ;
+	}
+}	
+//BACKGROUND IMAGES	
+	windowDef PDABG {
+		rect 		0, 0, 640, 480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_NONE
+		//Arl; end
+		matcolor	1, 1, 1, 0.3
+		backcolor	0, 0.02, 0.02, 1
+		background	"guis/assets/pda/glowup60_256"
+	}
+	windowDef PDAGridBG {
+		rect 		0, 0, 640, 480
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		//visible		1
+		
+		#include "guis/pda/grid2a.pd"
+	}
+
+	windowDef PDABGLogo {
+	//	rect 		121, -15, 512, 512
+
+		rect 		-117,-119,643,596
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		matcolor	1, 1, 1, 0.05
+		background	"guis/assets/pda/uac_large"
+	}
+	windowDef BGBorder
+	{
+		rect	0,0,640,480
+		//Arl; start
+	    //cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		
+		visible	1
+		
+		windowDef TopBorderFill
+		{
+			rect	0,0,640,178
+			visible	1
+			backcolor	0.8,1,1,0.2
+		}		
+		windowDef TopBorder1
+		{
+		rect	0,178,377,64
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_NONE
+		//Arl; end
+			visible	1
+			background	"guis/assets/pda/bordertop1"
+			matcolor	0.8,1,1,0.5
+		}
+		windowDef TopBorder2
+		{
+			rect	377,178,32,64
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+			visible	1
+			background	"guis/assets/pda/bordertop2"
+			matcolor	0.8,1,1,0.5
+		}
+		windowDef TopBorder3
+		{
+			rect	409,178,231,64
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+			visible	1
+			background	"guis/assets/pda/bordertop3"
+			matcolor	0.8,1,1,0.5
+		}
+		windowDef BtmBorderFill
+		{
+			rect	0,326,640,155
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+			visible	1
+			backcolor	0.8,1,1,0.2
+		}
+		windowDef BtmBorder1
+		{
+		rect	0,262,217,64
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//Arl; end
+			visible	1
+			background	"guis/assets/pda/borderbtm1"
+			matcolor	0.8,1,1,0.5
+		}
+		windowDef BtmBorder2
+		{
+			rect	217,262,32,64
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//Arl; end
+			visible	1
+			background	"guis/assets/pda/borderbtm2"
+			matcolor	0.8,1,1,0.5
+		}
+		windowDef BtmBorder3
+		{
+			//rect	249,262,391,64
+			rect	249,262,391,64
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_NONE
+		//Arl; end
+			visible	1
+			background	"guis/assets/pda/borderbtm3"
+			matcolor	0.8,1,1,0.5
+		}
+		windowDef BorderFill1
+		{
+			rect	-13,193,105,7
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+			visible	1
+			backcolor	0.8,1,1,0.1
+			shear	0,1
+		}
+		windowDef BorderFill2
+		{
+			rect	97,193,289,10
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+			visible	1
+			backcolor	0.8,1,1,0.1
+			shear	0,1
+		}
+		windowDef BorderFIll3
+		{
+			rect	106,205,291,7
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+			visible	1
+			backcolor	0.8,1,1,0.1
+			shear	0,1
+		}
+		windowDef BorderFill4
+		{
+			rect	347,273,296,5
+		//Arl; start
+		//cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//Arl; end
+			visible	1
+			backcolor	0.8,1,1,0.1
+			shear	0,1
+		}
+	    windowDef CenterFill
+		{
+			rect	0,214,640,57
+			visible	1
+			backcolor	0.8,1,1,0.15
+		}		
+	}
+//TOP CONTENT BOX
+	windowDef MainBoxParent
+	{
+		rect	640,31,494,250
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+		visible	1
+		windowDef DDUB1aBL
+		{
+			rect	0,128,128,32
+			matcolor	0.7, 1, 1, 0.6
+			background	"gui/pda/1_bl"
+			visible	1
+		}
+		windowDef DDUB1aTL
+		{
+			rect	0,0,128,128
+			matcolor	0.7, 1, 1, 0.6
+			background	"gui/pda/1_tl"
+			visible	1
+		}
+		windowDef DDUB1aT
+		{
+			rect	128,0,160,128
+			matcolor	0.7, 1, 1, 0.6
+			background	"gui/pda/1_t"
+			visible	1
+		}
+		windowDef DDUB1aB
+		{
+			rect	128,128,160,32
+			matcolor	0.7, 1, 1, 0.6
+			background	"gui/pda/1_b"
+			visible	1
+		}
+		windowDef DDUB1aBR
+		{
+			rect	288,34,-128,-128
+			matcolor	0.7, 1, 1, 0.6
+			background	"gui/pda/1_tlalt"
+			visible	1
+		}
+		windowDef DDUB1aTR
+		{
+			rect	288,2,-128,-32
+			matcolor	0.7, 1, 1, 0.6
+			background	"gui/pda/1_bl"
+			visible	1
+		}
+/*		
+		windowDef StopAudio1
+		{
+			rect	31,150,133,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button"
+			visible	1 //( "gui::pda_audio" == 1 )
+		}
+		windowDef StopAudio2
+		{
+			rect	31,150,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	1 //( "gui::pda_audio" == 1 )
+		}
+		windowDef StopAudio3
+		{
+			rect	164,150,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	1 //( "gui::pda_audio" == 1 )
+		}
+		windowDef StopAudio4
+		{
+			rect	29,150,136,15
+			text	"STOP AUDIO-fix me"
+			forecolor	0.6 ,1 ,1 ,1
+			textscale	0.2
+			textalign	1
+			textaligny	-3
+			background	"guis/assets/pda/hlight"
+			matcolor	1, 1, 1, 0
+			visible	 1 //( "gui::pda_audio" == 1 )
+			font	"fonts/micro"
+
+			onMouseEnter {
+				localSound	"guisounds_ping2" ;
+				transition "forecolor" "0.6 1 1 1" "1 1 1 1" "200" ;
+			}
+
+			onMouseExit {
+				transition "forecolor" "1 1 1 1" "0.6 1 1 1" "200" ;
+			}
+
+			onAction {
+				localSound	"guisounds_click3" ;
+				set	"cmd"	"stopPDAAudio ; StopPDAVideo" ;
+			}
+
+		}
+*/		
+	}
+//Pasted data from old PDA
+	windowDef DDBumper
+	{
+		rect	480,-11,640,480
+		visible	1
+		windowDef DDUserBox1a
+		{
+			rect	145,42,512,416
+			visible	1
+			windowDef DDUB1aFL
+			{
+				rect	31, 16, 448, 130
+				backcolor	1, 1, 1, 0
+			}
+//USER ID SWITCH ANIM
+			windowDef DDColorswitch1
+			{
+				rect	0, 0, 0, 0
+				notime	1
+
+				onTime 0 {
+					set "DDUserBox2::rect" "149 182 512 0" ;
+					set "ObjectivesWinBG::rect" "149 182 512 0";				
+					transition "DDUB1aFL::rect" "31 50 0 0" "31 16 360 130" "400" "0" "1" ;
+					transition "DDUB1aFL::backcolor" "1 1 1 0.1" "1 1 1 0" "400" ;
+				//	set "DDAudio::visible" "0" ;
+					set "PDVideo::visible" "0" ;
+					set "DDEmail::visible" "0" ;
+					set "DDUserBox1b::visible" "0" ;
+				//	set "DDUserBox2::visible" "0" ;
+					set "PDAUserBox2::visible" "0" ;
+					set "DDUB2Audio::visible" "0" ;
+					resetTime "DDUIDBox1" "0" ;
+				}
+
+				onTime 300 {
+					if ("desktop::ddset" == 1) { 
+						set "DDUserID::visible" "1" ;
+						set "DDtext2::matcolor" "1 1 1 0" ;
+						set "DDtext3::matcolor" "1 1 1 0" ;
+						transition "DDUserBox2::rect" "149 182 512 0" "145 182 512 150" "350" ;
+						transition "ObjectivesWinBG::rect" "149 182 512 0" "145 182 512 256" "350" ;
+					}
+				}
+
+			}
+//AUDIO SWITCH ANIM
+			windowDef DDColorswitch2
+			{
+				rect	0, 0, 0, 0
+				notime	1
+
+				onTime 0 {
+					transition "DDUB1aFL::rect" "31 50 0 0" "31 16 360 130" "400" "0" "1" ;
+					transition "DDUB1aFL::backcolor" "1 1 1 0.1" "1 1 1 0" "400" ;
+					set "DDUserID::visible" "0" ;
+					set "PDVideo::visible" "0" ;
+					set "DDEmail::visible" "0" ;
+					set "DDUserBox1b::visible" "0" ;
+					resetTime "DDABox2" "0" ;
+					set "DDUIDText5::security" "0" ;
+					set	"DDUIDSEC::rect" "155 182 512 0" ;
+				}
+
+				onTime 300 {
+					if ("desktop::ddset" == 2) { 
+				//		set "DDAudio::visible" "1" ;
+						set "DDtext1::matcolor" "1 1 1 0" ;
+						set "DDtext3::matcolor" "1 1 1 0" ;
+					}
+				}
+
+			}
+//VIDEO SWITCH ANIM			
+			windowDef DDColorswitch2a
+			{
+				rect	0, 0, 0, 0
+				notime	1
+
+				onTime 0 {
+					transition "DDUB1aFL::rect" "31 50 0 0" "31 16 360 130" "400" "0" "1" ;
+					transition "DDUB1aFL::backcolor" "1 1 1 0.1" "1 1 1 0" "400" ;
+					set "DDUserID::visible" "0" ;
+				//	set "DDAudio::visible" "0" ;
+					set "DDEmail::visible" "0" ;
+					set "DDUserBox1b::visible" "0" ;
+					resetTime "PDVBox2" "0" ;
+					set "DDUIDText5::security" "0" ;
+					set	"DDUIDSEC::rect" "155 182 512 0" ;
+				}
+
+				onTime 300 {
+					if ("desktop::ddset" == 4) { 
+						set "PDVideo::visible" "1" ;
+						set "DDtext1::matcolor" "1 1 1 0" ;
+						set "DDtext3::matcolor" "1 1 1 0" ;
+					}
+				}
+
+			}
+//EMAIL SWITCH ANIM			
+			windowDef DDColorswitch3
+			{
+				rect	0, 0, 0, 0
+				notime	1
+
+				onTime 0 {
+					transition "DDUB1aFL::rect" "31 50 0 0" "31 16 448 130" "400" "0" "1" ;
+					transition "DDUB1aFL::backcolor" "1 1 1 0.1" "1 1 1 0" "400" ;
+					set "DDUserID::visible" "0" ;
+				//	set "DDAudio::visible" "0" ;
+					set "PDVideo::visible" "0" ;
+				//	set "DDUserBox2::visible" "0" ;
+					set "PDAUserBox2::visible" "0" ;
+					set "DDUB2Audio::visible" "0" ;
+					resetTime "DDEBorder1" "0" ;
+					set "DDUIDText5::security" "0" ;
+					set	"DDUIDSEC::rect" "155 182 512 0" ;
+				}
+
+				onTime 300 {
+					if ("desktop::Ddset" == 3) { 
+						set "DDEmail::visible" "1" ;
+						set "DDtext1::matcolor" "1 1 1 0" ;
+						set "DDtext2::matcolor" "1 1 1 0" ;
+					}
+				}
+
+			}
+		}
+//USER ID SECTION
+		windowDef DDUserID
+		{
+			rect	180,57,353,132
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+			visible	1
+	
+			windowDef DDUIDPrint
+			{
+				rect	-3, 4, 128, 128
+				background	"guis/assets/pda/id1"
+			//	background	"gui::pda_icon"
+				matcolor	1, 1, 1, 1
+				visible	1
+			}
+			windowDef DDUIDPrintglow
+			{
+				rect	30, 30, 64, 64
+				background	"gui/pda/biolight"
+				matcolor	0.6, 0.8, 0.8, 1
+				visible	1
+				
+				windowDef DDUIDPrintLine1
+				{
+					rect	63, 0, 1, 64
+					backcolor	0.8, 1, 1, 0
+					visible	1
+				}
+				windowDef DDUIDPrintLine2
+				{
+					rect	0, 0, 64, 1
+					backcolor	0.8, 1, 1, 0
+					visible	1
+				}				
+			}			
+			windowDef DDUIDBgBio
+			{
+				rect	-3, 4, 128, 128
+				background	"guis/assets/pda/bioframe"
+				matcolor	1, 1, 1, 1
+				visible	1
+			}
+			windowDef DDUIDAtomClip
+			{
+				rect	37, 99, 48, 11
+				windowDef DDUIDAtomScan
+				{
+					rect	0, 0, 3, 11
+					backcolor 0.8,1,1,0
+					notime	1
+					
+					onTime 520 {
+						localSound	"guisounds_line2a" ;
+						transition "rect" "-8 -5 64 64" "-8 -43 64 64" "1500" "0.4" "0.6" ;
+						transition "DDUIDPrintglow::matcolor" "0.7 0.9 1 1" "0 0 0 1" "1400" ;
+
+						transition "DDUIDPrintLine1::backcolor" "0.8 1 1 0.7" "0.8 1 1 0" "900" ;
+						transition "DDUIDPrintLine2::backcolor" "0.8 1 1 0.7" "0.8 1 1 0" "900" ;
+
+						transition "DDUIDPrintLine1::rect" "63 0 1 64" "0 0 1 64" "1100" "0" "0.6" ;
+						transition "DDUIDPrintLine2::rect" "0 0 64 1" "0 63 64 1" "1100" "0" "0.6" ;
+					}
+					onTime 620 {
+						transition "DDUIDAtomScan::backcolor" "0.8 1 1 0" "0.8 1 1 0.15" "100" ;
+						transition "DDUIDAtomScan::rect" "34 0 3 11" "0 0 3 11" "800" "0.3" "0.6" ;
+					}
+					
+					onTime 850 {
+						set "DDLList2::noevents" "0" ;
+					}
+					
+					onTime 1420 {
+						transition "DDUIDAtomScan::rect" "0 0 3 11" "44 0 3 11" "500" "0.5" "0.5" ;
+						resetTime "DDUIDAtom" "0" ;
+					}
+/*
+					onTime 1920 {
+						if ("desktop::ddset" == 1) { 
+							localSound	"guisounds_pingup2" ;
+						}						
+						transition "DDUIDAtomScan::backcolor" "0.8 1 1 0.25" "0.8 1 1 0" "500" ;
+						transition "DDUIDPrintglow::matcolor" "1 1 1 1" "0.6 0.8 0.8 1" "500" ;
+						transition "DDUIDTextIdMatch::forecolor" "0.8 1 1 0.7" "0.8 1 1 0" "1200" ;	
+					}	
+*/
+				}
+				windowDef DDUIDAtom
+				{
+					rect	-8, -43, 64, 64
+					background	"guis/assets/pda/atom"
+					matcolor	1, 1, 1, pdflick2 [ time * .0025 ]/1.5
+					visible	1
+					notime	1
+					
+					onTime 520 {
+						if ( "gui::pda_personal" == 0 ) {
+							if ("desktop::ddset" == 1) { 			
+								localSound	"guisounds_beepdown3" ;
+							}
+							transition "DDUIDPrintglow::matcolor" "1 1 1 1" "1 0.2 0.2 1" "500" ;
+							transition "DDUIDTextIdMatch2::forecolor" "1 0.2 0.2 0.7" "1 0.2 0.2 0" "1200" ;
+						}					
+
+						if ( "gui::pda_personal" == 1 ) {
+							if ("desktop::ddset" == 1) { 
+								localSound	"guisounds_pingup" ;
+							}						
+							transition "DDUIDAtomScan::backcolor" "0.8 1 1 0.25" "0.8 1 1 0" "500" ;
+							transition "DDUIDPrintglow::matcolor" "1 1 1 1" "0.6 0.8 0.8 1" "500" ;
+							transition "DDUIDTextIdMatch::forecolor" "0.8 1 1 0.7" "0.8 1 1 0" "1200" ;	
+						}
+					}
+					onTime 850 {
+						set "DDLList2::noevents" "0" ;
+					}					
+				}
+			}
+			windowDef DDUIDTextBio
+			{
+				rect	1, 1, 150, 20
+				text	"#str_02511"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.5
+				visible	1
+			}
+			windowDef DDUIDTextIdMatch
+			{
+				rect	12, 116, 150, 20
+				text	"#str_02512"
+				font	"fonts/micro"
+				textscale	0.19
+				foreColor	0.8, 1, 1, 0
+				visible	1
+			}
+			windowDef DDUIDTextIdMatch2
+			{
+				rect	0, 116, 150, 20
+				text	"#str_04163"
+				font	"fonts/micro"
+				textscale	0.19
+				foreColor	0.8, 1, 1, 0
+				visible	1
+			}			
+			windowDef DDUIDTextName
+			{
+				rect	104, -4, 150, 20
+				text	"#str_02513"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	1
+			}
+			windowDef DDUIDTextIdnum
+			{
+				rect	115, 22, 150, 20
+				text	"#str_02514"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	1
+			}			
+			windowDef DDUIDTextPost
+			{
+				rect	126, 48, 150, 20
+				text	"#str_02515"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	( "gui::pda_personal" == 0 )
+			}
+			windowDef DDUIDTextPost2
+			{
+				rect	126, 48, 150, 20
+				text	"#str_02516"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	( "gui::pda_personal" == 1 )
+			}
+			windowDef DDUIDTextTitle
+			{
+				rect	134, 74, 150, 20
+				text	"#str_02517"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	( "gui::pda_personal" == 0 )
+			}
+			windowDef DDUIDTextTitle2
+			{
+				rect	134, 74, 150, 20
+				text	"#str_02518"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	( "gui::pda_personal" == 1 )
+			}
+			windowDef DDUIDTextSecurity
+			{
+				rect	144, 100, 150, 20
+				text	"#str_02519"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.4
+				visible	1
+			}
+			windowDef DDUIDBG
+			{
+				rect	94, 2, 256, 128
+				background	"gui/pda/pd/userid2"
+				matcolor	1, 1, 1, 1
+				visible	1
+			}
+			windowDef DDUIDText1
+			{
+				rect	110, 8, 190, 20
+				text	"gui::pda_name"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 1
+				visible	1
+			}
+			windowDef DDUIDText2
+			{
+				rect	120, 34, 190, 20
+				text	"gui::pda_id"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.6
+				visible	1
+			}
+			windowDef DDUIDText3
+			{
+				rect	130, 60, 190, 20
+				text	"gui::pda_location"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.6
+				visible	1
+			}
+			windowDef DDUIDText4
+			{
+				rect	140, 86, 190, 20
+				text	"gui::pda_title"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.6
+				visible	1
+			}
+			windowDef DDUIDText5
+			{
+				rect	150, 112, 190, 17
+				text	"gui::PDASecurityClearance"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.6
+				visible	1
+			}
+			windowDef DDUIDBox1
+			{
+				rect	100, 2, 0, 24
+				backcolor	1, 1, 1, 0.5
+				notime	1
+				visible	1
+
+				onTime 0 {
+					set "DDUserID::rect" "145 57 0 0" ;
+					set "DDUIDText1::visible" "0" ;
+					set "DDUIDText2::visible" "0" ;
+					set "DDUIDText3::visible" "0" ;
+					set "DDUIDText4::visible" "0" ;
+					set "DDUIDText5::visible" "0" ;
+					set "DDUIDBG::visible" "0" ;
+					set "DDUIDPrint::visible" "0" ;
+				}
+
+				onTime 300 {
+					transition "DDUserID::rect" "180 57 125 0" "180 57 353 132" "350" "0" "0.4" ;
+					transition "DDUIDBox1::rect" "105 3 0 22" "105 3 202 22" "200" "0.2" "0.8" ;
+					transition "DDUIDBox1::backcolor" "1 1 1 0.5" "1 1 1 0" "250" ;
+				}
+
+				onTime 310 {
+					set "DDUIDBG::visible" "1" ;
+					set "DDUIDPrint::visible" "1" ;
+				}
+
+				onTime 350 {
+					transition "DDUIDText1::forecolor" "1 1 1 0" "1 1 1 1" "200" ;
+					set "DDUIDText1::visible" "1" ;
+					
+				}
+
+				onTime 380 {
+					transition "DDUIDBox2::rect" "115 29 0 22" "115 29 202 22" "200" "0.2" "0.8" ;
+					transition "DDUIDBox2::backcolor" "1 1 1 0.5" "1 1 1 0" "250" ;
+					
+				}
+
+				onTime 410 {
+					transition "DDUIDText2::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+					set "DDUIDText2::visible" "1" ;
+					
+				}
+
+				onTime 440 {
+					transition "DDUIDBox3::rect" "125 55 0 22" "125 55 202 22" "200" "0.2" "0.8" ;
+					transition "DDUIDBox3::backcolor" "1 1 1 0.5" "1 1 1 0" "250" ;
+				}
+
+				onTime 470 {
+					transition "DDUIDText3::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+					set "DDUIDText3::visible" "1" ;
+					if ("desktop::ddset" == 1) { 
+					//	localSound	"guisounds_pdaping2" ;
+					}
+				}
+
+				onTime 500 {
+					transition "DDUIDBox4::rect" "135 81 0 22" "135 81 202 22" "200" "0.2" "0.8" ;
+					transition "DDUIDBox4::backcolor" "1 1 1 0.5" "1 1 1 0" "250" ;
+					
+				}
+
+				onTime 530 {
+					transition "DDUIDText4::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+					set "DDUIDText4::visible" "1" ;
+				}
+
+				onTime 560 {
+					transition "DDUIDBox5::rect" "145 107 0 22" "145 107 200 22" "200" "0.2" "0.8" ;
+					transition "DDUIDBox5::backcolor" "1 1 1 0.5" "1 1 1 0" "250" ;
+				}
+
+				onTime 600 {
+					transition "DDUIDText5::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+					set "DDUIDText5::visible" "1" ;
+				}
+
+			}
+			windowDef DDUIDBox2
+			{
+				rect	115, 28, 0, 24
+				backcolor	1, 1, 1, 0.5
+			}
+			windowDef DDUIDBox3
+			{
+				rect	125, 54, 0, 24
+				backcolor	1, 1, 1, 0.5
+			}
+			windowDef DDUIDBox4
+			{
+				rect	135, 80, 0, 24
+				backcolor	1, 1, 1, 0.5
+			}
+			windowDef DDUIDBox5
+			{
+				rect	145, 106, 0, 24
+				backcolor	1, 1, 1, 0.5
+			}
+		}
+//VIDEO DISK SECTION		
+		windowDef PDVideo {
+			rect		145, 67, 0, 0
+		//Arl; start
+		cstAnchor	CST_ANCHOR_TOP_CENTER
+        //Arl; end
+			visible		0
+
+			windowDef PDVBox1 {
+				rect		2, 3, 354, 15
+				bordersize	1
+				bordercolor	0.7, 1, 1, 0.2
+				backcolor	0.7, 1, 0.9, 0.05
+				forecolor 	0.3 ,0.42 ,0.4 ,1
+				textaligny	-6
+				text		"#str_02520"
+				font	"fonts/bank"
+				textscale 	0.25 
+			}
+
+			windowDef PDVBox2 {
+				rect		2, 20, 354, 110
+				bordersize	1
+				bordercolor	0.7, 1, 1, 0.2
+				backcolor	0.7, 1, 0.9, 0.05
+				notime 1
+
+				onTime 0 {
+					set "PDVideo::rect" "174 57 0 0" ;
+					set "PDAUserBox2::rect" "115 182 512 0" ;
+
+					set "PDVBox1::visible" "0" ;
+					set "PDVBox2::visible" "0" ;
+					set "PDVList::visible" "0" ;
+				}
+				onTime 300 {
+					transition "PDVideo::rect" "174 57 0 20" "174 57 356 20" "100" ;
+					set "PDVBox1::visible" "1" ;
+					transition "PDVBox1::backcolor" "1 1 1 0.5" "0 0 0 0.1" "300" ;
+				}
+
+				onTime 400 {
+					transition "PDVideo::rect" "174 57 356 20" "174 57 356 132" "200" ;
+					set "PDVBox2::visible" "1" ;
+					transition "PDVBox2::backcolor" "1 1 1 0.5" "0 0 0 0.1" "400" ;
+				}
+				onTime 500 {
+					if ("desktop::ddset" == 4) { 
+						transition "PDAUserBox2::rect" "150 182 512 0" "145 182 512 256" "400" "0" "0.8" ;
+						set "PDAUserBox2::visible" "1" ;
+					//	localSound	"guisounds_pdaping2" ;
+					}
+				}
+				onTime 600 {
+					set "PDVList::visible" "1" ;
+				}
+			}
+
+			windowDef PDVList {  
+				rect 		4, 22, 350, 106 
+
+				listDef PDVList2 {  
+					rect 		0, 0, 350, 106 
+					backcolor 	0, 0, 0, 0.1  
+					forecolor 	1, 1, 1, 1 
+					bordercolor	0.3 ,0.52 ,0.5 ,0.5
+					textscale 	0.25  
+					listName	"listPDAVideo"
+					font	"fonts/an"
+
+					onAction {
+						localSound	"guisounds_ping2" ;
+						//set	"PDAUB2Still::visible" "1" ;
+						set	"PDAUB2Video::visible" "0" ;
+						set	"cmd"	"updatePDA2" ;
+						set "cmd" "StopPDAVideo" ;
+						set "PDAUB2Still::visible" "1" ;
+						//set "PDAUB2StillText::visible" "0" ;
+					}
+				}
+			}
+		}
+		windowDef PDAUserBox2 {
+			rect 		115, 182, 512, 0
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+			
+
+			windowDef PDAUB2TL {
+				rect 		15, 0, -32, 128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef PDAUB2T {
+				rect 		47, 0, 323, 128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_tb"
+			}
+			windowDef PDAUB2TR {
+				rect 		370, 0, 32, 128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef PDAUB2BL {
+				rect 		15, 128, -32, -128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef PDAUB2B {
+				rect 		47, 128, 323, -128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_tb"
+			}
+			windowDef PDAUB2BR {
+				rect 		370, 128, 32, -128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+
+
+			windowDef PDAUB2Title {  
+				text    	"gui::PDAVideoTitle"  
+				rect 		32, 30, 353, 22
+				backcolor 	0, 0, 0, 0.1  
+				forecolor 	1, 1, 1, 1 
+				bordersize 	1  
+				bordercolor 	0.4, 0.4, 0.4, 1
+				textaligny	-2
+				font		"fonts/bank"
+				textscale 	0.25  
+			}
+			windowDef PDAUB2StillText {  
+				rect 		32, 56, 210, 170
+				text	"#str_04164"
+				forecolor 1, 1, 1, 1
+				textalign 1
+				textaligny 55
+				bordercolor 0.3, 0.3, 0.3, 1
+				bordersize 1
+				visible 1
+				font		"fonts/micro"
+			}
+			windowDef PDAUB2Still {  
+				rect 		32, 56, 210, 170
+				background	"gui::PDAVideoIcon"
+				matcolor 1, 1, 1, 1
+				bordercolor 0.3, 0.3, 0.3, 1
+				bordersize 1
+				visible 0
+			}				
+
+			windowDef PDAUB2Line {  
+				rect 		32, 56, 353, 170
+				bordercolor 	0.4, 0.4, 0.4, 1
+				bordersize	1
+				textscale 	0.25
+			}
+			windowDef PDAUB2Text {  
+				text    	"gui::PDAVideoInfo"  
+				rect 		244, 60, 135, 140
+				forecolor 	1, 1, 1, 0.5
+				textscale 	0.25  
+				font		"fonts/an"
+				
+			}
+
+			windowDef PDAUB2Stop {  
+				background	"guis/assets/pda/stop"
+				rect 		318, 205, 64, 16
+				matcolor 	0.8, 1, 1, 0.6 
+				text	"#str_04165"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.7
+				textaligny	-5
+				
+				onMouseEnter {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+				}
+
+				onMouseExit {
+					
+					transition "matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				}
+		
+        		onAction {
+
+				   if ("FULLVID2::visible" == 1) {
+					
+				   set "FULLVID2::visible" "0" ;
+				   
+				   set "PDVList::visible" "1" ;
+				   set "PDAUB2StillText::visible" "1" ;
+				   set "PDAUB2Still::visible" "1" ;
+				   
+				   //transition "PDAUB2Title::rect" "32, 205, 353, 22" "32, 30, 353, 22" "200" ;
+				   
+				   set "PDAUB2Title::rect" "32, 30, 353, 22";
+				   
+				
+				   transition "PDAUB2Video::rect" "176.8, 98, 353, 310" "176.8, 238, 210, 170"  "200" ;
+	               transition "scanlines1::rect" "0, 0, 353, 310" "0, 0, 210, 170"  "200" ;
+				   transition "scanlines1::matcolor" "1, 1, 1, .4"  "1, 1, 1, 0" "200" ;			   
+
+				    set "FULLVID1::visible" "1" ;  
+					
+					
+				   	set	"cmd"	"stopPDAAudio ; StopPDAVideo" ;
+					localSound	"guisounds_ping2" ;
+					set	"PDAUB2Video::visible" "0" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+					
+	               } else {
+				
+				    set "PDAUB2StillText::visible" "1" ;
+					set "PDAUB2Still::visible" "1" ;
+					
+					set	"cmd"	"stopPDAAudio ; StopPDAVideo" ;
+					localSound	"guisounds_ping2" ;
+					set	"PDAUB2Video::visible" "0" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+                   }					
+                }		
+
+			
+			}
+			
+			windowDef PDAUB2Play {  
+		
+
+				background	"guis/assets/pda/play"
+				rect 		250, 205, 64, 16
+				matcolor 	0.8, 1, 1, 0.6 
+				text	"#str_04166"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.7
+				textaligny	-5
+				notime 1
+
+				onMouseEnter {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+				}
+
+				onMouseExit {
+					transition "matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				}
+				onAction {
+					localSound	"guisounds_ping2" ;
+					set	"PDAUB2Video::visible" "1" ;
+					set	"cmd"	"updatePDA2 ; playpdavideo" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+					set "noevents" "1" ;
+					resetTime "0" ;
+				}
+				
+				onTime 500 {
+					set "noevents" "0" ;
+				}
+			}	
+}		
+		windowDef PDAUB2Video {  
+				rect 		176.8, 238, 210, 170
+				//Arl; start
+		        cstAnchor	CST_ANCHOR_CENTER_CENTER
+                //Arl; end
+				background	"gui::PDAVideoVid"
+				matcolor 1, 1, 1, 1
+				bordercolor 0.3, 0.3, 0.3, 1
+				bordersize 1
+				visible 0
+				
+				windowDef scanlines1 {  
+				background	"guis/assets/pda/scanlines1"
+				rect 		176.8, 238, 210, 170
+				matcolor 	1, 1, 1, 0
+				visible 0
+				
+				}
+				
+				//arl ENLARGE VIDEO;start
+			windowDef FULLVID1 {  
+				background	"guis/assets/pda/enlarge"
+				rect 		187, 148, 16, 16
+				matcolor 	0.8, 1, 1, 0.3 
+				//text	"FULL"
+				//font	"fonts/bank"
+				//textscale	0.25
+				//foreColor	1, 1, 1, 0.7
+				//textaligny	-7
+				notime 1
+
+				onMouseEnter {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+				}
+
+				onMouseExit {
+					transition "matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				}
+				onAction {
+					localSound "guisounds_ping2" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+					
+					
+				    transition "PDAUB2Title::rect" "32, 30, 353, 22" "32, 201, 353, 25" "200" ;
+					
+				  
+					transition "PDAUB2Video::rect" "176.8, 238, 210, 170" "176.8, 77, 353, 307" "200" ;
+					
+					set "scanlines1::visible" "1" ;
+					transition "scanlines1::rect" "0, 0, 210, 170" "0, 0, 353, 310" "200" ;
+					transition "scanlines1::matcolor" "1, 1, 1, 0" "1, 1, 1, .4" "200" ;
+					
+                    //transition "PDAUB2Play::rect" "250, 205, 64, 16" "250, 225, 64, 14" "200" ;
+				    //transition "PDAUB2Stop::rect" "318, 205, 64, 16" "318, 225, 64, 14" "200" ;
+                   
+				  	set "PDAUB2Still::visible" "0" ;
+					set "PDVList::visible" "0" ;
+				   
+                    set "FULLVID1::visible" "0" ;
+					set "FULLVID2::visible" "1" ;
+					
+					set "noevents" "0" ;
+					resetTime "0" ;
+				}
+				
+				onTime 500 {
+					set "noevents" "0" ;
+				}
+			}
+			
+			windowDef FULLVID2 {  
+				background	"guis/assets/pda/shrink"
+				rect 		324, 279, 20, 20
+				matcolor 	0.8, 1, 1, 0.3 
+				//text	"FULL2"
+				//font	"fonts/bank"
+				//textscale	0.25
+				//foreColor	1, 1, 1, 0.7
+				//textaligny	-6
+				notime 1
+				visible 0
+
+				onMouseEnter {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+				}
+
+				onMouseExit {
+					transition "matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				}
+				onAction {
+					localSound	"guisounds_ping2" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+					
+					transition "PDAUB2Title::rect" "32, 201, 353, 25" "32, 30, 353, 22" "200" ;
+					
+					
+					transition "PDAUB2Video::rect" "176.8, 98, 353, 307" "176.8, 238, 210, 170"  "200" ;
+					
+					//set "scanlines1::visible" "1" ;
+					transition "scanlines1::rect" "0, 0, 353, 310" "0, 0, 210, 170"  "200" ;
+					transition "scanlines1::matcolor" "1, 1, 1, .4"  "1, 1, 1, 0" "200" ;
+					
+					//transition "PDAUB2Play::rect" "250, 225, 64, 14" "250, 205, 64, 16" "200" ;				
+				    //transition "PDAUB2Stop::rect" "318, 225, 64, 14" "318, 205, 64, 16" "200" ;
+					
+					set "PDVList::visible" "1" ;
+					
+					set "FULLVID1::visible" "1" ;
+					set "FULLVID2::visible" "0" ;
+					
+					set "noevents" "1" ;
+					resetTime "0" ;
+				}
+				
+				onTime 500 {
+					set "noevents" "0" ;
+				}
+			}
+			//arl ENLARGE VIDEO;end
+}
+
+//AUDIO LOGS SECTION		
+
+		windowDef DDUserBox2
+		{
+			rect	145, 182, 512, 150
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+			visible	( "gui::pda_personal" == 0 )
+			windowDef DDUB2ClipTop
+			{
+				rect	0, 0, 402, 60			
+				windowDef DDUB2TL
+				{
+					rect	15, 0, -32, 128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_c"
+				}
+				windowDef DDUB2T
+				{
+					rect	47, 0, 323, 128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_tb"
+				}
+				windowDef DDUB2TR
+				{
+					rect	370, 0, 32, 128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_c"
+				}
+			}
+			windowDef DDUB2ClipBottom
+			{
+				rect	0, 60, 402, 70				
+				windowDef DDUB2BL
+				{
+					rect	15, -57, -32, -128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_c"
+				}
+				windowDef DDUB2B
+				{
+					rect	47, -57, 323, -128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_tb"
+				}
+				windowDef DDUB2BR
+				{
+					rect	370, -57, 32, -128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_c"
+				}
+			}
+			windowDef DDUB2Play
+			{
+				background	"guis/assets/pda/play"
+				rect	35, 86, 64, 16
+				matcolor	0.8, 1, 1, 0.6 
+				visible	1
+				text	"#str_04166"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.7
+				textaligny	-5
+				notime 1
+				float "tiponce" 0
+
+				onMouseEnter {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+				}
+
+				onMouseExit {
+					transition "matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				}
+				onAction {
+					localSound	"guisounds_ping2" ;
+					set	"cmd"	"playPDAAudio" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+					set "noevents" "1" ;
+					resetTime "0" ;
+					if ("tiponce" == 0) { 
+						transition "DDUB2Tip::forecolor" "1 1 1 0.4" "1 1 1 0" "4000" "1" "0" ;
+						set "tiponce" "1" ;
+					}
+					
+				}
+				
+				onTime 500 {
+					set "noevents" "0" ;
+				}
+
+			}
+			windowDef DDUB2Stop
+			{
+				background	"guis/assets/pda/stop"
+				matcolor	0.8, 1, 1, 0.6 
+				rect	101, 86, 64, 16
+				visible	1
+				text	"#str_04165"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0.7
+				textaligny	-5				
+
+				onMouseEnter {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+				}
+
+				onMouseExit {
+					transition "matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				}
+				onAction {
+					localSound	"guisounds_ping2" ;
+					set	"cmd"	"stopPDAAudio ; StopPDAVideo" ;
+					transition "matcolor" "1 1 1 1" "0.8 1 1 0.6" "200" ;
+					transition "forecolor" "1 1 1 1" "1 1 1 0.7" "200" ;
+				}
+
+			}
+			windowDef DDUB2Tip
+			{
+				rect	30, 103, 400, 16//170, 86, 200, 16 //32, 100, 400, 16
+				visible	1
+				text	"#str_04836"
+				font	"fonts/bank"
+				textscale	0.25
+				foreColor	1, 1, 1, 0
+				textaligny	-5				
+			}
+//		}
+//		windowDef DDAudio
+//		{
+//			rect	174, 209, 356, 132 //145, 182, 512, 256 -- +29, +27
+//			visible	( "gui::pda_personal" == 0 )
+			windowDef DDABox1
+			{
+				rect	31, 30, 354, 15
+				bordersize	1
+				bordercolor	0.7, 1, 1, 0.2
+				backcolor	0.8, 0.95, 1, 0.15
+				foreColor	0.8, 1, 1 ,0.6
+				textaligny	-6
+				text	"#str_04167"
+				textscale	0.25
+				font	"fonts/bank"	
+			}
+			windowDef DDABox1a
+			{
+				rect	203, 31, 354, 15
+				foreColor	0.8, 1, 1 ,0.6
+				textaligny	-6
+				text	"gui::pda_name"
+				textscale	0.25
+				font	"fonts/bank"	
+			}			
+			windowDef DDABox2
+			{
+				rect	31, 47, 354, 36
+				bordersize	1
+				bordercolor	0.7, 1, 1, 0.2
+				backcolor	0.7, 1, 0.9, 0.05
+				notime	1
+
+			}
+			
+			windowDef DDAList
+			{
+				rect	33, 47, 348, 40
+				windowDef DDAList2No
+				{
+					rect	0, 0, 348, 34
+					foreColor	1, 1, 1, 0.5
+					textscale	0.25
+					font	"fonts/an"
+					text "#str_04168" 
+					visible ( "gui::audioLogCount" == 0 )
+				}				
+				listDef DDAList2
+				{
+					rect	0, 0, 348, 80
+					backcolor	0, 0, 0, 0.1
+					foreColor	1, 1, 1, 1
+					bordercolor	0.3 ,0.52 ,0.5 ,0.5
+					textscale	0.25
+					listName	"listPDAAudio"
+					font	"fonts/an"
+					visible	1
+
+					onAction {
+						localSound	"guisounds_ping2" ;
+						set	"cmd"	"updatePDA2" ;
+						set	"cmd"	"stopPDAAudio ; StopPDAVideo" ;
+						//set	"DDUB2Title2::visible" "0" ;
+					}
+				}
+			}
+		}
+
+		windowDef ObjectivesWinBG {
+			rect 		145, 182, 512, 256
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+			visible ( "gui::pda_personal" == 1 )
+			windowDef ObjectivesWinBG0 {
+				rect 		0, 0, 512, 256
+				visible ("gui::objective1" != 1)
+				windowDef OBJ0Bg1 {
+					rect 		0, 0, 402, 35
+					windowDef OBJ0BgTL {
+						rect 		15, 0, -32, 128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+					windowDef OBJ0BgT {
+						rect 		47, 0, 323, 128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_tb"
+					}
+					windowDef OBJ0BgTR {
+						rect 		370, 0, 32, 128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+				}
+				windowDef OBJ0Bg2 {
+					rect 		0, 35, 402, 128
+					windowDef OBJ0BgBL {
+						rect 		15, -70, -32, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+					windowDef OBJ0BgB {
+						rect 		47, -70, 323, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_tb"
+					}
+					windowDef OBJ0BgBR {
+						rect 		370, -70, 32, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+				}			
+			}			
+			windowDef ObjectivesWinBG1 {
+				rect 		0, 0, 512, 256
+				visible ("gui::objective1" == 1)
+				windowDef OBJBgTL {
+					rect 		15, 0, -32, 128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_c"
+				}
+				windowDef OBJBgT {
+					rect 		47, 0, 323, 128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_tb"
+				}
+				windowDef OBJBgTR {
+					rect 		370, 0, 32, 128
+					matcolor	1, 1, 1, 0.7
+					background	"gui/pda/2_c"
+				}
+				windowDef OBJBg1 {
+					rect 		0, 128, 402, 128
+					visible	("gui::objective2" != 1)
+					windowDef OBJBgBL {
+						rect 		15, -70, -32, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+					windowDef OBJBgB {
+						rect 		47, -70, 323, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_tb"
+					}
+					windowDef OBJBgBR {
+						rect 		370, -70, 32, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+				}			
+				windowDef OBJBg2 {
+					rect 		0, 128, 402, 128
+					visible	("gui::objective2" == 1)
+					windowDef OBJBgBL {
+						rect 		15, 0, -32, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+					windowDef OBJBgB {
+						rect 		47, 0, 323, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_tb"
+					}
+					windowDef OBJBgBR {
+						rect 		370, 0, 32, -128
+						matcolor	1, 1, 1, 0.7
+						background	"gui/pda/2_c"
+					}
+				}
+			}
+			windowDef ObjNewTitle {
+				rect		32 ,24 ,353 ,20 
+				forecolor	0.2, 0.8, 0.8, 1//1 ,1 ,0.8 ,0.8
+				text		"#str_04169"
+				font		"fonts/micro"
+				textscale	0.25
+				visible		1
+			}
+
+			windowDef OBJBgTitle {  
+				text    	"#str_04170"  
+				rect 		32, 30, 353, 18
+				backcolor 	0, 0, 0, 0.1  
+				forecolor 	1, 1, 1, 1 
+				bordersize 	1  
+				visible 0
+				bordercolor 	0.4, 0.4, 0.4, 1
+				textaligny	-6
+				font		"fonts/bank"
+				textscale 	0.25  
+			}
+//
+			windowDef Obj1TitleBG0 {
+				rect		30 ,47 ,357 ,14 
+				backcolor	0.8,1,1,0
+				visible		1
+			}
+			windowDef Obj0Title2 {
+				rect		32 ,43 ,300 ,20 
+				forecolor	0 ,0 ,0 ,0.6
+				text		"gui::missionobjective"
+				textscale	0.25
+				font		"fonts/an"
+				visible		1
+			}
+
+			windowDef Obj0Title {
+				rect		32 ,42 ,300 ,20 
+				forecolor	0.8, 0.8, 0.8, 0.8
+				text		"gui::missionobjective"
+				textscale	0.25
+				font		"fonts/an"
+				visible		1
+			}
+			
+			windowDef Obj1TitleBG1 {
+				rect		30 ,65 ,357 ,14 
+				backcolor	0.8,1,1,0.1 
+				visible		("gui::objective1" == 1)
+			}
+			windowDef Obj1TitleBG2Clip {
+				rect		30 ,147 ,357 ,10 
+				visible		("gui::objective1" == 1)			
+				windowDef Obj1TitleBG2 {
+					rect		0 ,0 ,357 ,10 
+					backcolor	0.8,1,1,0.1 
+					visible		("gui::objective2" != 1)
+				}
+			}
+/*
+			windowDef ObjTitleNone2
+			{
+				rect		32 ,60 ,300 ,20 
+				forecolor	0 ,0 ,0 ,0.6
+				visible	("gui::objective1" != 1)
+				text		"No area objectives assigned"
+				textscale	0.25
+				font		"fonts/bank"
+			}			
+			windowDef ObjTitleNone
+			{
+				rect		32 ,59 ,300 ,20 
+				forecolor	1, 0.6, 0.2, 1
+				visible	("gui::objective1" != 1)
+				text		"No area objectives assigned"
+				textscale	0.25
+				font		"fonts/bank"
+			}
+*/			
+
+			windowDef Obj1Title {
+				rect		32 ,59 ,300 ,20 
+				forecolor	1, 0.6, 0.2, 1
+				text		"gui::objectivetitle1"
+				textscale	0.25
+				font		"fonts/bank"
+				visible		("gui::objective1" == 1)
+				shadow		1
+			}
+
+			windowDef Obj1Text {
+				rect		119 ,79 ,250 ,80 
+				forecolor	0.6 ,0.8 ,0.8 ,1
+				text		"gui::objectivetext1"
+				textscale	0.25
+				font		"fonts/an"
+				visible		("gui::objective1" == 1)
+				shadow		1
+			}
+			windowDef Sshot1 {
+				rect		34 ,81 ,80 ,63 
+				background	"gui::objectiveshot1"
+				matcolor	1 ,1 ,1 ,1
+				visible		("gui::objective1" == 1)
+				bordersize	1
+				bordercolor 	0.4, 0.6, 0.6, 1
+			}
+			windowDef Obj2TitleBG1 {
+				rect		30 ,147 ,357 ,14 
+				backcolor	0.8,1,1,0.1 
+				visible		("gui::objective2" == 1)
+			}
+			windowDef Obj2TitleBG2 {
+				rect		30 ,220 ,357 ,7 
+				backcolor	0.8,1,1,0.1 
+				visible		0
+			}	
+
+			windowDef Obj2Title {
+				rect		32 ,141 ,300 ,20 
+				forecolor	1, 0.6, 0.2, 1
+				text		"gui::objectivetitle2"
+				textscale	0.25
+				font		"fonts/bank"
+				visible		("gui::objective2" == 1)
+				shadow		1
+			}
+
+			windowDef Obj2Text {
+				rect		119 ,161 ,250 ,80 
+				forecolor	0.6 ,0.8 ,0.8 ,1
+				text		"gui::objectivetext2"
+				textscale	0.25
+				font		"fonts/an"
+				visible		("gui::objective2" == 1)
+				shadow		1
+			}
+			windowDef Sshot2 {
+				rect		34 ,163 ,80 ,63 
+				background	"gui::objectiveshot2"
+				matcolor	1 ,1 ,1 ,1
+				visible		("gui::objective2" == 1)
+				bordersize	1
+				bordercolor 	0.4, 0.6, 0.6, 1
+			}			
+		}		
+		
+//EMAIL SECTION		
+		windowDef DDEmail
+		{
+			rect	180, 57, 450, 0
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+			visible	0
+
+			windowDef EmailTitleText
+			{
+				rect	2, 2, 442, 15
+				bordersize	1
+				bordercolor	0.7, 1, 1, 0.1
+				backcolor	0.8, 0.95, 1, 0.15
+				foreColor	0.8, 1, 1, 0.6
+				textaligny	-6
+				text	"#str_04171"
+				textscale	0.25
+				font	"fonts/bank"	
+			}
+			windowDef EmailTitleUser
+			{
+				rect	121, 3, 354, 15
+				foreColor	0.8, 1, 1, 0.6
+				textaligny	-6
+				text	"gui::pda_name"
+				textscale	0.25
+				font	"fonts/bank"	
+			}			
+			
+			windowDef DDEBorder1
+			{
+				rect	2, 20, 120, 15
+				backcolor	0, 0, 0, 0.1
+				foreColor	0.3 ,0.4 ,0.42 ,1
+				bordercolor	0.1 ,0.2 ,0.25 ,1
+				bordersize	1
+				textaligny	-6
+				text	"#str_02522"
+				font	"fonts/bank"
+				textscale	0.25
+				notime	1
+
+				onTime 0 {
+					set "DDEmail::rect" "174 57 0 0" ;
+					set "DDUserBox1b::rect" "155 52 512 0" ;
+					
+					set "DDEBorder1::visible" "0" ;
+					set "DDEBorder2::visible" "0" ;
+					set "DDEBorder3::visible" "0" ;
+					set "DDEBorder1a::visible" "0" ;
+					set "DDEBorder2a::visible" "0" ;
+					set "DDEBorder3a::visible" "0" ;
+					set "DDEList::visible" "0" ;
+				}
+
+				onTime 300 {
+					transition "DDEmail::rect" "174 57 0 20" "174 57 450 20" "100" ;
+					set "DDEBorder1::visible" "1" ;
+					transition "DDEBorder1::backcolor" "1 1 1 0.5" "0 0 0 0.1" "300" ;
+				}
+
+				onTime 350 {
+					set "DDEBorder2::visible" "1" ;
+					transition "DDEBorder2::backcolor" "1 1 1 0.5" "0 0 0 0.1" "300" ;
+				}
+
+				onTime 400 {
+					set "DDEBorder3::visible" "1" ;
+					transition "DDEBorder3::backcolor" "1 1 1 0.5" "0 0 0 0.1" "300" ;
+					transition "DDEmail::rect" "174 57 450 20" "174 57 450 360" "500" ;
+					set "DDEBorder1a::visible" "1" ;
+					transition "DDEBorder1a::backcolor" "1 1 1 0.5" "0 0 0 0.1" "400" ;
+				}
+
+				onTime 450 {
+					set "DDEBorder2a::visible" "1" ;
+					transition "DDEBorder2a::backcolor" "1 1 1 0.5" "0 0 0 0.1" "400" ;
+					if ("desktop::ddset" == 3) { 
+						transition "DDUserBox1b::rect" "150 182 512 0" "145 182 512 256" "400" "0" "0.8" ;
+						set "DDUserBox1b::visible" "1" ;
+					//	localSound	"guisounds_pdaping2" ;
+					}
+				}
+
+				onTime 500 {
+					set "DDEBorder3a::visible" "1" ;
+					transition "DDEBorder3a::backcolor" "1 1 1 0.5" "0 0 0 0.1" "400" ;
+				}
+
+				onTime 600 {
+					set "DDEList::visible" "1" ;
+				}
+
+			}
+			windowDef DDEBorder2
+			{
+				rect	125, 20, 232, 15
+				backcolor	0, 0, 0, 0.1
+				foreColor	0.3 ,0.4 ,0.42 ,1
+				bordercolor	0.1 ,0.2 ,0.25 ,1
+				bordersize	1
+				textaligny	-6
+				text	"#str_02523"
+				font	"fonts/bank"
+				textscale	0.25
+			}
+			windowDef DDEBorder3
+			{
+				rect	360, 20, 84, 15
+				backcolor	0, 0, 0, 0.1
+				foreColor	0.3 ,0.4 ,0.42 ,1
+				bordercolor	0.1 ,0.2 ,0.25 ,1
+				bordersize	1
+				textaligny	-6
+				text	"#str_02182"
+				font	"fonts/bank"
+				textscale	0.25
+			}
+			windowDef DDEBorder1a
+			{
+				rect	2, 38, 120, 92
+				backcolor	0, 0, 0, 0.1
+				bordercolor	0.1 ,0.2 ,0.25 ,1
+				bordersize	1
+			}
+			windowDef DDEBorder2a
+			{
+				rect	125, 38, 232, 92
+				backcolor	0, 0, 0, 0.1
+				bordercolor	0.1 ,0.2 ,0.25 ,1
+				bordersize	1
+			}
+			windowDef DDEBorder3a
+			{
+				rect	360, 38, 84, 92
+				backcolor	0, 0, 0, 0.1
+				bordercolor	0.1 ,0.2 ,0.25 ,1
+				bordersize	1
+			}
+			windowDef DDEList
+			{
+				rect	1, 38, 442, 92
+				listDef DDEList2
+				{
+					rect	0, 1, 442, 90
+					foreColor	1, 1, 1, 1
+					bordercolor	0.3 ,0.52 ,0.5 ,0.5
+					textscale	0.25
+					listName	"listPDAEmail"
+					tabstops	"2, 125, 362"
+					font	"fonts/an"
+
+					onAction {
+						localSound	"guisounds_ping2" ;
+						set	"DDBox6::visible" "1" ;
+						set	"cmd"	"updatePDA2" ;
+					}
+
+				}
+			}
+		}
+		windowDef DDUserBox1b
+		{
+			rect	155, 182, 512, 0
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+        //Arl; end
+			windowDef DDUB1bTL
+			{
+				rect	15, 0, -32, 128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef DDUB1bT
+			{
+				rect	47, 0, 416, 128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_tb"
+			}
+			windowDef DDUB1bTR
+			{
+				rect	463, 0, 32, 128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef DDUB1bBL
+			{
+				rect	15, 128, -32, -128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef DDUB1bB
+			{
+				rect	47, 128, 416, -128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_tb"
+			}
+			windowDef DDUB1bBR
+			{
+				rect	463, 128, 32, -128
+				matcolor	1, 1, 1, 0.7
+				background	"gui/pda/2_c"
+			}
+			windowDef DDUBTitle
+			{
+				text	"gui::PDAEmailTitle"
+				rect	32, 30, 445, 22
+				backcolor	0, 0, 0, 0.1
+				foreColor	1, 1, 1, 1
+				bordersize	1
+				bordercolor	0.4, 0.4, 0.4, 1
+				textscale	0.25
+				textaligny	-2
+				font		"fonts/bank"
+			}
+			windowDef DDUBLine
+			{
+				rect	32, 56, 445, 170
+				bordercolor	0.4, 0.4, 0.4, 1
+				bordersize	1
+				textscale	0.25
+			}
+			windowDef DDUBMail
+			{
+				rect	32, 56, 445, 170
+				editDef DDUBMail2
+				{
+					text	"gui::PDAEmailText"
+					rect	0, 0, 445, 170
+					foreColor	1, 1, 1, 1
+					bordercolor	1, 1, 1, 1
+					textscale	0.25
+					font	"fonts/an"
+					wrap		1
+					readonly	1
+				}
+			}
+		}
+	}
+//PDA FILES BACKGROUND IMAGE
+	windowDef PdaFilesBox {
+
+		rect -140,0,150,480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_LEFT
+		//Arl; end
+
+		windowDef DDContentTitleL
+		{
+			rect	0,119,128,32
+			matcolor	0.6, 0.8, 0.8, 1
+			background	"gui/pda/box1"
+			visible	1
+		}
+		windowDef DDContentTitleR
+		{
+			rect	128,119,16,32
+			matcolor	0.6, 0.8, 0.8, 1
+			background	"gui/pda/box2"
+			visible	1
+		}
+		windowDef DDContentTR
+		{
+			rect	28,138,-128,128
+			matcolor	0.6, 0.8, 0.8, 1
+			background	"gui/pda/1_tlalt"
+			visible	1
+		}
+		windowDef DDContentBR
+		{
+			rect	28,266,-128,-128
+			matcolor	0.6, 0.8, 0.8, 1
+			background	"gui/pda/1_tlalt"
+			visible	1
+		}
+		windowDef DDContentT
+		{
+			rect	0,138,28,128
+			matcolor	0.6, 0.8, 0.8, 1
+			background	"gui/pda/1_t"
+			visible	1
+		}
+		windowDef DDContentB
+		{
+			rect	0,266,28,-128
+			matcolor	0.6, 0.8, 0.8, 1
+			background	"gui/pda/1_t"
+			visible	1
+		}
+		windowDef TextTitlePDA
+		{
+			rect	3,121,130,21
+			visible	1
+			foreColor	1,1,1,0
+			text	"#str_02527"
+			textscale	0.22
+			font	"fonts/micro"
+		}		
+	}
+//WEAPON STRIP
+	windowDef weaponStripBG
+	{
+		rect	253,480,296,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		backcolor	0,0,0,0.5
+	}
+	windowDef weaponStripClip
+	{
+		rect	253,480,295,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		windowDef WeapStrip
+		{
+			rect	0,1,800,44
+			visible	1
+			windowDef WeapIconBG11
+			{
+				visible	1
+				rect	4,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap11
+				{
+					visible	("gui::weapon11" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon11
+				{
+					visible	("gui::weapon11" >= 1)
+					rect	7,2,64,32
+					background	"guis/assets/hud/icons/flashlightw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "1" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "1" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0.1" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02482" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG1
+			{
+				visible	1
+				rect	87,1,40,40
+				notime	1
+				background	"guis/assets/hud/icons/weapsmallclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap1
+				{
+					visible	("gui::weapon1" == 0)
+					rect	4,4,32,32
+					background	"guis/assets/hud/icons/noweapsmall"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon1
+				{
+					visible	("gui::weapon1" >= 1)
+					rect	4,3,32,32
+					background	"guis/assets/hud/icons/pistolw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "1" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "1" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_01819" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG2
+			{
+				visible	1
+				rect	130,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap2
+				{
+					visible	("gui::weapon2" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1,1,1,0.05
+				}
+				windowDef WeapIcon2
+				{
+					visible	("gui::weapon2" >= 1)
+					rect	9,1,64,32
+					background	"guis/assets/hud/icons/shotgunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "1" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "1" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_01820" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG3
+			{
+				visible	1
+				rect	213,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap3
+				{
+					visible	("gui::weapon3" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon3
+				{
+					visible	("gui::weapon3" >= 1)
+					rect	7,3,64,32
+					background	"guis/assets/hud/icons/machinegunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "1" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "1" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02476" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG4
+			{
+				visible	1
+				rect	296,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap4
+				{
+					visible	("gui::weapon4" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon4
+				{
+					visible	("gui::weapon4" >= 1)
+					rect	9,2,64,32
+					background	"guis/assets/hud/icons/chaingunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "1" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "1" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02477" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG5
+			{
+				visible	1
+				rect	379,1,40,40
+				notime	1
+				background	"guis/assets/hud/icons/weapsmallclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap5
+				{
+					visible	("gui::weapon5" == 0)
+					rect	4,4,32,32
+					background	"guis/assets/hud/icons/noweapsmall"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon5
+				{
+					visible	("gui::weapon5" >= 1)
+					rect	3,4,32,32
+					background	"guis/assets/hud/icons/grenadew"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "1" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "1" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02478" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG6
+			{
+				visible	1
+				rect	422,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap6
+				{
+					visible	("gui::weapon6" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon6
+				{
+					visible	("gui::weapon6" >= 1)
+					rect	6,3,64,32
+					background	"guis/assets/hud/icons/plasmagunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "1" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "1" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02479" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG7
+			{
+				visible	1
+				rect	505,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap7
+				{
+					visible	("gui::weapon7" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon7
+				{
+					visible	("gui::weapon7" >= 1)
+					rect	6,3,64,32
+					background	"guis/assets/hud/icons/rocketlauncherw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "1" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "1" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "1" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "1" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02480" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG8
+			{
+				visible	1
+				rect	588,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap8
+				{
+					visible	("gui::weapon8" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon8
+				{
+					visible	("gui::weapon8" >= 1)
+					rect	8,3,64,32
+					background	"guis/assets/hud/icons/bfgw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "1" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "1" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02524" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG10
+			{
+				visible	1
+				rect	671,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap10
+				{
+					visible	("gui::weapon10" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon10
+				{
+					visible	("gui::weapon10" >= 1)
+					rect	8,3,64,32
+					background	"guis/assets/hud/icons/chainsaww"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "1" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "1" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02481" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+			windowDef WeapIconBG9
+			{
+				visible	1
+				rect	754,1,40,40
+				notime	1
+				background	"guis/assets/hud/icons/weapsmallclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap9
+				{
+					visible	("gui::weapon9" == 0)
+					rect	4,4,32,32
+					background	"guis/assets/hud/icons/noweapsmall"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon9
+				{
+					visible	("gui::weapon9" >= 1)
+					rect	4,3,32,32
+					background	"guis/assets/hud/icons/scubew"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) { 
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) { 
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}			
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "1" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "1" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap1::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+
+							set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;	
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02525" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;					
+					}
+
+				}
+			}
+		}
+	}
+	windowDef weaponBtnLeft
+	{
+		rect	243,480,8,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		backcolor	1,1,1,0.5
+		float	"weaploc"	0
+
+		onAction {
+			if ("weaponBtnLeft::weaploc" == 0) { 
+				localSound	"guisounds_clickstatic2" ;
+				set "weapstrip::rect" "0 1 793 44" ;
+				set "weaponBtnLeft::weaploc" "0" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 1) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "0 1 793 44" ;
+				set "weaponBtnLeft::weaploc" "0" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 2) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-42 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "1" ;
+			}			
+			if ("weaponBtnLeft::weaploc" == 3) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-84 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "2" ;
+			}			
+			if ("weaponBtnLeft::weaploc" == 4) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-127 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "3" ;
+			}	
+			if ("weaponBtnLeft::weaploc" == 5) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-168 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "4" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 6) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-210 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "5" ;
+			}	
+			if ("weaponBtnLeft::weaploc" == 7) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-251 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "6" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 8) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-293 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "7" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 9) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-376 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "8" ;
+			}	
+			if ("weaponBtnLeft::weaploc" == 10) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-420 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "7" ;
+			}			
+			if ("weaponBtnLeft::weaploc" == 11) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-457 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "10" ;
+			}			
+		}
+		onMouseEnter {
+			transition "LeftArrow::matcolor" "1 1 1 1" "0 0 0 1" "200" ;
+			set "TextWeapName::forecolor" "1 1 1 0" ;
+			set "TextWeapName::text" " " ;
+		}
+		onMouseExit {
+			transition "LeftArrow::matcolor" "0 0 0 1" "1 1 1 1" "200" ;
+		}		
+		windowDef LeftArrow
+		{
+			rect	2,18,-4,8
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			background	"guis/assets/pda/arrow"
+			matcolor	1,1,1,1
+			noevents	1
+			visible	1
+		}
+	}
+	windowDef weaponBtnRight
+	{
+		rect	551,480,8,44
+							//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		backcolor	1,1,1,0.5
+
+		onAction {
+			if ("weaponBtnLeft::weaploc" == 0) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-42 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "1" ;
+			}		
+			if ("weaponBtnLeft::weaploc" == 1) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-84 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "2" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 2) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-127 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "3" ;
+			}			
+			if ("weaponBtnLeft::weaploc" == 3) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-168 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "4" ;
+			}			
+			if ("weaponBtnLeft::weaploc" == 4) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-210 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "5" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 5) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-251 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "6" ;
+			}			
+			if ("weaponBtnLeft::weaploc" == 6) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-293 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "7" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 7) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-376 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "8" ;
+			}	
+			if ("weaponBtnLeft::weaploc" == 8) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-420 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "9" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 9) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-457 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "10" ;
+			}	
+			if ("weaponBtnLeft::weaploc" == 10) { 
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-502 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "11" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 11) { 
+				localSound	"guisounds_clickstatic2" ;
+				set "weapstrip::rect" "-502 1 800 44" ;
+				set "weaponBtnLeft::weaploc" "11" ;
+			}
+		}
+		onMouseEnter {
+			transition "RightArrow::matcolor" "1 1 1 1" "0 0 0 1" "200" ;
+			set "TextWeapName::forecolor" "1 1 1 0" ;
+			set "TextWeapName::text" " " ;
+		}
+		onMouseExit {
+			transition "RightArrow::matcolor" "0 0 0 1" "1 1 1 1" "200" ;
+		}		
+		windowDef RightArrow
+		{
+			rect	2,18,4,8
+	     //Arl; start
+		   cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		 //Arl; end
+			background	"guis/assets/pda/arrow"
+			matcolor	1,1,1,1
+			noevents	1
+			visible	1
+		}
+	}
+//OBJECTIVES AREA
+	windowDef ObjectiveBgclip {
+		rect -240,417,240,480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//Arl; end
+
+		windowDef ObjBGCorner
+		{
+			rect	226,0,-8,8
+			background	"gui/mainmenu/cframe_small2"
+			matcolor	0,0,0,0.5
+			noevents	1
+			visible	1
+		}
+		windowDef ObjBGTop
+		{
+			rect	0,0,226,8
+			noevents	1
+			visible	1
+			backcolor	0,0,0,0.5
+		}
+		windowDef ObjBGBottom
+		{
+			rect	0,8,234,51
+			noevents	1
+			visible	1
+			backcolor	0,0,0,0.5
+		}
+		windowDef ObjectiveTitleP
+		{
+			rect	2,11,221,18
+			visible	1
+			foreColor	0.6,0.8,0.8,0.8
+			text	"gui::missionobjective"
+			textscale	0.2
+			font	"fonts/an"
+			float "objon" 0
+
+			/*
+			onAction {
+				if ("objon" == 0) { 
+					localSound	"guisounds_ping2" ;
+					if ("PopBox::visible" == 0) { 
+						set "PopBox::visible" "1" ;
+						transition "PopBox::rect" "5 271 334 100" "0 271 325 139" "200" "0" "0.7" ;
+					}
+					set "PopBox::visible" "1" ;
+					set "objectiveP::visible" "1" ;
+					set "objective1::visible" "0" ;
+					set "objective2::visible" "0" ;
+					set "ObjectiveTitleP::objon" "1" ;
+					set "ObjectiveTitle1::objon" "0" ;
+					set "ObjectiveTitle2::objon" "0" ;
+					set "ObjectiveTitleP::forecolor" "1 1 1 1" ;
+					set "ObjectiveTitle1::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle2::forecolor" "0 0 0 1" ;
+				} else {
+					localSound	"guisounds_ping" ;
+					set "PopBox::visible" "0" ;
+					set "ObjectiveTitleP::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle1::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle2::forecolor" "0 0 0 1" ;
+					set "PopBox::rect" "5 271 334 100" ;
+					set "objectiveP::visible" "0" ;
+					set "ObjectiveTitleP::objon" "0" ;
+					set "ObjectiveTitle1::objon" "0" ;
+					set "ObjectiveTitle2::objon" "0" ;			
+				}
+			}
+			*/
+		}
+		windowDef ObjectiveStatusP
+		{
+			rect	4,17,7,7
+			visible	0
+			bordercolor	1,1,1,0.5
+			bordersize	1
+		}	
+		windowDef ObjectiveTitle1
+		{
+			rect	11,26,221,18
+			visible	("gui::objective1" == 1)
+			foreColor	0.6,0.8,0.8,0.8
+			text	"gui::objectivetitle1"
+			textscale	0.2
+			font	"fonts/an"
+			float "objon" 0
+
+			/*
+			onAction {
+				if ("objon" == 0) {
+					localSound	"guisounds_ping2" ;
+					if ("PopBox::visible" == 0) { 
+						set "PopBox::visible" "1" ;
+						transition "PopBox::rect" "5 271 334 100" "0 271 325 139" "200" "0" "0.7" ;
+					}
+					set "objectiveP::visible" "0" ;
+					set "objective1::visible" "1" ;
+					set "objective2::visible" "0" ;
+					set "ObjectiveTitleP::objon" "0" ;
+					set "ObjectiveTitle1::objon" "1" ;
+					set "ObjectiveTitle2::objon" "0" ;
+					set "ObjectiveTitleP::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle1::forecolor" "1 1 1 1" ;
+					set "ObjectiveTitle2::forecolor" "0 0 0 1" ;
+				} else {
+					localSound	"guisounds_ping" ;
+					set "PopBox::visible" "0" ;
+					set "ObjectiveTitleP::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle1::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle2::forecolor" "0 0 0 1" ;				
+					set "PopBox::rect" "5 271 334 100" ;
+					set "objective1::visible" "0" ;
+					set "ObjectiveTitleP::objon" "0" ;
+					set "ObjectiveTitle1::objon" "0" ;
+					set "ObjectiveTitle2::objon" "0" ;			
+				}
+			}
+			*/
+		}
+		windowDef ObjectiveStatus1
+		{
+			rect	4,32,7,7
+			visible	("gui::objective1" == 1)
+			bordercolor	0.2,0.3,0.3,1
+			bordersize	1
+		}	
+		windowDef ObjectiveTitle2
+		{
+			rect	11,41,221,18
+			visible	("gui::objective2" == 1)
+			foreColor	0.6,0.8,0.8,0.8
+			text	"gui::objectivetitle2"
+			textscale	0.2
+			font	"fonts/an"
+			float "objon" 0
+			/*
+			onAction {
+				if ("objon" == 0) { 
+					localSound	"guisounds_ping2" ;
+					if ("PopBox::visible" == 0) { 
+						set "PopBox::visible" "1" ;
+						transition "PopBox::rect" "5 271 334 100" "0 271 325 139" "200" "0" "0.7" ;
+					}			
+					set "PopBox::visible" "1" ;
+					set "objectiveP::visible" "0" ;
+					set "objective1::visible" "0" ;
+					set "objective2::visible" "1" ;
+					set "ObjectiveTitleP::objon" "0" ;
+					set "ObjectiveTitle1::objon" "0" ;
+					set "ObjectiveTitle2::objon" "1" ;
+					set "ObjectiveTitleP::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle1::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle2::forecolor" "1 1 1 1" ;				
+				} else {
+					localSound	"guisounds_ping" ;
+					set "PopBox::visible" "0" ;
+					set "ObjectiveTitleP::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle1::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle2::forecolor" "0 0 0 1" ;				
+					set "PopBox::rect" "5 271 334 100" ;
+					set "objective2::visible" "0" ;
+					set "ObjectiveTitleP::objon" "0" ;
+					set "ObjectiveTitle1::objon" "0" ;
+					set "ObjectiveTitle2::objon" "0" ;			
+				}
+			}
+		*/
+		}
+		windowDef ObjectiveStatus2
+		{
+			rect	4,47,7,7
+			visible	("gui::objective2" == 1)
+			bordercolor	0.2,0.3,0.3,1
+			bordersize	1
+		}
+	}
+//TEXT
+	windowDef TextTitleObjectives
+	{
+		rect	2,411,180,21
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//Arl; end
+		visible	1
+		foreColor	1,1,1,0
+		text	"#str_04172"
+		textscale	0.25
+		font	"fonts/micro"
+	}
+	windowDef TextTitleTop1
+	{
+		rect	405,-1,227,21
+		//Arl; start
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+		visible	1
+		foreColor	1,1,1,0
+		text	"#str_02528"
+		textscale	0.22
+		font	"fonts/micro"
+		textalign	2
+	}
+	windowDef TextTitleTop2
+	{
+		rect	405,12,227,20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//Arl; end
+		visible	1
+		foreColor	1,1,1,0
+		text	"#str_02529"
+		textscale	0.2
+		font	"fonts/micro"
+		textalign	2
+	}
+	windowDef TextTitleWeapons
+	{
+		rect	239,413,90,18
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		foreColor	1,1,1,0
+		text	"#str_01419"
+		textscale	0.25
+		font	"fonts/micro"
+	}
+	windowDef TextTitleItems
+	{
+		rect		566,413,67,18
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+		visible		1
+		foreColor	1,1,1,0
+		text		"#str_02530"
+		//textalign	2
+		textscale	0.25
+		font		"fonts/micro"
+	}
+//ITEM AREA
+	windowDef ItemStripBG
+	{
+		rect	568,480,63,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+		visible	1
+		backcolor	0,0,0,0.5
+	}
+	windowDef ItemIconBG
+	{
+		visible	1
+		rect	570,480,59,40
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+		notime	1
+		background	"guis/assets/hud/icons/weapsmallclip"
+		matcolor	0,0,0,0.4
+		windowDef NoItem
+		{
+			visible	("gui::inv_count" == 0)
+			rect	13,4,32,32
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+			background	"guis/assets/hud/icons/noweapsmall"
+			matcolor	0, 0, 0, 0.4
+		}
+		windowDef ItemIcon
+		{
+			visible	("gui::inv_count" > 0)
+			rect	13,3,32,32
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+			background	"gui::inv_icon_0"
+			matcolor	1, 1, 1, 1
+
+			onMouseEnter {
+				transition "TextItemName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+			}
+
+			onMouseExit {
+				set "TextItemName::forecolor" "1 1 1 0" ;
+			}
+
+		}
+	}	
+	windowDef TextItemName
+	{
+		rect	400,400,232,18 //565,415,67,18
+		//rect	327,415,232,18
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//Arl; end
+		visible	1
+		foreColor	1,1,1,0
+		text	"gui::inv_name_0"
+		textalign	2
+		textscale	0.25
+		font	"fonts/micro"
+	}
+	windowDef TextWeapName
+	{
+		rect	239,400,232,18
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		//rect	327,415,232,18
+		visible	1
+		foreColor	1,1,1,0
+		text	" "
+		textscale	0.25
+		font	"fonts/micro"
+	}	
+//PDA FILES LIST
+	listDef DDLList2
+	{
+		rect	-125,155,125,223
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_LEFT
+		//Arl; end
+		textscale	0.25
+		foreColor	1, 1, 1, 1
+		bordercolor	0.4 ,0.55 ,0.6 ,0.5
+		visible	1
+		listName	"listPDA"
+		font	"fonts/an"
+		notime 1
+
+		onMouseEnter {
+			localSound	"guisounds_ping" ;
+		//	transition "DDContentTitleL::matcolor" "0.5 0.6 0.6 1" "1 1 0.85 1" "200" ;
+		//	transition "DDContentTitleR::matcolor" "0.5 0.6 0.6 1" "1 1 0.85 1" "200" ;
+		//	transition "DDContentTR::matcolor" "0.5 0.6 0.6 1" "1 1 0.85 1" "200" ;
+		//	transition "DDContentBR::matcolor" "0.5 0.6 0.6 1" "1 1 0.85 1" "200" ;
+		//	transition "DDContentT::matcolor" "0.5 0.6 0.6 1" "1 1 0.85 1" "200" ;
+		//	transition "DDContentB::matcolor" "0.5 0.6 0.6 1" "1 1 0.85 1" "200" ;
+		}
+		onMouseExit {
+		//	transition "DDContentTitleL::matcolor" "1 1 0.85 1" "0.5 0.6 0.6 1" "200" ;
+		//	transition "DDContentTitleR::matcolor" "1 1 0.85 1" "0.5 0.6 0.6 1" "200" ;
+		//	transition "DDContentTR::matcolor" "1 1 0.85 1" "0.5 0.6 0.6 1" "200" ;
+		//	transition "DDContentBR::matcolor" "1 1 0.85 1" "0.5 0.6 0.6 1" "200" ;
+		//	transition "DDContentT::matcolor" "1 1 0.85 1" "0.5 0.6 0.6 1" "200" ;
+		//	transition "DDContentB::matcolor" "1 1 0.85 1" "0.5 0.6 0.6 1" "200" ;
+		}
+		onAction {
+	//	}
+	//	onActionRelease {
+			localSound	"guisounds_ping2" ;
+			//set "gui::listPDAVideo_sel" "-1" ;
+			//set "gui::listPDAAudio_sel" "0" ;
+			//set "gui::listPDAEmail_sel" "0" ;
+	//		set "cmd" "StopPDAVideo" ;
+			set	"PDAUB2Video::visible" "0" ;
+			set "cmd" "updatepda" ;	
+			resetTime "0" ;
+			set "DDUIDTextName::forecolor" "1 1 1 0" ;
+			set "DDUIDTextIdnum::forecolor" "1 1 1 0" ;
+			set "DDUIDTextPost::forecolor" "1 1 1 0" ;
+			set "DDUIDTextPost2::forecolor" "1 1 1 0" ;
+			set "DDUIDTextTitle::forecolor" "1 1 1 0" ;
+			set "DDUIDTextTitle2::forecolor" "1 1 1 0" ;
+			set "DDUIDTextSecurity::forecolor" "1 1 1 0" ;
+			set "DDUIDText1::forecolor" "1 1 1 0" ;
+			set "DDUIDText2::forecolor" "1 1 1 0" ;
+			set "DDUIDText3::forecolor" "1 1 1 0" ;
+			set "DDUIDText4::forecolor" "1 1 1 0" ;
+			set "DDUIDText5::forecolor" "1 1 1 0" ;
+		}
+		
+		onTime 0 {
+			transition "DDUIDTextName::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDTextIdnum::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDTextPost::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDTextPost2::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDTextTitle::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDTextTitle2::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDTextSecurity::forecolor" "1 1 1 0" "1 1 1 0.4" "200" ;
+			transition "DDUIDText1::forecolor" "1 1 1 0" "1 1 1 1" "200" ;
+			transition "DDUIDText2::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+			transition "DDUIDText3::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+			transition "DDUIDText4::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;
+			transition "DDUIDText5::forecolor" "1 1 1 0" "1 1 1 0.6" "200" ;			
+		}
+		
+	}
+ //OLD OBJECTIVES LIST
+/* 
+	windowDef PopBox
+	{
+		rect	169,200,334,300
+		//rect	0,271,334,169
+		visible	1
+		cursor 0
+		
+		onAction {
+		
+		}
+
+		windowDef PopBg1R
+		{
+			rect	296,17,-32,110
+			//rect	299,17,-32,91
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_s"
+			visible	1
+		}
+		windowDef PopBg1TR
+		{
+			rect	296,-15,32,32
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef PopBg1TL
+		{
+			rect	0,-15,-32,32
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef PopBg1L
+		{
+			rect	0,17,32,110
+			//rect	3,17,32,91
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_s"
+			visible	1
+		}
+		windowDef PopBg1BL
+		{
+			rect	0,127,-32,-32
+			//rect	3,108,-32,-32
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef PopBg1BM
+		{
+			rect	32,127,264,-32
+			//rect	35,108,264,-32
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m"
+			visible	1
+		}
+		windowDef PopBg1MM
+		{
+			rect	32,17,264,110
+			//rect	35,17,264,91
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m2"
+			visible	1
+		}
+		windowDef PopBg1TM
+		{
+			rect	32,-15,264,32
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m"
+			visible	1
+		}
+		windowDef PopBg1BR
+		{
+			rect	296,127,32,-32
+			//rect	299,108,32,-32
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef PopBg2TL
+		{
+			rect	2,-3,-16,75
+			//rect	6,-2,-14,64
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef PopBg2T
+		{
+			rect	18,-3,292,75
+			//rect	20,-2,294,64
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_tb"
+			visible	1
+		}
+		windowDef PopBg2TR
+		{
+			rect	310,-3,16,75
+			//rect	314,-2,14,64
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef PopBg2BL
+		{
+			rect	2,72,-16,-75
+			//rect	6,62,-14,-65
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef PopBg2B
+		{
+			rect	18,72,292,-75
+			//rect	20,62,294,-65
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_tb"
+			visible	1
+		}
+		windowDef PopBg2BR
+		{
+			rect	310,72,16,-75
+			//rect	314,62,14,-65
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+
+		windowDef Objective1 {
+			rect 17,0,334,169
+			visible	0
+			windowDef ObjTitle1 {
+				//rect		112 ,16 ,190 ,40 
+				rect		0 ,9 ,290 ,20 
+				forecolor	0.8 ,1 ,1 ,1 
+				text		"gui::objectivetitle1"
+				textscale	0.25
+				font		"fonts/an"
+				visible		1
+				font		"fonts/bank"
+			}
+
+			windowDef ObjText1 {
+				//rect		115 ,52 ,190 ,100 
+				rect		119 ,26 ,180 ,125 
+				forecolor	0.6 ,0.8 ,0.8 ,1
+				text		"gui::objectivetext1"
+				textscale	0.22
+				font		"fonts/an"
+				visible		1
+			}
+
+			windowDef Sshot1 {
+				//rect		20 ,34 ,89 ,70 //20-34
+				rect		2 ,31 ,110 ,90 
+				background	"gui::objectiveshot1"
+				//background	"textures/objective1"
+				matcolor	1 ,1 ,1 ,1 
+				visible		1
+				bordersize	1
+				bordercolor 	0.3, 0.6, 0.6, 1
+			}
+		}
+		windowDef Objective2 {
+			rect 17,0,334,169
+			visible	0
+			windowDef ObjTitle2 {
+				//rect		112 ,16 ,190 ,40 
+				rect		0 ,9 ,290 ,20 
+				forecolor	0.8 ,1 ,1 ,1 
+				text		"gui::objectivetitle2"
+				textscale	0.25
+				font		"fonts/an"
+				visible		1
+				font		"fonts/bank"
+			}
+
+			windowDef ObjText2 {
+				//rect		115 ,52 ,190 ,100 
+				rect		119 ,26 ,180 ,125 
+				forecolor	0.6 ,0.8 ,0.8 ,1
+				text		"gui::objectivetext2"
+				textscale	0.22
+				font		"fonts/an"
+				visible		1
+			}
+
+			windowDef Sshot2 {
+				//rect		20 ,34 ,89 ,70 //20-34
+				rect		2 ,31 ,110 ,90 
+				background	"gui::objectiveshot2"
+				//background	"textures/objective1"
+				matcolor	1 ,1 ,1 ,1 
+				visible		1
+				bordersize	1
+				bordercolor 	0.3, 0.6, 0.6, 1
+			}
+		}
+		windowDef ObjectiveP {
+			rect 17,0,334,169
+			visible	0
+			windowDef ObjTitleP {
+				rect		0 ,9 ,295 ,40 
+				forecolor	0.8 ,1 ,1 ,1 
+				text		"#str_02531"
+				textscale	0.25
+				font		"fonts/bank"
+				visible		1
+
+			}
+
+			windowDef ObjTextP {
+				rect		0 ,30 ,295 ,100 
+				forecolor	0.6 ,0.8 ,0.8 ,1
+				text		"gui::missionobjective"
+				textscale	0.22
+				font		"fonts/an"
+				visible		1
+			}
+		}
+		windowDef PopBgClose
+		{
+			rect	272,3,64,16
+			matcolor	0.7, 0.9, 0.9, 1
+			background	"gui/pda/pd/close"
+			visible	1
+			
+				onMouseEnter {
+					transition "matcolor" "0.7 0.9 0.9 1" "0.9 1 1 1" "200" ;
+				}
+				onMouseExit {
+					transition "matcolor" "0.9 1 1 1" "0.7 0.9 0.9 1" "200" ;
+				}
+				onAction {
+					localSound	"guisounds_ping" ;
+					transition "matcolor" "0.9 1 1 1" "0.7 0.9 0.9 1" "200" ;
+					set "PopBox::visible" "0" ;
+					set "PopBox::rect" "5 271 334 100" ;
+					set "objective2::visible" "0" ;
+					set "ObjectiveTitleP::objon" "0" ;
+					set "ObjectiveTitle1::objon" "0" ;
+					set "ObjectiveTitle2::objon" "0" ;
+					set "ObjectiveTitleP::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle1::forecolor" "0 0 0 1" ;
+					set "ObjectiveTitle2::forecolor" "0 0 0 1" ;				
+				}			
+		}		
+	}
+*/
+//
+
+//
+	windowDef WeapBox
+	{
+		rect	234, 330, 408, 55
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	0
+		
+		onAction {
+		
+		}
+		
+		windowDef WeapBg1R
+		{
+			rect	372,17,-32,58
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_s"
+			visible	1
+		}
+		windowDef WeapBg1TR
+		{
+			rect	372,-15,32,32
+								//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg1TL
+		{
+			rect	3,-15,-32,32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg1L
+		{
+			rect	3,17,32,58
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_s"
+			visible	1
+		}
+		windowDef WeapBg1BL
+		{
+			rect	3,75,-32,-32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg1BM
+		{
+			rect	35,75,337,-32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m"
+			visible	1
+		}
+		windowDef WeapBg1MM
+		{
+			rect	35,17,337,58
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m2"
+			visible	1
+		}
+		windowDef WeapBg1TM
+		{
+			rect	35,-15,337,32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m"
+			visible	1
+		}
+		windowDef WeapBg1BR
+		{
+			rect	372,75,32,-32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg2TL
+		{
+			rect	7,3,-12,43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef WeapBg2T
+		{
+			rect	19,3,369,43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_tb"
+			visible	1
+		}
+		windowDef WeapBg2TR
+		{
+			rect	388,3,12,43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef WeapBg2BL
+		{
+			rect	7,46,-12,-43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef WeapBg2B
+		{
+			rect	19,46,369,-43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_tb"
+			visible	1
+		}
+		windowDef WeapBg2BR
+		{
+			rect	388,46,12,-43
+								//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef Weap11
+		{
+			rect	12,11,384,69
+								//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon11Big
+			{
+				visible	1
+				rect	3,0,128,64
+									//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				background	"guis/assets/hud/icons/flashlightw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle11
+			{
+				rect	138,-3,234,21
+						//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_02024"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText11
+			{
+				rect	139,14,243,55
+						//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02532"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap1
+		{
+			rect	12,11,384,69
+																//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon1Big
+			{
+				visible	1
+				rect	33,-4,64,64
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				background	"guis/assets/hud/icons/Pistolw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle1
+			{
+				rect	138,-3,234,21
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00242"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText1
+			{
+				rect	139,14,243,55
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02533"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap2
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon2Big
+			{
+				visible	1
+				rect	5,-5,128,64
+				background	"guis/assets/hud/icons/shotgunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle2
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00243"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText2
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02534"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap3
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon3Big
+			{
+				visible	1
+				rect	5,1,128,64
+				background	"guis/assets/hud/icons/machinegunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle3
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00244"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText3
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02535"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap4
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon4Big
+			{
+				visible	1
+				rect	5,2,128,64
+				background	"guis/assets/hud/icons/chaingunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle4
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00245"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText4
+			{
+				rect	139,14,239,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02536"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap5
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon5Big
+			{
+				visible	1
+				rect	34,1,64,64
+				background	"guis/assets/hud/icons/grenadew"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle5
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01422"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText5
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02537"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap6
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon1Big
+			{
+				visible	1
+				rect	3,0,128,64
+				background	"guis/assets/hud/icons/plasmagunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle6
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01456"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText6
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02538"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap7
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon7Big
+			{
+				visible	1
+				rect	5,0,128,64
+				background	"guis/assets/hud/icons/rocketlauncherw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle7
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01424"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText7
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02539"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap8
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon8Big
+			{
+				visible	1
+				rect	5,1,128,64
+				background	"guis/assets/hud/icons/bfgw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle8
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_02524"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText8
+			{
+				rect	139,14,225,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02540"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap10
+		{
+			rect	12,11,384,69
+												//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon10Big
+			{
+				visible	1
+				rect	5,4,128,64
+													//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				background	"guis/assets/hud/icons/chainsaww"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle10
+			{
+				rect	138,-3,234,21
+													//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01425"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText10
+			{
+				rect	139,14,230,55
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02541"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap9
+		{
+			rect	12,11,384,69
+												//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon9Big
+			{
+				visible	1
+				rect	40,1,64,64
+				background	"guis/assets/hud/icons/scubew"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle9
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_02023"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText9
+			{
+				rect	139,14,230,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02542"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef WeapBgClose
+		{
+			rect	348,3,64,16
+			matcolor	0.7, 0.9, 0.9, 1
+			background	"gui/pda/pd/close"
+			visible	1
+
+			onMouseEnter {
+				transition "matcolor" "0.7 0.9 0.9 1" "0.9 1 1 1" "200" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "0.9 1 1 1" "0.7 0.9 0.9 1" "200" ;
+			}
+
+			onAction {
+				localSound	"guisounds_ping" ;
+				set "WeapBox::visible" "0" ;
+				set "TextWeapName::visible" "1" ;
+				set "TextWeapName::text" " " ;
+				set "WeapBox::rect" "234 330 408 55" ;
+
+				set "Weap1::visible" "0" ;
+				set "Weap2::visible" "0" ;
+				set "Weap3::visible" "0" ;
+				set "Weap4::visible" "0" ;
+				set "Weap5::visible" "0" ;
+				set "Weap6::visible" "0" ;
+				set "Weap7::visible" "0" ;
+				set "Weap8::visible" "0" ;
+				set "Weap9::visible" "0" ;
+				set "Weap10::visible" "0" ;
+				set "Weap11::visible" "0" ;
+
+				set "WeapIcon1::weaponon" "0" ;
+				set "WeapIcon2::weaponon" "0" ;
+				set "WeapIcon3::weaponon" "0" ;
+				set "WeapIcon4::weaponon" "0" ;
+				set "WeapIcon5::weaponon" "0" ;
+				set "WeapIcon6::weaponon" "0" ;
+				set "WeapIcon7::weaponon" "0" ;
+				set "WeapIcon8::weaponon" "0" ;
+				set "WeapIcon9::weaponon" "0" ;
+				set "WeapIcon10::weaponon" "0" ;
+				set "WeapIcon11::weaponon" "0" ;
+
+				set "WeapIconBG1::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;				
+			}
+
+		}
+	}
+	windowDef CircClip
+	{
+		rect	177,60,285,326
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		visible	1
+		windowDef Circ1
+		{
+			rect	-34,58,348,248
+			visible	1
+			background	"gui/spincircfull2"
+			matcolor	1,1,1,0.1
+			notime	1
+
+			onTime 0 {
+				set "Circ1::rect" "16 58 248 248" ;
+				set "Circ1::matcolor" "1 1 1 0.1" ;
+				set "Circ2::rect" "47 87 188 -188" ;
+				set "Circ2::matcolor" "1 1 1 0.2" ;		
+				set "Circ3::rect" "67 108 145 -145" ;
+				set "Circ3::matcolor" "1 1 1 0.3" ;		
+				set "Circ4::rect" "84 123 114 114" ;
+				set "Circ4::matcolor" "1 1 1 0.4" ;		
+
+				transition "Circ1::rect" "16 58 248 248" "110 146 73 74" "400" "0.5" "0" ;
+				transition "Circ1::matcolor" "1 1 1 0.1" "0 0 0 0" "400" ;
+			}
+
+			onTime 40 {	
+				transition "Circ2::rect" "47 87 188 -188" "110 146 73 -74" "400" "0.5" "0" ;
+				transition "Circ2::matcolor" "1 1 1 0.2" "0 0 0 0" "400" ;		
+			}
+
+			onTime 80 {	
+				transition "Circ3::rect" "67 108 145 -145" "110 146 73 -74" "400" "0.5" "0" ;
+				transition "Circ3::matcolor" "1 1 1 0.3" "0 0 0 0" "400" ;		
+			}
+
+			onTime 120 {	
+				transition "Circ4::rect" "84 123 114 114" "110 146 73 74" "400" "0.5" "0" ;
+				transition "Circ4::matcolor" "1 1 1 0.4" "0 0 0 0" "400" ;		
+			}
+			onTime 520 {
+				set "CircClip::rect" "0 0 0 0" ;
+			}
+			
+
+		}
+		windowDef Circ2
+		{
+			rect	-3,87,288,-188
+			visible	1
+			background	"gui/spincircfull2"
+			matcolor	1,1,1,0.2
+		}
+		windowDef Circ3
+		{
+			rect	17,108,245,-145
+			visible	1
+			background	"gui/spincircfull1"
+			matcolor	1,1,1,0.3
+		}
+		windowDef Circ4
+		{
+			rect	44,123,194,114
+			
+			visible	1
+			background	"gui/spincircfull1"
+			matcolor	1,1,1,0.4
+		}
+	}
+//PDA NAVIGATION BUTTONS
+	windowDef DDWin1
+	{
+		rect	-165,31,165,82
+		visible	1
+		windowDef DDText1BG
+		{
+			rect	2,12,160,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button"
+			visible	0
+		}
+		windowDef DDText1BG1
+		{
+			rect	2,12,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	0
+		}
+		windowDef DDText1BG2
+		{
+			rect	11,12,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	1
+		}
+		windowDef DDText1BG3
+		{
+			rect	162,12,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	0
+		}
+		windowDef DDText2BG
+		{
+			rect	2,34,133,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button"
+			visible	0
+		}
+		windowDef DDText2BG1
+		{
+			rect	2,34,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	0
+		}
+		windowDef DDText2BG2
+		{
+			rect	5,34,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	1
+		}
+		windowDef DDText2BG3
+		{
+			rect	135,34,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible	0
+		}
+		windowDef DDText3BG
+		{
+			rect	2,56,133,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button"
+			visible		0//( "gui::pda_personal" == 1 )
+		}
+		windowDef DDText3BG1
+		{
+			rect	2,56,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible		0//( "gui::pda_personal" == 1 )
+		}
+		windowDef DDText3BG2
+		{
+			rect	5,56,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible		( "gui::pda_personal" == 1 )
+		}
+		windowDef DDText3BG3
+		{
+			rect	135,56,1,15
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/pda_button2"
+			visible		0//( "gui::pda_personal" == 1 )
+		}
+		
+		windowDef DDBtn1Test
+		{
+			rect	-100,4,256,32 //-76
+		//Arl; start
+		cstAnchor	CST_ANCHOR_LEFT
+        //Arl; end
+			matcolor	0.8, 1, 1, 0.6
+			background	"guis/assets/pda/nbutton"
+			visible		1
+		}
+		windowDef DDBtn2Test
+		{
+			rect	-100,26,256,32
+		//Arl; start
+		cstAnchor	CST_ANCHOR_LEFT
+        //Arl; end
+			matcolor	0.8, 1, 1, 0.6
+			background	"guis/assets/pda/nbutton"
+			visible		1
+		}
+		windowDef DDBtn3Test
+		{
+			rect	-100,48,256,32
+		//Arl; start
+		cstAnchor	CST_ANCHOR_LEFT
+        //Arl; end
+			matcolor	0.8, 1, 1, 0.6
+			background	"guis/assets/pda/nbutton"
+			visible		( "gui::pda_personal" == 1 )
+		}		
+//ID ACTION BUTTON
+
+		windowDef DDText1
+		{
+			rect	34,12,128,16
+		//Arl; start
+		cstAnchor	CST_ANCHOR_LEFT
+        //Arl; end
+			text	"#str_04173"
+			foreColor	1,1,1,1
+			textscale	0.2
+			textalign	2
+			textaligny	-3
+			matcolor	0.6, 0.7, 0.7, 1
+			background	"guis/assets/pda/hlight"
+			noevents	1
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				localSound	"guisounds_ping" ;
+				transition "forecolor" "0.6 1 1 1" "1 1 1 1" "200" ;
+				transition "rect" "0 12 136 16" "0 12 137 16" "50" ;
+				transition "ddbtn1test::matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+			}
+
+			onMouseExit {
+				transition "forecolor" "1 1 1 1" "0.6 1 1 1" "200" ;
+				transition "rect" "0 12 137 16" "0 12 136 16" "50" ;
+				transition "ddbtn1test::matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+			}
+
+			onAction {
+				if ("desktop::Ddset" == 4) {
+					transition "DDText3BG::rect" "2 56 160 15" "2 56 133 15" "200" "0" "1" ;
+					transition "DDText3BG2::rect" "11 56 1 13" "5 56 1 15" "200" "0" "1" ;
+					transition "DDText3BG3::rect" "162 56 1 13" "135 56 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "3 58 6 11" "3 14 6 11" "200" "0" "0.8" ;
+
+					set "desktop::ddset" "1" ;
+				} else {
+					transition "DDText2BG::rect" "2 34 160 15" "2 34 133 15" "200" "0" "1" ;
+					transition "DDText2BG2::rect" "11 34 1 13" "5 34 1 15" "200" "0" "1" ;
+					transition "DDText2BG3::rect" "162 34 1 13" "135 34 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "3 36 6 11" "3 14 6 11" "200" "0" "0.8" ;
+					
+					transition "DDUB1aT::rect" "128 0 249 128" "128 0 160 128" "200" "0" "0.8" ;
+					transition "DDUB1aTR::rect" "377 2 -128 -32" "288 2 -128 -32" "200" "0" "0.8" ;
+					transition "DDUB1aB::rect" "128 128 249 32" "128 128 160 32" "200" "0" "0.8" ;
+					transition "DDUB1aBR::rect" "377 34 -128 -128" "288 34 -128 -128" "200" "0" "0.8" ;
+					
+					set "desktop::ddset" "1" ;
+				}
+			//	set "cmd" "StopPDAVideo" ;
+				
+				resetTime "ClickCatch" "0" ;
+				transition "forecolor" "1 1 1 1" "1 1 1 1" "200" ;
+				set	"PDAUB2Video::visible" "0" ;
+				localSound	"guisounds_ping2" ;
+				transition "ddbtn1test::matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				transition "matcolor" "0.6 0.7 0.7 0" "0.6 0.7 0.7 1" "200" ;
+				transition "rect" "0 12 137 15" "34 12 128 16" "200" "0" "1" ;
+				transition "DDText1BG::rect" "2 12 134 15" "2 12 160 15" "200" "0" "1" ;	
+				transition "DDText1BG2::rect" "2 12 1 15" "11 12 1 15" "100" "0" "1" ;
+				transition "DDText1BG3::rect" "135 12 1 13" "162 12 1 15" "200" "0" "1" ;
+				transition "DDtext2::matcolor" "1 1 1 0" "1 1 1 0" "200" ;
+				transition "DDtext2::matcolor" "1 1 1 0" "1 1 1 0" "200" ;
+				set "DDText1::noevents" "1" ;
+				set "DDText2::noevents" "0" ;
+				set "DDText3::noevents" "0" ;
+				transition "DDtext2::forecolor" "0.6 1 1 1" "0.6 1 1 1" "200" ;
+				transition "DDtext3::forecolor" "0.6 1 1 1" "0.6 1 1 1" "200" ;
+				resetTime "DDColorSwitch1" "0" ;
+				transition "DDtext2::rect" "0 34 136 16" "0 34 136 16" "200" ;
+				transition "DDtext3::rect" "0 56 136 16" "0 56 136 16" "200" ;
+			//	set "cmd" "updatepda" ;
+			}
+
+		}
+/*		
+//AUDIO LOGS ACTION BUTTON		
+		windowDef DDText2
+		{
+			rect	0,34,136,15
+			text	"#str_02544"
+			foreColor	0.6 ,1 ,1 ,1
+			textscale	0.2
+			textalign	2
+			textaligny	-3
+			background	"guis/assets/pda/hlight"
+			matcolor	1, 1, 1, 0
+			visible	0 //( "gui::pda_personal" == 0 )
+			font	"fonts/micro"
+
+			onMouseEnter {
+				localSound	"guisounds_ping2" ;
+				transition "forecolor" "0.6 1 1 1" "1 1 1 1" "200" ;
+				transition "rect" "0 34 136 15" "0 34 137 15" "50" ;
+			}
+
+			onMouseExit {
+				transition "forecolor" "1 1 1 1" "0.6 1 1 1" "200" ;
+				transition "rect" "0 34 137 15" "0 34 136 15" "50" ;
+			}
+
+			onAction {
+				if ("desktop::ddset" == 1) {
+					transition "DDText1BG::rect" "2 12 160 15" "2 12 133 15" "200" "0" "1" ;
+					transition "DDText1BG2::rect" "11 12 1 13" "5 12 1 15" "200" "0" "1" ;
+					transition "DDText1BG3::rect" "162 12 1 13" "135 12 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "4 14 6 11" "4 36 6 11" "200" "0" "0.8" ;
+					set "desktop::ddset" "2" ;
+				} else {
+					transition "DDText3BG::rect" "2 56 160 15" "2 56 133 15" "200" "0" "1" ;
+					transition "DDText3BG2::rect" "11 56 1 13" "5 56 1 15" "200" "0" "1" ;
+					transition "DDText3BG3::rect" "162 56 1 13" "135 56 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "4 58 6 11" "4 36 6 11" "200" "0" "0.8" ;
+					
+					transition "DDUB1aT::rect" "128 0 249 128" "128 0 160 128" "200" "0" "0.8" ;
+					transition "DDUB1aTR::rect" "377 2 -128 -32" "288 2 -128 -32" "200" "0" "0.8" ;
+					transition "DDUB1aB::rect" "128 128 249 32" "128 128 160 32" "200" "0" "0.8" ;
+					transition "DDUB1aBR::rect" "377 34 -128 -128" "288 34 -128 -128" "200" "0" "0.8" ;
+					set "desktop::ddset" "2" ;
+				}
+				
+				localSound	"guisounds_click3" ;
+				transition "matcolor" "1 1 1 1" "0.5 0.6 0.6 0.8" "200" ;
+				transition "rect" "0 34 137 15" "0 34 162 15" "200" "0" "1" ;
+				transition "DDText2BG::rect" "2 34 134 15" "2 34 160 15" "200" "0" "1" ;	
+				transition "DDText2BG2::rect" "2 34 1 15" "11 34 1 15" "100" "0" "1" ;
+				transition "DDText2BG3::rect" "135 34 1 13" "162 34 1 15" "200" "0" "1" ;
+				set "DDtext1::matcolor" "1 1 1 0" ;
+				set "DDtext3::matcolor" "1 1 1 0" ;
+				set "DDText1::noevents" "0" ;
+				set "DDText2::noevents" "1" ;
+				set "DDText3::noevents" "0" ;
+				set "DDtext1::forecolor" "0.6 1 1 1" ;
+				set "DDtext3::forecolor" "0.6 1 1 1" ;
+				resetTime "DDColorSwitch2" "0" ;
+				set "DDtext1::rect" "0 12 136 15" ;
+				set "DDtext3::rect" "0 56 136 15" ;
+				set "cmd" "updatepda" ;
+			}
+
+		}
+*/
+//VIDEO DISK ACTION BUTTON -- CHANGED TO EMAIL
+		windowDef DDText2
+		{
+			rect	0,34,136,16
+		//Arl; start
+		cstAnchor	CST_ANCHOR_LEFT
+        //Arl; end
+			text	"#str_02545"
+			foreColor	0.6 ,1 ,1 ,1
+			textscale	0.2
+			textalign	2
+			textaligny	-3
+			background	"guis/assets/pda/hlight"
+			matcolor	1, 1, 1, 0
+			visible	1
+			font	"fonts/micro"
+
+			onMouseEnter {
+				localSound	"guisounds_ping" ;
+				transition "forecolor" "0.6 1 1 1" "1 1 1 1" "200" ;
+				transition "rect" "0 34 136 16" "0 34 137 16" "50" ;
+				transition "ddbtn2test::matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+			}
+
+			onMouseExit {
+				transition "forecolor" "1 1 1 1" "0.6 1 1 1" "200" ;
+				transition "rect" "0 34 137 16" "0 34 136 16" "50" ;
+				transition "ddbtn2test::matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+			}
+
+			onAction {
+				if ("desktop::ddset" == 1) {
+					transition "DDText1BG::rect" "2 12 160 15" "2 12 133 15" "200" "0" "1" ;
+					transition "DDText1BG2::rect" "11 12 1 13" "5 12 1 15" "200" "0" "1" ;
+					transition "DDText1BG3::rect" "162 12 1 13" "135 12 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "3 14 6 11" "3 36 6 11" "200" "0" "0.8" ;
+					set "desktop::ddset" "3" ;
+				} else {
+					transition "DDText3BG::rect" "2 56 160 15" "2 56 133 15" "200" "0" "1" ;
+					transition "DDText3BG2::rect" "11 56 1 13" "5 56 1 15" "200" "0" "1" ;
+					transition "DDText3BG3::rect" "162 56 1 13" "135 56 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "3 58 6 11" "3 36 6 11" "200" "0" "0.8" ;
+					set "desktop::ddset" "3" ;
+				}
+				resetTime "ClickCatch" "0" ;
+				transition "forecolor" "1 1 1 1" "1 1 1 1" "200" ;
+			//	set "cmd" "StopPDAVideo" ;
+				set	"PDAUB2Video::visible" "0" ;
+				localSound	"guisounds_ping2" ;
+				
+				transition "DDUserBox2::rect" "149 182 512 0" "149 182 512 0" "350" ;
+				transition "ObjectivesWinBG::rect" "149 182 512 0" "149 182 512 0" "350" ;
+				
+				transition "DDUB1aT::rect" "128 0 160 128" "128 0 249 128" "200" "0" "0.8" ;
+				transition "DDUB1aTR::rect" "288 2 -128 -32" "377 2 -128 -32" "200" "0" "0.8" ;
+				transition "DDUB1aB::rect" "128 128 160 32" "128 128 249 32" "200" "0" "0.8" ;
+				transition "DDUB1aBR::rect" "288 34 -128 -128" "377 34 -128 -128" "200" "0" "0.8" ;	
+				
+				transition "ddbtn2test::matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				transition "matcolor" "0.6 0.7 0.7 0" "0.6 0.7 0.7 1" "200" ;
+				transition "rect" "0 34 137 16" "34 34 128 16" "200" "0" "1" ;
+				transition "DDText2BG::rect" "2 34 134 15" "2 34 160 15" "200" "0" "1" ;	
+				transition "DDText2BG2::rect" "2 34 1 15" "11 34 1 15" "100" "0" "1" ;
+				transition "DDText2BG3::rect" "135 34 1 13" "162 34 1 15" "200" "0" "1" ;
+				transition "DDtext1::matcolor" "1 1 1 0" "1 1 1 0" "200" ;
+				transition "DDtext3::matcolor" "1 1 1 0" "1 1 1 0" "200" ;
+				set "DDText1::noevents" "0" ;
+				set "DDText2::noevents" "1" ;
+				set "DDText3::noevents" "0" ;
+				transition "DDtext1::forecolor" "0.6 1 1 1" "0.6 1 1 1" "200" ;
+				transition "DDtext3::forecolor" "0.6 1 1 1" "0.6 1 1 1" "200" ;
+				resetTime "DDColorSwitch3" "0" ;
+				transition "DDtext1::rect" "0 12 136 16" "0 12 136 16" "200" ;
+				transition "DDtext3::rect" "0 56 136 16" "0 56 136 16" "200" ;
+			//	set "cmd" "updatepda" ;
+			}
+		}
+//EMAIL ACTION BUTTON	--CHANGED TO VIDEO	
+		windowDef DDText3
+		{
+			rect	0,56,136,16
+		//Arl; start
+		cstAnchor	CST_ANCHOR_LEFT
+        //Arl; end
+			text	"#str_01439"
+			foreColor	0.6 ,1 ,1 ,1
+			textscale	0.2
+			textalign	2
+			textaligny	-3
+			background	"guis/assets/pda/hlight"
+			matcolor	1, 1, 1, 0
+			visible	( "gui::pda_personal" == 1 )
+			font	"fonts/micro"
+
+			onMouseEnter {
+				localSound	"guisounds_ping" ;
+				transition "forecolor" "0.6 1 1 1" "1 1 1 1" "200" ;
+				transition "rect" "0 56 136 16" "0 56 137 16" "50" ;
+				transition "ddbtn3test::matcolor" "0.8 1 1 0.6" "1 1 0.8 1" "200" ;
+			}
+
+			onMouseExit {
+				transition "forecolor" "1 1 1 1" "0.6 1 1 1" "200" ;
+				transition "rect" "0 56 137 16" "0 56 136 16" "50" ;
+				transition "ddbtn3test::matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+			}
+
+			onAction {
+				if ("desktop::ddset" == 1) {
+					transition "DDText1BG::rect" "2 12 160 15" "2 12 133 15" "200" "0" "1" ;
+					transition "DDText1BG2::rect" "11 12 1 13" "5 12 1 15" "200" "0" "1" ;
+					transition "DDText1BG3::rect" "162 12 1 13" "135 12 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "3 14 6 11" "3 58 6 11" "200" "0" "0.8" ;
+					set "desktop::ddset" "4" ;
+				} else {
+					transition "DDText2BG::rect" "2 34 160 15" "2 34 133 15" "200" "0" "1" ;
+					transition "DDText2BG2::rect" "11 34 1 13" "5 34 1 15" "200" "0" "1" ;
+					transition "DDText2BG3::rect" "162 34 1 13" "135 34 1 15" "200" "0" "1" ;
+					transition "DDWinHighlight::rect" "3 36 6 11" "3 58 6 11" "200" "0" "0.8" ;
+					
+					transition "DDUB1aT::rect" "128 0 249 128" "128 0 160 128" "200" "0" "0.8" ;
+					transition "DDUB1aTR::rect" "377 2 -128 -32" "288 2 -128 -32" "200" "0" "0.8" ;
+					transition "DDUB1aB::rect" "128 128 249 32" "128 128 160 32" "200" "0" "0.8" ;
+					transition "DDUB1aBR::rect" "377 34 -128 -128" "288 34 -128 -128" "200" "0" "0.8" ;
+					set "desktop::ddset" "4" ;
+				}
+				resetTime "ClickCatch" "0" ;
+				transition "forecolor" "1 1 1 1" "1 1 1 1" "200" ;
+				localSound	"guisounds_ping2" ;
+				
+				transition "DDUserBox2::rect" "149 182 512 0" "149 182 512 0" "350" ;
+				transition "ObjectivesWinBG::rect" "149 182 512 0" "149 182 512 0" "350" ;
+				
+				transition "ddbtn3test::matcolor" "1 1 0.8 1" "0.8 1 1 0.6" "200" ;
+				transition "matcolor" "0.6 0.7 0.7 0" "0.6 0.7 0.7 1" "200" ;
+				transition "rect" "0 56 137 16" "34 56 128 16" "200" "0" "1" ;
+				transition "DDText3BG::rect" "2 56 134 15" "2 56 160 15" "200" "0" "1" ;	
+				transition "DDText3BG2::rect" "2 56 1 15" "11 56 1 15" "100" "0" "1" ;
+				transition "DDText3BG3::rect" "135 56 1 13" "162 56 1 15" "200" "0" "1" ;
+				transition "DDtext1::matcolor" "1 1 1 0" "1 1 1 0" "200" ;
+				transition "DDtext2::matcolor" "1 1 1 0" "1 1 1 0" "200" ;
+				set "DDText1::noevents" "0" ;
+				set "DDText2::noevents" "0" ;
+				set "DDText3::noevents" "1" ;
+				transition "DDtext1::forecolor" "0.6 1 1 1" "0.6 1 1 1" "200" ;
+				transition "DDtext2::forecolor" "0.6 1 1 1" "0.6 1 1 1" "200" ;
+				resetTime "DDColorSwitch2a" "0" ;
+				transition "DDtext2::rect" "0 34 136 16" "0 34 136 16" "200" ;
+				transition "DDtext1::rect" "0 12 136 16" "0 12 136 16" "200" ;
+			//	set "cmd" "updatepda" ;
+			}
+
+		}
+		windowDef DDWinHighlight
+		{
+			rect	3,14,6,11
+			visible	1
+			backcolor	0.8,1,1,0.7
+		}
+	}
+	
+	
+	windowDef OpenTitle
+	{
+		rect		4,206,634,63
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		visible		1
+		foreColor	1,1,1,1
+		text		"#str_01436"
+		textscale	1
+		textalign	1
+		font		"fonts/micro"
+	}	
+	windowDef Overlay1 {
+		rect 		0, 0, -640, 480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_NONE
+		//Arl; end
+		matcolor	0.5, 0.5, 0.5, 1
+		background	"gui/newpda/glow"
+		visible	1
+	}
+	windowDef Overlay2 {
+		rect 		0, 0, -640, -480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_NONE
+		//Arl; end
+		matcolor	0.05, 0.05, 0.05, 1
+		background	"gui/newpda/highlight"
+		visible	1
+	}
+
+///here's the tip
+
+	windowDef BlockTop
+	{
+		rect	0, 0, 640,100
+		backcolor	0,0,0,0
+		visible	1
+	}
+	windowDef BlockBottom
+	{
+		rect	0, 252, 640,227
+		backcolor	0,0,0,0
+		visible	1
+	}
+	windowDef BlockBottom2
+	{
+		rect	236,480,404,0
+		backcolor	0,0,0,0.9
+		visible	1
+	}
+	windowDef BlockLeft
+	{
+		rect	0, 100, 320,152
+		backcolor	0,0,0,0
+		visible	1
+	}
+	windowDef BlockRight
+	{
+		rect	320, 100, 320,152
+		backcolor	0,0,0,0
+		visible	1
+	}
+
+	windowDef TipBg
+	{
+		rect	0,0,0,0
+		backcolor	0, 0, 0, 0
+		visible	1
+	}
+	windowDef TipBgBR
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_c2"
+		visible	1
+	}
+	windowDef TipBgR
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_s"
+		visible	1
+	}
+	windowDef TipBgTR
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_c2"
+		visible	1
+	}
+	windowDef TipBgTL
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_c2"
+		visible	1
+	}
+	windowDef TipBgL
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_s"
+		visible	1
+	}
+	windowDef TipBgBL
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_c2"
+		visible	1
+	}
+	windowDef TipBgBM
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_m"
+		visible	1
+	}
+	windowDef TipBgMM
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_m2"
+		visible	1
+	}
+	windowDef TipBgTM
+	{
+		rect	0,0,0,0
+		matcolor	1, 1, 1, 0
+		background	"guis/assets/pda/ib_m"
+		visible	1
+	}
+
+	windowDef TutText
+	{
+		rect	0,0,0,0
+		textscale	0.25
+		font	"fonts/an"
+		foreColor	1,1,1,0
+		text	" "
+	}
+	windowDef TutTitle
+	{
+		rect	0,0,0,0
+		textscale	0.25
+		font	"fonts/micro"
+		foreColor	1,0.6,0,0
+		text	" "
+		notime 1
+		
+		onTime 500 {
+			set "TutorialAnim1::rect" "0 0 0 0" ;
+			set "BlockTop::rect" "0 0 0 0" ;
+			set "BlockBottom::rect" "0 0 0 0" ;
+			set "BlockLeft::rect" "0 0 0 0" ;
+			set "BlockRight::rect" "0 0 0 0" ;
+			
+			set "TipBgBR::rect" "0 0 0 0" ;
+			set "TipBgR::rect" "0 0 0 0" ;
+			set "TipBgTR::rect" "0 0 0 0" ;
+			set "TipBgTL::rect" "0 0 0 0" ;
+			set "TipBgL::rect" "0 0 0 0" ;
+			set "TipBgBL::rect" "0 0 0 0" ;
+			set "TipBgBM::rect" "0 0 0 0" ;
+			set "TipBgMM::rect" "0 0 0 0" ;
+			set "TipBgTM::rect" "0 0 0 0" ;
+			set "TipBg::rect" "0 0 0 0" ;
+
+			set "TutText::rect" "174 153 295 175" ;
+			set "TutTitle::rect" "181 126 289 22" ;
+		}
+	}
+
+	windowDef TutorialAnim1
+	{
+		rect	0,0,0,0
+		visible	1
+		notime	1
+		noevents	1
+
+		onTime 0 {
+			set "clickcatch::rect" "0 0 640 480" ;
+		}
+		
+
+		onTime 300 {
+			set "rect" "0 0 640 480" ;
+			transition "BlockTop::rect" "0 0 640 0" "0 0 640 170" "1000" "0.1" "0.8" ;
+			transition "BlockBottom::rect" "0 480 640 0" "0 170 640 310" "1000" "0.1" "0.8" ;
+			transition "BlockLeft::rect" "0 0 0 480" "0 170 320 0" "1000" "0.1" "0.8" ;
+			transition "BlockRight::rect" "640 0 0 480" "320 170 320 0" "1000" "0.1" "0.8" ;
+			transition "BlockTop::backcolor" "0 0 0 0" "0 0 0 0.7" "1000" ;
+			transition "BlockBottom::backcolor" "0 0 0 0" "0 0 0 0.7" "1000" ;
+			transition "BlockLeft::backcolor" "0 0 0 0" "0 0 0 0.7" "1000" ;
+			transition "BlockRight::backcolor" "0 0 0 0" "0 0 0 0.7" "1000" ;
+		}
+		onTime 1200 {
+			transition "TipBgBR::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgR::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgTR::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgTL::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgL::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgBL::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgBM::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgMM::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TipBgTM::matcolor" "1 1 1 0" "1 1 1 1" "500" ;
+			
+//44, 50
+			set "TipBgTR::rect" "502 44 32 32" ;
+			set "TipBgTL::rect" "103 44 -32 32" ;
+			set "TipBgTM::rect" "135 44 367 32" ;	
+				set "TipBg::rect" "107 66 418 300" ;		
+			set "TipBgR::rect" "502 76 -32 285" ;			
+			set "TipBgL::rect" "103 76 32 285" ;
+			set "TipBgMM::rect" "135 76 367 285" ;
+			
+			set "TipBgBL::rect" "103 361 -32 -32" ;
+			set "TipBgBM::rect" "135 361 367 -32" ;
+			set "TipBgBR::rect" "502 361 32 -32" ;
+			
+			transition "TipBG::Backcolor" "0 0 0 0" "0 0 0 0.9" "1000" ;
+		}
+		
+		onTime 1700 {
+
+			transition "TutTitle::forecolor" "0.6 1 1 0" "0.6 1 1 1" "500" ;
+			//set "TutText::rect" "120 90 395 320" ;
+			set "TutText::text" "#str_04184" ;
+			set "TutTitle::rect" "112 67 289 22" ;
+			set "TutTitle::text" "#str_02528" ;	
+		}
+		onTime 1900 {
+			transition "TutText::forecolor" "1 1 1 0" "1 1 1 1" "500" ;
+			transition "TutText::rect" "120 90 395 0" "120 90 395 320" "500" ;
+		}
+/*		onTime 9500 {
+			transition "TipBgR::rect" "453 106 -32 176" "453 106 -32 216" "500" "0" "0.6" ;			
+			transition "TipBgL::rect" "147 106 32 176" "147 106 32 216" "500" "0" "0.6" ;
+			transition "TipBgMM::rect" "179 106 274 176" "179 106 274 216" "500" "0" "0.6" ;			
+			transition "TipBgBL::rect" "147 282 -32 -32" "147 322 -32 -32" "500" "0" "0.6" ;
+			transition "TipBgBM::rect" "179 282 274 -32" "179 322 274 -32" "500" "0" "0.6" ;
+			transition "TipBgBR::rect" "453 282 32 -32" "453 322 32 -32" "500" "0" "0.6" ;
+			transition "TipBg::rect" "151 94 330 200" "151 94 330 240" "500" "0" "0.6" ;
+		}
+*/		
+		onTime 10000 {	
+			set "TutText::text" "#str_04185" ;
+			set "noevents" "0" ;
+			set "clickcatch::rect" "0 0 0 0" ;
+		}
+
+		onAction { 
+			set "noevents" "1" ;
+			resetTime "TutTitle" "0" ;
+			transition "TutText::forecolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TutTitle::forecolor" "0.6 1 1 1" "0.6 1 1 0" "500" ;
+			transition "BlockTop::backcolor" "0 0 0 0.7" "0 0 0 0" "500" ;
+			transition "BlockBottom::backcolor" "0 0 0 0.7" "0 0 0 0" "500" ;
+			transition "BlockLeft::backcolor" "0 0 0 0.7" "0 0 0 0" "500" ;
+			transition "BlockRight::backcolor" "0 0 0 0.7" "0 0 0 0" "500" ;
+			
+			transition "TipBgBR::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgR::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgTR::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgTL::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgL::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgBL::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgBM::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgMM::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			transition "TipBgTM::matcolor" "1 1 1 1" "1 1 1 0" "500" ;
+			
+			transition "TipBG::Backcolor" "0 0 0 0.9" "0 0 0 0" "500" ;
+		}
+
+	}
+
+	windowDef ClickCatch {
+		rect 0,0,0,0
+		notime 1
+		
+		onAction {
+		
+		}
+		
+		onTime 0 {
+			set "rect" "0 0 640 480" ;
+		}
+		onTime 250 {
+			set "rect" "0 0 0 0" ;
+		}		
+	}
+	
+	windowDef FakeDesktop {
+		rect 0, 0, 640, 480
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+	}
+}

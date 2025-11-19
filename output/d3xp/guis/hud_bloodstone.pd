@@ -1,0 +1,274 @@
+onNamedEvent bloodstoneReady {
+	if("gui::player_bloodstone_ammo" == 1) {
+		set "StonePulseParent::setvis" "1" ;
+		resetTime "StonePulseParent" "0" ;
+	}
+	if("gui::player_bloodstone_ammo" == 2) {
+		set "StonePulse::visible" "1" ;	
+		
+		set "Stone2PulseParent::setvis" "1" ;
+		resetTime "Stone2PulseParent" "0" ;
+	}
+	if("gui::player_bloodstone_ammo" == 3) {
+		set "StonePulse::visible" "1" ;	
+		set "Stone2Pulse::visible" "1" ;	
+		
+		set "Stone3PulseParent::setvis" "1" ;
+		resetTime "Stone3PulseParent" "0" ;
+	}
+	
+}
+
+onNamedEvent bloodstoneAmmoUpdate {
+	if("gui::player_bloodstone_ammo" == 0) {
+		set "StonePulseParent::setvis" "0" ;
+		set "StonePulse::visible" "0" ;
+		set "Stone2PulseParent::setvis" "0" ;
+		set "Stone2Pulse::visible" "0" ;
+		set "Stone3PulseParent::setvis" "0" ;
+		set "Stone3Pulse::visible" "0" ;
+	}
+	if("gui::player_bloodstone_ammo" == 1) {
+		set "Stone2PulseParent::setvis" "0" ;
+		set "Stone2Pulse::visible" "0" ;
+		set "Stone3PulseParent::setvis" "0" ;
+		set "Stone3Pulse::visible" "0" ;
+	}
+	if("gui::player_bloodstone_ammo" == 2) {
+		set "Stone3PulseParent::setvis" "0" ;
+		set "Stone3Pulse::visible" "0" ;
+	}
+}
+
+
+
+	windowDef StonePulseParent {
+		visible		1
+		rect		453, 365, 64, 64
+		notime 1
+		float "setvis" 0
+		
+		onTime 0 {
+			transition "StonePulse3::matcolor" "1 1 0.8 0.8" "1 0.7 0.5 0.7" "300" ;
+			transition "rect" "453 367 64 64" "453 365 64 64" "500" "0" "1" ;			
+		
+		}
+		onTime 50 {
+			transition "StonePulse2::matcolor" "1 1 0.8 0.6" "1 0.7 0.5 0.5" "300" ;
+		}
+		onTime 100 {
+			transition "StonePulse1::matcolor" "1 1 0.8 0.5" "1 0.7 0.5 0.4" "300" ;
+		}		
+		onTime 400 {
+			transition "StonePulse1::matcolor" "1 0.7 0.5 0.4" "1 0.7 0.5 0" "500" ;
+			transition "StonePulse2::matcolor" "1 0.7 0.5 0.5" "1 0.7 0.5 0" "500" ;
+			transition "StonePulse3::matcolor" "1 0.7 0.5 0.7" "1 0.7 0.5 0" "500" ;
+		}		
+		onTime 500 {
+			transition "rect" "453 365 64 64" "453 405 64 64" "400" "1" "0" ;
+		}
+		onTime 700 {
+			if ("setvis" == 1) { 
+				set "StonePulse::visible" "1" ;				
+			}
+		}
+		
+		
+		windowDef StonePulse1 {
+			visible		1
+			rect		0, 0, 64, 64 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+
+		}
+		windowDef StonePulse2 {
+			visible		1
+			rect		0, 0, 64, 64 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+		}
+		windowDef StonePulse3 {
+			visible		1
+			rect		10, 10, 44, 44 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+		}
+	}
+	windowDef StonePulse {
+		rect		470, 437, 32, 32 
+		background	"guis/assets/hud/icons/bloodorb2w"
+		matcolor	1, 1, 1 ,1
+		visible		0
+
+		onTime 0 {
+			transition "matcolor" "1 0.65 0.2 0.8" "1 0.6 0.4 0.2" "800" ;
+		}
+		onTime 100 {
+		//	transition "matcolor" "1 0.7 0.5 0.6" "0.3 0.6 0.6 0.25" "150" ;
+		}
+		onTime 800 {
+			transition "matcolor" "1 0.6 0.4 0.2" "1 0.65 0.2 0.8" "800" ;
+		}
+		onTime 1500 {
+			resetTime "0" ;
+		}
+	}
+	
+	
+	
+	
+	
+	windowDef Stone2PulseParent {
+		visible		1
+		rect		428, 365, 64, 64
+		notime 1
+		float "setvis" 0
+		
+		onTime 0 {
+			transition "Stone2Pulse3::matcolor" "1 1 0.8 0.8" "1 0.7 0.5 0.7" "300" ;
+			transition "rect" "428 367 64 64" "428 365 64 64" "500" "0" "1" ;			
+		
+		}
+		onTime 50 {
+			transition "Stone2Pulse2::matcolor" "1 1 0.8 0.6" "1 0.7 0.5 0.5" "300" ;
+		}
+		onTime 100 {
+			transition "Stone2Pulse1::matcolor" "1 1 0.8 0.5" "1 0.7 0.5 0.4" "300" ;
+		}		
+		onTime 400 {
+			transition "Stone2Pulse1::matcolor" "1 0.7 0.5 0.4" "1 0.7 0.5 0" "500" ;
+			transition "Stone2Pulse2::matcolor" "1 0.7 0.5 0.5" "1 0.7 0.5 0" "500" ;
+			transition "Stone2Pulse3::matcolor" "1 0.7 0.5 0.7" "1 0.7 0.5 0" "500" ;
+		}		
+		onTime 500 {
+			transition "rect" "428 365 64 64" "428 405 64 64" "400" "1" "0" ;
+		}
+		onTime 700 {
+			if ("setvis" == 1) { 
+				set "Stone2Pulse::visible" "1" ;				
+			}
+		}
+		
+		
+		windowDef Stone2Pulse1 {
+			visible		1
+			rect		0, 0, 64, 64 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+
+		}
+		windowDef Stone2Pulse2 {
+			visible		1
+			rect		0, 0, 64, 64 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+		}
+		windowDef Stone2Pulse3 {
+			visible		1
+			rect		10, 10, 44, 44 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+		}
+	}
+	windowDef Stone2Pulse {
+		rect		445, 437, 32, 32 
+		background	"guis/assets/hud/icons/bloodorb2w"
+		matcolor	1, 1, 1 ,1
+		visible		0
+
+		onTime 0 {
+			transition "matcolor" "1 0.65 0.2 0.8" "1 0.6 0.4 0.2" "800" ;
+		}
+		onTime 100 {
+		//	transition "matcolor" "1 0.7 0.5 0.6" "0.3 0.6 0.6 0.25" "150" ;
+		}
+		onTime 800 {
+			transition "matcolor" "1 0.6 0.4 0.2" "1 0.65 0.2 0.8" "800" ;
+		}
+		onTime 1500 {
+			resetTime "0" ;
+		}
+	}
+	
+	
+	
+	windowDef Stone3PulseParent {
+		visible		1
+		rect		403, 365, 64, 64
+		notime 1
+		float "setvis" 0
+		
+		onTime 0 {
+			transition "Stone3Pulse3::matcolor" "1 1 0.8 0.8" "1 0.7 0.5 0.7" "300" ;
+			transition "rect" "403 367 64 64" "403 365 64 64" "500" "0" "1" ;			
+		
+		}
+		onTime 50 {
+			transition "Stone3Pulse2::matcolor" "1 1 0.8 0.6" "1 0.7 0.5 0.5" "300" ;
+		}
+		onTime 100 {
+			transition "Stone3Pulse1::matcolor" "1 1 0.8 0.5" "1 0.7 0.5 0.4" "300" ;
+		}		
+		onTime 400 {
+			transition "Stone3Pulse1::matcolor" "1 0.7 0.5 0.4" "1 0.7 0.5 0" "500" ;
+			transition "Stone3Pulse2::matcolor" "1 0.7 0.5 0.5" "1 0.7 0.5 0" "500" ;
+			transition "Stone3Pulse3::matcolor" "1 0.7 0.5 0.7" "1 0.7 0.5 0" "500" ;
+		}		
+		onTime 500 {
+			transition "rect" "403 365 64 64" "403 405 64 64" "400" "1" "0" ;
+		}
+		onTime 700 {
+			if ("setvis" == 1) { 
+				set "Stone3Pulse::visible" "1" ;				
+			}
+		}
+		
+		
+		windowDef Stone3Pulse1 {
+			visible		1
+			rect		0, 0, 64, 64 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+
+		}
+		windowDef Stone3Pulse2 {
+			visible		1
+			rect		0, 0, 64, 64 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+		}
+		windowDef Stone3Pulse3 {
+			visible		1
+			rect		10, 10, 44, 44 
+			background	"guis/assets/hud/icons/bloodorb2w"
+			matcolor	1, 0.7, 0.5 ,0
+			visible		1
+		}
+	}
+	windowDef Stone3Pulse {
+		rect		420, 437, 32, 32 
+		background	"guis/assets/hud/icons/bloodorb2w"
+		matcolor	1, 1, 1 ,1
+		visible		0
+
+		onTime 0 {
+			transition "matcolor" "1 0.65 0.2 0.8" "1 0.6 0.4 0.2" "800" ;
+		}
+		onTime 100 {
+		//	transition "matcolor" "1 0.7 0.5 0.6" "0.3 0.6 0.6 0.25" "150" ;
+		}
+		onTime 800 {
+			transition "matcolor" "1 0.6 0.4 0.2" "1 0.65 0.2 0.8" "800" ;
+		}
+		onTime 1500 {
+			resetTime "0" ;
+		}
+	}

@@ -1052,7 +1052,9 @@ docs/html/*
 
 # Doom 3: Build directory & log directory
 build/
-output/*/*
+output/windows/*
+output/linux/*
+output/macosx/*
 
 # Doom 3: Ignore PK4 & Keys
 config.spec

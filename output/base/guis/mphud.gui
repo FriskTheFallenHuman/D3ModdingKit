@@ -1,0 +1,2935 @@
+//#modified-fva; BEGIN
+#include "guis/_cst_anchor.pd"
+//#modified-fva; END
+
+windowDef Desktop {
+	rect	0 ,0 ,640 ,480
+	backcolor	0 ,0 ,0 ,0
+	visible	1
+	nocursor	1
+	float air	1
+	float weaphud	0
+	float weapon	0
+	float talk 	0
+	float fadeon 0
+	definevec4	"$redflicker"		0.8, 0.15, 0, pdfullfade[ time * 0.002 ] / 1.5
+	definevec4	"$flicker"		0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 3
+	definevec4	"$yellowflicker"	1, 0.65, 0.1, pdinouthold[ time * 0.0005 ] / 2.5
+
+    //
+    //  New Weapon Pickup
+    //
+	onNamedEvent newWeapon {
+		if ("gui::newweapon" == 1) {
+			resetTime "WeapIcon1Large" "0" ;
+		}
+		if ("gui::newweapon" == 2) {
+			resetTime "WeapIcon2Large" "0" ;
+		}
+		if ("gui::newweapon" == 3) {
+			resetTime "WeapIcon3Large" "0" ;
+		}
+		if ("gui::newweapon" == 4) {
+			resetTime "WeapIcon4Large" "0" ;
+		}
+		if ("gui::newweapon" == 5) {
+			resetTime "WeapIcon5Large" "0" ;
+		}
+		if ("gui::newweapon" == 6) {
+			resetTime "WeapIcon6Large" "0" ;
+		}
+		if ("gui::newweapon" == 7) {
+			resetTime "WeapIcon7Large" "0" ;
+		}
+		if ("gui::newweapon" == 8) {
+			resetTime "WeapIcon8Large" "0" ;
+		}
+		if ("gui::newweapon" == 10) {
+			resetTime "WeapIcon10Large" "0" ;
+		}
+	}
+
+    //
+    //  Clip Low / Clip Empty Changes
+    //
+	onNamedEvent updateAmmo {
+		if ("weaphud" == 0) {
+			if ("gui::player_clip_low" == 1) {
+				set "Lines2A::matcolor" "1 0.5 0.2 0.2" ;
+				set "ammovalue2::forecolor" "1 0.6 0 1" ;
+				set "BorderLA::visible" "0" ;
+				set "BorderLA_1::visible" "1" ;
+				set "BorderLA_2::visible" "0" ;
+			} else {
+				set "Lines2A::matcolor" "0.3 0.8 0.7 0.2" ;
+				set "ammovalue2::forecolor" "0.67 0.7 0.7 1" ;
+				set "BorderLA::visible" "1" ;
+				set "BorderLA_1::visible" "0" ;
+				set "BorderLA_2::visible" "0" ;
+			}
+
+			if ("gui::player_clip_empty" == 1) {
+				set "Lines2A::matcolor" "1 0 0 0.2" ;
+				set "ammovalue2::forecolor" "1 0 0 1" ;
+				set "BorderLA::visible" "0" ;
+				set "BorderLA_1::visible" "0" ;
+				set "BorderLA_2::visible" "1" ;
+			}
+
+			if ("gui::player_ammo_empty" == 1) {
+				set "Lines1A::matcolor" "1 0 0 0.2" ;
+				set "Lines2A::matcolor" "1 0 0 0.2" ;
+				set "ammovalue2::forecolor" "1 0 0 1" ;
+				set "ammovalue3::forecolor" "1 0 0 1" ;
+				set "BorderLA::visible" "0" ;
+				set "BorderLA_1::visible" "1" ;
+			} else {
+				set "Lines1A::matcolor" "0.3 0.8 0.7 0.2" ;
+				set "ammovalue3::forecolor" "0.35 0.42 0.4 1" ;
+			}
+		}
+	}
+
+    //
+    //  Air Indicator
+    //
+	onNamedEvent noAir {
+		if ( "AirWin::visible" != 1 ) {
+			localSound "guisounds_air" ;
+			set "AirWin::visible" "1" ;
+			transition "AirWin::rect" "135 435 0 64" "135 435 128 64" "200" ;
+		}
+	}
+
+	onNamedEvent Air {
+		if ( "AirWin::visible" != 0 ) {
+			set "AirWin::visible" "0" ;
+		}
+	}
+
+    //
+    //  Pickup Item Popup
+    //
+	onNamedEvent invPickup {
+		resetTime "InvItem" "0" ;
+	}
+	onNamedEvent itemPickup1 {
+		resetTime "ItemPickup1" "0" ;
+	}
+	onNamedEvent itemPickup2 {
+		resetTime "ItemPickup2" "0" ;
+	}
+	onNamedEvent itemPickup3 {
+		resetTime "ItemPickup3" "0" ;
+	}
+	onNamedEvent itemPickup4 {
+		resetTime "ItemPickup4" "0" ;
+	}
+	onNamedEvent itemPickup5 {
+		resetTime "ItemPickup5" "0" ;
+	}
+
+	onNamedEvent armorPulse {
+		resetTime "armorflash" "0" ;
+	}
+	onNamedEvent healthPulse {
+		resetTime "healthflash" "0" ;
+	}
+	onNamedEvent ammoPulse {
+		resetTime "ammoflash1" "0" ;
+		resetTime "ammoflash2" "0" ;
+	}
+	onNamedEvent weaponPulse {
+		resetTime "weaponflash" "0" ;
+	}
+
+    //
+    //  NPC Name Popup
+    //
+
+    //NPCName2::visible / NPCName2a::visible
+	onNamedEvent ShowNPC {
+		if ("talk" == 0) {
+			set	"talk" "1" ;
+			resetTime "npcName1" "0" ;
+		}
+	}
+
+	onNamedEvent HideNPC {
+		if ("talk" == 1) {
+			set	"talk" "0" ;
+			set "NPCName2a::rect" "336 233 0 0" ;
+			set "NPCName2a::forecolor" "0 0 0 0" ;
+			set "NPCName2::rect" "335 232 0 0" ;
+			set "NPCName2::forecolor" "0.5 0.5 0.5 0" ;
+			set "NPCName1a::rect" "336 221 0 0" ;
+			set "NPCName1a::forecolor" "0 0 0 0" ;
+			set "NPCName1::rect" "335 220 0 0" ;
+			set "NPCName1::forecolor" "0.6 0.8 0.7 0" ;
+		}
+	}
+
+    //
+    // Weapon Icon Set
+    //
+	onEvent {
+		if ("gui::weapon0" >= 1) {
+			set "WeapIcon0::background" "gui/hud/fists" ;
+		}
+		if ("gui::weapon1" >= 1) {
+			set "WeapIcon1::background" "gui/hud/pistol" ;
+		}
+		if ("gui::weapon2" >= 1) {
+			set "WeapIcon2::background" "gui/hud/shotgun" ;
+		}
+		if ("gui::weapon3" >= 1) {
+			set "WeapIcon3::background" "gui/hud/machinegun" ;
+		}
+		if ("gui::weapon4" >= 1) {
+			set "WeapIcon4::background" "gui/hud/chaingun" ;
+		}
+		if ("gui::weapon5" >= 1) {
+			set "WeapIcon5::background" "gui/hud/grenade" ;
+		}
+		if ("gui::weapon6" >= 1) {
+			set "WeapIcon6::background" "gui/hud/plasmagun" ;
+		}
+		if ("gui::weapon7" >= 1) {
+			set "WeapIcon7::background" "gui/hud/rocketlauncher" ;
+		}
+		if ("gui::weapon8" >= 1) {
+			set "WeapIcon8::background" "gui/hud/bfg" ;
+		}
+		if ("gui::weapon10" >= 1) {
+			set "WeapIcon10::background" "gui/hud/chainsaw" ;
+		}
+		if ("gui::weapon11" >= 1) {
+			set "WeapIcon11::background" "gui/hud/flashlight" ;
+		}
+		if ("gui::weapon0" == 0) {
+			set "WeapIcon0::background" "gui/hud/fistsr" ;
+		}
+		if ("gui::weapon1" == 0) {
+			set "WeapIcon1::background" "gui/hud/pistolr" ;
+		}
+		if ("gui::weapon2" == 0) {
+			set "WeapIcon2::background" "gui/hud/shotgunr" ;
+		}
+		if ("gui::weapon3" == 0) {
+			set "WeapIcon3::background" "gui/hud/machinegunr" ;
+		}
+		if ("gui::weapon4" == 0) {
+			set "WeapIcon4::background" "gui/hud/chaingunr" ;
+		}
+		if ("gui::weapon5" == 0) {
+			set "WeapIcon5::background" "gui/hud/grenader" ;
+		}
+		if ("gui::weapon6" == 0) {
+			set "WeapIcon6::background" "gui/hud/plasmagunr" ;
+		}
+		if ("gui::weapon7" == 0) {
+			set "WeapIcon7::background" "gui/hud/rocketlauncherr" ;
+		}
+		if ("gui::weapon8" == 0) {
+			set "WeapIcon8::background" "gui/hud/bfgr" ;
+		}
+		if ("gui::weapon10" == 0) {
+			set "WeapIcon10::background" "gui/hud/chainsawr" ;
+		}
+		if ("gui::weapon11" == 0) {
+			set "WeapIcon11::background" "gui/hud/flashlightr" ;
+		}
+	}
+
+    //
+    //  Weapon Icon Flash
+    //
+	onNamedEvent weaponChange {
+		if ("gui::weapon0" == 2) {
+		    if ("weapon" != 0) {
+    		    set	"weapon" "0";
+    			resetTime "WeapText" "0";
+    			resetTime "WeapIcon0" "0";
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+			}
+		}
+
+		if ("gui::weapon1" == 2) {
+			if ("weapon" != 1) {
+				set	"weapon" "1" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon1" "0" ;
+
+    			set "AmmoFlash2::visible" "1" ;
+    			set "AmmoFlash1::visible" "0" ;
+    			set	"ScanLineLA::visible" "1" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "1" ;
+    			set	"weaphud" "0" ;
+    			set	"BgLA::visible" "1" ;
+    			set	"Lines1A::visible" "1" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "1" ;
+    			set	"ammovalue2Black::visible" "1" ;
+    			set	"ammovalue2::visible" "1" ;
+    			set	"ammovalue3Black::visible" "1" ;
+    			set	"ammovalue3::visible" "1" ;
+            }
+		}
+
+		if ("gui::weapon2" == 2) {
+			if ("weapon" != 2) {
+				set	"weapon" "2" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon2" "0" ;
+
+    			set "AmmoFlash2::visible" "1" ;
+    			set "AmmoFlash1::visible" "0" ;
+    			set	"ScanLineLA::visible" "1" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "1" ;
+    			set	"weaphud" "0" ;
+    			set	"BgLA::visible" "1" ;
+    			set	"Lines1A::visible" "1" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "1" ;
+    			set	"ammovalue2Black::visible" "1" ;
+    			set	"ammovalue2::visible" "1" ;
+    			set	"ammovalue3Black::visible" "1" ;
+    			set	"ammovalue3::visible" "1" ;
+            }
+		}
+		if ("gui::weapon3" == 2) {
+			if ("weapon" != 3) {
+				set	"weapon" "3" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon3" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+            }
+		}
+		if ("gui::weapon4" == 2) {
+			if ("weapon" != 4) {
+				set	"weapon" "4" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon4" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+			}
+		}
+		if ("gui::weapon5" == 2) {
+			if ("weapon" != 5) {
+				set	"weapon" "5" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon5" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "1" ;
+    			set	"BorderLAGrenades::visible" "1" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"weaphud" "2" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "1" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "1" ;
+    			set	"ammovalue3::visible" "1" ;
+            }
+		}
+		if ("gui::weapon6" == 2) {
+			if ("weapon" != 6) {
+				set	"weapon" "6" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon6" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+            }
+		}
+		if ("gui::weapon7" == 2) {
+			if ("weapon" != 7) {
+				set	"weapon" "7" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon7" "0" ;
+
+    			set "AmmoFlash2::visible" "1" ;
+    			set "AmmoFlash1::visible" "0" ;
+    			set	"ScanLineLA::visible" "1" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "1" ;
+    			set	"weaphud" "0" ;
+    			set	"BgLA::visible" "1" ;
+    			set	"Lines1A::visible" "1" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "1" ;
+    			set	"ammovalue2Black::visible" "1" ;
+    			set	"ammovalue2::visible" "1" ;
+    			set	"ammovalue3Black::visible" "1" ;
+    			set	"ammovalue3::visible" "1" ;
+            }
+		}
+		if ("gui::weapon8" == 2) {
+			if ("weapon" != 8) {
+				set	"weapon" "8" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon8" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+            }
+		}
+
+		if ("gui::weapon10" == 2) {
+			if ("weapon" != 10) {
+				set	"weapon" "10" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon10" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+            }
+		}
+		if ("gui::weapon11" == 2) {
+			if ("weapon" != 11) {
+				set	"weapon" "11" ;
+				resetTime "WeapText" "0" ;
+				resetTime "WeapIcon11" "0" ;
+
+    			set "AmmoFlash2::visible" "0" ;
+    			set "AmmoFlash1::visible" "1" ;
+    			set	"ScanLineLA::visible" "0" ;
+    			set	"ScanLineLAG::visible" "0" ;
+    			set	"BorderLAGrenades::visible" "0" ;
+    			set	"BorderLA::visible" "0" ;
+    			set	"BorderLA_1::visible" "0" ;
+    			set	"BorderLA_2::visible" "0" ;
+    			set	"weaphud" "1" ;
+    			set	"BgLA::visible" "0" ;
+    			set	"Lines1A::visible" "0" ;
+    			set	"Lines1B::visible" "0" ;
+    			set	"Lines2A::visible" "0" ;
+    			set	"ammovalue2Black::visible" "0" ;
+    			set	"ammovalue2::visible" "0" ;
+    			set	"ammovalue3Black::visible" "0" ;
+    			set	"ammovalue3::visible" "0" ;
+            }
+		}
+	}
+
+    //
+    //  Health / Armor Changes
+    //
+	onNamedEvent updateArmorHealthAir {
+		if ("gui::player_armor"  > 0) {
+			set 	"Lines1::matcolor" "0.3 0.8 0.7 0.2" ;
+			set	"MPArmor::forecolor" "0.35 0.42 0.4 1" ;
+			set 	"Lines1::visible" "1" ;
+			set 	"Lines1_1::visible" "0" ;
+		}
+
+		if ("gui::player_armor"  <= 0) {
+			set 	"Lines1::matcolor" "$yellowflicker" ;
+			set 	"Lines1::visible" "0" ;
+			set 	"Lines1_1::visible" "1" ;
+			set	"MPArmor::forecolor" "0.5 0.4 0.2 1" ;
+		}
+
+		if ("gui::player_health"  > 35) {
+			set	"Hr::background" "gui/hud/hr" ;
+			set	"HealthImage::matcolor" "0.4 0.6 0.6 0.2" ;
+			set	"HealthImage::visible" "1" ;
+			set	"HealthImage_1::visible" "0" ;
+			set	"Border::matcolor" "$flicker" ;
+			set	"Border::visible" "1" ;
+			set	"Border_1::visible" "0" ;
+			set	"MPHealth::forecolor" "0.67 0.7 0.7 1" ;
+			set "Lines2::matcolor" "0.3 0.8 0.7 0.2" ;
+			set	"Lines2::visible" "1" ;
+			set	"Lines2_1::visible" "0" ;
+
+			set	"MPHealth2::visible" "1" ;
+			set	"Lines2_2::visible" "1" ;
+		}
+
+		if ("gui::player_health"  <= 35) {
+			set	"MPHealth::forecolor" "1 0.1 0 1" ;
+			set	"Hr::background" "gui/hud/hr2" ;
+			set	"HealthImage::matcolor" "$redflicker" ;
+			set	"HealthImage::visible" "0" ;
+			set	"HealthImage_1::visible" "1" ;
+			set	"Border::matcolor" "$redflicker"
+			set	"Border::visible" "0" ;
+			set	"Border_1::visible" "1" ;
+			set	"Lines2::visible" "0" ;
+			set	"Lines2_1::visible" "1" ;
+
+			set	"MPHealth2::visible" "0" ;
+			set	"Lines2_2::visible" "0" ;
+
+		}
+		if ("gui::player_health"  <= 0) {
+			set	"Hr::background" "gui/hud/hr3" ;
+		}
+
+		if ("gui::player_air"  <= 35) {
+			set	"AirWin2::forecolor" "1 0.1 0 1" ;
+			set	"AirWin3::forecolor" "1 0.1 0 1" ;
+		}
+
+		if ("gui::player_air"  > 35) {
+			set	"AirWin2::forecolor" "0.4 0.6 0.65 1" ;
+			set	"AirWin3::forecolor" "0.4 0.6 0.65 1" ;
+		}
+
+	}
+
+    //
+    // HUD
+    //
+
+    //
+    //  Projectile Hits - Dev only
+    //
+	windowDef Hits {
+		rect 0, 50, 640, 30
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text "gui::projectilepct"
+		forecolor 1, 1, 1, 1
+		visible "gui::g_showProjectilePct"
+		textscale 0.25
+		textalign 2
+	}
+
+    //
+    //  Air Indicator
+    //
+	windowDef AirWin {
+		rect		135, 435, 0, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		notime 1
+		visible 0
+
+		windowDef AirWinBG1 {
+			rect		0, 0, 128, -64
+			matcolor	0.25, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2.5
+			background	"guis/assets/hud/mp/rborder"
+		}
+		windowDef AirWinBG2 {
+			rect		0, 0, 128, -64
+			matcolor	0.09, 0.26, 0.26, subtleflick [ time * .0025 ] / 3
+			background	"guis/assets/hud/mp/rbg"
+			visible	1
+		}
+
+		windowDef AirWin2 {
+			rect 25, 1, 70, 30
+			text "#str_02015"
+			textscale 0.23
+			font "fonts/bank"
+			forecolor	0.4, 0.6, 0.65, 1
+			shear 0, -0.33
+		}
+		windowDef AirWin3 {
+			rect 80, 1, 70, 30
+			text "gui::player_air"
+			textscale 0.23
+			font "fonts/bank"
+			forecolor	0.4, 0.6, 0.65, 1
+			shear 0, -0.33
+		}
+
+
+		windowDef AirWin2a {
+			rect 25, 0, 70, 30
+			text "#str_02015"
+			textscale 0.23
+			font "fonts/bank"
+			forecolor	0.8, 0.4, 0, (70 - "gui::player_air") / 100
+			shear 0, -0.33
+		}
+		windowDef AirWin3a {
+			rect 80, 0, 70, 30
+			text "gui::player_air"
+			textscale 0.23
+			font "fonts/bank"
+			forecolor	0.8, 0.4, 0, (70 - "gui::player_air") / 100
+			shear 0, -0.33
+		}
+
+		windowDef AirStatus {
+			rect 18, 18, ("gui::player_air" * 0.95), 9
+			visible 1
+
+			windowDef AirImage {
+				rect		0, -76, 95, 90
+				matcolor	0.2, 0.5, 0.6, 0.6
+				background	"guis/assets/hud/mp/lstafill1"
+			}
+			windowDef AirImage2 {
+				rect		0, -76, 95, 90
+				matcolor	pdinouthold[ time * 0.002 ], pdinouthold[ time * 0.002 ] / 4.5, 0, (85 - "gui::player_air") / 100
+				background	"guis/assets/hud/mp/lstafill1"
+			}
+		}
+	}
+
+	//
+	// Multiplayer Elements
+	//
+
+    //
+    // Vote
+    //
+	windowDef VoteWinBlack {
+		rect		4, 335, 640, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		text		"gui::vote"
+		forecolor	0, 0, 0, 0.5
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+
+	windowDef VoteWin {
+		rect		5, 333, 640, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		text		"gui::vote"
+		forecolor	0.5, 0.7, 0.7, 1
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+
+
+    //
+    // Timer
+    //
+	windowDef MTime1 {
+		rect		500, -34, 228, 64
+
+		windowDef ScanLineMFR1 {
+			rect		0, 0, 228, 64
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_TOP_RIGHT
+            //#modified-fva; END
+			background	"guis/assets/hud/mp/rborder"
+			matcolor	0, 0, 0, 0.3
+			visible	1
+		}
+
+		windowDef BorderMFR1 {
+			rect		0, 0, 228, 64
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_TOP_RIGHT
+            //#modified-fva; END
+			matcolor	0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 3
+			background	"guis/assets/hud/mp/rborder"
+		}
+
+		windowDef BgMFR1 {
+			rect		0, 0, 228, 64
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_TOP_RIGHT
+            //#modified-fva; END
+			matcolor	0.09, 0.26, 0.26, subtleflick [ time * .0025 ] / 4
+			background	"guis/assets/hud/mp/rbg"
+		}
+	}
+
+	windowDef TimerWinBlack {
+		rect		540, -4, 100, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text		"gui::timer"
+		forecolor	0, 0, 0, 0.5
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+
+	windowDef TimerWin {
+		rect		541, -2, 100, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text		"gui::timer"
+		forecolor	0.5, 0.7, 0.7, 1
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+
+	//
+	// Ranks
+	//
+	windowDef SBorderTLB {
+		rect		574, 28, -8, 8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0, 0, 0, 0.3
+		background	"guis/assets/hud/mp/score_corner"
+	}
+	windowDef SBorderTMB {
+		rect		582, 28, 58, 8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0, 0, 0, 0.3
+		background	"guis/assets/hud/mp/score_horiz"
+	}
+	windowDef SBorderLB {
+		rect		574, 36, -8, 58
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0, 0, 0, 0.3
+		background	"guis/assets/hud/mp/score_vert"
+	}
+	windowDef SBorderBLB {
+		rect		574, 94, -8, -8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0, 0, 0, 0.3
+		background	"guis/assets/hud/mp/score_corner"
+	}
+	windowDef SBorderBMB {
+		rect		582, 94, 58, -8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0, 0, 0, 0.3
+		background	"guis/assets/hud/mp/score_horiz"
+	}
+
+	windowDef SBorderTL {
+		rect		574, 28, -8, 8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2.5
+		background	"guis/assets/hud/mp/score_corner"
+	}
+	windowDef SBorderTM {
+		rect		582, 28, 58, 8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2.5
+		background	"guis/assets/hud/mp/score_horiz"
+	}
+	windowDef SBorderL {
+		rect		574, 36, -8, 58
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2.5
+		background	"guis/assets/hud/mp/score_vert"
+	}
+	windowDef SBorderBL {
+		rect		574, 94, -8, -8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2.5
+		background	"guis/assets/hud/mp/score_corner"
+	}
+	windowDef SBorderBM {
+		rect		582, 94, 58, -8
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		matcolor	0.2, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2.5
+		background	"guis/assets/hud/mp/score_horiz"
+	}
+
+    //
+    // PLAYER COLORS
+    //
+	windowDef ScoreColor1 {
+		rect		581, 34, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	"gui::rank1_color1", "gui::rank1_color2", "gui::rank1_color3", 0.4
+		visible		("gui::rank1" != 0 )
+	}
+
+	windowDef ScoreColor2 {
+		rect		581, 50, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	"gui::rank2_color1", "gui::rank2_color2", "gui::rank2_color3", 0.4
+		visible		("gui::rank2" != 0)
+	}
+
+	windowDef ScoreColor3 {
+		rect		581, 66, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	"gui::rank3_color1", "gui::rank3_color2", "gui::rank3_color3", 0.4
+		visible		("gui::rank3" != 0)
+	}
+
+	windowDef ScoreColor4 {
+		rect		581, 82, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	"gui::rank4_color1", "gui::rank4_color2", "gui::rank4_color3", 0.4
+		visible		("gui::rank4" != 0)
+	}
+
+    //
+    // Score Borders
+    //
+	windowDef ScoreBorder1 {
+		rect		581, 34, 58, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	0, 0, 0, 0.25
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder1a {
+		rect		581, 34, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder2 {
+		rect		581, 50, 58, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	0, 0, 0, 0.25
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder2a {
+		rect		581, 50, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder3 {
+		rect		581, 66, 58, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	0, 0, 0, 0.25
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder3a {
+		rect		581, 66, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder4 {
+		rect		581, 82, 58, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		backcolor	0, 0, 0, 0.25
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+	windowDef ScoreBorder4a {
+		rect		581, 82, 14, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		bordercolor	0.1, 0.22, 0.2, 1
+		bordersize	1
+	}
+
+	windowDef ScoreBorderSelf {
+		rect		581, ( 34 + ( "gui::rank_self" - 1 ) * 16 ), 58, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		bordercolor	0.35, 0.45, 0.42, 1
+		bordersize	1
+		visible		("gui::rank_self" != 0)
+	}
+
+    //
+    // SCORE BOXES
+    //
+	windowDef scoreBox1 {
+		rect		601, 35, 38, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text	"gui::player1_score"
+		shadow	1
+		forecolor	0.5, 0.7, 0.7, 1
+		visible	1
+		textscale	0.25
+		textaligny	-4
+	}
+
+	windowDef scoreBox2 {
+		rect		601, 52, 38, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text	"gui::player2_score"
+		shadow	1
+		forecolor	0.5, 0.7, 0.7, 1
+		visible	1
+		textscale	0.25
+		textaligny	-4
+	}
+
+	windowDef scoreBox3 {
+		rect		601, 67, 38, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text	"gui::player3_score"
+		shadow	1
+		forecolor	0.5, 0.7, 0.7, 1
+		visible	1
+		textscale	0.25
+		textaligny	-4
+	}
+
+	windowDef scoreBox4 {
+		rect		601, 84, 38, 14
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_RIGHT
+		//#modified-fva; END
+		text	"gui::player4_score"
+		shadow	1
+		forecolor	0.5, 0.7, 0.7, 1
+		visible	1
+		textscale	0.25
+		textaligny	-4
+	}
+
+    //
+    //  Left HUD Lines
+    //
+	windowDef ScanLineL {
+		rect		1, 427, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		background	"guis/assets/hud/mp/lborder1a"
+		matcolor	0, 0, 0, 0.3
+		visible	1
+	}
+
+	windowDef Border {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.25, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2
+		background	"guis/assets/hud/mp/lborder1a"
+	}
+
+	windowDef Border_2 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+
+		matcolor	pdinouthold[ time * 0.002 ], pdinouthold[ time * 0.002 ] / 4.5, 0, (85 - "gui::player_health") / 100
+		background	"guis/assets/hud/mp/lborder1a"
+		visible		1
+	}
+
+	windowDef Border_1 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.8, 0.15, 0, pdfullfade[ time * 0.002 ] / 2
+		background	"guis/assets/hud/mp/lborder1a"
+		visible		0
+	}
+
+	windowDef BgL {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.09, 0.26, 0.26, subtleflick [ time * .0025 ] / 4
+		background	"guis/assets/hud/mp/lbg1"
+	}
+
+	windowDef Lines1 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.3, 0.8, 0.7, 0.2
+		background	"guis/assets/hud/mp/llines11"
+	}
+
+	windowDef Lines1_1 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	1, 0.65, 0.1, pdinouthold[ time * 0.0005 ] / 2.5
+		background	"guis/assets/hud/mp/llines11"
+		visible		0
+	}
+
+	windowDef ArmorFlash {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	1,1,1,0
+		background	"guis/assets/hud/mp/llines11"
+		visible		1
+		notime		1
+
+		onTime 0 {
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "400" ;
+		}
+
+	}
+
+	windowDef Lines2 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.3, 0.8, 0.7, 0.2
+		background	"guis/assets/hud/mp/llines21"
+	}
+
+	windowDef Lines2_2 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.8, 0.15, 0, (70 - "gui::player_health") / 100
+		background	"guis/assets/hud/mp/llines21"
+		visible		1
+	}
+
+	windowDef Lines2_1 {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	0.8, 0.15, 0, pdfullfade[ time * 0.002 ] / 1.2
+		background	"guis/assets/hud/mp/llines21"
+		visible		0
+	}
+
+	windowDef HealthFlash {
+		rect		0, 425, 256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		matcolor	1,1,1,0
+		background	"guis/assets/hud/mp/llines21"
+		visible		1
+		notime		1
+
+		onTime 0 {
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "400" ;
+		}
+	}
+
+	//
+	// Warmup
+	//
+
+	windowDef Warmup {
+		text    	"gui::warmuptext"
+		rect 		0, 360, 640, 30
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		textalign	1
+		forecolor	0.8, 0.1, 0.1, 1
+		textscale 	0.35
+		visible		"gui::warmup"
+		font		"fonts/bank"
+		shadow		1
+	}
+
+    //
+    // Lag Indicator
+    //
+
+	windowDef Lag {
+		rect		5, 5, 32,32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_LEFT
+		//#modified-fva; END
+		matcolor	1, 0.3, 0, 1
+		background	"guis/assets/hud/mp/lag"
+		visible     "gui::hudLag"
+	}
+
+    //
+    // IDENTIFY PLAYERS
+    //
+
+	// aim_text was set, flash up the name
+	onNamedEvent aim_flash {
+		// make sure no parasite onTime b0rks us
+		set "desktop::fadeon" "0" ;
+		set "AimingAt::visible" "1" ;
+		set "AimingRect1::visible" "0" ;
+		set "AimingRect2::visible" "0" ;
+		set "AimingRect3::visible" "0" ;
+		set "AimingRect4::visible" "0" ;
+		set "AimingAt::forecolor" "1 1 1 1" ;
+		if ( "gui::aim_color" == 1 ) {
+			set "AimingRect1::visible" "1" ;
+			set "AimingRect1::backcolor" "1.0 0.0 0.0 0.25" ;
+		} else if ( "gui::aim_color" == 2 ) {
+			set "AimingRect2::visible" "1" ;
+			set "AimingRect2::backcolor" "0.0 0.8 0.1 0.25" ;
+		} else if ( "gui::aim_color" == 3 ) {
+			set "AimingRect3::visible" "1" ;
+			set "AimingRect3::backcolor" "0.2 0.5 0.8 0.25" ;
+		} else if ( "gui::aim_color" == 4 ) {
+			set "AimingRect4::visible" "1" ;
+			set "AimingRect4::backcolor" "1.0 0.8 0.1 0.25" ;
+		}
+	}
+
+	// start a fade
+	onNamedEvent aim_fade {
+		set "desktop::fadeon" "1" ;
+		resetTime "AimingAt" "0" ;
+		if ( "gui::aim_color" == 1 ) {
+			resetTime "AimingRect1" "0" ;
+		} else if ( "gui::aim_color" == 2 ) {
+			resetTime "AimingRect2" "0" ;
+		} else if ( "gui::aim_color" == 3 ) {
+			resetTime "AimingRect3" "0" ;
+		} else if ( "gui::aim_color" == 4 ) {
+			resetTime "AimingRect4" "0" ;
+		}
+	}
+
+	onNamedEvent aim_clear {
+		set "AimingAt::visible" "0" ;
+		set "AimingRect1::visible" "0" ;
+		set "AimingRect2::visible" "0" ;
+		set "AimingRect3::visible" "0" ;
+		set "AimingRect4::visible" "0" ;
+	}
+
+	windowDef AimingRect1 {
+		rect		200, 450, 238, 20
+		time		0
+		visible		0
+		backcolor	1.0, 0.0, 0.0, 0.25
+		onTime 1500 {
+			if ( "desktop::fadeon" == 1 ) {
+				transition "AimingRect1::backcolor" "1.0 0.0 0.0 0.25" "1.0 0.0 0.0 0" "500" ;
+			}
+		}
+		onTime 2000 {
+			if ( "desktop::fadeon" == 1 ) {
+				set "AimingRect1::visible" "0" ;
+			}
+		}
+	}
+
+	windowDef AimingRect2 {
+		rect		200, 450, 238, 20
+		time		0
+		visible		0
+		backcolor	0.0, 0.8, 0.1, 0.25
+		onTime 1500 {
+			if ( "desktop::fadeon" == 1 ) {
+				transition "AimingRect2::backcolor" "0.0 0.8 0.1 0.25" "0.0 0.8 0.1 0" "500" ;
+			}
+		}
+		onTime 2000 {
+			if ( "desktop::fadeon" == 1 ) {
+				set "AimingRect2::visible" "0" ;
+			}
+		}
+	}
+
+	windowDef AimingRect3 {
+		rect		200, 450, 238, 20
+		time		0
+		visible		0
+		backcolor	0.2, 0.5, 0.8, 0.25
+		onTime 1500 {
+			if ( "desktop::fadeon" == 1 ) {
+				transition "AimingRect3::backcolor" "0.2 0.5 0.8 0.25" "0.2 0.5 0.8 0" "500" ;
+			}
+		}
+		onTime 2000 {
+			if ( "desktop::fadeon" == 1 ) {
+				set "AimingRect3::visible" "0" ;
+			}
+		}
+	}
+
+	windowDef AimingRect4 {
+		rect		200, 450, 238, 20
+		time		0
+		visible		0
+		backcolor	1.0, 0.8, 0.1, 0.25
+		onTime 1500 {
+			if ( "desktop::fadeon" == 1 ) {
+				transition "AimingRect4::backcolor" "1.0 0.8 0.1 0.25" "1.0 0.8 0.1 0" "500" ;
+			}
+		}
+		onTime 2000 {
+			if ( "desktop::fadeon" == 1 ) {
+				set "AimingRect4::visible" "0" ;
+			}
+		}
+	}
+
+	windowDef AimingAt {
+		rect		200, 450, 238, 20
+		text		"gui::aim_text"
+		textalign	1
+		textscale	0.25
+		font		"fonts/an"
+		shadow		1
+		visible		0
+		notime		1
+
+		onTime 1500 {
+			if ( "desktop::fadeon" == 1 ) {
+				transition "AimingAt::forecolor" "1 1 1 1" "1 0.8 0.2 0" "500" ;
+			}
+		}
+		onTime 2000 {
+			if ( "desktop::fadeon" == 1 ) {
+				set "AimingAt::visible" "0" ;
+			}
+		}
+	}
+
+    //
+    //  Right HUD Lines
+    //
+	windowDef ScanLineLA {
+		rect		385, 427, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		background	"guis/assets/hud/mp/lborder1a1"
+		matcolor	0, 0, 0, 0.3
+		visible	1
+	}
+
+	windowDef ScanLineLAG {
+		rect		385, 427, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		background	"guis/assets/hud/mp/lborder1c"
+		matcolor	0, 0, 0, 0.3
+		visible	0
+	}
+
+	windowDef AmmoFlash1 {
+		rect		399,425,-241,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	1,1,1,0
+		background	"guis/assets/hud/mp/lborder1b"
+		visible		1
+		notime		1
+
+		onTime 0 {
+			transition "matcolor" "1 1 1 0.5" "1 1 1 0" "400" ;
+		}
+	}
+
+	windowDef BorderLAGrenades {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.25, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2
+		background	"guis/assets/hud/mp/lborder1c"
+		visible		0
+	}
+
+	windowDef BorderLA {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.25, 0.45, 0.4, pdflick2 [ time * .0025 ] / 2
+		background	"guis/assets/hud/mp/lborder1a1"
+	}
+
+	windowDef BorderLA_1 {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.6, 0.35, 0, pdinouthold[ time * 0.001 ] / 1.2
+		background	"guis/assets/hud/mp/lborder1a1"
+		visible		0
+	}
+
+	windowDef BorderLA_2 {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.8, 0.15, 0, pdfullfade[ time * 0.002 ] / 1.2
+		background	"guis/assets/hud/mp/lborder1a1"
+		visible		0
+	}
+
+	windowDef AmmoFlash2 {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	1,1,1,0
+		background	"guis/assets/hud/mp/lborder1a1"
+		visible		1
+		notime		1
+
+		onTime 0 {
+			transition "matcolor" "1 1 1 0.6" "1 1 1 0" "400" ;
+		}
+	}
+
+	windowDef BgLA {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.09, 0.26, 0.26, subtleflick [ time * .0025 ] / 4
+		background	"guis/assets/hud/mp/lbg1a1"
+	}
+
+	windowDef Lines1A {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.3, 0.8, 0.7, 0.2
+		background	"guis/assets/hud/mp/llines1a1"
+	}
+
+	windowDef Lines1B {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.3, 0.8, 0.7, 0.2
+		background	"guis/assets/hud/mp/llines1a2"
+		visible		0
+	}
+
+	windowDef Lines2A {
+		rect		384, 425, -256, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		matcolor	0.3, 0.8, 0.7, 0.2
+		background	"guis/assets/hud/mp/llines2a1"
+	}
+
+    //
+    //  HUD Readout Text
+    //
+	windowDef MPHealthBlack {
+		rect		91, 448, 39, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		text		"gui::player_health"
+		forecolor	0, 0, 0, 0.5
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+
+	windowDef MPHealth {
+		rect		90, 446, 39, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		text		"gui::player_health"
+		forecolor	0.5, 0.7, 0.7, 1
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+	windowDef MPHealth2 {
+		rect		90, 447, 39, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		text		"gui::player_health"
+		forecolor	0.8, 0.7, 0, (70 - "gui::player_health") / 100
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.33
+	}
+
+	windowDef MPArmorBlack {
+		rect		28, 453, 34, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		text		"gui::player_armor"
+		forecolor	0, 0, 0, 0.5
+		textscale	0.25
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.3
+	}
+
+	windowDef MPArmor {
+		rect		27, 453, 34, 32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		text		"gui::player_armor"
+		forecolor	0.25, 0.3, 0.3, 1
+		textscale	0.25
+		textalign	1
+		font		"fonts/micro"
+		shear 0, -0.3
+	}
+
+	windowDef ammovalue2Black {
+		text	"gui::player_ammo"
+		rect	503 ,448 ,80 ,32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		forecolor	0, 0, 0, 0.5
+		visible	1
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, 0.33
+	}
+
+	windowDef ammovalue2 {
+		text	"gui::player_ammo"
+		rect	504 ,446 ,80 ,32
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		forecolor	0.6, 0.7, 0.7, 1
+		visible	1
+		textscale	0.38
+		textalign	1
+		font		"fonts/micro"
+		shear 0, 0.33
+	}
+
+	windowDef ammovalue3Black {
+		text	"gui::player_totalammo"
+		rect	558 ,454 ,80 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		forecolor	0, 0, 0, 0.5
+		visible	1
+		textscale	0.25
+		textalign	1
+		font		"fonts/micro"
+		shear 0, 0.4
+	}
+
+	windowDef ammovalue3 {
+		text	"gui::player_totalammo"
+		rect	559 ,453 ,80 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		forecolor	0.3, 0.42, 0.4, 1
+		visible	1
+		textscale	0.25
+		textalign	1
+		font		"fonts/micro"
+		shear 0, 0.4
+	}
+
+	windowDef ammoicon4 {
+		rect		551 ,464 ,16, 16
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_RIGHT
+		//#modified-fva; END
+		variablebackground 1
+		matcolor	1, 0.9, 1, 0.7
+		visible		0
+		shear 0, 0.33
+	}
+
+    //
+    //  Weapon Icons
+    //
+	windowDef WeapIcon0 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/fistsr"
+		matcolor	1, 1, 1 ,1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02475" ;
+
+			set "WeapIcon0::rect" "288 390 64 64" ;
+			set "WeapIcon1::rect" "362 416 32 32" ;
+			set "WeapIcon2::rect" "404 416 64 32" ;
+			set "WeapIcon3::rect" "478 416 64 32" ;
+			set "WeapIcon4::rect" "552 416 64 32" ;
+			set "WeapIcon5::rect" "626 416 32 32" ;
+			set "WeapIcon6::rect" "-82 416 64 32" ;
+			set "WeapIcon7::rect" "-8 416 64 32" ;
+			set "WeapIcon8::rect" "66 416 64 32" ;
+			set "WeapIcon10::rect" "140 416 64 32" ;
+			set "WeapIcon11::rect" "214 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon1 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/pistolr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_01819" ;
+
+			set "WeapIcon0::rect" "246 416 32 32" ;
+			set "WeapIcon1::rect" "288 390 64 64" ;
+			set "WeapIcon2::rect" "362 416 64 32" ;
+			set "WeapIcon3::rect" "436 416 64 32" ;
+			set "WeapIcon4::rect" "510 416 64 32" ;
+			set "WeapIcon5::rect" "584 416 32 32" ;
+			set "WeapIcon6::rect" "626 416 64 32" ;
+			set "WeapIcon7::rect" "-50 416 64 32" ;
+			set "WeapIcon8::rect" "24 416 64 32" ;
+			set "WeapIcon10::rect" "98 416 64 32" ;
+			set "WeapIcon11::rect" "172 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon2 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/shotgunr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_01820" ;
+
+			set "WeapIcon0::rect" "172 416 32 32" ;
+			set "WeapIcon1::rect" "214 416 32 32" ;
+			set "WeapIcon2::rect" "256 390 128 64" ;
+			set "WeapIcon3::rect" "394 416 64 32" ;
+			set "WeapIcon4::rect" "468 416 64 32" ;
+			set "WeapIcon5::rect" "542 416 32 32" ;
+			set "WeapIcon6::rect" "584 416 64 32" ;
+			set "WeapIcon7::rect" "658 416 64 32" ;
+			set "WeapIcon8::rect" "-50 416 64 32" ;
+			set "WeapIcon10::rect" "24 416 64 32" ;
+			set "WeapIcon11::rect" "98 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon3 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/machinegunr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02476" ;
+
+			set "WeapIcon0::rect" "66 416 32 32" ;
+			set "WeapIcon1::rect" "108 416 32 32" ;
+			set "WeapIcon2::rect" "182 416 64 32" ;
+			set "WeapIcon3::rect" "256 390 128 64" ;
+			set "WeapIcon4::rect" "394 416 64 32" ;
+			set "WeapIcon5::rect" "468 416 32 32" ;
+			set "WeapIcon6::rect" "510 416 64 32" ;
+			set "WeapIcon7::rect" "584 416 64 32" ;
+			set "WeapIcon8::rect" "658 416 64 32" ;
+			set "WeapIcon10::rect" "-82 416 64 32" ;
+			set "WeapIcon11::rect" "-8 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon4 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/chaingunr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02477" ;
+
+			set "WeapIcon0::rect" "24 416 32 32" ;
+			set "WeapIcon1::rect" "66 416 32 32" ;
+			set "WeapIcon2::rect" "108 416 64 32" ;
+			set "WeapIcon3::rect" "182 416 64 32" ;
+			set "WeapIcon4::rect" "256 390 128 64" ;
+			set "WeapIcon5::rect" "394 416 32 32" ;
+			set "WeapIcon6::rect" "436 416 64 32" ;
+			set "WeapIcon7::rect" "510 416 64 32" ;
+			set "WeapIcon8::rect" "584 416 64 32" ;
+			set "WeapIcon10::rect" "658 416 64 32" ;
+			set "WeapIcon11::rect" "-50 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon5 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/grenader"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02478" ;
+
+			set "WeapIcon0::rect" "-18 416 32 32" ;
+			set "WeapIcon1::rect" "24 416 32 32" ;
+			set "WeapIcon2::rect" "66 416 64 32" ;
+			set "WeapIcon3::rect" "140 416 64 32" ;
+			set "WeapIcon4::rect" "214 416 64 32" ;
+			set "WeapIcon5::rect" "288 390 64 64" ;
+			set "WeapIcon6::rect" "362 416 64 32" ;
+			set "WeapIcon7::rect" "436 416 64 32" ;
+			set "WeapIcon8::rect" "510 416 64 32" ;
+			set "WeapIcon10::rect" "584 416 64 32" ;
+			set "WeapIcon11::rect" "658 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon6 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/plasmagunr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02479" ;
+
+			set "WeapIcon0::rect" "690 416 32 32" ;
+			set "WeapIcon1::rect" "-50 416 32 32" ;
+			set "WeapIcon2::rect" "-8 416 64 32" ;
+			set "WeapIcon3::rect" "66 416 64 32" ;
+			set "WeapIcon4::rect" "140 416 64 32" ;
+			set "WeapIcon5::rect" "214 416 32 32" ;
+			set "WeapIcon6::rect" "256 390 128 64" ;
+			set "WeapIcon7::rect" "394 416 64 32" ;
+			set "WeapIcon8::rect" "468 416 64 32" ;
+			set "WeapIcon10::rect" "542 416 64 32" ;
+			set "WeapIcon11::rect" "616 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon7 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/rocketlauncherr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02480" ;
+
+
+			set "WeapIcon0::rect" "616 416 32 32" ;
+			set "WeapIcon1::rect" "658 416 32 32" ;
+			set "WeapIcon2::rect" "-82 416 64 32" ;
+			set "WeapIcon3::rect" "-8 416 64 32" ;
+			set "WeapIcon4::rect" "66 416 64 32" ;
+			set "WeapIcon5::rect" "140 416 32 32" ;
+			set "WeapIcon6::rect" "182 416 64 32" ;
+			set "WeapIcon7::rect" "256 390 128 64" ;
+			set "WeapIcon8::rect" "394 416 64 32" ;
+			set "WeapIcon10::rect" "468 416 64 32" ;
+			set "WeapIcon11::rect" "542 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon8 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/bfgr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02022" ;
+
+			set "WeapIcon0::rect" "542 416 32 32" ;
+			set "WeapIcon1::rect" "584 416 32 32" ;
+			set "WeapIcon2::rect" "626 416 64 32" ;
+			set "WeapIcon3::rect" "-82 416 64 32" ;
+			set "WeapIcon4::rect" "-8 416 64 32" ;
+			set "WeapIcon5::rect" "66 416 32 32" ;
+			set "WeapIcon6::rect" "108 416 64 32" ;
+			set "WeapIcon7::rect" "182 416 64 32" ;
+			set "WeapIcon8::rect" "256 390 128 64" ;
+			set "WeapIcon10::rect" "394 416 64 32" ;
+			set "WeapIcon11::rect" "468 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon10 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/chainsawr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02481" ;
+
+			set "WeapIcon0::rect" "468 416 32 32" ;
+			set "WeapIcon1::rect" "510 416 32 32" ;
+			set "WeapIcon2::rect" "552 416 64 32" ;
+			set "WeapIcon3::rect" "626 416 64 32" ;
+			set "WeapIcon4::rect" "-82 416 64 32" ;
+			set "WeapIcon5::rect" "-8 416 32 32" ;
+			set "WeapIcon6::rect" "34 416 64 32" ;
+			set "WeapIcon7::rect" "108 416 64 32" ;
+			set "WeapIcon8::rect" "182 416 64 32" ;
+			set "WeapIcon10::rect" "256 390 128 64" ;
+			set "WeapIcon11::rect" "394 416 64 32" ;
+		}
+	}
+
+	windowDef WeapIcon11 {
+		visible		1
+		rect		0,0,0,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/flashlightr"
+		matcolor	1, 1, 1, 1
+		notime		1
+
+		onTime 0 {
+			set "WeapText::text"	"#str_02482" ;
+
+			set "WeapIcon0::rect" "394 416 32 32" ;
+			set "WeapIcon1::rect" "434 416 32 32" ;
+			set "WeapIcon2::rect" "478 416 64 32" ;
+			set "WeapIcon3::rect" "550 416 64 32" ;
+			set "WeapIcon4::rect" "622 416 64 32" ;
+			set "WeapIcon5::rect" "-82 416 32 32" ;
+			set "WeapIcon6::rect" "-40 416 64 32" ;
+			set "WeapIcon7::rect" "34 416 64 32" ;
+			set "WeapIcon8::rect" "108 416 64 32" ;
+			set "WeapIcon10::rect" "182 416 64 32" ;
+			set "WeapIcon11::rect" "256 390 128 64" ;
+		}
+	}
+
+	windowDef WeapText {
+		text	""
+		font	"fonts/bank"
+	//	shadow	1
+		rect	55 ,375 ,540 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 0.8, 0.75, 0
+		visible	1
+		textscale	0.25
+		textalign	1
+
+		onTime 0 {
+			transition "WeapText::forecolor" "0.6 0.8 0.75 1" "0.6 0.8 0.75 0" "1500" "0.6" "0" ;
+
+			if ("desktop::weapon" == 0) {
+				transition "WeapIcon0::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 1) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 2) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 3) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 02" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 4) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 5) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 6) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 7) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 8) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 10) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+			}
+			if ("desktop::weapon" == 11) {
+				transition "WeapIcon0::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon1::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon2::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon3::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon4::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon5::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon6::matcolor" "1 1 1 0.2" "1 1 1 0" "1500" ;
+				transition "WeapIcon7::matcolor" "1 1 1 0.4" "1 1 1 0" "1500" ;
+				transition "WeapIcon8::matcolor" "1 1 1 0.6" "1 1 1 0" "1500" ;
+				transition "WeapIcon10::matcolor" "1 1 1 0.8" "1 1 1 0" "1500" ;
+				transition "WeapIcon11::matcolor" "1 1 1 1" "1 1 1 0" "1500" ;
+			}
+		}
+	}
+
+    //
+    //  Item Pickup
+    //
+	windowDef InvItem
+	{
+		rect -350,205,350,0
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_CENTER_LEFT
+		//#modified-fva; END
+		notime 1
+
+		onTime 0 {
+			set "InvItem::visible" "1" ;
+			transition "InvItem::rect" "-120 205 350 0" "-120 205 350 115" "400" "0.2" "0.8" ;
+			transition "InvPopBg2T::matcolor" "1 1 1 0" "1 1 1 0.7" "600" "0.2" "0.8" ;
+			transition "InvPopBg2TR::matcolor" "1 1 1 0" "1 1 1 0.7" "600" "0.2" "0.8" ;
+			transition "InvPopBg2B::matcolor" "1 1 1 0" "1 1 1 0.7" "600" "0.2" "0.8" ;
+			transition "InvPopBg2BR::matcolor" "1 1 1 0" "1 1 1 0.7" "600" "0.2" "0.8" ;
+			transition "InvTitleBG1::rect" "120 27 0 14" "120 27 155 14" "400" "0.2" "0.8" ;
+			transition "InvTitleBG1::backcolor" "0.8 1 1 0" "0.8 1 1 0.1" "600" ;
+		}
+		onTime 400 {
+			transition "InvTitle::forecolor" "1 1 1 1" "1 0.6 0.2 1" "200" ;
+			transition "InvTitle2::forecolor" "0 0 0 0" "0 0 0 0.6" "200" ;
+		}
+		onTime 600 {
+			transition "ObjectItem::matcolor" "1 1 1 0" "1 1 1 1" "200" ;
+		}
+		onTime 3000 {
+			set "ObjectItem::matcolor" "1 1 1 0" ;
+			transition "InvTitle::forecolor" "1 0.6 0.2 1" "1 1 1 0" "200" ;
+			transition "InvTitle2::forecolor" "0 0 0 0.6" "0 0 0 0" "200" ;
+
+			transition "InvItem::rect" "-120 205 350 115" "-120 205 350 0" "400" "0.2" "0.8" ;
+			transition "InvPopBg2T::matcolor" "1 1 1 0.7" "1 1 1 0" "400" "0.2" "0.8" ;
+			transition "InvPopBg2TR::matcolor" "1 1 1 0.7" "1 1 1 0" "400" "0.2" "0.8" ;
+			transition "InvPopBg2B::matcolor" "1 1 1 0.7" "1 1 1 0" "400" "0.2" "0.8" ;
+			transition "InvPopBg2BR::matcolor" "1 1 1 0.7" "1 1 1 0" "400" "0.2" "0.8" ;
+			transition "InvTitleBG1::rect" "120 27 155 14" "120 27 0 14" "400" "0.2" "0.8" ;
+			transition "InvTitleBG1::backcolor" "0.8 1 1 0.1" "0.8 1 1 0" "400" ;
+		}
+		onTime 3400 {
+			set "InvItem::visible" "0" ;
+		}
+
+
+		windowDef InvPopBg2TClip
+		{
+			rect	0,0,300,50
+			windowDef InvPopBg2T
+			{
+				rect	0,10,270,68
+				matcolor	1, 1, 1, 0
+				background	"gui/pda/2_tb"
+				visible	1
+			}
+			windowDef InvPopBg2TR
+			{
+				rect	270,10,14,68
+				matcolor	1, 1, 1, 0
+				background	"gui/pda/2_c"
+				visible	1
+			}
+		}
+		windowDef InvPopBg2BClip
+		{
+			rect	0,50,300,60
+			windowDef InvPopBg2B
+			{
+				rect	0,-3,270,-68
+				matcolor	1, 1, 1, 0
+				background	"gui/pda/2_tb"
+				visible	1
+			}
+			windowDef InvPopBg2BR
+			{
+				rect	270,-3,14,-68
+				matcolor	1, 1, 1, 0
+				background	"gui/pda/2_c"
+				visible	1
+			}
+		}
+		windowDef InvTitleBG1 {
+			rect		120 ,27 ,0 ,14
+			backcolor	0.8,1,1,0
+			visible		1
+		}
+		windowDef InvTitle2 {
+			rect		124 ,22 ,300 ,20
+			forecolor	0 ,0 ,0 ,0
+			text		"#str_02027"
+			textscale	0.25
+			font		"fonts/bank"
+			visible		1
+		}
+		windowDef InvTitle {
+			rect		123 ,21 ,300 ,20
+			forecolor	1, 0.6, 0.2, 0
+			text		"#str_02027"
+			textscale	0.25
+			font		"fonts/bank"
+			visible		1
+		}
+		windowDef ObjectItem {
+			rect		165 ,39 ,64, 64
+			background	"gui::itemicon"
+		//	background	"guis/assets/hud/items/redkey"
+			variablebackground 1
+			matcolor	1, 1, 1, 0
+			visible		1
+		}
+	}
+
+	windowDef ItemPickup1
+	{
+		rect	10,310,150,16
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		visible		1
+		noTime	1
+		float	"winactive" "0"
+
+		onTime 0 {
+			transition "ItemText1::forecolor" "1 0.9 0.4 0.4" "0.6 0.8 0.8 0.7" "200" ;
+			transition "ItemText1BG::forecolor" "0 0 0 0" "0 0 0 1" "200" ;
+			transition "rect" "18 310 150 16" "10 310 150 16" "200" ;
+			set "winactive" "1" ;
+			if ("ItemPickup5::winactive" == 1) {
+				transition "ItemPickup5::rect" "10 310 150 16" "10 330 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup4::winactive" == 1) {
+				transition "ItemPickup4::rect" "10 330 150 16" "10 350 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup3::winactive" == 1) {
+				transition "ItemPickup3::rect" "10 350 150 16" "10 370 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup2::winactive" == 1) {
+				transition "ItemPickup2::rect" "10 370 150 16" "10 390 150 16" "200" "0" "0.4" ;
+			}
+		}
+		onTime 1500 {
+			transition "ItemText1::forecolor" "0.6 0.8 0.8 0.7" "0.6 0.8 0.8 0" "200" ;
+			transition "ItemText1BG::forecolor" "0 0 0 1" "0 0 0 0" "200" ;
+			set "winactive" "0" ;
+		}
+		windowDef ItemText1BG {
+			text		"gui::itemtext1"
+			rect		1 ,1 ,142 ,15
+			forecolor	0, 0, 0, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+		windowDef ItemText1 {
+			text		"gui::itemtext1"
+			rect		0 ,0 ,142 ,15
+			forecolor	0.6, 0.8, 0.8, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+	}
+	windowDef ItemPickup2
+	{
+		rect	18,330,150,16
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		visible	1
+		noTime	1
+		float	"winactive" "0"
+
+		onTime 0 {
+			transition "ItemText2::forecolor" "1 0.9 0.4 0.4" "0.6 0.8 0.8 0.7" "200" ;
+			transition "ItemText2BG::forecolor" "0 0 0 0" "0 0 0 1" "200" ;
+			transition "rect" "18 310 150 16" "10 310 150 16" "200" ;
+			set "winactive" "1" ;
+			if ("ItemPickup1::winactive" == 1) {
+				transition "ItemPickup1::rect" "10 310 150 16" "10 330 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup5::winactive" == 1) {
+				transition "ItemPickup5::rect" "10 330 150 16" "10 350 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup4::winactive" == 1) {
+				transition "ItemPickup4::rect" "10 350 150 16" "10 370 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup3::winactive" == 1) {
+				transition "ItemPickup3::rect" "10 370 150 16" "10 390 150 16" "200" "0" "0.4" ;
+			}
+		}
+		onTime 1500 {
+			transition "ItemText2::forecolor" "0.6 0.8 0.8 0.7" "0.6 0.8 0.8 0" "200" ;
+			transition "ItemText2BG::forecolor" "0 0 0 1" "0 0 0 0" "200" ;
+			set "winactive" "0" ;
+		}
+		windowDef ItemText2BG {
+			text		"gui::itemtext2"
+			rect		1 ,1 ,142 ,15
+			forecolor	0, 0, 0, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+		windowDef ItemText2 {
+			text		"gui::itemtext2"
+			rect		0 ,0 ,142 ,15
+			forecolor	0.6, 0.8, 0.8, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+	}
+	windowDef ItemPickup3
+	{
+		rect	18,350,150,16
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		visible	1
+		noTime	1
+		float	"winactive" "0"
+
+		onTime 0 {
+			transition "ItemText3::forecolor" "1 0.9 0.4 0.4" "0.6 0.8 0.8 0.7" "200" ;
+			transition "ItemText3BG::forecolor" "0 0 0 0" "0 0 0 1" "200" ;
+			transition "rect" "18 310 150 16" "10 310 150 16" "200" ;
+			set "winactive" "1" ;
+			if ("ItemPickup2::winactive" == 1) {
+				transition "ItemPickup2::rect" "10 310 150 16" "10 330 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup1::winactive" == 1) {
+				transition "ItemPickup1::rect" "10 330 150 16" "10 350 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup5::winactive" == 1) {
+				transition "ItemPickup5::rect" "10 350 150 16" "10 370 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup4::winactive" == 1) {
+				transition "ItemPickup4::rect" "10 370 150 16" "10 390 150 16" "200" "0" "0.4" ;
+			}
+		}
+		onTime 1500 {
+			transition "ItemText3::forecolor" "0.6 0.8 0.8 0.7" "0.6 0.8 0.8 0" "200" ;
+			transition "ItemText3BG::forecolor" "0 0 0 1" "0 0 0 0" "200" ;
+			set "winactive" "0" ;
+		}
+		windowDef ItemText3BG {
+			text		"gui::itemtext3"
+			rect		1 ,1 ,142 ,15
+			forecolor	0, 0, 0, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+		windowDef ItemText3 {
+			text		"gui::itemtext3"
+			rect		0 ,0 ,142 ,15
+			forecolor	0.6, 0.8, 0.8, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+	}
+	windowDef ItemPickup4
+	{
+		rect	18,370,150,16
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		visible	1
+		noTime	1
+		float	"winactive" "0"
+
+		onTime 0 {
+			transition "ItemText4::forecolor" "1 0.9 0.4 0.4" "0.6 0.8 0.8 0.7" "200" ;
+			transition "ItemText4BG::forecolor" "0 0 0 0" "0 0 0 1" "200" ;
+			transition "rect" "18 310 150 16" "10 310 150 16" "200" ;
+			set "winactive" "1" ;
+			if ("ItemPickup3::winactive" == 1) {
+				transition "ItemPickup3::rect" "10 310 150 16" "10 330 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup2::winactive" == 1) {
+				transition "ItemPickup2::rect" "10 330 150 16" "10 350 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup1::winactive" == 1) {
+				transition "ItemPickup1::rect" "10 350 150 16" "10 370 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup5::winactive" == 1) {
+				transition "ItemPickup5::rect" "10 370 150 16" "10 390 150 16" "200" "0" "0.4" ;
+			}
+		}
+		onTime 1500 {
+			transition "ItemText4::forecolor" "0.6 0.8 0.8 0.7" "0.6 0.8 0.8 0" "200" ;
+			transition "ItemText4BG::forecolor" "0 0 0 1" "0 0 0 0" "200" ;
+			set "winactive" "0" ;
+		}
+		windowDef ItemText4BG {
+			text		"gui::itemtext4"
+			rect		1 ,1 ,142 ,15
+			forecolor	0, 0, 0, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+		windowDef ItemText4 {
+			text		"gui::itemtext4"
+			rect		0 ,0 ,142 ,15
+			forecolor	0.6, 0.8, 0.8, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+	}
+	windowDef ItemPickup5
+	{
+		rect	18,390,150,16
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		visible	1
+		noTime	1
+		float	"winactive" "0"
+
+		onTime 0 {
+			transition "ItemText5::forecolor" "1 0.9 0.4 0.4" "0.6 0.8 0.8 0.7" "200" ;
+			transition "ItemText5BG::forecolor" "0 0 0 0" "0 0 0 1" "200" ;
+			transition "rect" "18 310 150 16" "10 310 150 16" "200" ;
+			set "winactive" "1" ;
+			if ("ItemPickup4::winactive" == 1) {
+				transition "ItemPickup4::rect" "10 310 150 16" "10 330 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup3::winactive" == 1) {
+				transition "ItemPickup3::rect" "10 330 150 16" "10 350 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup2::winactive" == 1) {
+				transition "ItemPickup2::rect" "10 350 150 16" "10 370 150 16" "200" "0" "0.4" ;
+			}
+			if ("ItemPickup1::winactive" == 1) {
+				transition "ItemPickup1::rect" "10 370 150 16" "10 390 150 16" "200" "0" "0.4" ;
+			}
+		}
+		onTime 1500 {
+			transition "ItemText5::forecolor" "0.6 0.8 0.8 0.7" "0.6 0.8 0.8 0" "200" ;
+			transition "ItemText5BG::forecolor" "0 0 0 1" "0 0 0 0" "200" ;
+			set "winactive" "0" ;
+		}
+
+		windowDef ItemText5BG {
+			text		"gui::itemtext5"
+			rect		1 ,1 ,142 ,15
+			forecolor	0, 0, 0, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+		windowDef ItemText5 {
+			text		"gui::itemtext5"
+			rect		0 ,0 ,142 ,15
+			forecolor	0.6, 0.8, 0.8, 0
+			font		"fonts/bank"
+			textscale	0.25
+			visible		1
+			textalign	2
+			textaligny	-5
+		}
+	}
+
+    //
+    //  LOCATION
+    //
+	windowDef LocationText {
+		text	"gui::location"
+		rect	142 ,460 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_LEFT
+		//#modified-fva; END
+		forecolor	0.25, 0.4, 0.4, 1
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+		shear 0,-0.35
+	}
+
+    //
+    //  CURSOR NAME ON/OFF
+    //
+	windowDef NPCName2a {
+		text		"#str_02036"
+		rect		336 ,233 ,110 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//#modified-fva; END
+		forecolor	0,0,0,0
+		font		"fonts/bank"
+		textscale	0.25
+		visible		1
+	}
+	windowDef NPCName2 {
+		text		"#str_02036"
+		rect		335 ,232 ,110 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//#modified-fva; END
+		forecolor	0.5,0.5,0.5,0
+		font		"fonts/bank"
+		textscale	0.25
+		visible		1
+	}
+	windowDef NPCName1a {
+		text		"gui::npc"
+		rect		336 ,221 ,300 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//#modified-fva; END
+		forecolor	0, 0, 0, 0
+		font		"fonts/bank"
+		textscale	0.25
+		visible		1
+	}
+	windowDef NPCName1 {
+		text		"gui::npc"
+		rect		335 ,220 ,300 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 0.8, 0.7, 0
+		font		"fonts/bank"
+		textscale	0.25
+		visible		1
+		notime	1
+
+		onTime 0 {
+			transition "NPCName1a::rect" "336 221 300 20" "327 221 300 20" "150" ;
+			transition "NPCName1a::forecolor" "0 0 0 0" "0 0 0 1" "150" ;
+			transition "NPCName1::rect" "335 220 300 20" "326 220 300 20" "150" ;
+			transition "NPCName1::forecolor" "0.6 0.8 0.7 0" "0.45 0.6 0.5 1" "150" ;
+			transition "NPCName2a::rect" "336 233 300 20" "327 233 300 20" "150" ;
+			transition "NPCName2a::forecolor" "0 0 0 0" "0 0 0 1" "150" ;
+			transition "NPCName2::rect" "335 232 300 20" "326 232 300 20" "150" ;
+			transition "NPCName2::forecolor" "0.5 0.5 0.5 0" "0.5 0.5 0.5 1" "150" ;
+		}
+	}
+
+    //
+    // ANIMATION
+    //
+
+    //
+    //  Full Hud Twitcher, conditional loop
+    //
+	windowDef animhudTwitch {
+		rect	0 ,0 ,0 ,0
+		notime	1
+
+		onTime 0 {
+			set "desktop::rect" "1 1 640 480" ;
+			set "Border::rect" "-2 417 256 64" ;
+			set "BorderLA::rect" "385 415 -256 64" ;
+			set "Lines1A::rect" "384 417 -256 64" ;
+			set "Lines2A::rect" "383 416 -256 64" ;
+			set "MPHealth::rect" "89 436 39 32" ;
+			set "Weapon11::rect" "526 470 10 6" ;
+			set "Weapon3::rect" "561 472 10 6" ;
+			set "LocationText::rect" "141 458 220 20" ;
+			transition "MPHealthBlack::forecolor" "0 0 0 0.5" "0.67 0.7 0.7 0.3" "100" ;
+			transition "AmmoValue3Black::forecolor" "0 0 0 0.5" "0.8 0.7 0.7 0.5" "100" ;
+			transition "LocationText::forecolor" "0.25 0.4 0.4 0.8" "0.25 0.4 0.4 0.7" "50" ;
+
+		}
+		onTime 50 {
+			set "ScanLineL::rect" "0  414  256  64" ;
+			set "ScanLineLA::rect" "386 416 -256 64 " ;
+			set "BorderBottom::rect" "6 414 270 64" ;
+			set "BorderLABottom::rect" "400 417 -241 64" ;
+			set "Border_2::rect" "2 415 256 64" ;
+			set "Lines1::rect" "1 415 256 64" ;
+			set "Lines2::rect" "-1 417 256 64" ;
+			set "Lines1B::rect" "382 416 -256 64" ;
+			set "MPArmor::rect" "27 442 34 32" ;
+			set "Weapon11::rect" "526 471 10 6" ;
+			set "Weapon2::rect" "553 472 10 6" ;
+			set "Weapon3::rect" "562 471 10 6" ;
+			set "Border::rect" "0 416 256 64" ;
+			transition "AmmoValue2Black::forecolor" "0 0 0 0.5" "0.9 0.7 0.7 0.3" "100" ;
+			transition "LocationText::forecolor" "0.25 0.4 0.4 0.7" "0.25 0.4 0.4 1" "200" ;
+		}
+
+		onTime 100 {
+			set "desktop::rect" "1 0 640 480" ;
+			set "ScanLineL::rect" "1  417  256  64" ;
+			set "ScanLineLA::rect" "385 417 -256 64 " ;
+			set "BorderBottom::rect" "4 416 270 64" ;
+			set "BorderLABottom::rect" "399 416 -241 64" ;
+			set "Lines1::rect" "0 416 256 64" ;
+			set "Lines1A::rect" "384 416 -256 64" ;
+			transition "MPArmorBlack::forecolor" "0 0 0 0.5" "0.8 0.7 0.7 1" "100" ;
+			set "Weapon2::rect" "553 471 10 6" ;
+			set "Weapon6::rect" "587 471 10 6" ;
+			set "LocationText::rect" "142 460 220 20" ;
+		}
+		onTime 150 {
+			set "Border_2::rect" "0 416 256 64" ;
+			set "Lines2::rect" "0 416 256 64" ;
+			set "BorderLA::rect" "384 416 -256 64" ;
+			set "Lines1B::rect" "384 416 -256 64" ;
+			set "MPHealth::rect" "90 437 39 32" ;
+			transition "MPHealthBlack::forecolor" "0.67 0.7 0.7 0.3" "0 0 0 0.5" "100" ;
+			set "Weapon6::rect" "589 471 10 6" ;
+		}
+		onTime 200 {
+			set "desktop::rect" "0 0 640 480" ;
+			set "Lines2A::rect" "384 416 -256 64" ;
+			set "MPArmor::rect" "29 442 34 32" ;
+			transition "MPArmorBlack::forecolor" "0.67 0.7 0.7 0.3" "0 0 0 0.5" "50" ;
+			transition "AmmoValue2Black::forecolor" "0.67 0.7 0.7 0.3" "0 0 0 0.5" "50" ;
+			transition "AmmoValue3Black::forecolor" "0.8 0.7 0.7 0.5" "0 0 0 0.5" "50" ;
+		}
+
+		onTime 250 {
+		//	if ("value" == 0) {
+		//		resetTime "0" ;
+		//	}
+		}
+	}
+
+    //
+    // New weapon pickup flash
+    //
+	windowDef WeapIcon1Large {
+		visible		1
+		rect		288, 280, 64, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/pistol"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "285 280 64 64" "288 280 64 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName1Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "288 280 64 64" "291 280 64 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName1Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName1Large {
+		text	"#str_00242"
+		rect	301 ,273 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon2Large {
+		visible		1
+		rect		256,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/shotgun"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName2Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName2Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName2Large {
+		text	"#str_00243"
+		rect	288 ,279 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon3Large {
+		visible		1
+		rect		256,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/machinegun"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName3Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName3Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName3Large {
+		text	"#str_01378"
+		rect	276 ,265 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon4Large {
+		visible		1
+		rect		256,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/chaingun"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName4Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName4Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName4Large {
+		text	"#str_01421"
+		rect	300 ,280 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon5Large {
+		visible		1
+		rect		288, 280, 64, 64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/grenade"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "285 280 64 64" "288 280 64 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName5Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "288 280 64 64" "291 280 64 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName5Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName5Large {
+		text	"#str_01422"
+		rect	289 ,280 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon6Large {
+		visible		1
+		rect		251,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/plasmagun"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName6Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName6Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName6Large {
+		text	"#str_01423"
+		rect	276 ,270 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon7Large {
+		visible		1
+		rect		256,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/rocketlauncher"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName7Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName7Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName7Large {
+		text	"#str_01424"
+		rect	254 ,270 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon8Large {
+		visible		1
+		rect		256,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/bfg"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName8Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName8Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName8Large {
+		text	"#str_02022"
+		rect	282 ,268 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+	windowDef WeapIcon10Large {
+		visible		1
+		rect		256,280,128,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		background	"gui/hud/chainsaw"
+		matcolor	1, 1, 1, 0
+		visible 1
+		notime 1
+
+		onTime 0 {
+			transition "rect" "253 280 128 64" "256 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "WeapName10Large::forecolor" "0.6 1 0.9 0" "0.6 1 0.9 1" "300" ;
+		}
+		onTime 1000 {
+			transition "rect" "256 280 128 64" "259 280 128 64" "300" "0" "1" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "WeapName10Large::forecolor" "0.6 1 0.9 1" "0.6 1 0.9 0" "300" ;
+		}
+	}
+	windowDef WeapName10Large {
+		text	"#str_01425"
+		rect	287 ,273 ,220 ,20
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//#modified-fva; END
+		forecolor	0.6, 1, 0.9, 0
+		visible	1
+		textscale	0.25
+		font		"fonts/bank"
+	}
+
+    //
+    // Sound Meter - Dev Only
+    //
+	windowDef BgSOUND {
+		rect	0 ,0 ,128 ,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_LEFT
+		//#modified-fva; END
+		background	"guis/assets/soundmeter/audiobg"
+		matcolor	1 ,1 ,1 ,1
+		visible	("gui::s_debug" == 1)
+	}
+	windowDef OverlaySOUND {
+		rect	0 ,0 ,128 ,64
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_TOP_LEFT
+		//#modified-fva; END
+		background	"guis/assets/soundmeter/audioverlay"
+		matcolor	1 ,1 ,1 ,1
+		visible	0
+	}
+}

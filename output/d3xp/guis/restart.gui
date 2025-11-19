@@ -1,0 +1,855 @@
+-windowDef Desktop
+{
+	//arl; start
+	#include "guis/_cst_anchor.pd"
+	//arl; end
+	rect	0 ,0 ,640 ,480
+	backcolor	0, 0, 0, 1
+	menugui	1
+	float	"activate2"	0
+
+	onActivate {
+		if ("activate2" == 0) { 
+			set	"activate2" "1" ; 
+			resetTime "Open" "0" ;
+			set "cmd"  "music guisounds_restartTest" ;
+		}
+	}
+
+	windowDef Open
+	{
+		rect	0, 0, 0, 0
+		visible	0
+		notime	1
+
+		onTime 100 {
+			transition "BlackFade::backcolor" "0 0 0 1" "0 0 0 0" "1000" ;
+			//	localSound "guisounds_restartTest" ;
+		}
+
+		onTime 1500 {
+			resetTime "DoomLogo" "0" ;
+			resetTime "Resurrection" "0";
+		}
+
+		onTime 1700 {
+			set "BlackFade::rect" "0 0 640 0" ;
+			resetTime "Restart" "0" ;
+		}
+
+		onTime 1900 {
+			resetTime "Replay" "0" ;
+		}
+
+		onTime 2200 {
+			resetTime "Quit" "0" ;
+		}
+
+	}
+	windowDef FireRoq
+	{
+		rect	-50, -160, 740, 800
+		matcolor	1,1,1,1
+		background	"gui/mainmenu/fireball"
+		visible	1
+		noevents	1
+	}
+	windowDef faceTest
+	{
+		rect	0 ,0 ,640 ,480
+		visible	1
+		background	"gui/faces6"
+		matcolor	0.1 ,0.1 ,0.1 ,0.5
+	}
+	windowDef Background0
+	{
+		rect	5 ,5 ,-630 ,-460
+		visible	1
+		background	"gui/bloodtest1"
+		matcolor	0.2, 0, 0, 0.2
+	}
+	windowDef Background1
+	{
+		rect	5 ,5 ,630 ,470
+		visible	1
+		background	"gui/bloodtest1"
+		matcolor	1, 1, 1, 0.1
+	}
+	windowDef Background2
+	{
+		rect	5 ,5 ,630 ,470
+		visible	1
+		background	"gui/bloodtest2"
+		matcolor	1, 1, 1, 0.2
+	}
+	windowDef Pentagram2
+	{
+		rect	80, 0, 480, 480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		background	"gui/pentagram"
+		matcolor	pdinouthold [ time * .0005 ] /10 ,pdinouthold [ time * .0005 ] /10 ,pdinouthold [ time * .0005 ] /10 ,1
+		visible	1
+		noevents	1
+		rotate	time * 0.05
+	}
+	windowDef Pentagram1
+	{
+		rect	80, 0, 480, 480
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		background	"gui/pentagram"
+		matcolor	pdinouthold [ time * .00005 ] /8 ,pdinouthold [ time * .00005 ] /8 ,pdinouthold [ time * .00005 ] /8 ,1
+		visible	1
+		noevents	1
+		rotate	time * 0.005
+	}
+	windowDef Scanlines
+	{
+		rect	0, 0, 640, 480
+		matcolor	pdrasterfade [ time * .002 ], pdrasterfade [ time * .002 ], pdrasterfade [ time * .002 ], 1
+		background	"gui/test/gui_scanlines4"
+		visible	1
+		matscaley	3.75
+		noevents	1
+	}
+	windowDef Scanlines2
+	{
+		rect	0, 1, 640, 480
+		matcolor	0, 0, 0, 0.2
+		background	"gui/test/gui_scanlines4a"
+		visible	1
+		matscaley	3.75
+		noevents	1
+	}
+	windowDef DoomLogo
+	{
+		rect	207, 80, 256, 128
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		background	"gui/mainmenu/doom3xp"
+		matcolor	1 ,1 ,1 ,0
+		visible	1
+		noevents	1
+		notime	1
+
+		onTime 0 {
+			set "background" "guis/assets/mainmenu/doom3xp_3" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 0.6" "400" ;
+			//	transition "rect" "212 170 256 128" "212 166 256 128" "400" "0" "1" ;
+			set "DoomLogo2::visible" "1" ;
+			//	transition "DoomLogo2::rect" "212 170 256 128" "212 166 256 128" "400" "0" "1"  ;
+		}
+
+		onTime 50 {
+			set "background" "guis/assets/mainmenu/doom3xp_2" ;
+			//	set "matcolor" "1 1 1 0.4" ;
+			transition "matcolor" "1 1 1 0.6" "1 1 1 0.4" "50" ;
+		}
+
+		onTime 100 {
+			set "background" "guis/assets/mainmenu/doom3xp_3" ;
+			//	set "matcolor" "1 1 1 0.2" ;
+			transition "matcolor" "1 1 1 0.4" "1 1 1 0.2" "50" ;
+		}
+
+		onTime 150 {
+			set "background" "guis/assets/mainmenu/doom3xp_2" ;
+			//	set "matcolor" "1 1 1 0.4" ;
+			transition "matcolor" "1 1 1 0.2" "1 1 1 0.4" "50" ;
+		}
+
+		onTime 200 {
+			set "background" "guis/assets/mainmenu/doom3xp_1" ;
+			//	set "matcolor" "1 1 1 0.6" ;
+			transition "matcolor" "1 1 1 0.4" "1 1 1 0.6" "50" ;
+		}
+
+		onTime 250 {
+			transition "matcolor" "1 1 1 0.6" "1 1 1 1" "400" ;
+			set "background" "gui/mainmenu/doom3xp" ;
+		}
+
+		onTime 3000 {
+			transition "matcolor" "1 1 1 1" "1 1 1 0.6" "1000" ;
+		}
+
+		onTime 4000 {
+			transition "matcolor" "1 1 1 0.6" "1 1 1 1" "1000" ;
+		}
+
+		onTime 8000 {
+			//	transition "matcolor" "1 1 1 0.4" "1 0.7 0.5 0.6" "400" ;
+			transition "matcolor" "1 1 1 1" "1 1 1 0.6" "50" ;
+			set "background" "guis/assets/mainmenu/doom3xp_1" ;
+		}
+
+		onTime 8050 {
+			resetTime "50" ;
+		}
+
+	}
+	windowDef Resurrection {
+		rect		186, 195, 256, 64
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		background "gui/mainmenu/resurrection"
+		matcolor	1 ,1 ,1 ,0
+		noevents	1
+		notime		1
+		
+		onTime 0 {
+			//set "background" "guis/assets/mainmenu/doom3_3" ;
+			transition "matcolor" "1 1 1 0" "1 1 1 0.6" "400" ;
+		}
+
+		onTime 50 {
+			//set "background" "guis/assets/mainmenu/doom3_2" ;
+			transition "matcolor" "1 1 1 0.6" "1 1 1 0.4" "50" ;
+		}
+
+		onTime 100 {
+			//set "background" "guis/assets/mainmenu/doom3_3" ;
+			transition "matcolor" "1 1 1 0.4" "1 1 1 0.2" "50" ;
+		}
+
+		onTime 150 {
+			//set "background" "guis/assets/mainmenu/doom3_2" ;
+			transition "matcolor" "1 1 1 0.2" "1 1 1 0.4" "50" ;
+		}
+
+		onTime 200 {
+			//set "background" "guis/assets/mainmenu/doom3_1" ;
+			transition "matcolor" "1 1 1 0.4" "1 1 1 0.6" "50" ;
+		}
+
+		onTime 250 {
+			transition "matcolor" "1 1 1 0.6" "1 1 1 1" "400" ;
+			//set "background" "gui/mainmenu/doom3" ;
+		}
+
+		onTime 3000 {
+			transition "matcolor" "1 1 1 1" "1 1 1 0.6" "1000" ;
+		}
+
+		onTime 4000 {
+			transition "matcolor" "1 1 1 0.6" "1 1 1 1" "1000" ;
+		}
+
+		onTime 8000 {
+			transition "matcolor" "1 1 1 1" "1 1 1 0.6" "50" ;
+			//set "background" "guis/assets/mainmenu/doom3_1" ;
+		}
+
+		onTime 8050 {
+			resetTime "50" ;
+		}
+	}
+	
+	windowDef DoomLogo2
+	{
+		rect	207, 80, 256, 128
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		background	"gui/menu/blackbars"
+		matcolor	1 ,1 ,1 ,0.07
+		visible	0
+		noevents	1
+	}
+	windowDef DoomLogo3
+	{
+		rect	485, 280, 128, 64
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		background	"gui/mainmenu/doom3xp"
+		matcolor	1 ,1 ,1 ,0.6
+		visible	0
+		noevents	1
+	}
+	windowDef Overlay2
+	{
+		rect	0, 360, 640, -120
+		matcolor	0.1, 0, 0, 0.6
+		background	"guis/assets/common/addhighlight2"
+		noevents	1
+	}
+	windowDef Overlay3
+	{
+		rect	0, 0, -640, 150
+		matcolor	0.1, 0, 0, 0.6
+		background	"guis/assets/common/addhighlight2"
+		noevents	1
+	}
+	windowDef staticTest
+	{
+		rect	-30 ,-20 ,-700 ,520
+		visible	1
+		background	"gui/staticalt"
+		matcolor	1, 1, 1, pdcomm2Table[ time * 0.00005 ] / 4
+		noevents	1
+	}
+	windowDef Addhighlight
+	{
+		rect	0 ,0 ,640 ,480
+		background	"gui/addhighlight"
+		matcolor	0.8 ,0.3 ,0 ,1
+		visible	1
+	}
+	windowDef Mask
+	{
+		rect	0 ,0 ,640 ,480
+		visible	1
+		background	"guis/assets/test/mask"
+		matcolor	1, 1, 1, 0.8
+	}
+	windowDef Outershadow
+	{
+		rect	0 ,0 ,640 ,480
+		background	"guis/assets/common/outershadow"
+		matcolor	1 ,1 ,1 ,1
+		visible	1
+	}
+	windowDef Dirt
+	{
+		rect	0 ,0 ,640 ,480
+		matcolor	1, 1, 1 ,0.8
+		visible	1
+		background	"guis/assets/common/dirt3"
+	}
+	windowDef Restart
+	{
+		rect	252, 260, 120, 20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		forecolor	1, 1, 1, 0.5
+		text	""
+		textaligny	-4
+		textalign	1
+		font	"fonts/bank"
+		notime	1
+		noevents 1
+
+		onTime 0 {
+			set "Text" "[]" ;
+		}
+
+		onTime 50 {
+			set "Text" "#str_02550" ;
+		}
+
+		onTime 100 {
+			set "Text" "#str_02551" ;
+		}
+
+		onTime 150 {
+			set "Text" "#str_02552" ;
+		}
+
+		onTime 200 {
+			set "Text" "#str_02553" ;
+			set "noevents" "0" ;
+		}
+
+		onTime 250 {
+			set "Text" "#str_02554" ;
+		}
+
+		onTime 300 {
+			set "Text" "#str_02555" ;
+		}
+
+		onTime 350 {
+			set "Text" "#str_02546" ;
+		}
+
+		onAction {
+			set "cmd" "play guisounds_ping2" ;
+			set cmd "restart" ;
+		}
+
+		onMouseEnter {
+			transition "forecolor" "1 1 1 0.5" "1 1 1 1" "400" ;
+			transition "Restart2::forecolor" "1 1 1 0" "1 1 1 0.5" "400" ;
+			set "cmd" "play guisounds_ping" ;
+		}
+
+		onMouseExit {
+			transition "forecolor" "1 1 1 1" "1 1 1 0.5" "400" ;
+			transition "Restart2::forecolor" "1 1 1 0.5" "1 1 1 0" "400" ;
+		}
+
+	}
+	windowDef Restart2
+	{
+		rect	202, 278, 220, 20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		forecolor	1, 1, 1, 0
+		textscale	0.26
+		text	"#str_02556"
+		textaligny	-4
+		textalign	1
+		font	"fonts/bank"
+	}
+	windowDef Replay
+	{
+		rect	252, 300, 120, 20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		forecolor	1, 1, 1, 0.5
+		text	""
+		textaligny	-4
+		textalign	1
+		font	"fonts/bank"
+		notime	1
+		noevents 1
+
+		onTime 0 {
+			set "Text" "[]" ;
+		}
+
+		onTime 50 {
+			set "Text" "#str_02557" ;
+		}
+
+		onTime 100 {
+			set "Text" "#str_02558" ;
+		}
+
+		onTime 150 {
+			set "Text" "#str_02559" ;
+		}
+
+		onTime 200 {
+			set "Text" "#str_02560" ;
+			set "noevents" "0" ;
+		}
+
+		onAction {
+			set "cmd" "play guisounds_ping2" ;
+			resetTime "LoadGameBG" "0" ;
+		}
+
+		onMouseEnter {
+			transition "forecolor" "1 1 1 0.5" "1 1 1 1" "400" ;
+			transition "Replay2::forecolor" "1 1 1 0" "1 1 1 0.5" "400" ;
+			set "cmd" "play guisounds_ping" ;
+		}
+
+		onMouseExit {
+			transition "forecolor" "1 1 1 1" "1 1 1 0.5" "400" ;
+			transition "Replay2::forecolor" "1 1 1 0.5" "1 1 1 0" "400" ;
+		}
+
+	}
+	windowDef Replay2
+	{
+		rect	202, 318, 220, 20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		forecolor	1, 1, 1, 0
+		textscale	0.26
+		text	"#str_02561"
+		textaligny	-4
+		textalign	1
+		font	"fonts/bank"
+	}
+	windowDef Quit
+	{
+		rect	252, 340, 120, 20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		forecolor	1, 1, 1, 0.5
+		text	""
+		textaligny	-4
+		textalign	1
+		font	"fonts/bank"
+		notime	1
+		noevents 1
+
+		onTime 0 {
+			set "Text" "[]" ;
+		}
+
+		onTime 50 {
+			set "Text" "#str_04208" ;
+		}
+
+		onTime 100 {
+			set "Text" "#str_04209" ;
+		}
+
+		onTime 150 {
+			set "Text" "#str_04210" ;
+		}
+
+		onTime 200 {
+			set "Text" "#str_04211" ;
+			set "noevents" "0" ;
+		}
+
+		onTime 250 {
+			set "Text" "#str_04212" ;
+		}
+
+		onTime 300 {
+			set "Text" "#str_04213" ;
+		}
+
+		onTime 400 {
+			set "Text" "#str_04214" ;
+		}
+
+		onAction {
+			set "cmd" "play guisounds_ping2" ;
+			set cmd "exec disconnect" ;
+		}
+
+		onMouseEnter {
+			transition "forecolor" "1 1 1 0.5" "1 1 1 1" "400" ;
+			transition "Quit2::forecolor" "1 1 1 0" "1 1 1 0.5" "400" ;
+			set "cmd" "play guisounds_ping" ;
+		}
+
+		onMouseExit {
+			transition "forecolor" "1 1 1 1" "1 1 1 0.5" "400" ;
+			transition "Quit2::forecolor" "1 1 1 0.5" "1 1 1 0" "400" ;
+		}
+
+	}
+	windowDef Quit2
+	{
+		rect	202, 358, 220, 20
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		forecolor	1, 1, 1, 0
+		textscale	0.26
+		text	"#str_04215"
+		textaligny	-4
+		textalign	1
+		font	"fonts/bank"
+	}
+	windowDef LoadGame
+	{
+		rect	0,0,0,0
+		//Arl; start
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//Arl; end
+		visible	1
+		
+		onAction {
+		
+		}
+		
+		windowDef LoadGameBG
+		{
+			rect	0,303,640,35
+			visible	1
+			backcolor	0,0,0,0
+			bordersize 1
+			bordercolor 0,0,0,0.5
+			notime	1
+			
+			onTime 0 {
+				set "LoadGame::rect" "0 0 640 480" ;
+				transition "LoadGameBG::rect" "0 303 640 35" "0 71 640 307" "400" "0" "1" ;
+				transition "LoadGameBG::backcolor" "0 0 0 0" "0.3 0 0 0.4" "400" ;
+			}
+			onTime 400 {
+				set "LoadGameContent::visible" "1" ;
+			}
+			
+		}
+		windowDef LoadGameContent
+		{
+			rect	53, 70, 540, 330
+			visible	0
+			windowDef LGTitleText
+			{
+				rect	20, 5, 320, 20
+				text	"#str_02187"
+				textscale	0.32
+				textaligny	-3
+				forecolor	1, 1, 1, 1
+			}
+			windowDef LGCTitleBar
+			{
+				rect	5, 23, 510, 2
+				backcolor	1 ,0.8 ,0.6 ,0.2
+				noevents	1
+				visible	1
+			}
+			windowDef LGCBG1
+			{
+				rect	5, 50, 410, 240
+				backcolor	0, 0, 0, 0.6
+				bordercolor	0, 0, 0, 1
+				bordersize	1
+			}
+			windowDef LGCLoadGames
+			{
+				rect	7, 56, 406, 232
+				listDef LGCLoadList
+				{
+					rect	0, 0, 406, 232
+					forecolor	1, 1, 1, 1
+					bordercolor	0.52 ,0.4 ,0.1 ,0.5
+					textscale	0.25
+					listName	"loadGame"
+					tabstops	"2, 230, 312"
+					font	"fonts/an"
+					visible	1
+
+					onMouseEnter {
+						set "cmd" "play guisounds_ping" ;
+					}
+					onAction {
+						set "cmd" "play guisounds_click3" ;
+						set	"cmd"	"updateSaveGameInfo" ;
+					}
+					onEnter {
+						set "cmd" "play guisounds_menuclickup" ; 
+						set "cmd" "loadGame" ;
+					}
+				}
+			}
+			windowDef LGCText1
+			{
+				rect	7, 38, 195, 10
+				text	"#str_02181"
+				font	"fonts/bank"
+				textscale	0.25
+				textaligny	-9
+				forecolor	0.8, 0.8, 0.6, 1
+				visible	1
+			}
+			windowDef LGCText2
+			{
+				rect	240, 38, 195, 10
+				text	"#str_02182"
+				font	"fonts/bank"
+				textscale	0.25
+				textaligny	-9
+				forecolor	0.8, 0.8, 0.6, 1
+				visible	1
+			}
+			windowDef LGCText3
+			{
+				rect	322, 38, 195, 10
+				text	"#str_02183"
+				font	"fonts/bank"
+				textscale	0.25
+				textaligny	-9
+				forecolor	0.8, 0.8, 0.6, 1
+				visible	1
+			}
+			windowDef LGCLevelshot
+			{
+				rect	422, 50, 105, 79
+				background	"gui::loadgame_shot"
+				matcolor	1, 1, 1, 1
+				bordersize	1
+				bordercolor	0.6, 0.6, 0.4, 1
+				noevents	1
+				visible	1
+			}
+			windowDef LGCBox1_1
+			{
+				rect	518, 129, -9, -9
+				background	"gui/mainmenu/cframe_small2"
+				matcolor	1, 0.8, 0.6, 0.1
+				noevents	1
+				visible	1
+			}
+			windowDef LGCBox1_2
+			{
+				rect	422, 129, 96, 96
+				backcolor	1, 0.8, 0.6, 0.1
+				noevents	1
+				visible	1
+			}
+			windowDef LGCBox1_3
+			{
+				rect	422, 225, 86, 19
+				backcolor	1, 0.8, 0.6, 0.1
+				noevents	1
+				visible	1
+			}
+			windowDef LGCBox1_4
+			{
+				rect	508, 218, 16, -32
+				background	"gui/mainmenu/button_cornerangle"
+				matcolor	1, 0.8, 0.6, 0.1
+				noevents	1
+				visible	1
+			}
+			windowDef LGCLoadGameSpecific
+			{
+				rect	425, 140, 90, 100
+				windowDef LGCTextTempS1
+				{
+					rect	0, 30, 90, 60
+					text	"gui::saveGameDifficulty"
+					font	"fonts/bank"
+					textscale	0.24
+					textaligny	-9
+					forecolor	1, 1, 1, 1
+					visible 0
+				}
+				windowDef LGCTextTempS2
+				{
+					rect	0, 0, 90, 10
+					text	"gui::saveGameDate"
+					font	"fonts/bank"
+					textscale	0.25
+					textaligny	-9
+					forecolor	1,1,1, 1
+					visible	1
+				}
+				windowDef LGCTextTempS3
+				{
+					rect	0, 15, 90, 10
+					text	"gui::saveGameTime"
+					font	"fonts/bank"
+					textscale	0.25
+					textaligny	-9
+					textalign	0
+					forecolor	0.8, 0.8, 0.6, 1
+					visible	1
+				}
+			}
+			windowDef LGCBtn1
+			{
+				rect	418, 244, 110, 28
+				text	"#str_02188"
+				textscale	0.25
+				textaligny	4
+				forecolor	1, 1, 0.6, 1
+				visible	1
+
+				onMouseEnter {
+					transition "forecolor" "1 1 0.6 1" "1 1 1 1" "250" ;
+					transition "LGCBtn1EdgeG::matcolor" "1 0.9 0.8 1" "0.9 0.8 0.6 1" "250" ;
+					transition "LGCBtn1BorderG::matcolor" "1 0.9 0.8 1" "0.9 0.8 0.6 1" "250" ;
+					transition "LGCBtn1CornerG::matcolor" "1 0.9 0.8 1" "0.9 0.8 0.6 1" "250" ;
+					set "cmd" "play guisounds_ping" ;
+				}
+
+				onMouseExit {
+					transition "forecolor" "1 1 1 1" "1 1 0.6 1" "250" ;
+					transition "LGCBtn1EdgeG::matcolor" "0.9 0.8 0.6 1" "0.8 0.7 0.5 0.5" "400" ;
+					transition "LGCBtn1BorderG::matcolor" "0.9 0.8 0.6 1" "0.8 0.7 0.5 0.5" "400" ;
+					transition "LGCBtn1CornerG::matcolor" "0.9 0.8 0.6 1" "0.8 0.7 0.5 0.5" "400" ;
+				}
+
+				onAction {
+					set "cmd" "play guisounds_ping2" ;
+					set	"cmd"	"loadGame" ;
+				}
+
+				windowDef LGCBtn1EdgeG
+				{
+					rect	0, 0, 16, 32
+					background	"gui/mainmenu/buttonG_cornersquare2"
+					matcolor	0.8 ,0.7 ,0.5 ,0.5
+					noevents	1
+					visible	1
+				}
+				windowDef LGCBtn1BorderG
+				{
+					rect	16, 0, 75, 32
+					background	"gui/mainmenu/buttonG_middlesm2"
+					matcolor	0.8 ,0.7 ,0.5 ,0.5
+					noevents	1
+					visible	1
+				}
+				windowDef LGCBtn1CornerG
+				{
+					rect	91, 0, 16, 32
+					background	"gui/mainmenu/buttonG_cornerangle2"
+					matcolor	0.8 ,0.7 ,0.5 ,0.5
+					noevents	1
+					visible	1
+				}
+			}
+			windowDef LGCBtn2
+			{
+				rect	418, 266, 110, 28
+				text	"#str_04216"
+				textscale	0.25
+				textaligny	4
+				forecolor	1, 1, 0.6, 1
+				visible	1
+
+				onMouseEnter {
+					transition "forecolor" "1 1 0.6 1" "1 1 1 1" "250" ;
+					transition "LGCBtn2EdgeG::matcolor" "1 0.9 0.8 1" "0.9 0.8 0.6 1" "250" ;
+					transition "LGCBtn2BorderG::matcolor" "1 0.9 0.8 1" "0.9 0.8 0.6 1" "250" ;
+					transition "LGCBtn2CornerG::matcolor" "1 0.9 0.8 1" "0.9 0.8 0.6 1" "250" ;
+					set "cmd" "play guisounds_ping" ;
+				}
+
+				onMouseExit {
+					transition "forecolor" "1 1 1 1" "1 1 0.6 1" "250" ;
+					transition "LGCBtn2EdgeG::matcolor" "0.9 0.8 0.6 1" "0.8 0.7 0.5 0.5" "400" ;
+					transition "LGCBtn2BorderG::matcolor" "0.9 0.8 0.6 1" "0.8 0.7 0.5 0.5" "400" ;
+					transition "LGCBtn2CornerG::matcolor" "0.9 0.8 0.6 1" "0.8 0.7 0.5 0.5" "400" ;
+				}
+				onAction {
+					set	"cmd"	"play guisounds_menuclickdown" ; 
+					set "loadgame::rect" "0 0 0 0" ;
+					set "LoadGameBG::rect" "0 303 640 35" ;
+					set "LoadGameContent::visible" "0" ;
+				}
+
+				windowDef LGCBtn2EdgeG
+				{
+					rect	0, 0, 16, 32
+					background	"gui/mainmenu/buttonG_cornersquare2"
+					matcolor	0.8 ,0.7 ,0.5 ,0.5
+					noevents	1
+					visible	1
+				}
+				windowDef LGCBtn2BorderG
+				{
+					rect	16, 0, 75, 32
+					background	"gui/mainmenu/buttonG_middlesm2"
+					matcolor	0.8 ,0.7 ,0.5 ,0.5
+					noevents	1
+					visible	1
+				}
+				windowDef LGCBtn2CornerG
+				{
+					rect	91, 0, 16, 32
+					background	"gui/mainmenu/buttonG_cornerangle2"
+					matcolor	0.8 ,0.7 ,0.5 ,0.5
+					noevents	1
+					visible	1
+				}
+			}
+		}			
+	}
+	windowDef BlackFade
+	{
+		rect	0, 0, 640, 480
+		backcolor	0, 0, 0, 1
+		visible	1
+	}
+	
+		windowDef FakeDesktop {
+		rect 0, 0, 640, 480
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+	}
+}

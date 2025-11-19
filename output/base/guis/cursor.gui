@@ -1,0 +1,134 @@
+windowDef Desktop {
+//#modified-fva; BEGIN
+#include "guis/_cst_anchor.pd"
+//#modified-fva; END
+	rect	0 ,0 ,640 ,480 
+	nocursor	1
+	float	talk 	0
+
+
+	onEvent {
+		if ("gui::talkcursor" == 0) { 
+			if ("talk" == 0) {
+				set	"talk" "1" ; 		
+				set "centerOff::visible" "1" ;			
+				resetTime "crosshairFrame" "0" ;
+			}			
+		} 
+		if ("gui::talkcursor" == 1) { 
+			if ("talk" == 1) { 
+				set	"talk" "0" ; 
+				set "centerOff::visible" "0" ;
+				resetTime "crosshairLight" "0" ;
+			}
+		} 
+	}
+
+	onNamedEvent hitTime {
+		set "hitOn::visible" "1" ;
+		resetTime "hitOn" "0" ;
+	}
+		
+	windowDef crosshairParent {
+		rect		304 ,224 ,100 ,32  
+		//#modified-fva; BEGIN
+		cstAnchor	CST_ANCHOR_CENTER_CENTER
+		//#modified-fva; END
+		
+		windowDef centerOff {
+			rect	0,0,32,32
+			visible		1
+			windowDef crosshairCenter {
+				rect		0 ,0 ,32 ,32  
+				background	"guis/assets/common/crosshaircenter"
+				visible		"gui::combatcursor"
+				matcolor	0.7, 1, 0.8, 1
+			}
+			windowDef crosshairCenter2 {
+				rect		0 ,0 ,32 ,32  
+				background	"guis/assets/common/crosshaircenter2"
+				visible		"gui::combatcursor"
+				matcolor	0.45, 0.7, 0.65, 0.5
+			}
+		}
+
+		windowDef crosshairLight {
+			rect		0 ,0 ,32 ,32  
+			background	"guis/assets/common/crosshairlight"
+			visible		"gui::combatcursor"
+			matcolor	0.45, 0.7, 0.65, 0.2
+			notime		1
+
+			onTime 0 {
+				transition "crosshairLight::matcolor" "1 1 1 0.6" "0.1 0.5 0.35 1" "150" ;
+				transition "crosshairFrame::matcolor" "1 1 1 0.4" "0.1 0.5 0.4 0.5" "150" ;
+				transition "crosshairFrame3::matcolor" "0.1 0.5 0.4 0" "0.1 0.5 0.5 0.5" "150" ;
+				transition "crosshairFrame2::matcolor" "0.1 0.5 0.4 0" "0.1 0.5 0.5 0.25" "150" ;
+				transition "crosshairParent::rect" "300 224 100 32" "298 224 100 32" "150" ; 				
+			}
+
+		}
+		windowDef crosshairFrame {
+			rect		0 ,0 ,32 ,32  
+			background	"guis/assets/common/crosshairframe"
+			visible		"gui::combatcursor"
+			matcolor	0.45, 0.7, 0.65, 0.1
+			notime		1
+
+			onTime 0 {
+				transition "crosshairLight::matcolor" "0 1 0.5 0.5" "0.45 0.7 0.65 0.2" "140" ;
+				transition "crosshairFrame::matcolor" "0 1 0.5 0.2" "0.45 0.7 0.65 0.1" "140" ;
+				transition "crosshairFrame3::matcolor" "0.1 0.5 0.5 0.5" "0.1 0.5 0.5 0" "140" ;
+				transition "crosshairFrame2::matcolor" "0.1 0.5 0.5 0.25" "0.1 0.5 0.5 0" "140" ;
+				transition "crosshairParent::rect" "298 224 100 32" "304 224 100 32" "140" ; 
+			}				
+		}	
+		windowDef crosshairFrame2 {
+			rect		18 ,0 ,64 ,32  
+			background	"guis/assets/common/crosshairframe2"
+			visible		"gui::combatcursor"
+			matcolor	0.1, 0.5, 0.4, 0
+		}
+		windowDef crosshairFrame3 {
+			rect		18 ,-1 ,64 ,-32  
+			background	"guis/assets/common/crosshairframe2"
+			visible		"gui::combatcursor"
+			matcolor	0.1, 0.5, 0.5, 0
+		}
+		
+		windowDef hitOn {
+			rect	0,0,32,32
+			notime	1
+			visible 0
+
+			windowDef crosshairCenterHit {
+				rect		0 ,0 ,32 ,32  
+				background	"guis/assets/common/crosshaircenter"
+				visible		"gui::combatcursor"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef crosshairCenter2Hit {
+				rect		0 ,0 ,32 ,32  
+				background	"guis/assets/common/crosshaircenter2"
+				visible		"gui::combatcursor"
+				matcolor	0.45, 0.7, 0.65, 0.5
+			}			
+			windowDef crosshairLightHit {
+				rect		0 ,0 ,32 ,32  
+				background	"guis/assets/common/crosshairlight"
+				visible		"gui::combatcursor"
+				matcolor	0.8, 0, 0, 1
+			}
+			windowDef crosshairFrameHit {
+				rect		0 ,0 ,32 ,32  
+				background	"guis/assets/common/crosshairframe"
+				visible		"gui::combatcursor"
+				matcolor	0.6, 0.3, 0, 0.6
+			}
+			
+			onTime 200 {
+				set "hitOn::visible" "0" ;
+			}
+		}
+	}
+}

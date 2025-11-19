@@ -1,0 +1,123 @@
+//#modified-fva; BEGIN
+#include "guis/_cst_anchor.pd"
+//#modified-fva; END
+
+windowDef Desktop {
+	rect		0 ,0 ,640 ,480
+	menugui		0
+	nocursor	1
+
+	onActivate {
+		if ( "gui::alpha0" == 4 ) {
+			set "history1::forecolor" "1, 1, 1, 1";
+		} else if ( "gui::alpha0" == 3 ) {
+			set "history1::forecolor" "1, 1, 1, 0.875";
+		} else if ( "gui::alpha0" == 2 ) {
+			set "history1::forecolor" "1, 1, 1, 0.75";
+		} else if ( "gui::alpha0" == 1 ) {
+			set "history1::forecolor" "1, 1, 1, 0.625";
+		} else {
+			set "history1::forecolor" "1, 1, 1, 0.5";
+		}
+		if ( "gui::alpha1" == 4 ) {
+			set "history2::forecolor" "1, 1, 1, 1";
+		} else if ( "gui::alpha1" == 3 ) {
+			set "history2::forecolor" "1, 1, 1, 0.875";
+		} else if ( "gui::alpha1" == 2 ) {
+			set "history2::forecolor" "1, 1, 1, 0.75";
+		} else if ( "gui::alpha1" == 1 ) {
+			set "history2::forecolor" "1, 1, 1, 0.625";
+		} else {
+			set "history2::forecolor" "1, 1, 1, 0.5";
+		}
+		if ( "gui::alpha2" == 4 ) {
+			set "history3::forecolor" "1, 1, 1, 1";
+		} else if ( "gui::alpha2" == 3 ) {
+			set "history3::forecolor" "1, 1, 1, 0.875";
+		} else if ( "gui::alpha2" == 2 ) {
+			set "history3::forecolor" "1, 1, 1, 0.75";
+		} else if ( "gui::alpha2" == 1 ) {
+			set "history3::forecolor" "1, 1, 1, 0.625";
+		} else {
+			set "history3::forecolor" "1, 1, 1, 0.5";
+		}
+		if ( "gui::alpha3" == 4 ) {
+			set "history4::forecolor" "1, 1, 1, 1";
+		} else if ( "gui::alpha3" == 3 ) {
+			set "history4::forecolor" "1, 1, 1, 0.875";
+		} else if ( "gui::alpha3" == 2 ) {
+			set "history4::forecolor" "1, 1, 1, 0.75";
+		} else if ( "gui::alpha3" == 1 ) {
+			set "history4::forecolor" "1, 1, 1, 0.625";
+		} else {
+			set "history4::forecolor" "1, 1, 1, 0.5";
+		}
+		if ( "gui::alpha4" == 4 ) {
+			set "history5::forecolor" "1, 1, 1, 1";
+		} else if ( "gui::alpha4" == 3 ) {
+			set "history5::forecolor" "1, 1, 1, 0.875";
+		} else if ( "gui::alpha4" == 2 ) {
+			set "history5::forecolor" "1, 1, 1, 0.75";
+		} else if ( "gui::alpha4" == 1 ) {
+			set "history5::forecolor" "1, 1, 1, 0.625";
+		} else {
+			set "history5::forecolor" "1, 1, 1, 0.5";
+		}
+	}
+	//+13
+	windowDef history1 {
+		rect 20, 275, 638, 10
+        //#modified-fva; BEGIN
+        cstAnchor	CST_ANCHOR_LEFT
+        //#modified-fva; END
+		forecolor 1, 1, 1, 1
+		text "gui::chat0"
+		textscale 0.25
+		font "fonts/an"
+		shadow 1
+	}
+	windowDef history2 {
+		rect 20, 288, 638, 10
+        //#modified-fva; BEGIN
+        cstAnchor	CST_ANCHOR_LEFT
+        //#modified-fva; END
+		forecolor 1, 1, 1, 1
+		text "gui::chat1"
+		textscale 0.25
+		font "fonts/an"
+		shadow 1
+	}
+	windowDef history3 {
+		rect 20, 301, 638, 10
+        //#modified-fva; BEGIN
+        cstAnchor	CST_ANCHOR_LEFT
+        //#modified-fva; END
+		forecolor 1, 1, 1, 1
+		text "gui::chat2"
+		textscale 0.25
+		font "fonts/an"
+		shadow 1
+	}
+	windowDef history4 {
+		rect 20, 314, 638, 10
+        //#modified-fva; BEGIN
+        cstAnchor	CST_ANCHOR_LEFT
+        //#modified-fva; END
+		forecolor 1, 1, 1, 1
+		text "gui::chat3"
+		textscale 0.25
+		font "fonts/an"
+		shadow 1
+	}
+	windowDef history5 {
+		rect 20, 327, 638, 10
+        //#modified-fva; BEGIN
+        cstAnchor	CST_ANCHOR_LEFT
+        //#modified-fva; END
+		forecolor 1, 1, 1, 1
+		text "gui::chat4"
+		textscale 0.25
+		font "fonts/an"
+		shadow 1
+	}
+}

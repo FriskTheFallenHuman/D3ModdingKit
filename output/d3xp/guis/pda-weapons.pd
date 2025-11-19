@@ -1,0 +1,2455 @@
+//WEAPON STRIP
+	windowDef weaponStripBG
+	{
+		rect	253,480,296,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		backcolor	0,0,0,0.5
+	}
+	windowDef weaponStripClip
+	{
+		rect	253,480,295,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		windowDef WeapStrip
+		{
+			rect	0,1,800,44
+			visible	1
+			//Flashlight
+			windowDef WeapIconBG0
+			{
+				visible	1
+				rect	4,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap0
+				{
+					visible	("gui::weapon0" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon0
+				{
+					visible	("gui::weapon0" >= 1)
+					rect	7,2,64,32
+					background	"guis/assets/hud/icons/flashlightw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "1" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "1" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02482" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+
+			//Grabber
+			windowDef WeapIconBG2
+			{
+				visible	1
+				rect	87,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap2
+				{
+					visible	("gui::weapon2" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon2
+				{
+					visible	("gui::weapon2" >= 1)
+					rect	7,2,64,32
+					background	"guis/assets/hud/icons/grabberw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "1" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "1" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_00100207" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+
+			//Pistol
+			windowDef WeapIconBG3
+			{
+				visible	1
+				rect	170,1,40,40
+				notime	1
+				background	"guis/assets/hud/icons/weapsmallclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap3
+				{
+					visible	("gui::weapon3" == 0)
+					rect	4,4,32,32
+					background	"guis/assets/hud/icons/noweapsmall"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon3
+				{
+					visible	("gui::weapon3" >= 1)
+					rect	4,3,32,32
+					background	"guis/assets/hud/icons/pistolw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "1" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "1" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_01819" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG4
+			{
+				visible	1
+				rect	213,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap4
+				{
+					visible	("gui::weapon4" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1,1,1,0.05
+				}
+				windowDef WeapIcon4
+				{
+					visible	("gui::weapon4" >= 1)
+					rect	9,1,64,32
+					background	"guis/assets/hud/icons/shotgunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "1" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "1" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_01820" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+
+			windowDef WeapIconBG5
+			{
+				visible	1
+				rect	296,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap5
+				{
+					visible	("gui::weapon5" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1,1,1,0.05
+				}
+				windowDef WeapIcon5
+				{
+					visible	("gui::weapon5" >= 1)
+					rect	9,1,64,32
+					background	"guis/assets/hud/icons/doublebarrelw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "1" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "1" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_00100208" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+
+			windowDef WeapIconBG6
+			{
+				visible	1
+				rect	379,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap6
+				{
+					visible	("gui::weapon6" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon6
+				{
+					visible	("gui::weapon6" >= 1)
+					rect	7,3,64,32
+					background	"guis/assets/hud/icons/machinegunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "1" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "1" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02476" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG7
+			{
+				visible	1
+				rect	462,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap7
+				{
+					visible	("gui::weapon7" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon7
+				{
+					visible	("gui::weapon7" >= 1)
+					rect	9,2,64,32
+					background	"guis/assets/hud/icons/chaingunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "1" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "1" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02477" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG8
+			{
+				visible	1
+				rect	545,1,40,40
+				notime	1
+				background	"guis/assets/hud/icons/weapsmallclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap8
+				{
+					visible	("gui::weapon8" == 0)
+					rect	4,4,32,32
+					background	"guis/assets/hud/icons/noweapsmall"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon8
+				{
+					visible	("gui::weapon8" >= 1)
+					rect	3,4,32,32
+					background	"guis/assets/hud/icons/grenadew"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "1" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "1" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02478" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG9
+			{
+				visible	1
+				rect	588,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap9
+				{
+					visible	("gui::weapon9" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon9
+				{
+					visible	("gui::weapon9" >= 1)
+					rect	6,3,64,32
+					background	"guis/assets/hud/icons/plasmagunw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "1" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "1" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02479" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG10
+			{
+				visible	1
+				rect	671,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap10
+				{
+					visible	("gui::weapon10" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon10
+				{
+					visible	("gui::weapon10" >= 1)
+					rect	6,3,64,32
+					background	"guis/assets/hud/icons/rocketlauncherw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "1" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "1" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon1::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02480" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG11
+			{
+				visible	1
+				rect	754,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap11
+				{
+					visible	("gui::weapon11" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon11
+				{
+					visible	("gui::weapon11" >= 1)
+					rect	8,3,64,32
+					background	"guis/assets/hud/icons/bfgw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "1" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "1" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0.1" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_02524" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+			windowDef WeapIconBG12
+			{
+				visible	1
+				rect	837,1,80,40
+				notime	1
+				background	"guis/assets/hud/icons/weaplargeclip"
+				matcolor	0.25,0.3,0.3,1
+				windowDef NoWeap12
+				{
+					visible	("gui::weapon12" == 0)
+					rect	8,4,64,32
+					background	"guis/assets/hud/icons/noweaplarge"
+					matcolor	1, 1, 1, 0.05
+				}
+				windowDef WeapIcon12
+				{
+					visible	("gui::weapon12" >= 1)
+					rect	8,3,64,32
+					background	"guis/assets/hud/icons/bloodorbw"
+					matcolor	1, 1, 1, 1
+					float "weaponon" 0
+
+					onAction {
+						if ("weaponon" == 0) {
+							localSound	"guisounds_ping2" ;
+							if ("WeapBox::visible" == 0) {
+								set "WeapBox::visible" "1" ;
+								transition "WeapBox::rect" "234 330 408 55" "229 330 408 93" "200" "0" "0.7" ;
+							}
+							set "TextWeapName::visible" "0" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "1" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "1" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0.1" ;
+
+						} else {
+							localSound	"guisounds_ping" ;
+							set "WeapBox::visible" "0" ;
+							set "TextWeapName::visible" "1" ;
+							set "WeapBox::rect" "234 330 408 55" ;
+
+							set "Weap0::visible" "0" ;
+							set "Weap2::visible" "0" ;
+							set "Weap3::visible" "0" ;
+							set "Weap4::visible" "0" ;
+							set "Weap5::visible" "0" ;
+							set "Weap6::visible" "0" ;
+							set "Weap7::visible" "0" ;
+							set "Weap8::visible" "0" ;
+							set "Weap9::visible" "0" ;
+							set "Weap10::visible" "0" ;
+							set "Weap11::visible" "0" ;
+							set "Weap12::visible" "0" ;
+
+
+							set "WeapIcon0::weaponon" "0" ;
+							set "WeapIcon2::weaponon" "0" ;
+							set "WeapIcon3::weaponon" "0" ;
+							set "WeapIcon4::weaponon" "0" ;
+							set "WeapIcon5::weaponon" "0" ;
+							set "WeapIcon6::weaponon" "0" ;
+							set "WeapIcon7::weaponon" "0" ;
+							set "WeapIcon8::weaponon" "0" ;
+							set "WeapIcon9::weaponon" "0" ;
+							set "WeapIcon10::weaponon" "0" ;
+							set "WeapIcon11::weaponon" "0" ;
+							set "WeapIcon12::weaponon" "0" ;
+
+
+							set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+							set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+						}
+					}
+					onMouseEnter {
+						transition "TextWeapName::forecolor" "1 1 1 0.8" "1 1 1 0.4" "150" ;
+						set "TextWeapName::text" "#str_00100209" ;
+					}
+
+					onMouseExit {
+						set "TextWeapName::forecolor" "1 1 1 0" ;
+						set "TextWeapName::text" " " ;
+					}
+
+				}
+			}
+		}
+	}
+	windowDef weaponBtnLeft
+	{
+		rect	243,480,8,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		backcolor	1,1,1,0.5
+		float	"weaploc"	0
+
+		onAction {
+			if ("weaponBtnLeft::weaploc" == 0) {
+				localSound	"guisounds_clickstatic2" ;
+				set "weapstrip::rect" "0 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "0" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 1) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "0 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "0" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 2) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-42 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "1" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 3) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-84 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "2" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 4) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-127 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "3" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 5) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-168 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "4" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 6) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-210 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "5" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 7) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-251 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "6" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 8) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-293 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "7" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 9) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-376 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "8" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 10) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-420 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "7" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 11) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-457 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "10" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 12) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-494 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "11" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 13) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-531 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "12" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 14) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-586 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "13" ;
+			}
+
+		}
+
+		onMouseEnter {
+			transition "LeftArrow::matcolor" "1 1 1 1" "0 0 0 1" "200" ;
+			set "TextWeapName::forecolor" "1 1 1 0" ;
+			set "TextWeapName::text" " " ;
+		}
+		onMouseExit {
+			transition "LeftArrow::matcolor" "0 0 0 1" "1 1 1 1" "200" ;
+		}
+		windowDef LeftArrow
+		{
+			rect	2,18,-4,8
+			//Arl; start
+		    cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		    //Arl; end
+			background	"guis/assets/pda/arrow"
+			matcolor	1,1,1,1
+			noevents	1
+			visible	1
+		}
+	}
+	windowDef weaponBtnRight
+	{
+		rect	551,480,8,44
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	1
+		backcolor	1,1,1,0.5
+
+		onAction {
+			if ("weaponBtnLeft::weaploc" == 0) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-42 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "1" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 1) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-84 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "2" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 2) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-127 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "3" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 3) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-168 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "4" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 4) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-210 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "5" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 5) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-251 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "6" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 6) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-293 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "7" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 7) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-376 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "8" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 8) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-420 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "9" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 9) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-457 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "10" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 10) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-502 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "11" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 11) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-542 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "12" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 12) {
+				localSound	"guisounds_ping2" ;
+				set "weapstrip::rect" "-586 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "13" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 13) {
+				localSound	"guisounds_clickstatic2" ;
+				set "weapstrip::rect" "-624 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "14" ;
+			}
+			if ("weaponBtnLeft::weaploc" == 14) {
+				localSound	"guisounds_clickstatic2" ;
+				set "weapstrip::rect" "-624 1 1000 44" ;
+				set "weaponBtnLeft::weaploc" "14" ;
+			}
+
+		}
+		onMouseEnter {
+			transition "RightArrow::matcolor" "1 1 1 1" "0 0 0 1" "200" ;
+			set "TextWeapName::forecolor" "1 1 1 0" ;
+			set "TextWeapName::text" " " ;
+		}
+		onMouseExit {
+			transition "RightArrow::matcolor" "0 0 0 1" "1 1 1 1" "200" ;
+		}
+		windowDef RightArrow
+		{
+			rect	2,18,4,8
+			//Arl; start
+		    cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		    //Arl; end
+			background	"guis/assets/pda/arrow"
+			matcolor	1,1,1,1
+			noevents	1
+			visible	1
+		}
+	}
+
+	windowDef WeapBox
+	{
+		rect	234, 330, 408, 55
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+		visible	0
+
+		onAction {
+
+		}
+
+		windowDef WeapBg1R
+		{
+			rect	372,17,-32,58
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_s"
+			visible	1
+		}
+		windowDef WeapBg1TR
+		{
+			rect	372,-15,32,32
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg1TL
+		{
+			rect	3,-15,-32,32
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg1L
+		{
+			rect	3,17,32,58
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_s"
+			visible	1
+		}
+		windowDef WeapBg1BL
+		{
+			rect	3,75,-32,-32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg1BM
+		{
+			rect	35,75,337,-32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m"
+			visible	1
+		}
+		windowDef WeapBg1MM
+		{
+			rect	35,17,337,58
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m2"
+			visible	1
+		}
+		windowDef WeapBg1TM
+		{
+			rect	35,-15,337,32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_m"
+			visible	1
+		}
+		windowDef WeapBg1BR
+		{
+			rect	372,75,32,-32
+					//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 1
+			background	"guis/assets/pda/ib_c2"
+			visible	1
+		}
+		windowDef WeapBg2TL
+		{
+			rect	7,3,-12,43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef WeapBg2T
+		{
+			rect	19,3,369,43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_tb"
+			visible	1
+		}
+		windowDef WeapBg2TR
+		{
+			rect	388,3,12,43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef WeapBg2BL
+		{
+			rect	7,46,-12,-43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef WeapBg2B
+		{
+			rect	19,46,369,-43
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_tb"
+			visible	1
+		}
+		windowDef WeapBg2BR
+		{
+			rect	388,46,12,-43
+								//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			matcolor	1, 1, 1, 0.7
+			background	"gui/pda/2_c"
+			visible	1
+		}
+		windowDef Weap0
+		{
+			rect	12,11,384,69
+								//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon0Big
+			{
+				visible	1
+				rect	3,0,128,64
+									//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				background	"guis/assets/hud/icons/flashlightw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle0
+			{
+				rect	138,-3,234,21
+						//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_02024"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText0
+			{
+				rect	139,14,243,55
+						//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02532"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap2
+		{
+			rect	12,11,384,69
+																//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			
+			windowDef WeapIcon2Big
+			{
+				visible	1
+				rect	3,0,128,64
+				background	"guis/assets/hud/icons/grabberw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle2
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00100207"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText2
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_00100210"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap3
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon3Big
+			{
+				visible	1
+				rect	33,-4,64,64
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				background	"guis/assets/hud/icons/Pistolw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle3
+			{
+				rect	138,-3,234,21
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00242"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText3
+			{
+				rect	139,14,243,55
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02533"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap4
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon4Big
+			{
+				visible	1
+				rect	5,-5,128,64
+				background	"guis/assets/hud/icons/shotgunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle4
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00243"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText4
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02534"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap5
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon5Big
+			{
+				visible	1
+				rect	5,-5,128,64
+				background	"guis/assets/hud/icons/doublebarrelw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle5
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00100211"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText5
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_00100212"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap6
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon6Big
+			{
+				visible	1
+				rect	5,1,128,64
+				background	"guis/assets/hud/icons/machinegunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle6
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00244"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText6
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02535"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap7
+		{
+			rect	12,11,384,69
+			visible	0
+			windowDef WeapIcon7Big
+			{
+				visible	1
+				rect	5,2,128,64
+				background	"guis/assets/hud/icons/chaingunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle7
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00245"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText7
+			{
+				rect	139,14,239,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02536"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap8
+		{
+			rect	12,11,384,69
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon8Big
+			{
+				visible	1
+				rect	34,1,64,64
+				background	"guis/assets/hud/icons/grenadew"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle8
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01422"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText8
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02537"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap9
+		{
+			rect	12,11,384,69
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon1Big
+			{
+				visible	1
+				rect	3,0,128,64
+				background	"guis/assets/hud/icons/plasmagunw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle9
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01456"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText9
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02538"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap10
+		{
+			rect	12,11,384,69
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon10Big
+			{
+				visible	1
+				rect	5,0,128,64
+				background	"guis/assets/hud/icons/rocketlauncherw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle10
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_01424"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText10
+			{
+				rect	139,14,243,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02539"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap11
+		{
+			rect	12,11,384,69
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon11Big
+			{
+				visible	1
+				rect	5,1,128,64
+				background	"guis/assets/hud/icons/bfgw"
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle11
+			{
+				rect	138,-3,234,21
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_02524"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText11
+			{
+				rect	139,14,225,55
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_02540"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+		windowDef Weap12
+		{
+			rect	12,11,384,69
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+			visible	0
+			windowDef WeapIcon12Big
+			{
+				visible	1
+				rect	5,4,128,64
+				background	"guis/assets/hud/icons/bloodorbw"
+		//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				matcolor	1, 1, 1, 1
+			}
+			windowDef WeapTitle12
+			{
+				rect	138,-3,234,21
+													//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,1
+				text	"#str_00100209"
+				textscale	0.25
+				font	"fonts/bank"
+			}
+			windowDef WeapText12
+			{
+				rect	139,14,230,55
+																	//Arl; start
+		cstAnchor	CST_ANCHOR_BOTTOM_CENTER
+		//Arl; end
+				visible	1
+				foreColor	1,1,1,0.8
+				text	"#str_00100213"
+				textscale	0.22
+				font	"fonts/an"
+			}
+		}
+
+		windowDef WeapBgClose
+		{
+			rect	348,3,64,16
+			matcolor	0.7, 0.9, 0.9, 1
+			background	"gui/pda/pd/close"
+			visible	1
+
+			onMouseEnter {
+				transition "matcolor" "0.7 0.9 0.9 1" "0.9 1 1 1" "200" ;
+			}
+
+			onMouseExit {
+				transition "matcolor" "0.9 1 1 1" "0.7 0.9 0.9 1" "200" ;
+			}
+
+			onAction {
+				localSound	"guisounds_ping" ;
+				set "WeapBox::visible" "0" ;
+				set "TextWeapName::visible" "1" ;
+				set "TextWeapName::text" " " ;
+				set "WeapBox::rect" "234 330 408 55" ;
+
+				set "Weap0::visible" "0" ;
+				set "Weap2::visible" "0" ;
+				set "Weap3::visible" "0" ;
+				set "Weap4::visible" "0" ;
+				set "Weap5::visible" "0" ;
+				set "Weap6::visible" "0" ;
+				set "Weap7::visible" "0" ;
+				set "Weap8::visible" "0" ;
+				set "Weap9::visible" "0" ;
+				set "Weap10::visible" "0" ;
+				set "Weap11::visible" "0" ;
+				set "Weap12::visible" "0" ;
+
+
+				set "WeapIcon0::weaponon" "0" ;
+				set "WeapIcon2::weaponon" "0" ;
+				set "WeapIcon3::weaponon" "0" ;
+				set "WeapIcon4::weaponon" "0" ;
+				set "WeapIcon5::weaponon" "0" ;
+				set "WeapIcon6::weaponon" "0" ;
+				set "WeapIcon7::weaponon" "0" ;
+				set "WeapIcon8::weaponon" "0" ;
+				set "WeapIcon9::weaponon" "0" ;
+				set "WeapIcon10::weaponon" "0" ;
+				set "WeapIcon11::weaponon" "0" ;
+				set "WeapIcon12::weaponon" "0" ;
+
+				set "WeapIconBG0::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG2::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG3::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG4::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG5::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG6::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG7::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG8::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG9::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG10::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG11::backcolor" "0.1 0.45 0.8 0" ;
+				set "WeapIconBG12::backcolor" "0.1 0.45 0.8 0" ;
+
+			}
+
+		}
+	}

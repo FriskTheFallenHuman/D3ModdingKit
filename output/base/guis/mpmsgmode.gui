@@ -1,0 +1,107 @@
+/*
+messagemode - one line prompt for quick chatting
+*/
+
+//#modified-fva; BEGIN
+#include "guis/_cst_anchor.pd"
+//#modified-fva; END
+
+windowDef Desktop
+{
+	rect	0, 0, 640, 480
+	backcolor	0, 0, 0, 0
+	visible	1
+	menugui	1
+
+	onActivate {
+		setFocus "chat" ;
+	}
+
+	onESC {
+		set "cmd" "close" ;
+	}
+
+	windowDef MainWindow
+	{
+		rect	0,121,427,175
+		visible	1
+		windowDef MessageToggle
+		{
+			rect	14,137,103,21
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_LEFT
+            //#modified-fva; END
+			text	"#str_02497"
+			textscale	0.20
+			forecolor	0.698,1,1,1
+			textalign	2
+			noevents	1
+			visible	0
+			font	"fonts/bank"
+			shadow	1
+		}
+		choiceDef MessageMode1
+		{
+			choices	"#str_04240"
+			choiceType	0
+			gui	"messagemode"
+			rect	34,130,95,20
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_LEFT
+            //#modified-fva; END
+			visible	1
+			forecolor	0,0,0,1
+			text	""
+			textscale	0.25
+			font	"fonts/bank"
+			textalign	2
+			noevents 1
+		}
+		choiceDef MessageMode
+		{
+			choices	"#str_04240"
+			choiceType	0
+			gui	"messagemode"
+			rect	33,129,95,20
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_LEFT
+            //#modified-fva; END
+			visible	1
+			forecolor	1,1,1,1
+			text	""
+			textscale	0.25
+			font	"fonts/bank"
+			textalign	2
+			noevents 1
+
+			onActionRelease {
+				setFocus "chat" ;
+			}
+		}
+		editDef chat
+		{
+			rect	130,133,272,18
+            //#modified-fva; BEGIN
+            cstAnchor	CST_ANCHOR_LEFT
+            //#modified-fva; END
+			text	"gui::chattext"
+			maxchars	80
+			textscale	0.25
+			textalign	0
+			forecolor	1, 1, 1, 1
+			backcolor	0,0,0,0.6
+			font	"fonts/an"
+			cursorvar	"chatcursor"
+			showcursor	1
+			visible	1
+			textaligny	-2
+			bordersize	1
+			bordercolor	0.15,0.25,0.25,1
+
+			onEnterRelease {
+				set "cmd" "chatmessage" ;
+			}
+
+		}
+	}
+}

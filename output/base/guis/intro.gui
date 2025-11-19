@@ -1,0 +1,784 @@
+windowDef Desktop
+{
+	rect	0,0,640,480
+	backcolor	0,0,0,1
+	menugui	1
+	
+	onESC {
+			set	"cmd"	"startgame" ;		
+	}	
+
+	windowDef IntroLoop
+	{
+		rect	0,0,640,480
+		visible	1
+		background	"gui/intro/introloop"
+		matcolor	1,1,1,1
+		notime 1
+
+		onTime 0 {
+			resetCinematics ;
+		}
+	}
+	windowDef Introid
+	{
+		rect	0,0,640,480
+		visible	1
+		background	"gui/intro/introid"
+		matcolor	1,1,1,1
+		notime 1
+
+		onTime 0 {
+			resetCinematics ;
+		}
+		onActivate {
+			resetTime "Anim" "0" ;
+			showcursor "0" ;
+		//	resetCinematics ;
+		}		
+	}	
+	windowDef RoqCover
+	{
+		rect	0,0,640,480
+		visible	1
+		backcolor	0,0,0,0
+	}
+	windowDef Logo
+	{
+		rect	41,213,38,33
+		matcolor	1,1,1,0
+		background	"guis/assets/common/mlogo"
+		visible	0
+	}
+	windowDef ParentScroll
+	{
+		rect	10,179,640,492
+		visible	1
+		windowDef Block1
+		{
+			rect	66,35,0,25
+			visible	1
+			windowDef Blur1
+			{
+				rect	0,-2,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text1
+			{
+				rect	5,0,545,421
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04052"
+				textscale	0.4
+			}
+		}
+		windowDef Block2
+		{
+			rect	66,60,0,25
+			visible	1
+			windowDef Blur2
+			{
+				rect	0,-27,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text2
+			{
+				rect	5,-2,545,398
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04053"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block3
+		{
+			rect	66,104,0,25
+			visible	1
+			windowDef Blur3
+			{
+				rect	0,-71,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text3
+			{
+				rect	5,0,545,352
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04054"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block4
+		{
+			rect	66,129,0,25
+			visible	1
+			windowDef Blur4
+			{
+				rect	0,-96,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text4
+			{
+				rect	5,-2,545,329
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04055"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block5
+		{
+			rect	66,175,0,26
+			visible	1
+			windowDef Blur5
+			{
+				rect	0,-142,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text5
+			{
+				rect	5,-2,545,283
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_03012"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block6
+		{
+			rect	66,221,0,25
+			visible	1
+			windowDef Blur6
+			{
+				rect	0,-188,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text6
+			{
+				rect	5,-2,545,237
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04056"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block7
+		{
+			rect	66,266,0,25
+			visible	1
+			windowDef Blur7
+			{
+				rect	0,-233,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text7
+			{
+				rect	5,-1,545,191
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04057"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block8
+		{
+			rect	66,312,0,25
+			visible	1
+			windowDef Blur8
+			{
+				rect	0,-279,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text8
+			{
+				rect	5,-1,545,145
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04058"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block9
+		{
+			rect	66,337,0,25
+			visible	1
+			windowDef Blur9
+			{
+				rect	0,-304,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text9
+			{
+				rect	5,-3,545,122
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04059"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block10
+		{
+			rect	66,381,0,25
+			visible	1
+			windowDef Blur10
+			{
+				rect	0,-348,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text10
+			{
+				rect	5,-1,545,76
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04060"
+				textscale	0.40000001
+			}
+		}
+		windowDef Block11
+		{
+			rect	66,406,0,25
+			visible	1
+			windowDef Blur11
+			{
+				rect	0,-373,541,403
+				visible	1
+				background	"guis/assets/marscity/textblur"
+				matcolor	1,1,1,1
+			}
+			windowDef Text11
+			{
+				rect	5,-3,545,53
+				visible	1
+				forecolor	0,1,1,1
+				text	"#str_04061"
+				textscale	0.40000001
+			}
+		}
+		windowDef Blink
+		{
+			rect	73, 40, 16, 18
+			visible	0
+			matcolor	0.6,1,1,0.7
+			background	"guis/assets/marscity/cursor"
+
+			onTime 0 {
+				transition "matcolor" "0.4 0.8 0.8 1" "0.2 0.6 0.6 0.9" "100" ;
+			}
+
+			onTime 100 {
+				transition "matcolor" "0.2 0.6 0.6 0.9" "0.4 0.8 0.8 1" "100" ;
+			}
+
+			onTime 200 {
+				resetTime "0" ;
+			}
+
+		}
+		windowDef White
+		{
+			rect	71,34,33,27
+			visible	0
+			forecolor	1,1,1,0.3
+			text	"n"
+			textscale	0.40000001
+
+			onTime 0 {
+				set "text" "n" ;
+			}
+
+			onTime 25 {
+				set "text" "t" ;
+			}
+
+			onTime 50 {
+				set "text" "o" ;
+			}
+
+			onTime 75 {
+				set "text" "a" ;
+			}
+
+			onTime 100 {
+				set "text" "s" ;
+			}
+
+			onTime 125 {
+				set "text" "c" ;
+			}
+
+			onTime 150 {
+				resetTime "0" ;
+			}
+
+		}
+		windowDef Blink2
+		{
+			rect	73,409,16,18
+			visible	1
+			matcolor	0.6,1,1,0
+			background	"guis/assets/marscity/cursor"
+		}
+		windowDef Bar
+		{
+			rect	44,22,584,52
+			visible	1
+			background	"guis/assets/marscity/bar"
+			matcolor	0.6,1,1,0
+		}
+	}
+	windowDef Anim
+	{
+		rect	0,0,100,100
+		visible	0
+		notime	1
+
+/*
+		onTime 0 {
+			transition "Blink2::rect" "379 40 16 19" "67 40 16 19" "900" "0.1" "0.6" ;
+			transition  "Blink2::matcolor" "0.4 0.8 0.8 0" "0.4 0.8 0.8 1" "100" ;
+			transition "UACText1::forecolor" "0.2 0.6 0.7 0.9" "0.2 0.6 0.7 0" "400" ;
+			transition "Loadingfill::matcolor" "1 1 1 0.7" "1 1 1 0" "400" ;
+			transition "Loadingline::matcolor" "1 1 1 0.7" "1 1 1 0" "400" ;
+			
+			resetTime "AnimLogo" "0" ;
+		}
+*/
+		onTime 10 {
+		//	set "Introid::visible" "1" ;
+		//	set "RoqCover::backcolor" "0 0 0 0" ;
+			set	"cmd"	"play guisounds_IntroSound" ;
+			resetTime "Introid" "0" ;
+		}
+
+		onTime 11000 {
+			transition "RoqCover::backcolor" "0 0 0 0" "0 0 0 1" "500" ;			
+		}		
+
+		onTime 1000 {
+			set "Click::rect" "0 0 640 480" ; 
+		}
+		
+		onTime 11500 {
+			set	"cmd"	"play guisounds_IntroVO" ;
+		}
+		onTime 12500 {
+			set "Introid::visible" "0" ;
+			resetTime "AnimText" "0" ;
+		}
+
+	}
+/*	
+	windowDef AnimLogo
+	{
+		rect	0,0,100,100
+		visible	0
+		notime	1
+		
+		onTime 0 {
+
+			set "Introid::visible" "1" ;
+			set "RoqCover::backcolor" "0 0 0 0" ;
+			set	"cmd"	"play guisounds_IntroSound" ;
+		}
+
+		onTime 9000 {
+			transition "RoqCover::backcolor" "0 0 0 0" "0 0 0 1" "1000" ;			
+		}
+	}
+	
+	windowDef AnimLogo
+	{
+		rect	0,0,100,100
+		visible	0
+		notime	1
+
+		onTime 0 {
+			transition "Logo1::rect" "106 62 326 312" "100 62 326 312" "400" ;
+			transition "Logo2::rect" "94 62 326 312" "100 62 326 312" "400" ;
+			transition "Logo1::matcolor" "0.4 0.9 1 0" "0.4 0.9 1 0.1" "200" ;
+			transition "Logo2::matcolor" "0.4 0.9 1 0" "0.4 0.9 1 0.1" "200" ;
+			
+			
+		}
+
+		onTime 200 {
+			transition "Logo::matcolor" "0.4 0.9 1 0" "0.6 0.9 1 0.2" "200" ;	
+			transition "Logo1::matcolor" "0.4 0.9 1 0.1" "0.4 0.9 1 0" "200" ;
+			transition "Logo2::matcolor" "0.4 0.9 1 0.1" "0.4 0.9 1 0" "200" ;
+		}
+
+	}
+*/	
+	windowDef AnimText
+	{
+		rect	0,0,100,100
+		visible	0
+		notime	1
+
+		onTime 0 {
+			transition "Bar::rect" "150 22 584 52" "44 37 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			transition "RoqCover::backcolor" "0 0 0 1" "0 0 0 0.3" "3000" ;			
+		//	set	"cmd"	"play guisounds_IntroVO" ;
+			set "IntroLoop::visible" "1" ;
+			resetTime "IntroLoop" "0" ;
+		}
+
+		onTime 100 {
+			transition "Logo::matcolor" "1 1 1 1" "0.8 1 1 0.9" "500" ;
+			transition "Logo::rect" "41 211 38 33" "35 211 38 33" "500" "0" "1" ;
+			//	transition "Blink2::matcolor" "0.4 0.8 0.8 0" "0.4 0.8 0.8 0" "100" ;
+			set "blink::visible" "1" ;
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block1::rect" "66 35 8 25" "66 35 511 25" "2750" ;
+			transition "Blink::rect" "67 40 16 19" "562 40 16 19" "2750" ;
+			transition "White::rect" "67 34 33 27" "562 34 33 27" "2750" ;
+		}
+
+		onTime 2000 {
+			//	transition "Logo::matcolor" "0.6 0.9 1 0.2" "0.6 0.9 1 0.1" "500" ;
+			set  "Blink2::rect" "251 410 16 19" ;
+			set "Bar::rect" "150 45 584 54" ;
+		}
+
+		onTime 2850 {
+			transition "Bar::rect" "150 45 584 52" "44 60 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			
+			//	transition "ParentScroll::rect" "-10 179 640 480" "-10 156 640 480" "200" "0" "1" ;
+			transition "ParentScroll::rect" "10 179 640 480" "10 -175 640 480" "22000" "0.1" "0.1" ;
+		}
+
+		onTime 2950 {
+			
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block2::rect" "66 60 8 25" "66 60 320 25" "1550" ;
+			transition "Blink::rect" "71 64 16 19" "372 64 16 19" "1550" ;
+			transition "White::rect" "71 58 33 27" "372 58 33 27" "1550" ;
+		}
+
+		onTime 4000 {
+			transition "Logo::matcolor" "0.8 1 1 0.9" "0.8 1 1 0" "2000" ;
+			set "Bar::rect" "150 45 584 54" ;
+		}
+
+		onTime 4500 {
+			set "White::visible" "0" ;
+			transition "Blink::rect" "71 88 16 19" "71 88 16 19" "300" ;
+			transition "Bar::rect" "150 69 584 52" "44 85 584 25" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.2" "0.6 1 1 0" "300" ;
+			
+			//	transition "ParentScroll::rect" "-10 179 640 480" "-10 156 640 480" "200" "0" "1" ;
+			
+		}
+
+		onTime 4900 {
+			set "white::rect" "71 104 33 27" ;
+			transition "Bar::rect" "150 91 584 52" "44 106 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 156 640 480" "-10 133 640 480" "200" "0" "1" ;
+		}
+
+		onTime 5000 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block3::rect" "66 104 8 25" "66 104 451 25" "2100" ;
+			transition "Blink::rect" "71 110 16 19" "502 110 16 19" "2100" ;
+			transition "White::rect" "71 104 33 27" "502 104 33 27" "2100" ;
+		}
+
+		onTime 6000 {
+			set "Bar::rect" "150 114 584 54" ;
+		}
+
+		onTime 7100 {
+			set "white::rect" "71 127 33 27" ;
+			transition "Bar::rect" "150 114 584 52" "44 129 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 133 640 480" "-10 110 640 480" "200" "0" "1" ;
+		}
+
+		onTime 7200 {
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block4::rect" "66 129 20 25" "66 129 481 25" "2250" ;
+			transition "Blink::rect" "71 133 16 19" "534 133 16 19" "2250" ;
+			transition "White::rect" "71 127 33 27" "534 127 33 27" "2250" ;
+			
+			transition "Blur1::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text1::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;
+		}
+
+		onTime 8200 {
+			set "Bar::rect" "150 137 584 54" ;
+		}
+
+		onTime 9450 {
+			set "White::visible" "0" ;
+			transition "Blink::rect" "71 156 16 19" "71 156 16 19" "200" ;
+			transition "Bar::rect" "150 137 584 52" "44 152 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.2" "0.6 1 1 0" "200" ;
+			//	transition "ParentScroll::rect" "-10 110 640 480" "-10 87 640 480" "200" "0" "1" ;
+			
+			transition "Blur2::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text2::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 9700 {
+			set "white::rect" "71 172 33 27" ;
+			transition "Bar::rect" "150 159 584 52" "44 174 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 87 640 480" "-10 64 640 480" "200" "0" "1" ;
+		}
+
+		onTime 9800 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block5::rect" "66 175 20 25" "66 175 212 25" "1000" ;
+			transition "Blink::rect" "71 178 16 19" "269 178 16 19" "1000" ;
+			transition "White::rect" "71 172 33 27" "269 172 33 27" "1000" ;
+		}
+
+		onTime 10700 {
+			set "Bar::rect" "150 183 584 54" ;
+		}
+
+		onTime 10800 {
+			set "White::visible" "0" ;
+			transition "Blink::rect" "71 202 16 19" "71 202 16 19" "200" ;
+			transition "Bar::rect" "150 183 584 52" "44 198 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.2" "0.6 1 1 0" "200" ;
+			//	transition "ParentScroll::rect" "-10 64 640 480" "-10 41 640 480" "200" "0" "1" ;
+			
+			transition "Blur3::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text3::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 11200 {
+			set "white::rect" "71 219 33 27" ;
+			transition "Bar::rect" "150 206 584 52" "44 221 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 41 640 480" "-10 18 640 480" "200" "0" "1" ;
+		}
+
+		onTime 11300 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block6::rect" "66 221 20 25" "66 221 195 25" "900" ;
+			transition "Blink::rect" "71 225 16 19" "256 225 16 19" "900" ;
+			transition "White::rect" "71 219 33 27" "256 219 33 27" "900" ;
+			
+			transition "Blur4::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text4::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 11900 {
+			set "Bar::rect" "150 252 584 54" ;
+		}
+
+		onTime 12300 {
+			set "White::visible" "0" ;
+			transition "Blink::rect" "71 248 16 19" "71 248 16 19" "200" ;
+			transition "Bar::rect" "150 229 584 52" "44 244 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.2" "0.6 1 1 0" "200" ;
+			//	transition "ParentScroll::rect" "-10 18 640 480" "-10 -5 640 480" "200" "0" "1" ;
+		}
+
+		onTime 12600 {
+			set "white::rect" "71 265 33 27" ;
+			transition "Bar::rect" "150 252 584 52" "44 267 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 -5 640 480" "-10 -28 640 480" "200" "0" "1" ;
+		}
+
+		onTime 12700 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block7::rect" "66 266 20 25" "66 266 335 25" "1700" ;
+			transition "Blink::rect" "71 271 16 19" "396 271 16 19" "1700" ;
+			transition "White::rect" "71 265 33 27" "396 265 33 27" "1700" ;
+			
+			transition "Blur5::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text5::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 13700 {
+			set "Bar::rect" "150 274 584 54" ;
+		}
+
+		onTime 14400 {
+			set "White::visible" "0" ;
+			transition "Blink::rect" "71 293 16 19" "71 293 16 19" "200" ;
+			transition "Bar::rect" "150 274 584 52" "44 289 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.2" "0.6 1 1 0" "200" ;
+			//	transition "ParentScroll::rect" "-10 -28 640 480" "-10 -51 640 480" "200" "0" "1" ;
+		}
+
+		onTime 14800 {
+			set "white::rect" "71 311 33 27" ;
+			transition "Bar::rect" "150 298 584 52" "44 313 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 -51 640 480" "-10 -74 640 480" "200" "0" "1" ;
+		}
+
+		onTime 14900 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block8::rect" "66 312 20 25" "66 312 518 25" "2700" ;
+			transition "Blink::rect" "71 317 16 19" "579 317 16 19" "2700" ;
+			transition "White::rect" "71 311 33 27" "579 311 33 27" "2700" ;
+			
+			transition "Blur6::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text6::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 15900 {
+			set "Bar::rect" "150 321 584 54" ;
+		}
+
+		onTime 17600 {
+			set "white::rect" "71 334 33 27" ;
+			transition "Bar::rect" "150 321 584 52" "44 336 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 -74 640 480" "-10 -97 640 480" "200" "0" "1" ;
+		}
+
+		onTime 17700 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block9::rect" "66 337 20 25" "66 337 502 25" "2600" ;
+			transition "Blink::rect" "71 340 16 19" "561 340 16 19" "2600" ;
+			transition "White::rect" "71 334 33 27" "561 334 33 27" "2600" ;
+			
+			
+		}
+
+		onTime 18700 {
+			set "Bar::rect" "150 343 584 54" ;
+		}
+
+		onTime 20300 {
+			set "White::visible" "0" ;
+			transition "Blink::rect" "71 362 16 19" "71 362 16 19" "200" ;
+			transition "Bar::rect" "150 343 584 52" "44 358 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.2" "0.6 1 1 0" "200" ;
+			//	transition "ParentScroll::rect" "-10 -97 640 480" "-10 -120 640 480" "200" "0" "1" ;
+			
+			transition "Blur7::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text7::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 20500 {
+			set "white::rect" "71 380 33 27" ;
+			transition "Bar::rect" "150 367 584 52" "44 382 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 -120 640 480" "-10 -143 640 480" "200" "0" "1" ;
+		}
+
+		onTime 20600 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block10::rect" "66 381 20 25" "66 381 523 25" "2900" ;
+			transition "Blink::rect" "71 386 16 19" "580 386 16 19" "2900" ;
+			transition "White::rect" "71 380 33 27" "580 380 33 27" "2900" ;
+			
+		}
+
+		onTime 21600 {
+			set "Bar::rect" "150 390 584 54" ;
+		}
+
+		onTime 23400 {
+			set "white::rect" "71 403 33 27" ;
+			transition "Bar::rect" "150 390 584 52" "44 405 584 26" "100" "0" "1" ;
+			transition "Bar::matcolor" "1 1 1 0.8" "0.6 1 1 0.6" "100" ;
+			//	transition "ParentScroll::rect" "-10 -143 640 480" "-10 -166 640 480" "200" "0" "1" ;
+		}
+
+		onTime 23500 {
+			set "White::visible" "1" ;
+			transition "Bar::matcolor" "0.6 1 1 0.6" "0.6 1 1 0" "500" ;
+			transition "Block11::rect" "66 406 20 25" "66 406 187 25" "1000" ;
+			transition "Blink::rect" "71 409 16 19" "251 409 16 19" "1000" ;
+			transition "White::rect" "71 403 33 27" "251 403 33 27" "1000" ;
+			
+			transition "Blur8::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text8::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;
+			
+						transition "RoqCover::backcolor" "0 0 0 0.4" "0 0 0 1" "1500" ;
+		}
+
+		onTime 24500 {
+			transition "Blink2::matcolor" "0.4 0.8 0.8 1" "0.4 0.8 0.8 0" "500" ;		
+			set "White::visible" "0" ;
+			set "Blink::visible" "0" ;
+			transition "Blink2::rect" "251 409 16 19" "313 409 16 19" "400" ;
+			transition "Blur9::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text9::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 25750 {
+			transition "Blur10::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text10::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+		}
+
+		onTime 26000 {
+			
+			transition "Blur11::matcolor" "1 1 1 1" "0 0 0 0" "1200" ;
+			transition "Text11::forecolor" "0 1 1 1" "0 1 1 0" "1000" ;			
+			
+			//	transition "Logo1::rect" "100 62 326 312" "106 62 326 312" "400" ;
+			//	transition "Logo2::rect" "100 62 326 312" "94 62 326 312" "400" ;
+			//	transition "Logo1::matcolor" "0.4 0.9 1 0" "0.4 0.9 1 0.1" "200" ;
+			//	transition "Logo2::matcolor" "0.4 0.9 1 0" "0.4 0.9 1 0.1" "200" ;
+			
+			//	transition "Logo::matcolor" "0.6 0.9 1 0.1" "0.4 0.9 1 0" "200" ;
+		}
+
+		onTime 27200 {
+			//transition "RoqCover::backcolor" "0 0 0 0.4" "0 0 0 1" "1000" ;
+			//	transition "Logo1::matcolor" "0.4 0.9 1 0.1" "0.4 0.9 1 0" "200" ;
+			//	transition "Logo2::matcolor" "0.4 0.9 1 0.1" "0.4 0.9 1 0" "200" ;
+		}
+		onTime 28200 {
+			set "IntroLoop::visible" "0" ;
+		}
+
+		
+		onTime 29500 {
+			set	"cmd"	"startgame" ;
+		}
+
+	}
+	windowDef Click
+	{
+		rect	0,0,0,0
+
+/*
+		onAction {
+			set	"cmd"	"startgame" ;		
+		}
+*/		
+
+	}
+}
