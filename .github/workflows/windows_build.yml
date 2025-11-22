@@ -49,7 +49,6 @@ jobs:
           cd ${{github.workspace}}
           Copy-Item -Path "output/base" -Destination "output/windows/base" -Recurse
           Copy-Item -Path "output/d3xp" -Destination "output/windows/d3xp" -Recurse
-          Copy-Item -Path "output/examples" -Destination "output/windows/examples" -Recurse
           Copy-Item -Path "blender" -Destination "output/windows/blender" -Recurse
           Copy-Item -Path ".github/CHANGELOG.md" -Destination "output/windows"
           Copy-Item -Path ".github/CONFIGURATION.md" -Destination "output/windows"

@@ -42,7 +42,6 @@ jobs:
           Copy-Item -Path "output/base" -Destination "output/linux/base" -Recurse
           Copy-Item -Path "output/d3xp" -Destination "output/linux/d3xp" -Recurse
           Copy-Item -Path "output/libs" -Destination "output/linux/libs" -Recurse
-          Copy-Item -Path "output/examples" -Destination "output/linux/examples" -Recurse
           Copy-Item -Path "blender" -Destination "output/linux/blender" -Recurse
           Copy-Item -Path ".github/CHANGELOG.md" -Destination "output/linux"
           Copy-Item -Path ".github/CONFIGURATION.md" -Destination "output/linux"

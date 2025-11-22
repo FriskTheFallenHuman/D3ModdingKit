@@ -80,7 +80,6 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
   - D3XP And Game dlls are in one folder.
   - WIP Template base for TC Games.
   - Update The Sys Console to use different colors and font.
-  - Restored Footsteps sounds by using Prey 06 Code.
   - Set gui_mediumFontLimit and gui_smallFontLimit to "0"
   - Added Missing Material Editor models.
   - Added .guide Support from Quake 4.
@@ -88,7 +87,7 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
   - Backported fixes from d3xp and merge missed changes in d3xp/ from base/
   - Backported Water bullet impact from RoE ( see Examples/ folder for the water particle)
   - Made the player be in thirdperson when they die in multiplayer.
-  - Rename g_showPlayerShadow to g_showExtraShadows and make it default.
+  - Merge g_showPlayerShadow to r_shadows (Set r_shadows 2 to see it).
   - Added decl_warn_duplicates so warnings about duplicated entries are hide.
   - Removed TakeNotes system.
   - Added doxygen support.

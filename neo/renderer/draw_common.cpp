@@ -1378,7 +1378,7 @@ been set to 128 on any surfaces that might receive shadows
 =====================
 */
 void RB_StencilShadowPass( const drawSurf_t *drawSurfs ) {
-	if ( !r_shadows.GetBool() ) {
+	if ( r_shadows.GetInteger() <= 0 ) {
 		return;
 	}
 

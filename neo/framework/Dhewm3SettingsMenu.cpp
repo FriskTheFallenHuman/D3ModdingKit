@@ -1711,7 +1711,14 @@ static CVarOption videoOptionsImmediately[] = {
 			AddCVarOptionTooltips( cvar );
 		}),
 	CVarOption( "r_skipNewAmbient", "Disable High Quality Special Effects", OT_BOOL ),
-	CVarOption( "r_shadows", "Enable Shadows", OT_BOOL ),
+	CVarOption( "r_shadows", []( idCVar& cvar ) {
+		// "Enable Shadows. 0 = No Shadows, 1 = Draw Shadows (default), 2 = Shadows + Extra Shadows"
+		int shadows = idMath::ClampInt( 0, 2, cvar.GetInteger() );
+		if ( ImGui::Combo( "Enable Shadows", &shadows, "No Shadows\0Draw Shadows\0Shadows + Extra Shadows\0" ) ) {
+			cvar.SetInteger( shadows );
+		}
+		AddTooltip( "r_shadows" );
+	} ),
 	CVarOption( "r_skipSpecular", "Disable Specular", OT_BOOL ),
 	CVarOption( "r_skipBump", "Disable Bump Maps", OT_BOOL ),
 

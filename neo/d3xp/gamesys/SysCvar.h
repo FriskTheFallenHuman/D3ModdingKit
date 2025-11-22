@@ -211,7 +211,6 @@ extern idCVar	pm_thirdPersonDeath;
 extern idCVar	pm_modelView;
 extern idCVar	pm_airTics;
 
-extern idCVar	g_showExtraShadows;
 extern idCVar	g_showHud;
 extern idCVar	g_showProjectilePct;
 extern idCVar	g_showBrass;

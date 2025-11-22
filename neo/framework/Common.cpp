@@ -1527,9 +1527,9 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 	OSX_GetCPUIdentification( cpuId, oldArch );
 	bool isFX5200 = vendorId == 0x10DE && ( deviceId & 0x0FF0 ) == 0x0320;
 	if ( oldArch && ( com_machineSpec.GetInteger() == 0 ) ) {
-		cvarSystem->SetCVarBool( "r_shadows", false, CVAR_ARCHIVE );
+		cvarSystem->SetCVarInteger( "r_shadows", 0, CVAR_ARCHIVE );
 	} else {
-		cvarSystem->SetCVarBool( "r_shadows", true, CVAR_ARCHIVE );
+		cvarSystem->SetCVarInteger( "r_shadows", 1, CVAR_ARCHIVE );
 	}
 #endif
 }

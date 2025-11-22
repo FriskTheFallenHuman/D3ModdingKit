@@ -7583,7 +7583,7 @@ void idPlayer::Think( void ) {
 		}
 	}
 
-	if ( g_showExtraShadows.GetBool() ) {
+	if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 		renderEntity.suppressShadowInViewID	= 0;
 		if ( headRenderEnt ) {
 			headRenderEnt->suppressShadowInViewID = 0;
@@ -9457,7 +9457,7 @@ void idPlayer::ClientPredictionThink( void ) {
 		}
 	}
 
-	if ( g_showExtraShadows.GetBool() ) {
+	if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 		renderEntity.suppressShadowInViewID	= 0;
 		if ( headRenderEnt ) {
 			headRenderEnt->suppressShadowInViewID = 0;
