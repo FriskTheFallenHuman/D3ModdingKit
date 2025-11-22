@@ -864,6 +864,7 @@ idMoveableItem::idMoveableItem() {
 	trigger = NULL;
 	smoke = NULL;
 	smokeTime = 0;
+	nextSoundTime = 0;
 }
 
 /*
@@ -889,6 +890,12 @@ void idMoveableItem::Save( idSaveGame *savefile ) const {
 
 	savefile->WriteParticle( smoke );
 	savefile->WriteInt( smokeTime );
+
+
+	savefile->WriteString( fxCollide );
+	savefile->WriteString( mtrCollide );
+	savefile->WriteInt( nextSoundTime );
+	savefile->WriteInt( nextCollideFxTime );
 }
 
 /*
@@ -904,6 +911,11 @@ void idMoveableItem::Restore( idRestoreGame *savefile ) {
 
 	savefile->ReadParticle( smoke );
 	savefile->ReadInt( smokeTime );
+
+	savefile->ReadString( fxCollide );
+	savefile->ReadString( mtrCollide );
+	savefile->ReadInt( nextSoundTime );
+	savefile->ReadInt( nextCollideFxTime );
 }
 
 /*
@@ -940,6 +952,11 @@ void idMoveableItem::Spawn( void ) {
 		trm.Shrink( CM_CLIP_EPSILON );
 	}
 
+
+	fxCollide = spawnArgs.GetString( "fx_collide" );
+	mtrCollide = spawnArgs.GetString( "mtr_collide" );
+	nextCollideFxTime = 0;
+
 	// get rigid body properties
 	spawnArgs.GetFloat( "density", "0.5", density );
 	density = idMath::ClampFloat( 0.001f, 1000.0f, density );
@@ -962,6 +979,7 @@ void idMoveableItem::Spawn( void ) {
 
 	smoke = NULL;
 	smokeTime = 0;
+	nextSoundTime = 0;
 	const char *smokeName = spawnArgs.GetString( "smoke_trail" );
 	if ( *smokeName != '\0' ) {
 		smoke = static_cast<const idDeclParticle *>( declManager->FindType( DECL_PARTICLE, smokeName ) );
@@ -992,6 +1010,40 @@ void idMoveableItem::Think( void ) {
 	}
 
 	Present();
+}
+
+/*
+=================
+idMoveableItem::Collide
+=================
+*/
+bool idMoveableItem::Collide( const trace_t &collision, const idVec3 &velocity ) {
+	float v = -( velocity * collision.c.normal );
+
+	if ( v > 80 && gameLocal.time > nextSoundTime ) {
+		float f = v > 200 ? 1.0f : idMath::Sqrt( v - 80 ) * 0.091f;
+		if ( StartSound( "snd_bounce", SND_CHANNEL_ANY, 0, false, NULL ) ) {
+			// don't set the volume unless there is a bounce sound as it overrides the entire channel
+			// which causes footsteps on ai's to not honor their shader parms
+			SetSoundVolume( f );
+		}
+		nextSoundTime = gameLocal.time + 500;
+
+		if ( fxCollide.Length() && gameLocal.time > nextCollideFxTime ) {
+			if ( mtrCollide.Length() ) {
+				gameLocal.ProjectDecal( collision.c.point, -collision.c.normal, 8.0f, true, spawnArgs.GetFloat( "gib_decal_size", "16.0" ), spawnArgs.RandomPrefix( "mtr_collide", gameLocal.random ) );
+			}
+
+			int CollideFxTime;
+			idEntityFx::StartFx( fxCollide, &collision.c.point, NULL, this, false );
+			if ( !spawnArgs.GetInt( "next_collide_fx_time", "500", CollideFxTime ) ) {
+				CollideFxTime = spawnArgs.GetInt( va( "next_collide_fx_time" ), "500" );
+			}
+			nextCollideFxTime = gameLocal.time + CollideFxTime;
+		}
+	}
+
+	return false;
 }
 
 /*
@@ -1033,6 +1085,7 @@ idEntity *idMoveableItem::DropItem( const char *classname, const idVec3 &origin,
 		item->GetPhysics()->SetAxis( axis );
 		item->GetPhysics()->SetLinearVelocity( velocity );
 		item->UpdateVisuals();
+		/*
 		if ( activateDelay ) {
 			item->PostEventMS( &EV_Activate, activateDelay, item );
 		}
@@ -1041,6 +1094,7 @@ idEntity *idMoveableItem::DropItem( const char *classname, const idVec3 &origin,
 		}
 		// always remove a dropped item after 5 minutes in case it dropped to an unreachable location
 		item->PostEventMS( &EV_Remove, removeDelay );
+		*/
 	}
 	return item;
 }
@@ -1199,6 +1253,18 @@ bool idMoveablePDAItem::GiveToPlayer(idPlayer *player) {
 	}
 	return true;
 }
+
+/*
+===============================================================================
+
+idMoveableGibItem
+
+===============================================================================
+*/
+
+CLASS_DECLARATION( idMoveableItem, idMoveableGibItem )
+END_CLASS
+
 
 /*
 ===============================================================================

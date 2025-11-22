@@ -1749,10 +1749,6 @@ idActor::Gib
 ============
 */
 void idActor::Gib( const idVec3 &dir, const char *damageDefName ) {
-	// no gibbing in multiplayer - by self damage or by moving objects
-	if ( gameLocal.isMultiplayer ) {
-		return;
-	}
 	// only gib once
 	if ( gibbed ) {
 		return;
@@ -1818,7 +1814,7 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 				health = -999;
 			}
 			Killed( inflictor, attacker, damage, dir, location );
-			if ( ( health < -20 ) && spawnArgs.GetBool( "gib" ) && damageDef->GetBool( "gib" ) ) {
+			if ( ( health <= spawnArgs.GetInt( va( "gibHealth" ), "20" ) ) && spawnArgs.GetBool( "gib" ) && damageDef->GetBool( "gib" ) ) {
 				Gib( dir, damageDefName );
 			}
 		} else {

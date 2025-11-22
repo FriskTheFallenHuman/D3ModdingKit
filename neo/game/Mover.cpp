@@ -1002,6 +1002,12 @@ void idMover::Event_PartBlocked( idEntity *blockingEntity ) {
 	if ( g_debugMover.GetBool() ) {
 		gameLocal.Printf( "%d: '%s' blocked by '%s'\n", gameLocal.time, name.c_str(), blockingEntity->name.c_str() );
 	}
+
+
+	if ( blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) {
+		blockingEntity->PostEventSec( &EV_Remove, 0 );
+		blockingEntity->StartSound( "snd_bounce", SND_CHANNEL_ANY, 0, false, NULL );
+	}
 }
 
 /*
@@ -1779,6 +1785,11 @@ idElevator::Event_TeamBlocked
 ================
 */
 void idElevator::Event_TeamBlocked( idEntity *blockedEntity, idEntity *blockingEntity ) {
+	// added blockingEntity so test no reverse on crushing gibs
+	if ( blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) {
+		return; // crushers don't reverse
+	}
+
 	if ( blockedEntity == this ) {
 		Event_GotoFloor( lastFloor );
 	} else if ( blockedEntity && blockedEntity->IsType( idDoor::GetClassType() ) ) {
@@ -3757,8 +3768,9 @@ idDoor::Blocked_Door
 void idDoor::Event_TeamBlocked( idEntity *blockedEntity, idEntity *blockingEntity ) {
 	SetBlocked( true );
 
-	if ( crusher ) {
-		return;		// crushers don't reverse
+	// added blockingEntity so test no reverse on crushing gibs
+	if ( crusher || blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) {
+		return; // crushers don't reverse
 	}
 
 	// reverse direction
@@ -3786,6 +3798,12 @@ idDoor::Event_PartBlocked
 void idDoor::Event_PartBlocked( idEntity *blockingEntity ) {
 	if ( damage > 0.0f ) {
 		blockingEntity->Damage( this, this, vec3_origin, "damage_moverCrush", damage, INVALID_JOINT );
+	}
+
+	// remove gib if is blocking the mover.
+	if ( blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) {
+		blockingEntity->PostEventMS( &EV_Remove, 0 );
+		blockingEntity->StartSound( "snd_bounce", SND_CHANNEL_ANY, 0, false, NULL );
 	}
 }
 
@@ -4211,6 +4229,11 @@ idPlat::Event_TeamBlocked
 ================
 */
 void idPlat::Event_TeamBlocked( idEntity *blockedEntity, idEntity *blockingEntity ) {
+	// added blockingEntity so test no reverse on crushing gibs
+	if ( blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) { 
+		return;		// do not reverse if there is a gib item. crush and remove all of them
+	}
+
 	// reverse direction
 	Use_BinaryMover( activatedBy.GetEntity() );
 }
@@ -4223,6 +4246,11 @@ idPlat::Event_PartBlocked
 void idPlat::Event_PartBlocked( idEntity *blockingEntity ) {
 	if ( damage > 0.0f ) {
 		blockingEntity->Damage( this, this, vec3_origin, "damage_moverCrush", damage, INVALID_JOINT );
+	}
+
+	if ( blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) {
+		blockingEntity->PostEventMS( &EV_Remove, 0 );
+		blockingEntity->StartSound( "snd_bounce", SND_CHANNEL_ANY, 0, false, NULL );
 	}
 }
 
@@ -4314,6 +4342,11 @@ idMover_Periodic::Event_PartBlocked
 void idMover_Periodic::Event_PartBlocked( idEntity *blockingEntity ) {
 	if ( damage > 0.0f ) {
 		blockingEntity->Damage( this, this, vec3_origin, "damage_moverCrush", damage, INVALID_JOINT );
+	}
+
+	if ( blockingEntity->IsType( idMoveableGibItem::GetClassType() ) ) {
+		blockingEntity->PostEventMS( &EV_Remove, 0 );
+		blockingEntity->StartSound( "snd_bounce", SND_CHANNEL_ANY, 0, false, NULL );
 	}
 }
 

@@ -1172,7 +1172,7 @@ GLExtension_t GLimp_ExtensionPointer(const char *name) {
 
 void GLimp_GrabInput(int flags) {
 	if (!window) {
-		common->Warning("GLimp_GrabInput called without window");
+		common->DWarning("GLimp_GrabInput called without window");
 		return;
 	}
 #if SDL_VERSION_ATLEAST(3, 0, 0)

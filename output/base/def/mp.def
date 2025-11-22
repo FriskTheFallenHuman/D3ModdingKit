@@ -35,8 +35,6 @@ model model_mp_marine {
 entityDef player_doommarine_mp {
 	"inherit"							"player_base"
 	"model"								"model_mp_marine"
-	"bleed"								"1"
-	"gib"								"1"
 
 	"skin_dropDeath"					"skins/characters/player/marine_mp_death.skin"
 	"skin_invisibility"					"skins/characters/player/marine_mp_invisible"

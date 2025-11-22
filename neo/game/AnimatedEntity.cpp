@@ -65,6 +65,8 @@ idAnimatedEntity::idAnimatedEntity
 idAnimatedEntity::idAnimatedEntity() {
 	animator.SetEntity( this );
 	damageEffects = NULL;
+	nextBloodPoolTime = 0;
+	nextSplatTime = 0;
 }
 
 /*
@@ -93,6 +95,9 @@ void idAnimatedEntity::Save( idSaveGame *savefile ) const {
 
 	// Wounds are very temporary, ignored at this time
 	//damageEffect_t			*damageEffects;
+
+	savefile->WriteInt( nextSplatTime );
+	savefile->WriteInt( nextBloodPoolTime );
 }
 
 /*
@@ -104,6 +109,10 @@ unarchives object from save game file
 */
 void idAnimatedEntity::Restore( idRestoreGame *savefile ) {
 	animator.Restore( savefile );
+
+
+	savefile->ReadInt( nextSplatTime );
+	savefile->ReadInt( nextBloodPoolTime );
 
 	// check if the entity has an MD5 model
 	if ( animator.ModelHandle() ) {
@@ -334,8 +343,11 @@ idAnimatedEntity::AddLocalDamageEffect
 void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec3 &localOrigin, const idVec3 &localNormal, const idVec3 &localDir, const idDeclEntityDef *def, const idMaterial *collisionMaterial ) {
 	const char *sound, *splat, *decal, *bleed, *key;
 	damageEffect_t	*de;
-	idVec3 origin, dir;
+	idVec3 origin, dir, gravDir;
 	idMat3 axis;
+	idPhysics *phys;
+	int splatTime, bloodpoolTime;
+	float size;
 
 	axis = renderEntity.joints[jointNum].ToMat3() * renderEntity.axis;
 	origin = renderEntity.origin + renderEntity.joints[jointNum].ToVec3() * renderEntity.axis;
@@ -360,27 +372,81 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 		StartSoundShader( declManager->FindSound( sound ), SND_CHANNEL_BODY, 0, false, NULL );
 	}
 
-	// blood splats are thrown onto nearby surfaces
-	key = va( "mtr_splat_%s", materialType );
+	if ( gameLocal.time > nextSplatTime ) {
+		// blood splats are thrown onto nearby surfaces
+		key = va( "mtr_splat_%s", materialType );
+		splat = spawnArgs.RandomPrefix( key, gameLocal.random );
+		if ( *splat == '\0' ) {
+			splat = def->dict.RandomPrefix( key, gameLocal.random );
+		}
+		if ( *splat != '\0' ) {
+			gameLocal.BloodSplat( origin, dir, def->dict.GetFloat( va( "splat_size_%s", materialType ), "64.0f" ), splat );
+		}
+		// set a delay for the next blood splat to appear, 300 = default
+		if ( !spawnArgs.GetInt( "splat_next_time", "300", splatTime ) ) {
+			splatTime = def->dict.GetInt( va( "splat_next_time" ), "300" );
+		}
+		nextSplatTime = gameLocal.time + splatTime;
+	}
+
+	// Create blood pools at feet, Only when alive - By Clone JCD
+	if ( health > 0 ) { 
+		if( gameLocal.time > nextBloodPoolTime ) {  // You can use this condition instead :- if (gameLocal.isNewFrame)
+			key = va( "mtr_bloodPool_%s", materialType );
+			splat = spawnArgs.RandomPrefix( key, gameLocal.random );
+			if ( *splat == '\0' ) {
+				splat = def->dict.RandomPrefix( key, gameLocal.random );
+			}
+			if ( *splat != '\0' ) {
+				phys = GetPhysics();
+				gravDir = phys->GetGravity();
+				gravDir.Normalize();
+				if ( spawnArgs.GetBool( "bloodPool_below_origin" )  ) {
+					gameLocal.BloodSplat( phys->GetOrigin(), gravDir, def->dict.GetFloat( va( "bloodPool_size_%s", materialType ), "64.0f" ), splat );
+				} else {
+					gameLocal.BloodSplat( origin, gravDir, def->dict.GetFloat( va( "bloodPool_size_%s", materialType ), "64.0f" ), splat );
+				}
+			}
+
+			// This condition makes sure that we dont spawn overlapping bloodpools in a single frame.
+			if ( !spawnArgs.GetInt( "bloodPool_next_time", "500", bloodpoolTime ) ){
+				bloodpoolTime = def->dict.GetInt( va( "bloodPool_next_time" ), "500" );
+			}
+			nextBloodPoolTime = gameLocal.time +  bloodpoolTime; // This avoids excessive bloodpool overlapping
+		}
+	}
+
+	// blood splats can be thrown on the body itself two - By Clone JC Denton
+	key = va( "mtr_splatSelf_%s", materialType );
 	splat = spawnArgs.RandomPrefix( key, gameLocal.random );
 	if ( *splat == '\0' ) {
 		splat = def->dict.RandomPrefix( key, gameLocal.random );
 	}
 	if ( *splat != '\0' ) {
-		gameLocal.BloodSplat( origin, dir, 64.0f, splat );
+		ProjectOverlay( origin, dir, def->dict.GetFloat( va( "splatSelf_size_%s", materialType ), "15.0f" ), splat ); 
 	}
 
-	// can't see wounds on the player model in single player mode
-	if ( !( IsType( idPlayer::GetClassType() ) && !gameLocal.isMultiplayer ) ) {
-		// place a wound overlay on the model
-		key = va( "mtr_wound_%s", materialType );
-		decal = spawnArgs.RandomPrefix( key, gameLocal.random );
-		if ( *decal == '\0' ) {
-			decal = def->dict.RandomPrefix( key, gameLocal.random );
+	// place a wound overlay on the model
+	if( g_debugDamage.GetBool() ) {
+		gameLocal.Printf( "\nCollision Material Type: %s", materialType );
+		gameLocal.Printf( "\n File: %s", collisionMaterial->GetFileName() );
+		gameLocal.Printf( "\n material: %s", collisionMaterial->ImageName() );
+	}
+
+	key = va( "mtr_wound_%s", materialType );
+	decal = spawnArgs.RandomPrefix( key, gameLocal.random );
+	if ( *decal == '\0' ) {
+		decal = def->dict.RandomPrefix( key, gameLocal.random );
+	}
+	if ( *decal == '\0' ) {
+		decal = def->dict.GetString( "mtr_wound" ); // Default decal
+	}
+	if ( *decal != '\0' ) {
+		// If Material Specific decal size not found, look for default size
+		if ( !def->dict.GetFloat( va( "wound_size_%s", materialType ), "6.0", size ) ) {
+			size = def->dict.GetFloat( "wound_size", "6.0" );
 		}
-		if ( *decal != '\0' ) {
-			ProjectOverlay( origin, dir, 20.0f, decal );
-		}
+		ProjectOverlay( origin, dir, size, decal ); 
 	}
 
 	// a blood spurting wound is added

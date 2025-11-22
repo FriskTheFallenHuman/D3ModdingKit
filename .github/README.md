@@ -45,11 +45,11 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
 - The Dark Mod / Hardcorps
   - Re-implemented water system
 - IcedTech3:
-  - Removed legacy lighttris generation code.
   - Deprecated legacy async thread.
   - Fixed a bug were DoomEdit would have slow performance.
   - IceTech3: Fixed Particle Editor crashing when creating a new particle.
   - Fixed Multiplayer Not working after Async Removal.
+  - Improved Multiplayer experience by merging some feedback code.
   - Moved sound async to a separate thread.
   - Added OBJ support.
   - Moved AASfile to libs to match QuakeWars.
@@ -95,6 +95,11 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
   - Restored "mphud" keyvalue in player.def
   - Remove unused game over gui file.
   - Added blender model I/O scripts.
+- Blood Mod:
+  - Blood mod has been integrated into the code base, its base uppon 1.8, its a simplified version since we mainly use stock assets
+    - It does not have all of the custom kv but has the essentials that basically upgrades the gib system.
+- Doom 3 Redux && Arl's Improvements Mods:
+  - Added HD hud assets to be paired with the widescreen .guis
 
 See [Changelog](./CHANGELOG.md) for the original dhewn3 changelog.
 

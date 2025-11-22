@@ -95,6 +95,14 @@ private:
 	void					Event_RespawnFx( void );
 };
 
+/*
+===============================================================================
+
+Powerups
+
+===============================================================================
+*/
+
 class idItemPowerup : public idItem {
 public:
 	CLASS_PROTOTYPE( idItemPowerup );
@@ -111,6 +119,14 @@ private:
 	int						time;
 	int						type;
 };
+
+/*
+===============================================================================
+
+Objective
+
+===============================================================================
+*/
 
 class idObjective : public idItem {
 public:
@@ -132,6 +148,14 @@ private:
 	void					Event_CamShot();
 };
 
+/*
+===============================================================================
+
+Video CD Item
+
+===============================================================================
+*/
+
 class idVideoCDItem : public idItem {
 public:
 	CLASS_PROTOTYPE( idVideoCDItem );
@@ -140,12 +164,28 @@ public:
 	virtual bool			GiveToPlayer( idPlayer *player );
 };
 
+/*
+===============================================================================
+
+PDA Item
+
+===============================================================================
+*/
+
 class idPDAItem : public idItem {
 public:
 	CLASS_PROTOTYPE( idPDAItem );
 
 	virtual bool			GiveToPlayer( idPlayer *player );
 };
+
+/*
+===============================================================================
+
+Moveable Item
+
+===============================================================================
+*/
 
 class idMoveableItem : public idItem {
 public:
@@ -159,6 +199,7 @@ public:
 
 	void					Spawn( void );
 	virtual void			Think( void );
+	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
 	virtual bool			Pickup( idPlayer *player );
 
 	static void				DropItems( idAnimatedEntity *ent, const char *type, idList<idEntity *> *list );
@@ -172,6 +213,10 @@ private:
 	idClipModel *			trigger;
 	const idDeclParticle *	smoke;
 	int						smokeTime;
+	int						nextSoundTime;
+	idStr					fxCollide;
+	idStr                   mtrCollide;
+	int                     nextCollideFxTime;
 
 	void					Gib( const idVec3 &dir, const char *damageDefName );
 
@@ -179,12 +224,34 @@ private:
 	void					Event_Gib( const char *damageDefName );
 };
 
+/*
+===============================================================================
+
+Moveable PDA
+
+===============================================================================
+*/
+
 class idMoveablePDAItem : public idMoveableItem {
 public:
 	CLASS_PROTOTYPE( idMoveablePDAItem );
 
 	virtual bool			GiveToPlayer( idPlayer *player );
 };
+
+/*
+===============================================================================
+
+Moveable Gib
+
+===============================================================================
+*/
+
+class idMoveableGibItem : public idMoveableItem {
+public:
+	CLASS_PROTOTYPE( idMoveableGibItem );
+};
+
 
 /*
 ===============================================================================
@@ -204,6 +271,14 @@ public:
 private:
 	void					Event_Trigger( idEntity *activator );
 };
+
+/*
+===============================================================================
+
+Objective Complete
+
+===============================================================================
+*/
 
 class idObjectiveComplete : public idItemRemover {
 public:

@@ -1041,10 +1041,6 @@ idPlayer::idPlayer() {
 	airTics					= 0;
 	lastAirDamage			= 0;
 
-	gibDeath				= false;
-	gibsLaunched			= false;
-	gibsDir					= vec3_zero;
-
 	zoomFov.Init( 0, 0, 0, 0 );
 	centerView.Init( 0, 0, 0, 0 );
 	fxFov					= false;
@@ -1284,10 +1280,6 @@ void idPlayer::Init( void ) {
 	// air always initialized to maximum too
 	airTics = pm_airTics.GetFloat();
 	airless = false;
-
-	gibDeath = false;
-	gibsLaunched = false;
-	gibsDir.Zero();
 
 	// set the gravity
 	physicsObj.SetGravity( gameLocal.GetGravity() );
@@ -1740,10 +1732,6 @@ void idPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteInt( airTics );
 	savefile->WriteInt( lastAirDamage );
 
-	savefile->WriteBool( gibDeath );
-	savefile->WriteBool( gibsLaunched );
-	savefile->WriteVec3( gibsDir );
-
 	savefile->WriteFloat( zoomFov.GetStartTime() );
 	savefile->WriteFloat( zoomFov.GetDuration() );
 	savefile->WriteFloat( zoomFov.GetStartValue() );
@@ -1976,10 +1964,6 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 	savefile->ReadBool( airless );
 	savefile->ReadInt( airTics );
 	savefile->ReadInt( lastAirDamage );
-
-	savefile->ReadBool( gibDeath );
-	savefile->ReadBool( gibsLaunched );
-	savefile->ReadVec3( gibsDir );
 
 	savefile->ReadFloat( set );
 	zoomFov.SetStartTime( set );
@@ -6232,10 +6216,10 @@ idPlayer::UpdateDeathSkin
 ==============
 */
 void idPlayer::UpdateDeathSkin( bool state_hitch ) {
-	if ( !( gameLocal.isMultiplayer || g_testDeath.GetBool() ) ) {
+	if ( !g_testDeath.GetBool() ) {
 		return;
 	}
-	if ( health <= 0 ) {
+	if ( health <= 0 && !gameLocal.isMultiplayer ) {
 		if ( !doingDeathSkin ) {
 			deathClearContentsTime = spawnArgs.GetInt( "deathSkinTime" );
 			doingDeathSkin = true;
@@ -6575,6 +6559,8 @@ idPlayer::Killed
 */
 void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
 	float delay;
+	bool gibDeath;
+	idPlayer *killer = NULL;
 
 	assert( !gameLocal.isClient );
 
@@ -6631,19 +6617,19 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 		LookAtKiller( inflictor, attacker );
 	}
 
-	if ( gameLocal.isMultiplayer || g_testDeath.GetBool() ) {
-		idPlayer *killer = NULL;
-		// no gibbing in MP. Event_Gib will early out in MP
-		if ( attacker->IsType( idPlayer::GetClassType() ) ) {
-			killer = static_cast<idPlayer*>(attacker);
-			if ( health < -20 || killer->PowerUpActive( BERSERK ) ) {
-				gibDeath = true;
-				gibsDir = dir;
-				gibsLaunched = false;
-			}
+	// If we are gibbed, don't botter with our ragdoll
+	if ( attacker->IsType( idPlayer::GetClassType() ) ) {
+		killer = static_cast<idPlayer*>(attacker);
+		if ( ( health <= spawnArgs.GetInt( va( "gibHealth" ), "20" ) ) || killer->PowerUpActive( BERSERK ) ) {
+			gibDeath = true;
 		}
+	}
+
+	if ( gameLocal.isMultiplayer ) {
 		gameLocal.mpGame.PlayerDeath( this, killer, isTelefragged );
-	} else {
+	}
+
+	if ( !gibDeath ) {
 		physicsObj.SetContents( CONTENTS_CORPSE | CONTENTS_MONSTERCLIP );
 	}
 
@@ -6932,16 +6918,15 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		health -= damage;
 
 		if ( health <= 0 ) {
-
 			if ( health < -999 ) {
 				health = -999;
 			}
-
 			isTelefragged = damageDef->dict.GetBool( "telefrag" );
-
 			lastDmgTime = gameLocal.time;
 			Killed( inflictor, attacker, damage, dir, location );
-
+			if ( ( health <= spawnArgs.GetInt( va( "gibHealth" ), "20" ) ) && spawnArgs.GetBool( "gib" ) && damageDef->dict.GetBool( "gib" ) ) {
+				Gib( dir, damageDefName );
+			}
 		} else {
 			// force a blink
 			blink_time = 0;
@@ -8538,7 +8523,7 @@ idPlayer::Event_Gibbed
 ===============
 */
 void idPlayer::Event_Gibbed( void ) {
-	// do nothing
+	idThread::ReturnInt( gibbed );
 }
 
 /*

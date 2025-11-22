@@ -1,0 +1,845 @@
+/***********************************************************************
+
+ characters
+
+***********************************************************************/
+
+entityDef character_default {
+	"editor_color"								"1 .5 0"
+	"editor_mins"								"-16 -16 0"
+	"editor_maxs"								"16 16 74"
+	"editor_copy"								"anim"
+
+	"editor_var hide"							"Causes character to be hfidden and nonsolid until triggered."
+	"editor_var noDamage"						"if set, monster won't take damage."
+	"editor_var teleport"						"if set, character teleports in when triggered."
+	"editor_var no_idle_chatter"				"When set, character will not make idle sounds"
+	"editor_var target"							"set of path_* entities to visit."
+	"editor_var wander"							"if set to 1, visit path_* targets randomly, otherwise visit them in order."
+	"editor_var ignore_obstacles"				"If set, character doesn't avoid obstacles.  Generally should only be used for cinematics when you need character to exactly follow a path."
+	"editor_var dont_push_others"				"If set, character doesn't say 'excuse me' when blocked by another character, but only waits for them to get out of the way on their own."
+	"editor_var wait"							"How long to wait before following path.  Character will be unresponsive until this time has passed."
+	"editor_var talkradius"						"If the player steps outside this distance from the character, the conversation is over and the character goes back to what he was doing."
+	"editor_var talktime"						"How long the character will wait for the player to press the talk button before returning to what he was doing."
+	"editor_var talktrigger"					"When set, character will wait in an animation until triggered and then talk to the player before following the path."
+	"editor_var no_cower"						"Don't cower when hearing gun fire."
+	"editor_var anim"							"Anim to play when talktrigger is set."
+	"editor_var num_cinematics"					"When set, character is in cinematic mode.  Remains hidden until triggered, then plays each anim in sequence, then triggers targets becomes hidden once more.  Anims are specified by setting 'anim1', 'anim2', 'anim3', etc."
+	"editor_var cinematic_no_hide"				"When set, character won't hide after playing cinematics."
+	"editor_var talk_no_turn"					"Don't turn body toward player when talking, just his head."
+	"editor_var talk0_blendin"					"# frames to blend into triggered talk anim."
+	"editor_var talk0_blendout"					"# frames to blend out of triggered talk anim."
+	"editor_var talk1_blendin"					"# frames to blend into primary talk anim."
+	"editor_var talk1_blendout"					"# frames to blend out of primary talk anim."
+	"editor_var talk2_blendin"					"# frames to blend into secondary talk anim."
+	"editor_var talk2_blendout"					"# frames to blend out of secondary talk anim."
+	"editor_var alt_path1"						"alternate path for character.  use target_aI_followalternatepath1 to cause character to follow."
+	"editor_var alt_path2"						"alternate path for character.  use target_aI_followalternatepath2 to cause character to follow."
+	"editor_var alt_path3"						"alternate path for character.  use target_aI_followalternatepath3 to cause character to follow."
+
+	"editor_var noshadows"						"turns off shadows on character."
+	"editor_var animate_z"						"disables gravity on character until he wakes up.  used for on_activate anims where the bounding box needs to move up and down."
+
+	"editor_var kick_force"						"how much force to apply to blocking obstacles to get them out of the way."
+
+	"editor_var team"							"Monsters do not actively attack players or monsters with the same team #."
+	"editor_var rank"							"Monsters only fight back when attacked by members of it's own team when its rank is greater than or equal to the attacker's rank.  A rank of 0 will never fight back."
+
+	"editor_var turn_rate"						"Maximum # of degrees character can turn per second"
+	"editor_var ignore_push"					"Set to 1 to prevent character from moving out of the way when player pushes him."
+
+	"editor_var mass"							"character's mass."
+	"editor_var ragdoll"            			"Specifies the .af file to use for a ragdoll when the creature dies"
+	"editor_var ragdoll_slomoStart"				"Start time of ragdoll slow motion relative to death time, defaults to -0.2"
+	"editor_var ragdoll_slomoEnd"				"End time of ragdoll slow motion relative to death time, defaults to 1.0"
+	"editor_var ragdoll_jointFrictionDent"		"Joint friction dent on ragdoll."
+	"editor_var ragdoll_jointFrictionStart" 	"Start time for joint friction dent"
+	"editor_var ragdoll_jointFrictionEnd"		"End time for joint friction dent"
+	"editor_var ragdoll_contactFrictionDent"	"Contact friction dent on ragdoll."
+	"editor_var ragdoll_contactFrictionStart"	"Start time for contact friction dent"
+	"editor_var ragdoll_contactFrictionEnd"		"End time for contact friction dent"
+	"editor_var af_push_moveables"				"whether the character's articulated figure pushes obstacles while they're alive."
+
+	"editor_var blink_min"						"Minimum time to wait between eye blinks."
+	"editor_var blink_max"						"Maximum time to wait between eye blinks."
+
+	"editor_var fly_offset"						"Prefered fly height relative to the player's view"
+	"editor_var fly_speed"						"Speed to fly at"
+	"editor_var fly_bob_strength"				"How far flying creatures should bob."
+	"editor_var fly_bob_vert"					"Rate at which flying creatures bob up and down."
+	"editor_var fly_bob_horz"					"Rate at which flying creatures bob left and right."
+
+	"editor_var def_projectile"					"name of entityDef to launch as projectile"
+	"editor_var num_projectiles"				"how many projectiles to launch at a time."
+	"editor_var projectile_spread"				"how much to spread out projectiles when they're fired.  Works in conjunction with attack_accuracy.  Good for things like shotgun blasts."
+	"editor_var attack_accuracy"				"Maximum angular offset to randomly offset the character's aim when firing missiles"
+	"editor_var attack_cone"					"Monster can only throw projectile within this cone relative to his direction."
+
+	"editor_var melee_range"					"do melee attack when within this range"
+	"editor_var talks"							"whether character can be engaged in conversation"
+	"editor_var	def_drops"						"entityDefs to drop when killed.  Multiple drop items are defined by adding suffixes: 'def_drops1', 'def_drops2', etc."
+
+	"editor_var smokeParticleSystem"			"particle system to attach to entity.  To attach to a specific joint, add - and the name of the joint.  For example 'fire-firejoint' attaches the 'fire' particle to the joint 'firejoint'."
+
+	"editor_var chatter_min"					"minimum amount of time to wait till playing chat sounds when idle"
+	"editor_var chatter_max"					"maximum amount of time to wait till playing chat sounds when idle"
+	"editor_var snd_chatter"					"chat sound to play when idle"
+
+	"editor_var chatter_combat_min"				"minimum amount of time to wait till playing chat sounds when in combat"
+	"editor_var chatter_combat_max"				"maximum amount of time to wait till playing chat sounds when in combat"
+	"editor_var snd_chatter_combat"				"chat sound to play when in combat"
+
+	"editor_var pain_delay"						"How long to wait between pain animations before triggering another pain animation."
+	"editor_var pain_threshold"					"How much damage character has to recieve in one blow for it to play a pain animation."
+
+	"editor_var damage_zone X"					"List of bones that comprise damage zone 'X'.  Pain anims are based on the name of the zone, for example: 'pain_chest', 'pain_rightleg_forward', etc.  Directions are categorized as 'forward', 'left', 'right', or 'back'."
+	"editor_var damage_scale X"					"How much to scale damage recieved to zone 'X'.  For example 'damage_scale head' '10' would make head shots cause 10 times the normal amount of damage."
+
+	"editor_var bone_leftEye"					"Which bone to modify to adjust the left eye"
+	"editor_var bone_rightEye"					"Which bone to modify to adjust the right eye"
+	"editor_var bone_focus"						"Where the character's eyes are in his head"
+
+	"editor_var look_min"						"minimum angles for head looks"
+	"editor_var look_max"						"maximum angles for head looks"
+	"editor_var look_joint jointname"			"specifies the scale in 'pitch yaw roll' to modify the joint based on head looking.  you can specify any number of joints to be affected by the head look.  the scale of the joints that lead up to the head should always add up to 1 on yaw and pitch to ensure that the character looks directly at the player."
+	"editor_var copy_joint jointname"			"specifies a joint in the head to copy the specified body joint's animation from"
+
+	"editor_var eye_turn_min"					"min angular offset for eye joint before head has to turn."
+	"editor_var eye_turn_max"					"max angular offset for eye joint before head has to turn."
+	"editor_var eye_verticle_offset"			"verticle offset from the player's view that the character's eyes should focus on."
+	"editor_var eye_horizontal_offset"			"horizontal offset from the player's view that the character's eyes should focus on.  negative values bring eyes closer together."
+	"editor_var eye_focus_rate"					"how quickly the eyes focus on a target"
+	"editor_var head_focus_rate"				"how quickly the head focuses on a target"
+	"editor_var focus_align_time"				"how long character should glance at the player before turning his head."
+
+	"editor_var mtr_flashShader"				"shader to use for muzzleflash"
+	"editor_var flashColor"						"color of muzzleflash"
+	"editor_var flashRadius"					"radius of muzzleflash"
+	"editor_var flashTime"						"how long muzzleflash lasts"
+
+	"editor_var use_aas"						"extension of the aas file to use for navigation."
+
+	"editor_var use_combat_bbox"				"Use a bounding box for damage and not per-poly hit detection."
+	"editor_var offsetModel"					"Vector to offset the visual model from the movement bounding box."
+	"editor_var def_attach"						"Name of entityDef to attach to model.  Set 'joint' in the attached entity def to the joint to attach to, and use 'origin' and 'angles' to offset it."
+	"editor_var head"							"Name of entityDef to attach as character's head.  Copies animation from certain bones into the head model."
+
+	"editor_var eye_height"						"The height off the ground of the character's eyes.  All sight checks are done from this point.  When set, overrides determining the height from the position of the eye joint."
+	"editor_var fov"							"Character's field of view.  Characters initially become aware of the player when he enters this cone.  Also controls when the character sees the player as shootable.  Character's will not use fov for sight checks after their initial wake up."
+
+	"editor_var mtr_splat_flesh"				"Material to use for blood splats."
+	"editor_var mtr_wound_flesh"				"Material to use for wounds."
+	"editor_var smoke_wound_flesh"				"Smoke effect to emit from wounds."
+
+	"editor_var gravityDir"						"Direction of gravity.  Defines the character's concept of 'down'."
+
+	"spawnclass"								"idAI"
+	"scriptobject"								"character"
+	"health"									"100"
+	"team"										"0"
+	"rank"										"0"
+	"anim"										"idle"
+	"on_activate"								"sight"
+	"state"										"state_Inactive"
+	"head_look"									"1"
+	"chatter_min"								"5"
+	"chatter_max"								"10"
+	"blink_min"									"2.5"
+	"blink_max"									"8.0"
+	"talks"										"1"
+	"talkradius"								"300"					// when player exits this radius, go back to idle
+	"talktime"									"10"					// how long to pay attention to player after speaking
+	"turn_rate"									"360"
+
+	"talk0_blendin"								"8"
+	"talk0_blendout"							"8"
+	"talk1_blendin"								"8"
+	"talk1_blendout"							"8"
+	"talk2_blendin"								"8"
+	"talk2_blendout"							"8"
+
+	"eye_turn_min"								"-20 -30 0"
+	"eye_turn_max"								"20 30 0"
+	"eye_verticle_offset"						"5"
+	"eye_horizontal_offset"						"-8"
+	"eye_focus_rate"							"0.5"
+	"head_focus_rate"							"0.1"
+	"focus_align_time"							"0"
+
+	"bone_focus"								"head"
+	"bone_leftEye"								"Lfteye_Focus"
+	"bone_rightEye"								"Rteye_Focus"
+	"kick_force"								"60"
+
+	"copy_joint neckcontrol"					"neckcontrol"
+	"copy_joint headcontrol"					"headcontrol"
+	"copy_joint_world eyecontrol"				"eyecontrol"
+
+	"gib"										"1"
+	"bleed"										"1"
+
+	"fx_gib"									"fx/fx_gib"
+
+	//"model_gib"								"models/md5/chars/skeleton.md5mesh"
+
+	"snd_gibbed"								"sound_giblets"
+
+	"def_dropGibItem1"							"moveable_item_head_pork"
+	"dropGibItem1Joint"							"headcontrol"
+
+	"def_dropGibItem2"							"moveable_item_torso_pork"
+	"dropGibItem2Joint"							"Chest"
+
+	"def_dropGibItem3"							"moveable_item_rup_arm_pork"
+	"dropGibItem3Joint"							"Ruparm"
+
+	"def_dropGibItem4"							"moveable_item_left_waist_pork"
+	"dropGibItem4Joint"							"Waist"
+
+	"def_dropGibItem5"							"moveable_item_lup_leg_pork"
+	"dropGibItem5Joint"							"Lupleg"
+
+	"def_dropGibItem6"							"moveable_item_rup_leg_pork"
+	"dropGibItem6Joint"							"Rupleg"
+
+	"def_dropGibItem7"							"moveable_item_rup2_leg_pork"
+	"dropGibItem7Joint"							"Rloleg"
+
+	"def_dropGibItem8"							"moveable_item_pelvis_pork"
+	"dropGibItem8Joint"							"Hips"
+
+	"snd_cower"									""						// set to sound to play when he cowers
+	"snd_bounce"								"ragdoll_impact"
+}
+
+// NPCS
+
+model npc_base {
+	mesh							models/md5/chars/skeleton.md5mesh
+
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+	anim af_pose					models/md5/chars/af_pose.md5anim
+	anim ik_pose					models/md5/chars/af_pose.md5anim
+	anim pain						models/md5/chars/npc_stagger_loop.md5anim
+	anim stand						models/md5/chars/stand.md5anim
+	anim talk_excuseme				models/md5/chars/stand.md5anim
+	anim talk_trigger				models/md5/chars/stand.md5anim
+	anim talk_primary				models/md5/chars/stand.md5anim
+	anim talk_secondary1			models/md5/chars/stand.md5anim
+	anim idle						models/md5/chars/stand.md5anim
+	anim cower						models/md5/chars/cower4.md5anim
+	anim walk						models/md5/chars/walk_normal.md5anim {
+		frame 3							sound_body snd_footstep
+		frame 17						sound_body snd_footstep
+		frame 30						sound_body snd_footstep
+		frame 46						sound_body snd_footstep
+	}
+	anim run1						models/md5/chars/medrun1.md5anim
+	anim turn_left					models/md5/chars/turn_left.md5anim, models/md5/chars/turn_left_rotation180.md5anim {
+		anim_turn
+	}
+
+	anim turn_right					models/md5/chars/turn_right.md5anim, models/md5/chars/turn_right_rotation180.md5anim {
+		anim_turn
+	}
+
+}
+
+
+model npc_labcoat {
+	inherit							npc_base
+	mesh							models/md5/chars/labcoat.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_suit {
+	inherit							npc_base
+	mesh							models/md5/chars/suit.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_suit2 {
+	inherit							npc_base
+	mesh							models/md5/chars/suit.md5mesh
+	skin							skins/characters/npcs/brownsuit.skin
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_jumpsuit {
+	inherit							npc_base
+	mesh							models/md5/chars/jumpsuit.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_tshirt {
+	inherit							npc_base
+	mesh							models/md5/chars/tshirt.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_marine {
+	inherit							npc_base
+	mesh							models/md5/chars/marine.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_marine_w_mgun {
+	mesh							models/md5/chars/marine_w_mgun.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_player {
+	inherit							npc_base
+	mesh							models/md5/chars/player.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+
+model npc_security {
+	inherit							npc_base
+	mesh							models/md5/chars/security.md5mesh
+	skin							skins/characters/npcs/regsec.skin
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model npc_skeleton {
+	inherit							npc_base
+	mesh							models/md5/chars/skeleton.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model char_betruger {
+	inherit							npc_labcoat
+	anim operate_computer6			models/md5/chars/operate_computer_loop3.md5anim
+}
+
+
+entityDef char_betruger {
+	"inherit"						"npc_base"
+	"model"							"char_betruger"
+	"def_head"						"head_betruger"
+	"head_joint"					"Shoulders"
+}
+
+model char_swann {
+	inherit							npc_suit
+	anim stand						models/md5/chars/stand.md5anim {
+		frame 1					 		event disableEyeFocus
+	}
+	anim stand						models/md5/chars/stand.md5anim {
+		frame 1		 					event disableEyeFocus
+	}
+
+}
+
+entityDef char_swann {
+	"inherit"						"npc_base"
+	"model"							"char_swann"
+
+	"eye_verticle_offset"			"10"
+	"eye_horizontal_offset"			"5"
+
+	"def_head"						"head_swann"
+	"head_joint"					"Shoulders"
+}
+
+model char_campbell {
+	inherit							npc_marine
+
+	anim stand						models/md5/chars/stand.md5anim {
+		frame 1		 					event disableEyeFocus
+	}
+	anim stand						models/md5/chars/stand.md5anim {
+		frame 1		 					event disableEyeFocus
+	}
+}
+
+entityDef char_campbell {
+	"inherit"						"npc_base"
+	"model"							"char_campbell"
+
+	"eye_verticle_offset"			"10"
+	"eye_horizontal_offset"			"5"
+
+	//"joint_attach Rhand1"			"env_bfgcase"
+
+	"def_head"						"head_campbell"
+	"head_joint"					"Shoulders"
+}
+
+model char_campbell_bfg {
+	mesh							models/md5/chars/campbell/campbell.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol)
+
+	anim stand						models/md5/chars/campbell/bfg_idle.md5anim {
+		frame 1					 		event disableEyeFocus
+	}
+	anim idle						models/md5/chars/campbell/bfg_idle.md5anim {
+		frame 1		 					event disableEyeFocus
+	}
+	anim idle_for_roq				models/md5/chars/campbell/bfg_idle_eric.md5anim {
+		frame 1		 					event disableEyeFocus
+	}
+
+	anim talk_primary				models/md5/chars/campbell/bfg_idle.md5anim
+	anim talk_secondary1			models/md5/chars/campbell/bfg_idle.md5anim
+	anim walk						models/md5/chars/campbell/bfg_walk.md5anim
+	anim run						models/md5/chars/campbell/bfg_run.md5anim
+	anim af_pose					models/md5/chars/campbell/af_pose.md5anim
+	anim ik_pose					models/md5/chars/campbell/af_pose.md5anim
+	anim runbackfire				models/md5/chars/campbell/bfg_runback_fire.md5anim {
+		frame 1					 		trigger bfglight1
+		frame 4					 		trigger bfglight1
+		frame 6					 		trigger bfglight1
+		frame 9					 		trigger bfglight1
+		frame 53						fire_missile_at_target BFG duffy_target_null_2
+	}
+	anim runbackfire2				models/md5/chars/campbell/bfg_runback_fire2.md5anim {
+		frame 51						fire_missile_at_target BFG duffy_target_null_2
+	}
+	anim runbackstart				models/md5/chars/campbell/bfg_runback_fire2_start.md5anim
+
+	anim bfgaim						models/md5/chars/campbell/bfg_aim.md5anim
+	anim turn_left					models/md5/chars/campbell/campbellturn_left.md5anim, models/md5/chars/campbell/campbellturn_left_rotation180.md5anim {
+		anim_turn
+	}
+	anim turn_right					models/md5/chars/campbell/campbellturn_right.md5anim, models/md5/chars/campbell/campbellturn_right_rotation180.md5anim {
+		anim_turn
+	}
+
+	anim casewalk					models/md5/chars/campbell/bfg_casewalk.md5anim
+}
+
+model char_campbell_bfgcase {
+	inherit  						char_campbell_bfg
+	anim walk 						models/md5/chars/campbell/bfg_casewalk.md5anim
+	anim stand						models/md5/chars/campbell/campbell_idle.md5anim
+	anim idle						models/md5/chars/campbell/campbell_idle.md5anim
+}
+
+entityDef char_campbell_bfg {
+	"inherit"						"character_default"
+	"scriptobject"					"character"
+	"size"							"32 32 74"
+	"use_aas"						"aas48"
+	"team"							"0"
+	"rank"							"0"
+	"mass"							"2000"
+
+	"ik_numLegs"					"2"
+	"ik_footSize"					"0"
+	"ik_waist"						"Body2"
+	"ik_hip1"						"Lupleg"
+	"ik_hip2"						"Rupleg"
+	"ik_knee1"						"Lloleg"
+	"ik_knee2"						"Rloleg"
+	"ik_ankle1"						"Lankle_r"
+	"ik_ankle2"						"Rankle_r"
+	"ik_dir1"						"Lknee"
+	"ik_dir2"						"Rknee"
+	"ik_foot1"						"Lball_r"
+	"ik_foot2"						"Rball_r"
+
+	"bone_focus"					"headcontrol"
+	"bone_leftEye"					"Leyeaim"
+	"bone_rightEye"					"Reyeaim"
+
+	"eye_turn_min"					"-20 -30 0"
+	"eye_turn_max"					"20 30 0"
+	"eye_verticle_offset"			"5"
+	"eye_horizontal_offset"			"-8"
+	"eye_focus_rate"				"0.5"
+	"head_focus_rate"				"0.1"
+
+	"look_min"						"-90 -125 0"
+	"look_max"						"25 125 0"
+	"look_joint Waist"				"0.1333 0.1333 0"
+	"look_joint Chest"				"0.1333 0.1333 0"
+	"look_joint Shoulders"			"0.1333 0.1333 0"
+	"look_joint headcontrol"		"0.6 0.6 0"
+	"look_joint Ruparm"				"-0.4 0 0"
+	"look_joint Luparm"				"-0.4 0 0"
+
+	"damage_zone head"				"*loneckcontrol"
+	"damage_zone chest"				"*Waist -*loneckcontrol"
+	"damage_zone left_arm"			"*Luparm"
+	"damage_zone right_arm"			"*Ruparm"
+	"damage_zone legs"				"origin Body2"
+
+	"snd_footstep"					"npc_sounds_footstep"
+
+	"model"							"char_campbell_bfg"
+	"ragdoll"						"char_campbell_bfg"
+
+	"sound_bone"					"Chest"
+
+	"def_head"						"head_campbell"
+	"head_joint"					"Shoulders"
+
+	"def_projectile"				"projectile_bfg_cinematic"
+	"projectile_spread"				"0"
+	"num_projectiles"				"1"
+	"attack_accuracy"				"0"
+
+	"def_dropDeathItem"				"moveable_item_bfg"
+	"dropDeathItemJoint"			"BFG"
+	"skin_dropDeath"				"skins/characters/npcs/marine_campbell.skin"
+
+}
+
+
+
+/***********************************************************************
+
+	Haz. Materials
+
+***********************************************************************/
+
+model npc_hazmat {
+	inherit							npc_base
+	mesh							models/md5/chars/hazmat.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair)
+
+}
+
+model char_hazmat {
+	inherit							npc_base
+	mesh							models/md5/chars/hazmat.md5mesh
+	channel torso					( *Waist )
+	channel legs					( origin Body Body2 *Hips -*Waist SPINNER eyecontrol chair )
+}
+
+entityDef char_hazmat {
+	"inherit"						"npc_base"
+	"model"							"char_hazmat"
+}
+
+
+entityDef npc_base {
+	"inherit"						"character_default"
+	"scriptobject"					"character"
+	"model"							"npc_base"
+	"ragdoll"						"char_npc_base"
+	"size"							"32 32 74"
+	"use_aas"						"aas48"
+	"team"							"0"
+	"rank"							"0"
+
+	"ik_numLegs"					"2"
+	"ik_footSize"					"4"
+	"ik_waist"						"Body2"
+	"ik_hip1"						"Lupleg"
+	"ik_hip2"						"Rupleg"
+	"ik_knee1"						"Lloleg"
+	"ik_knee2"						"Rloleg"
+	"ik_ankle1"						"Lankle_r"
+	"ik_ankle2"						"Rankle_r"
+	"ik_dir1"						"Lknee"
+	"ik_dir2"						"Rknee"
+	"ik_foot1"						"Lball_r"
+	"ik_foot2"						"Rball_r"
+
+	"bone_focus"					"headcontrol"
+	"bone_orientation"				"Body"
+	"bone_leftEye"					"Leyeaim"
+	"bone_rightEye"					"Reyeaim"
+
+	"look_min"						"-90 -125 0"
+	"look_max"						"25 125 0"
+	"look_joint Waist"				"0.1333 0.1333 0"
+	"look_joint Chest"				"0.1333 0.1333 0"
+	"look_joint Shoulders"			"0.1333 0.1333 0"
+	"look_joint headcontrol"		"0.6 0.6 0"
+	"look_joint Ruparm"				"-0.4 0 0"
+	"look_joint Luparm"				"-0.4 0 0"
+
+	"copy_joint neckcontrol"		"neckcontrol"
+	"copy_joint headcontrol"		"headcontrol"
+	"copy_joint_world eyecontrol"	"eyecontrol"
+
+	"eye_turn_min"					"-20 -30 0"
+	"eye_turn_max"					"20 30 0"
+	"eye_verticle_offset"			"5"
+	"eye_horizontal_offset"			"-8"
+	"eye_focus_rate"				"0.5"
+	"head_focus_rate"				"0.1"
+
+	"damage_zone head"				"*loneckcontrol"
+	"damage_zone chest"				"*Waist -*loneckcontrol"
+	"damage_zone left_arm"			"*Luparm"
+	"damage_zone right_arm"			"*Ruparm"
+	"damage_zone legs"				"origin Body2"
+
+	"snd_death"						"generic_npc_death"
+	"snd_footstep"					"player_sounds_footstep"
+	"snd_talk_primary"				"default_primary"
+	"snd_talk_secondary"			"default_secondary"
+	"snd_talk_trigger"				"default_trigger"
+}
+
+
+//PROPS
+
+model prop_adrenaline {
+	mesh					models/md5/props/adrenaline.md5mesh
+
+}
+
+entityDef prop_adrenaline {
+	"inherit"						"cin_base"
+	"model"							"prop_adrenaline"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_tabletpc {
+	mesh					models/md5/props/tabletpc.md5mesh
+
+}
+
+entityDef prop_tabletpc {
+	"inherit"						"cin_base"
+	"model"							"prop_tabletpc"
+	"joint"							"LHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_pda {
+	mesh					models/md5/props/pda.md5mesh
+
+}
+
+entityDef prop_pda {
+	"inherit"						"cin_base"
+	"model"							"prop_pda"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+
+
+
+model prop_cola {
+	mesh					models/md5/props/cola.md5mesh
+
+}
+
+entityDef prop_cola {
+	"inherit"						"cin_base"
+	"model"							"prop_cola"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_foamcup {
+	mesh					models/md5/props/foamcup.md5mesh
+
+}
+
+entityDef prop_foamcup {
+	"inherit"						"cin_base"
+	"model"							"prop_foamcup"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"-2 -1 -1"
+	"angles"						"-10 0 -40"
+	"remove"						"1"
+}
+
+model prop_flashlight {
+	mesh					models/md5/props/flashlight.md5mesh
+
+}
+
+entityDef prop_flashlight {
+	"inherit"						"cin_base"
+	"model"							"prop_flashlight"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_lftflashlight {
+	mesh					models/md5/props/leftflashlight.md5mesh
+}
+
+entityDef prop_lftflashlight {
+	"inherit"						"cin_base"
+	"model"							"prop_lftflashlight"
+	"joint"							"LHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_wrench {
+	mesh					models/md5/props/wrench.md5mesh
+
+}
+
+entityDef prop_wrench {
+	"inherit"						"cin_base"
+	"model"							"prop_wrench"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_dufflebag {
+	mesh					models/md5/props/dufflebag.md5mesh
+
+}
+
+entityDef prop_dufflebag {
+	"inherit"						"cin_base"
+	"model"							"prop_dufflebag"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_pistol {
+	mesh					models/md5/props/pistol.md5mesh
+
+}
+
+entityDef prop_pistol {
+	"inherit"						"cin_base"
+	"model"							"prop_pistol"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_shotgun {
+	mesh					models/md5/props/shotgun.md5mesh
+
+}
+
+entityDef prop_shotgun {
+	"inherit"						"cin_base"
+	"model"							"prop_shotgun"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_machinegun {
+	mesh					models/md5/props/machinegun.md5mesh
+
+}
+
+entityDef prop_machinegun {
+	"inherit"						"cin_base"
+	"model"							"prop_machinegun"
+	"joint"							"RHANDCONNECTOR"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_metal_lounge_chair {
+	mesh					models/md5/props/metal_lounge_chair.md5mesh
+
+}
+
+entityDef prop_metal_lounge_chair {
+	"inherit"						"cin_base"
+	"model"							"prop_metal_lounge_chair"
+	"joint"							"chair"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_metal_kitchen_chair {
+	mesh					models/md5/props/metal_kitchen_chair.md5mesh
+
+}
+
+entityDef prop_metal_kitchen_chair {
+	"inherit"						"cin_base"
+	"model"							"prop_metal_kitchen_chair"
+	"joint"							"chair"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_big_cushy_chair {
+	mesh					models/md5/props/big_cushy_chair.md5mesh
+
+}
+
+entityDef prop_big_cushy_chair {
+	"inherit"						"cin_base"
+	"model"							"prop_big_cushy_chair"
+	"joint"							"chair"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_soft_desk_chair1 {
+	mesh					models/md5/props/soft_desk_chair1.md5mesh
+
+}
+
+entityDef prop_soft_desk_chair1 {
+	"inherit"						"cin_base"
+	"model"							"prop_soft_desk_chair1"
+	"joint"							"chair"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}
+
+model prop_soft_desk_chair2 {
+	mesh					models/md5/props/soft_desk_chair2.md5mesh
+
+}
+
+entityDef prop_soft_desk_chair2 {
+	"inherit"						"cin_base"
+	"model"							"prop_soft_desk_chair2"
+	"joint"							"chair"
+	"origin"						"0 0 0"
+	"angles"						"0 0 0"
+	"remove"						"1"
+}

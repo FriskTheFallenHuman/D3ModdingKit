@@ -1310,7 +1310,7 @@ void idAI::SetAAS( void ) {
 			aas = NULL;
 		}
 	}
-	gameLocal.Printf( "WARNING: %s has no AAS file\n", name.c_str() );
+	gameLocal.DWarning( S_COLOR_WHITE "'%s' " S_COLOR_GRAY "has no AAS file\n", name.c_str() );
 }
 
 /*

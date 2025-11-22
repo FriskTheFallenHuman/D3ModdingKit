@@ -562,10 +562,6 @@ private:
 	int						airTics;				// set to pm_airTics at start, drops in vacuum
 	int						lastAirDamage;
 
-	bool					gibDeath;
-	bool					gibsLaunched;
-	idVec3					gibsDir;
-
 	idInterpolate<float>	zoomFov;
 	idInterpolate<float>	centerView;
 	bool					fxFov;

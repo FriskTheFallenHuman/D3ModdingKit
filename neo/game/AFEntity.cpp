@@ -1086,8 +1086,18 @@ void idAFEntity_Gibbable::Damage( idEntity *inflictor, idEntity *attacker, const
 	if ( !fl.takedamage ) {
 		return;
 	}
+
 	idAFEntity_Base::Damage( inflictor, attacker, dir, damageDefName, damageScale, location );
-	if ( health < -20 && spawnArgs.GetBool( "gib" ) ) {
+
+	const idDict *damageDef = gameLocal.FindEntityDefDict( damageDefName );
+	if ( !damageDef ) {
+		gameLocal.Error( "Unknown damageDef '%s'", damageDefName );
+	}
+
+	// add a check for gib = 1 to prevent ragdolls from decaying if the value is 0
+	// this is the same as the idActor::Damage function, but for ragdolls
+	// this also allows the BFG to kill and gibbing monsters before the projectile explodes
+	if ( damageDef->GetBool( "gib" ) && ( health <= spawnArgs.GetInt( va( "gibHealth" ), "20" ) ) && spawnArgs.GetBool( "gib" ) ) {
 		Gib( dir, damageDefName );
 	}
 }
@@ -1099,7 +1109,10 @@ idAFEntity_Gibbable::SpawnGibs
 */
 void idAFEntity_Gibbable::SpawnGibs( const idVec3 &dir, const char *damageDefName ) {
 	int i;
+	float gibTime;
+	float gibPower;
 	bool gibNonSolid;
+	bool gibNoShadows;
 	idVec3 entityCenter, velocity;
 	idList<idEntity *> list;
 
@@ -1119,6 +1132,9 @@ void idAFEntity_Gibbable::SpawnGibs( const idVec3 &dir, const char *damageDefNam
 	// blow out the gibs in the given direction away from the center of the entity
 	entityCenter = GetPhysics()->GetAbsBounds().GetCenter();
 	gibNonSolid = damageDef->GetBool( "gibNonSolid" );
+	gibNoShadows = damageDef->GetBool( "gibNoShadows" );
+	gibTime = damageDef->GetFloat( "gibTime", "4" );
+	gibPower = damageDef->GetFloat( "gibPower", "75" );
 	for ( i = 0; i < list.Num(); i++ ) {
 		if ( gibNonSolid ) {
 			list[i]->GetPhysics()->SetContents( 0 );
@@ -1126,16 +1142,21 @@ void idAFEntity_Gibbable::SpawnGibs( const idVec3 &dir, const char *damageDefNam
 			list[i]->GetPhysics()->UnlinkClip();
 			list[i]->GetPhysics()->PutToRest();
 		} else {
-			list[i]->GetPhysics()->SetContents( CONTENTS_CORPSE );
+			list[i]->GetPhysics()->SetContents( 0 );
 			list[i]->GetPhysics()->SetClipMask( CONTENTS_SOLID );
 			velocity = list[i]->GetPhysics()->GetAbsBounds().GetCenter() - entityCenter;
 			velocity.NormalizeFast();
 			velocity += ( i & 1 ) ? dir : -dir;
-			list[i]->GetPhysics()->SetLinearVelocity( velocity * 75.0f );
+			list[i]->GetPhysics()->SetLinearVelocity( velocity * gibPower );
 		}
-		list[i]->GetRenderEntity()->noShadow = true;
-		list[i]->GetRenderEntity()->shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
-		list[i]->PostEventSec( &EV_Remove, 4.0f );
+		if ( gibNoShadows ) {
+			list[i]->GetRenderEntity()->noShadow = true;
+		}
+		if ( gibTime > 0.0f ) {
+			//list[i]->GetRenderEntity()->shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
+
+			list[i]->PostEventSec( &EV_Remove, gibTime );
+		}
 	}
 }
 
@@ -1145,6 +1166,9 @@ idAFEntity_Gibbable::Gib
 ============
 */
 void idAFEntity_Gibbable::Gib( const idVec3 &dir, const char *damageDefName ) {
+	float gibTime;
+	bool gibNonSolid;
+
 	// only gib once
 	if ( gibbed ) {
 		return;
@@ -1155,7 +1179,18 @@ void idAFEntity_Gibbable::Gib( const idVec3 &dir, const char *damageDefName ) {
 		gameLocal.Error( "Unknown damageDef '%s'", damageDefName );
 	}
 
-	if ( damageDef->GetBool( "gibNonSolid" ) ) {
+	gibNonSolid = damageDef->GetBool( "gibNonSolid" );
+	gibTime = damageDef->GetFloat( "gibTime", "4" );
+
+	// play sounds through fx if necessary
+	if ( !gibbed ) {
+		idStr fxGib = spawnArgs.GetString( "fx_gib" );
+		if ( fxGib.Length() > 0 ) {
+			idEntityFx::StartFx( fxGib, static_cast<const idVec3 *>( &( GetPhysics()->GetAbsBounds().GetCenter() ) ), &GetPhysics()->GetAxis(), this, false );
+		}
+	}
+
+	if ( gibNonSolid ) {
 		GetAFPhysics()->SetContents( 0 );
 		GetAFPhysics()->SetClipMask( 0 );
 		GetAFPhysics()->UnlinkClip();
@@ -1168,20 +1203,18 @@ void idAFEntity_Gibbable::Gib( const idVec3 &dir, const char *damageDefName ) {
 	UnlinkCombat();
 
 	if ( g_bloodEffects.GetBool() ) {
-		if ( gameLocal.time > gameLocal.GetGibTime() ) {
-			gameLocal.SetGibTime( gameLocal.time + GIB_DELAY );
-			SpawnGibs( dir, damageDefName );
-			renderEntity.noShadow = true;
-			renderEntity.shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
-			StartSound( "snd_gibbed", SND_CHANNEL_ANY, 0, false, NULL );
-			gibbed = true;
-		}
+		gameLocal.SetGibTime( gameLocal.time + GIB_DELAY );
+		SpawnGibs( dir, damageDefName );
+		renderEntity.noShadow = true;
+		renderEntity.shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
+		StartSound( "snd_gibbed", SND_CHANNEL_ANY, 0, false, NULL );
+		gibbed = true;
 	} else {
 		gibbed = true;
 	}
 
 
-	PostEventSec( &EV_Gibbed, 4.0f );
+	PostEventSec( &EV_Gibbed, gibTime );
 }
 
 /*

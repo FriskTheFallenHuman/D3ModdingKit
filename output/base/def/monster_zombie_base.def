@@ -1,0 +1,35 @@
+/***********************************************************************
+
+	Zombies
+	
+	This should eventually go away
+
+***********************************************************************/
+
+entityDef zombie_default {
+	"inherit"						"monster_default"
+	"blink_min"						"2.0s"
+	"blink_max"						"8.0"
+
+	"head_look"						"1"	
+	
+	"copy_joint neckcontrol"		"neckcontrol"
+	"copy_joint headcontrol"		"headcontrol"
+
+	"eye_turn_min"					"-20 -30 0"
+	"eye_turn_max"					"20 30 0"
+	"eye_verticle_offset"			"5"
+	"eye_horizontal_offset"			"-8"
+	"eye_focus_rate"				"0.5"
+	"head_focus_rate"				"0.1"
+	
+	// gibs common to all zombies
+	"bleed"							"1"
+
+	"dropGibItem1Offset"			"0 0 16"
+
+	"def_dropGibItem9"				"moveable_item_skull_pork"
+	"dropGibItem9Joint"				"Headcontrol"
+	"dropGibItem9Offset"			"0 0 16"
+
+}

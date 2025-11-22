@@ -1,0 +1,229 @@
+
+/***************************************************
+(GIBS) Right Upper Arm Stub
+***************************************************/
+
+model env_gibs_ruparmstub {
+	mesh							models/md5/gibs/ruparmstubgib.md5mesh
+	anim af_pose					models/md5/gibs/ruparmstubgib.md5anim
+	anim idle						models/md5/gibs/ruparmstubgib.md5anim
+	anim initial					models/md5/gibs/ruparmstubgib.md5anim
+}
+
+entityDef env_gibs_ruparmstub {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Right Upper Arm Stub Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_ruparmstub"
+	"articulatedFigure"				"env_gibs_ruparmstub.af"
+}
+
+/***************************************************
+(GIBS) Left Arm
+***************************************************/
+
+model env_gibs_leftarm {
+	mesh 							models/md5/gibs/leftarmgib.md5mesh
+	anim af_pose					models/md5/gibs/leftarmgib.md5anim
+	anim idle						models/md5/gibs/leftarmgib.md5anim
+	anim initial					models/md5/gibs/leftarmgib.md5anim
+}
+
+entityDef env_gibs_leftarm {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Left Full Arm Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_leftarm"
+
+	"articulatedFigure"				"env_gibs_leftarm.af"
+}
+
+/***************************************************
+(GIBS) Left Leg
+***************************************************/
+
+model env_gibs_leftleg {
+	mesh							models/md5/gibs/leftleggib.md5mesh
+	anim af_pose					models/md5/gibs/leftleggib.md5anim
+	anim idle						models/md5/gibs/leftleggib.md5anim
+	anim initial					models/md5/gibs/leftleggib.md5anim
+}
+
+entityDef env_gibs_leftleg {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Left Full Leg Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_leftleg"
+	"articulatedFigure"				"env_gibs_leftleg.af"
+}
+
+/***************************************************
+(GIBS) Right Lower Leg Stump
+***************************************************/
+
+model env_gibs_rtlolegstump {
+	mesh							models/md5/gibs/rtlolegstumpgib.md5mesh
+	anim af_pose					models/md5/gibs/rtlolegstumpgib.md5anim
+	anim idle						models/md5/gibs/rtlolegstumpgib.md5anim
+	anim initial					models/md5/gibs/rtlolegstumpgib.md5anim
+}
+
+entityDef env_gibs_rtlolegstump {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Right Lower Leg Stump Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_rtlolegstump"
+	"articulatedFigure"				"env_gibs_rtlolegstump.af"
+}
+
+/***************************************************
+(GIBS) Right Upper Leg Stump
+***************************************************/
+
+model env_gibs_rtuplegstump {
+	mesh							models/md5/gibs/rtuplegstumpgib.md5mesh
+	anim af_pose					models/md5/gibs/rtuplegstumpgib.md5anim
+	anim idle						models/md5/gibs/rtuplegstumpgib.md5anim
+	anim initial					models/md5/gibs/rtuplegstumpgib.md5anim
+}
+
+entityDef env_gibs_rtuplegstump {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Right Upper Leg Stump Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_rtuplegstump"
+	"articulatedFigure"				"env_gibs_rtuplegstump.af"
+}
+
+/***************************************************
+(GIBS) Torso
+***************************************************/
+
+model env_gibs_torso {
+	mesh							models/md5/gibs/torsogib.md5mesh
+	anim af_pose					models/md5/gibs/torsogib.md5anim
+	anim idle						models/md5/gibs/torsogib.md5anim
+	anim initial					models/md5/gibs/torsogib.md5anim
+}
+
+entityDef env_gibs_torso {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Torso Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_torso"
+	"articulatedFigure"				"env_gibs_torso.af"
+}
+
+/***************************************************
+(GIBS) Spinal Cord
+***************************************************/
+
+model env_gibs_spine {
+	mesh							models/md5/gibs/spinegib.md5mesh
+	anim af_pose					models/md5/gibs/spinegib.md5anim
+	anim idle						models/md5/gibs/spinegib.md5anim
+	anim initial					models/md5/gibs/spinegib.md5anim
+}
+
+entityDef env_gibs_spine {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+
+	"editor_usage"					"Spinal Cord Gib."
+
+	"spawnclass"					"idAFEntity_Generic"
+	"snd_bounce"					"bodyparts"
+
+	"bleed"							"1"
+
+	"model"							"env_gibs_spine"
+	"articulatedFigure"				"env_gibs_spine.af"
+}
+
+/***************************************************
+ragdoll skeleton
+***************************************************/
+
+model env_ragdoll_skeleton {
+	mesh							models/md5/monsters/skeleton/skeleton.md5mesh
+	skin 							skins/monsters/skeleton/skragdoll.skin
+	anim af_pose					models/md5/monsters/skeleton/initial.md5anim
+	anim initial					models/md5/monsters/skeleton/initial.md5anim
+	anim idle						models/md5/monsters/skeleton/idle.md5anim
+}
+
+entityDef env_ragdoll_skeleton {
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-8 -8 -8"
+	"editor_maxs"					"8 8 8"
+	"editor_ragdoll"				"1"	
+
+	"editor_usage"					"Ragdoll for skeleton"
+
+	"spawnclass"					"idAFEntity_Generic"
+	"bleed"							"1"
+	"sleep"							"1"
+
+	"model"							"env_ragdoll_skeleton"
+	"articulatedFigure"				"env_skeleton"
+}
+
+model env_ragdoll_skeleton2 {
+	inherit							env_ragdoll_skeleton
+	skin 							skins/monsters/skeleton/skragdoll2.skin
+}
+
+entityDef env_ragdoll_skeleton2 {
+	"inherit"						"env_ragdoll_skeleton"
+
+	"model"							"env_ragdoll_skeleton2"
+}

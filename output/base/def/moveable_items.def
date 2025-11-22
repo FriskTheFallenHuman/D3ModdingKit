@@ -1,0 +1,204 @@
+
+/***********************************************************************
+
+ moveable items
+
+***********************************************************************/
+
+entityDef moveable_item_default {
+	"inherit"					"item_default"
+	"spawnclass"				"idMoveableItem"
+}
+
+entityDef moveable_item_shield {
+	"inherit"					"moveable_item_default"
+	"model"						"models/monsters/zsecurity/zsheild.lwo"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"nopulse"					"1"
+	"gib"						"1"
+	"model_gib"					""
+}
+
+entityDef moveable_item_lantern {
+	"inherit"					"moveable_item_default"
+	"model"						"models/items/lantern/lantern_world.lwo"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"skin"						"skins/models/mapobjects/lanternoff.skin"
+	"nopulse"					"1"
+}
+
+entityDef moveable_item_tabletpc {
+	"inherit"					"moveable_item_default"
+	"model"						"models/items/tablet/tablet_world.lwo"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"nopulse"					"1"
+}
+
+entityDef moveable_item_helmet {
+	"inherit"					"moveable_item_default"
+	"model"						"models/characters/sarge2/w_helmet.lwo"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"nopulse"					"1"
+}
+
+entityDef moveable_item_armor_security {
+	"inherit"					"item_armor_security"
+	"spawnclass"				"idMoveableItem"
+	"density"					"0.05"
+	"friction"					"0.4"
+	"bouncyness"				"0.1"
+	"nopulse"					"1"
+}
+
+entityDef moveable_item_medkit {
+	"inherit"					"item_medkit"
+	"spawnclass"				"idMoveableItem"
+	"density"					"0.05"
+	"friction"					"0.3"
+	"bouncyness"				"0.1"
+	"nopulse"					"1"
+}
+
+
+/***********************************************************************
+
+ moveable gibs
+
+***********************************************************************/
+
+
+entityDef moveable_item_gib_default {
+	"inherit"					"item_default"
+	"spawnclass"				"idMoveableGibItem"
+
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0.1"
+	"smoke_trail"				"gibwound.prt"
+	"snd_bounce"				"bodyparts"
+
+	"fx_Collide"                "fx/collide_bloodsplat"
+	"mtr_collide"				"textures/decals/duffysplat" // "textures/decals/duffysplat3"
+	"gib_decal_size"			"48"
+	"next_collide_fx_time"      "500"
+
+	//"skin"					"skins/monsters/gibnoburn"
+
+	"nopulse"					"1"
+	"nonsolid"					"1"
+	//"noselfshadows"			"1"
+	//"noshadows"				"1"
+}
+
+
+entityDef moveable_item_skull_pork {
+	"inherit"				"moveable_item_gib_default"
+	"model"					"models/gibs/skull_pork.lwo"
+
+	"fx_collide"			"fx/collide_bloodsplat_small"
+	"density"				"1"
+}
+
+entityDef moveable_item_head_pork {
+	"inherit"				"moveable_item_gib_default"
+	"model"					"models/gibs/head_pork.lwo"
+
+	"fx_collide"			"fx/collide_bloodsplat_small"
+	"mtr_collide"			"textures/decals/dsplat5"
+	"gib_decal_size"		"64"
+	"next_collide_fx_time"	"500"
+
+	"density"				"1"
+}
+
+entityDef moveable_item_torso_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/torso_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_hard"
+	"mtr_collide"				"textures/decals/dsplat11"
+	"gib_decal_size"			"128"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}
+
+entityDef moveable_item_rup_arm_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/rup_arm_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_medium"
+	"mtr_collide"				"textures/decals/dsplat7"
+	"gib_decal_size"			"96"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}
+
+entityDef moveable_item_left_waist_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/left_waist_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_medium"
+	"mtr_collide"				"textures/decals/dsplat7"
+	"gib_decal_size"			"96"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}
+
+entityDef moveable_item_lup_leg_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/lup_leg_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_medium"
+	"mtr_collide"				"textures/decals/dsplat7"
+	"gib_decal_size"			"96"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}
+
+entityDef moveable_item_rup_leg_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/rup_leg_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_medium"
+	"mtr_collide"				"textures/decals/dsplat7"
+	"gib_decal_size"			"96"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}
+
+entityDef moveable_item_rup2_leg_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/rup2_leg_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_medium"
+	"mtr_collide"				"textures/decals/dsplat7"
+	"gib_decal_size"			"96"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}
+
+entityDef moveable_item_pelvis_pork {
+	"inherit"					"moveable_item_gib_default"
+	"model"						"models/gibs/pelvis_pork.lwo"
+
+	"fx_collide"				"fx/collide_bloodsplat_hard"
+	"mtr_collide"				"textures/decals/dsplat11"
+	"gib_decal_size"			"128"
+	"next_collide_fx_time"		"500"
+
+	"density"					"1"
+}

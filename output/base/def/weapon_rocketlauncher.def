@@ -1,0 +1,216 @@
+/***********************************************************************
+
+	weapon_rocketlauncher.def
+
+***********************************************************************/
+
+entityDef weapon_rocketlauncher {
+	"editor_color"				".3 .3 1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 32"
+	"editor_usage"				"Rocket Launcher"
+	"editor_rotatable"			"1"
+
+	"spawnclass"				"idItem"
+	"size"						"32 32 32"
+	"model" 					"models/weapons/rocketlauncher/w_rocketlauncher.lwo"
+	"model_view" 				"viewmodel_rocketlauncher"
+	"model_world" 				"worldmodel_rocketlauncher"
+	"joint_attach"				"RL_ATTACHER"
+	"def_dropItem"				"moveable_item_rocketlauncher"
+
+	"inv_name"					"Rocket Launcher"
+	"inv_weapon"				"weapon_rocketlauncher"
+	"inv_ammo_rockets"			"5"
+	"inv_item"					"5"
+	"icon"						"guis/assets/hud/wpn_6"
+
+	"hide_time"					"0.3"				// time to hide weapon when talking to npcs or looking at guis
+	"hide_distance"				"-20"				// distance to offset weapon when talking to npcs or looking at guis
+
+	"weapon_scriptobject"		"weapon_rocketlauncher"
+	"def_projectile"			"projectile_rocket"
+	"ammoType"					"ammo_rockets"
+	"ammoRequired"				"1"
+	"clipSize"					"5"
+	"lowAmmo"					"1"
+	"mtr_flashShader"			"muzzleflash"
+	"flashColor"				"1 0.8 0.4"
+	"flashRadius"				"120"
+	"silent_fire"				"0"
+	"recoilTime"				"325"
+	"recoilAngles"				"-1 0 0"
+
+	"weaponAngleOffsetAverages" "15"
+	"weaponAngleOffsetScale" 	".5"
+	"weaponAngleOffsetMax"		"50"
+	"weaponOffsetTime"			"500"
+	"weaponOffsetScale"			"0.005"
+
+	//"smoke_muzzle"			"rocketmuzzle.prt"
+
+	"snd_acquire"				"sound_weapon_acquire"
+	"snd_respawn"				"sound_weapon_respawn"
+
+	"skin_1"					"models/weapons/0rox.skin"
+	"skin_2"					"models/weapons/1rox.skin"
+	"skin_3"					"models/weapons/2rox.skin"
+	"skin_4"					"models/weapons/3rox.skin"
+	"skin_5"					"models/weapons/4rox.skin"
+	"skin_6"					"models/weapons/5rox.skin"
+
+	"skin_invisible"			"skins/rocket_invis"
+
+	"spread"					"1"
+}
+
+entityDef moveable_item_rocketlauncher {
+	"inherit"					"weapon_rocketlauncher"
+	"spawnclass"				"idMoveableItem"
+	"density"					"0.05"
+	"friction"					"0.2"
+	"bouncyness"				"0"
+}
+
+model worldmodel_rocketlauncher {
+	mesh						models/md5/weapons/rocketlauncher_world/worldrocketlauncher.md5mesh
+
+	anim raise 					models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+	anim idle 					models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+	anim aim					models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+	anim fire					models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+	anim reload					models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+	anim noammo					models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+	anim putaway				models/md5/weapons/rocketlauncher_world/rocketlauncher_aim.md5anim
+}
+
+model viewmodel_rocketlauncher {
+	mesh 						models/md5/weapons/rocketlauncher_view/viewrocketlauncher.md5mesh
+	offset						( -6 -3 -60 )
+
+	anim raise 					models/md5/weapons/rocketlauncher_view/raise.md5anim {
+		frame 1					sound_weapon player_rocketlauncher_raise
+	}
+	anim idle 					models/md5/weapons/rocketlauncher_view/idle.md5anim
+	anim fire 					models/md5/weapons/rocketlauncher_view/fire.md5anim {
+		frame 1					sound_weapon player_rocketlauncher_fire
+	}
+	anim reload 				models/md5/weapons/rocketlauncher_view/reload.md5anim {
+		frame 1					sound_weapon player_rocketlauncher_reload
+	}
+	anim putaway 				models/md5/weapons/rocketlauncher_view/lower.md5anim
+}
+
+entityDef projectile_rocket {
+	"spawnclass"				"idProjectile"
+	"mins"						"-3 -3 -6"
+	"maxs"						"3 3 6"
+	"cone"						"3"
+	"model" 					"models/weapons/rocketlauncher/rocket.lwo"
+
+	"def_damage"				"damage_rocketDirect"
+	"def_splash_damage"			"damage_rocketSplash"
+
+	"launchFromBarrel"			"1"					// launch from barrel
+	"health"					"5"					// amount of damage projectile can take if damaged (0 means it can't be destroyed)
+	"velocity"					"900 0 0"			// how fast the projectile leaves the gun (or distance if fuse is 0)
+	"angular_velocity"			"0 0 0"				// how the projectile is rotating when it leaves the gun
+	"thrust"					"0"					// the rate of acceleration (always in the direction of the projectiles model)
+	"thrust_start"				"0"					// when to start accelerating
+	"thrust_end"				"4"					// when to stop accelerating
+	"linear_friction"			"0"					// "air" friction
+	"angular_friction"			"0"
+	"contact_friction"			"0"
+	"bounce"					"0"					// how much speed a projectile retains when it bounces off of objects (coefficient of restitution).  0 means no bounce.
+	"mass"						"300"
+	"gravity"					"0"					// how much gravity affects the trajectory.  gravity direction is same as the entity that fired it.
+	"fuse"						"10"				// how long before the projectile is removed or self-detonates.  Use 0 for beam weapons (velocity == distance).
+
+	"detonate_on_fuse"			"0"					// whether projectile should detonate when it's fuse runs out
+	"detonate_on_death"			"1"					// whether projectile should detonate when it's "killed" (health runs out)
+	"detonate_on_world"			"1"					// whether projectile should detonate when it hits an obstacle
+	"detonate_on_actor"			"1"					// whether projectile should detonate when it hits a character in the game
+
+	"impact_damage_effect"		"1"					// whether projectile causes blood splats from characters that bleed
+	"impact_gib"				"1"					// whether projectile can gib a character or not (for example: bullets don't gib, but rockets do)
+
+	"mtr_detonate"				"textures/decals/ballburn01"
+	"decal_size"				"300"
+
+	"smoke_fly"					"rockettrail.prt"		// particle effect while in the air
+	// parametric particles -- temp
+	"model_detonate"			"rocketExplosion.prt"
+	"smoke_detonate"			""						// particle effect when detonates
+	"smoke_residue"				""						// particle effect while in the air
+	"smoke_bounce"				""
+	"smoke_fuse"				""
+
+	"debris_count"				"6"
+	"def_debris"				"debris_largeshrapnel"
+	"def_shrapnel"				"debris_shrapnel"
+
+	"mtr_light_shader"			""
+	"light_color"				"1 0.8 0.4"
+	"light_radius"				"160"
+	"light_offset"				"0 0 0"
+
+	"mtr_explode_light_shader"	"muzzleflash"
+	"explode_light_color"		"2 1.6 0.8"
+	"explode_light_radius"		"320"
+	"explode_light_fadetime"	"0.5"
+
+	"snd_fly"					"rocket_flight"					// sound effect while in the air
+	"snd_explode"				"rocket_impact"
+}
+
+entityDef damage_rocket_base {
+	"wound_size_flesh"	"15"
+	"mtr_wound_flesh"		"textures/decals/hurt02"
+
+	"mtr_splat_flesh"		"textures/decals/dsplat2" // "textures/decals/dsplat1"
+	"mtr_splat_flesh2"		"textures/decals/dsplat2"
+	"mtr_splat_flesh3"		"textures/decals/dsplat2" // "textures/decals/dsplat3"
+	"mtr_splat_flesh4"		"textures/decals/dsplat2" // "textures/decals/dsplat4"
+	"mtr_splat_flesh5"		"textures/decals/dsplat5"
+	"mtr_splat_flesh6"		"textures/decals/dsplat5" // "textures/decals/dsplat6"
+	"mtr_splat_flesh7"		"textures/decals/dsplat7"
+	"mtr_splat_flesh8"		"textures/decals/dsplat11"
+
+	"splatSelf_size_flesh"	"15"
+	"mtr_splatSelf_flesh"	"textures/decals/dsplat2" // "textures/decals/bite02"
+
+	"mtr_bloodPool_flesh"	"textures/decals/dsplat2" // "textures/decals/dsplat1"
+	"mtr_bloodPool_flesh2"	"textures/decals/dsplat2"
+	"mtr_bloodPool_flesh3"	"textures/decals/dsplat2" // "textures/decals/dsplat3"
+	"mtr_bloodPool_flesh4"	"textures/decals/dsplat2" // "textures/decals/dsplat4"
+	"mtr_bloodPool_flesh5"	"textures/decals/dsplat5"
+	"mtr_bloodPool_flesh6"	"textures/decals/dsplat5" // "textures/decals/dsplat6"
+	"mtr_bloodPool_flesh7"	"textures/decals/dsplat7"
+	"mtr_bloodPool_flesh8"	"textures/decals/dsplat11"
+
+	"splat_next_time"	"050"
+	"bloodPool_next_time"   "050"
+
+	"gib"					"1"
+	"gibTime"				"10"
+	"gibPower"				"56"
+	"smoke_wound_flesh"		"bloodwound.prt"
+}
+
+entityDef damage_rocketDirect {
+	"inherit"					"damage_rocket_base"
+
+	"damage"					"170"
+	"push"						"1000"
+}
+
+entityDef damage_rocketSplash {
+	"inherit"					"damage_rocket_base"
+
+	"damage"					"150"
+	"radius"					"175" //changed by Tim 6-22-04 from 132
+	"knockback"					"80"
+	"push"						"10000"
+	"attackerDamageScale"		"0.2"
+	"attackerPushScale"			"0.2"
+}

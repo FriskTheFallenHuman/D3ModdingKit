@@ -1166,6 +1166,7 @@ void idClass::RegisterClasses( void ) {
 	REGISTER(idPDAItem)
 	REGISTER(idMoveableItem)
 	REGISTER(idMoveablePDAItem)
+	REGISTER(idMoveableGibItem)
 	REGISTER(idItemRemover)
 	REGISTER(idObjectiveComplete)
 	REGISTER(idPlayer)

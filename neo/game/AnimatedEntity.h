@@ -82,6 +82,8 @@ public:
 protected:
 	idAnimator				animator;
 	damageEffect_t *		damageEffects;
+	int						nextBloodPoolTime;
+	int						nextSplatTime;
 
 private:
 	void					Event_GetJointHandle( const char *jointname );
