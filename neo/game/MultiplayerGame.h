@@ -187,7 +187,6 @@ public:
 
 	void			DisconnectClient( int clientNum );
 	static void		ForceReady_f( const idCmdArgs &args );
-	static void		DropWeapon_f( const idCmdArgs &args );
 	static void		MessageMode_f( const idCmdArgs &args );
 	static void		VoiceChat_f( const idCmdArgs &args );
 	static void		VoiceChatTeam_f( const idCmdArgs &args );
@@ -225,7 +224,6 @@ public:
 
 	void			WantKilled( int clientNum );
 	int				NumActualClients( bool countSpectators, int *teamcount = NULL );
-	void			DropWeapon( int clientNum );
 	void			MapRestart( void );
 	// called by idPlayer whenever it detects a team change (init or switch)
 	void			SwitchToTeam( int clientNum, int oldteam, int newteam );

@@ -1372,6 +1372,7 @@ void idPlayer::Init( void ) {
 	teleportEntity		= NULL;
 	teleportKiller		= -1;
 	leader				= false;
+	gibbed				= false;
 
 	SetPrivateCameraView( NULL );
 
@@ -1543,6 +1544,7 @@ void idPlayer::Spawn( void ) {
 
 	tipUp = false;
 	objectiveUp = false;
+	gibbed = false;
 
 	// ddynerman: defaults for these values are the single player fall deltas
 	fatalFallDelta = spawnArgs.GetFloat( "fatal_fall_delta", "65" );
@@ -3679,22 +3681,16 @@ idPlayer::DropWeapon
 =================
 */
 void idPlayer::DropWeapon( bool died ) {
-	idVec3 forward, up;
-	int inclip, ammoavailable;
-
 	assert( !gameLocal.isClient );
 
 	if ( spectating || weaponGone || weapon.GetEntity() == NULL ) {
 		return;
 	}
 
-	if ( ( !died && !weapon.GetEntity()->IsReady() ) || weapon.GetEntity()->IsReloading() ) {
-		return;
-	}
 	// ammoavailable is how many shots we can fire
 	// inclip is which amount is in clip right now
-	ammoavailable = weapon.GetEntity()->AmmoAvailable();
-	inclip = weapon.GetEntity()->AmmoInClip();
+	int ammoavailable = weapon.GetEntity()->AmmoAvailable();
+	int inclip = weapon.GetEntity()->AmmoInClip();
 
 	// don't drop a grenade if we have none left
 	if ( !idStr::Icmp( idWeapon::GetAmmoNameForNum( weapon.GetEntity()->GetAmmoType() ), "ammo_grenades" ) && ( ammoavailable - inclip <= 0 ) ) {
@@ -3709,17 +3705,13 @@ void idPlayer::DropWeapon( bool died ) {
 		common->DPrintf( "idPlayer::DropWeapon: bad ammo setup\n" );
 		return;
 	}
-	idEntity *item = NULL;
-	if ( died ) {
-		// ain't gonna throw you no weapon if I'm dead
-		item = weapon.GetEntity()->DropItem( vec3_origin, 0, WEAPON_DROP_TIME, died );
-	} else {
-		viewAngles.ToVectors( &forward, NULL, &up );
-		item = weapon.GetEntity()->DropItem( 250.0f * forward + 150.0f * up, 500, WEAPON_DROP_TIME, died );
-	}
+
+	// ain't gonna throw you no weapon if I'm dead
+	idEntity *item = weapon.GetEntity()->DropItem( vec3_origin, 0, WEAPON_DROP_TIME, died );
 	if ( !item ) {
 		return;
 	}
+
 	// set the appropriate ammo in the dropped object
 	const idKeyValue * keyval = item->spawnArgs.MatchPrefix( "inv_ammo_" );
 	if ( keyval ) {
@@ -3728,68 +3720,6 @@ void idPlayer::DropWeapon( bool died ) {
 		inclipKey.Insert( "inclip_", 4 );
 		item->spawnArgs.SetInt( inclipKey, inclip );
 	}
-	if ( !died ) {
-		// remove from our local inventory completely
-		inventory.Drop( spawnArgs, item->spawnArgs.GetString( "inv_weapon" ), -1 );
-		weapon.GetEntity()->ResetAmmoClip();
-		NextWeapon();
-		weapon.GetEntity()->WeaponStolen();
-		weaponGone = true;
-	}
-}
-
-/*
-=================
-idPlayer::StealWeapon
-steal the target player's current weapon
-=================
-*/
-void idPlayer::StealWeapon( idPlayer *player ) {
-	assert( !gameLocal.isClient );
-
-	// make sure there's something to steal
-	idWeapon *player_weapon = static_cast< idWeapon * >( player->weapon.GetEntity() );
-	if ( !player_weapon || !player_weapon->CanDrop() || weaponGone ) {
-		return;
-	}
-	// steal - we need to effectively force the other player to abandon his weapon
-	int newweap = player->currentWeapon;
-	if ( newweap == -1 ) {
-		return;
-	}
-	// might be just dropped - check inventory
-	if ( ! ( player->inventory.weapons & ( 1 << newweap ) ) ) {
-		return;
-	}
-	const char *weapon_classname = spawnArgs.GetString( va( "def_weapon%d", newweap ) );
-	assert( weapon_classname );
-	int ammoavailable = player->weapon.GetEntity()->AmmoAvailable();
-	int inclip = player->weapon.GetEntity()->AmmoInClip();
-	if ( ( ammoavailable != -1 ) && ( ammoavailable - inclip < 0 ) ) {
-		// see DropWeapon
-		common->DPrintf( "idPlayer::StealWeapon: bad ammo setup\n" );
-		// we still steal the weapon, so let's use the default ammo levels
-		inclip = -1;
-		const idDeclEntityDef *decl = gameLocal.FindEntityDef( weapon_classname );
-		assert( decl );
-		const idKeyValue *keypair = decl->dict.MatchPrefix( "inv_ammo_" );
-		assert( keypair );
-		ammoavailable = atoi( keypair->GetValue() );
-	}
-
-	player->weapon.GetEntity()->WeaponStolen();
-	player->inventory.Drop( player->spawnArgs, NULL, newweap );
-	player->SelectWeapon( weapon_fists, false );
-	// in case the robbed player is firing rounds with a continuous fire weapon like the chaingun/plasma etc.
-	// this will ensure the firing actually stops
-	player->weaponGone = true;
-
-	// give weapon, setup the ammo count
-	Give( "weapon", weapon_classname );
-	ammo_t ammo_i = player->inventory.AmmoIndexForWeaponClass( weapon_classname, NULL );
-	idealWeapon = newweap;
-	inventory.ammo[ ammo_i ] += ammoavailable;
-	inventory.clip[ newweap ] = inclip;
 }
 
 /*
@@ -6216,10 +6146,10 @@ idPlayer::UpdateDeathSkin
 ==============
 */
 void idPlayer::UpdateDeathSkin( bool state_hitch ) {
-	if ( !g_testDeath.GetBool() ) {
+	if ( !( gameLocal.isMultiplayer || !g_testDeath.GetBool() ) ) {
 		return;
 	}
-	if ( health <= 0 && !gameLocal.isMultiplayer ) {
+	if ( health <= 0 ) {
 		if ( !doingDeathSkin ) {
 			deathClearContentsTime = spawnArgs.GetInt( "deathSkinTime" );
 			doingDeathSkin = true;
@@ -6559,7 +6489,6 @@ idPlayer::Killed
 */
 void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
 	float delay;
-	bool gibDeath;
 	idPlayer *killer = NULL;
 
 	assert( !gameLocal.isClient );
@@ -6618,20 +6547,15 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 	}
 
 	// If we are gibbed, don't botter with our ragdoll
-	if ( attacker->IsType( idPlayer::GetClassType() ) ) {
-		killer = static_cast<idPlayer*>(attacker);
-		if ( ( health <= spawnArgs.GetInt( va( "gibHealth" ), "20" ) ) || killer->PowerUpActive( BERSERK ) ) {
-			gibDeath = true;
-		}
-	}
-
 	if ( gameLocal.isMultiplayer ) {
+		if ( attacker->IsType( idPlayer::GetClassType() ) ) {
+			killer = static_cast<idPlayer *>( attacker );
+		}
+
 		gameLocal.mpGame.PlayerDeath( this, killer, isTelefragged );
 	}
 
-	if ( !gibDeath ) {
-		physicsObj.SetContents( CONTENTS_CORPSE | CONTENTS_MONSTERCLIP );
-	}
+	physicsObj.SetContents( CONTENTS_CORPSE | CONTENTS_MONSTERCLIP );
 
 	ClearPowerUps();
 
@@ -8155,7 +8079,7 @@ void idPlayer::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 		SetWaitState( "" );
 		animator.ClearAllJoints();
 		if ( entityNumber == gameLocal.localClientNum ) {
-			playerView.Fade( colorBlack, 12000 );
+			playerView.Fade( colorBlack, 12000, !gameLocal.isMultiplayer );
 		}
 		StartRagdoll();
 		physicsObj.SetMovementType( PM_DEAD );

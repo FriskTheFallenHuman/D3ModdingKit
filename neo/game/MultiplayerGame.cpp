@@ -2549,37 +2549,6 @@ void idMultiplayerGame::ForceReady_f( const idCmdArgs &args ) {
 
 /*
 ================
-idMultiplayerGame::DropWeapon
-================
-*/
-void idMultiplayerGame::DropWeapon( int clientNum ) {
-	assert( !gameLocal.isClient );
-	idEntity *ent = gameLocal.entities[ clientNum ];
-	if ( !ent || !ent->IsType( idPlayer::GetClassType() ) ) {
-		return;
-	}
-	static_cast< idPlayer* >( ent )->DropWeapon( false );
-}
-
-/*
-================
-idMultiplayerGame::DropWeapon_f
-================
-*/
-void idMultiplayerGame::DropWeapon_f( const idCmdArgs &args ) {
-	if ( !gameLocal.isMultiplayer ) {
-		common->Printf( "clientDropWeapon: only valid in multiplayer\n" );
-		return;
-	}
-	idBitMsg	outMsg;
-	byte		msgBuf[128];
-	outMsg.Init( msgBuf, sizeof( msgBuf ) );
-	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_DROPWEAPON );
-	networkSystem->ClientSendReliableMessage( outMsg );
-}
-
-/*
-================
 idMultiplayerGame::MessageMode_f
 ================
 */

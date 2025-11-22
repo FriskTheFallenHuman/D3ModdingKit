@@ -423,7 +423,6 @@ public:
 	void					PrevWeapon( void );
 	void					SelectWeapon( int num, bool force );
 	void					DropWeapon( bool died ) ;
-	void					StealWeapon( idPlayer *player );
 	void					AddProjectilesFired( int count );
 	void					AddProjectileHits( int count );
 	void					SetLastHitTime( int time );

@@ -110,7 +110,6 @@ public:
 	bool					ShowCrosshair( void ) const;
 	idEntity *				DropItem( const idVec3 &velocity, int activateDelay, int removeDelay, bool died );
 	bool					CanDrop( void ) const;
-	void					WeaponStolen( void );
 
 	// Script state management
 	virtual idThread *		ConstructScriptObject( void );

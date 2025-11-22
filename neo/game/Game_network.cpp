@@ -809,10 +809,6 @@ void idGameLocal::ServerProcessReliableMessage( int clientNum, const idBitMsg &m
 			mpGame.WantKilled( clientNum );
 			break;
 		}
-		case GAME_RELIABLE_MESSAGE_DROPWEAPON: {
-			mpGame.DropWeapon( clientNum );
-			break;
-		}
 		case GAME_RELIABLE_MESSAGE_CALLVOTE: {
 			mpGame.ServerCallVote( clientNum, msg );
 			break;

@@ -1408,27 +1408,6 @@ bool idWeapon::CanDrop( void ) const {
 }
 
 /*
-================
-idWeapon::WeaponStolen
-================
-*/
-void idWeapon::WeaponStolen( void ) {
-	assert( !gameLocal.isClient );
-	if ( projectileEnt ) {
-		if ( isLinked ) {
-			SetState( "WeaponStolen", 0 );
-			thread->Execute();
-		}
-		projectileEnt = NULL;
-	}
-
-	// set to holstered so we can switch weapons right away
-	status = WP_HOLSTERED;
-
-	HideWeapon();
-}
-
-/*
 =====================
 idWeapon::DropItem
 =====================
@@ -2882,16 +2861,6 @@ bool idWeapon::Melee( void ) {
 			}
 
 			ent->ApplyImpulse( this, tr.c.id, tr.c.point, impulse );
-
-			// weapon stealing - do this before damaging so weapons are not dropped twice
-			if ( gameLocal.isMultiplayer
-				&& weaponDef && weaponDef->dict.GetBool( "stealing" )
-				&& ent->IsType( idPlayer::GetClassType() )
-				&& !owner->PowerUpActive( BERSERK )
-				&& ( gameLocal.gameType != GAME_TDM || gameLocal.serverInfo.GetBool( "si_teamDamage" ) || ( owner->team != static_cast< idPlayer * >( ent )->team ) )
-				) {
-				owner->StealWeapon( static_cast< idPlayer * >( ent ) );
-			}
 
 			if ( ent->fl.takedamage ) {
 				idVec3 kickDir, globalKickDir;
