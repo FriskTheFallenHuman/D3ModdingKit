@@ -48,6 +48,8 @@ idPlayerView::idPlayerView() {
 	armorMaterial = declManager->FindMaterial( "armorViewEffect" );
 	berserkMaterial = declManager->FindMaterial( "textures/decals/berserk" );
 	irGogglesMaterial = declManager->FindMaterial( "textures/decals/irblend" );
+	dirDmgLeftMaterial = declManager->FindMaterial( "textures/interface/directionalDamageLeft" );
+	dirDmgFrontMaterial = declManager->FindMaterial( "textures/interface/directionalDamageFront" );
 	bloodSprayMaterial = declManager->FindMaterial( "textures/decals/bloodspray" );
 	bfgMaterial = declManager->FindMaterial( "textures/decals/bfgvision" );
 	lagoMaterial = declManager->FindMaterial( LAGO_MATERIAL, false );
@@ -101,6 +103,8 @@ void idPlayerView::Save( idSaveGame *savefile ) const {
 	savefile->WriteMaterial( armorMaterial );
 	savefile->WriteMaterial( berserkMaterial );
 	savefile->WriteMaterial( irGogglesMaterial );
+	savefile->WriteMaterial( dirDmgLeftMaterial );
+	savefile->WriteMaterial( dirDmgFrontMaterial );
 	savefile->WriteMaterial( bloodSprayMaterial );
 	savefile->WriteMaterial( bfgMaterial );
 	savefile->WriteFloat( lastDamageTime );
@@ -152,6 +156,8 @@ void idPlayerView::Restore( idRestoreGame *savefile ) {
 	savefile->ReadMaterial( armorMaterial );
 	savefile->ReadMaterial( berserkMaterial );
 	savefile->ReadMaterial( irGogglesMaterial );
+	savefile->ReadMaterial( dirDmgLeftMaterial );
+	savefile->ReadMaterial( dirDmgFrontMaterial );
 	savefile->ReadMaterial( bloodSprayMaterial );
 	savefile->ReadMaterial( bfgMaterial );
 	savefile->ReadFloat( lastDamageTime );
@@ -290,6 +296,48 @@ void idPlayerView::DamageImpulse( idVec3 localKickDir, const idDict *damageDef )
 			blob->t1 = 0;
 			blob->s2 = 1;
 			blob->t2 = 1;
+		}
+
+		//
+		// Directional damage system
+		//
+		const int directionDamageTime = 1000;
+		screenBlob_t* blob = GetScreenBlob();
+		blob->startFadeTime = gameLocal.time;
+		blob->finishTime = gameLocal.time + directionDamageTime;
+
+		blob->s1 = 0;
+		blob->t1 = 0;
+		blob->s2 = 1;
+		blob->t2 = 1;
+		if ( idMath::Fabs( localKickDir[0] ) >= idMath::Fabs( localKickDir[1] ) ) {
+			// More in X direction
+			blob->material = dirDmgFrontMaterial;
+			blob->w = 500.0f;
+			blob->h = 80.0f;
+			blob->x = 320.0f - blob->w * 0.5f;
+			if ( localKickDir[0] >= 0.0f ) {
+				// From Rear
+				blob->y = 480.0f - blob->h;
+				idSwap( blob->t1, blob->t2 );
+			} else {
+				// From Front
+				blob->y = 0.0f;
+			}
+		} else {
+			// More in Y direction
+			blob->material = dirDmgLeftMaterial;
+			blob->w = 80.0f;
+			blob->h = 400.0f;
+			blob->y = 240.0f - blob->h * 0.5f;
+			if ( localKickDir[1] >= 0.0f ) {
+				// From Right
+				blob->x = 640.0f - blob->w;
+				idSwap( blob->s1, blob->s2 );
+			} else {
+				// From Left
+				blob->x = 0.0f;
+			}
 		}
 
 		//
@@ -609,7 +657,11 @@ used for level transition fades
 assumes: color.w is 0 or 1
 =================
 */
-void idPlayerView::Fade( idVec4 color, int time ) {
+void idPlayerView::Fade( idVec4 color, int time, bool isMultiplayer ) {
+	// Multiplayer games do not benefit from having a fade screen
+	if ( isMultiplayer ) {
+		return;
+	}
 
 	if ( !fadeTime ) {
 		fadeFromColor.Set( 0.0f, 0.0f, 0.0f, 1.0f - color[ 3 ] );

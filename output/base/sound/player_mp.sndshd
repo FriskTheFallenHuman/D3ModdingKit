@@ -1,0 +1,187 @@
+//
+//
+// sounds for the player
+//
+//
+
+player_sounds_death_mp {
+	minDistance 10
+	maxDistance 10
+	volume 2
+	plain
+
+	sound/player/mp/death/death.wav
+	sound/player/mp/death/death01.wav
+	sound/player/mp/death/death05.wav
+	sound/player/mp/death/death17.wav
+	sound/player/mp/death/death19.wav
+}
+
+player_sounds_fall_mp {
+
+	minDistance 10
+	maxDistance 10
+	volume -8
+	plain
+	
+	sound/player/mp/land/jumpdownfix01.wav
+	sound/player/mp/land/jumpdownfix03.wav
+	sound/player/mp/land/jumpdownfix07.wav
+	sound/player/mp/land/jumpdownfix08.wav
+	sound/player/mp/land/jumpdownfix09.wav
+	sound/player/mp/land/jumpdownfix13.wav
+	sound/player/mp/land/jumpdownfix17.wav
+	sound/player/mp/land/jumpdownfix33.wav
+}
+
+player_sounds_pain_mp {
+	minDistance 10
+	maxDistance 10
+	volume 2
+	plain
+
+	sound/player/mp/pain/small/painlight03.wav
+	sound/player/mp/pain/small/painlight08.wav
+	sound/player/mp/pain/small/painlight13.wav
+	sound/player/mp/pain/small/painlight16.wav
+	sound/player/mp/pain/small/painlight23.wav
+	sound/player/mp/pain/small/painlight26.wav
+	sound/player/mp/pain/small/painlight30.wav
+	sound/player/mp/pain/small/painlight31.wav
+	sound/player/mp/pain/small/painlight32.wav
+	sound/player/mp/pain/small/painlight34.wav
+	sound/player/mp/pain/small/painlight36.wav
+	sound/player/mp/pain/small/painlight41.wav
+	sound/player/mp/pain/small/painlight43.wav
+	sound/player/mp/pain/small/painlight53.wav
+	sound/player/mp/pain/small/painmed104.wav
+	sound/player/mp/pain/small/painmed106.wav
+}
+
+player_sounds_pain_small_mp {
+	minDistance 10
+	maxDistance 10
+	volume 2
+	plain
+
+	sound/player/mp/pain/small/painlight03.wav
+	sound/player/mp/pain/small/painlight08.wav
+	sound/player/mp/pain/small/painlight13.wav
+	sound/player/mp/pain/small/painlight16.wav
+	sound/player/mp/pain/small/painlight23.wav
+	sound/player/mp/pain/small/painlight26.wav
+	sound/player/mp/pain/small/painlight30.wav
+	sound/player/mp/pain/small/painlight31.wav
+	sound/player/mp/pain/small/painlight32.wav
+	sound/player/mp/pain/small/painlight34.wav
+	sound/player/mp/pain/small/painlight36.wav
+	sound/player/mp/pain/small/painlight41.wav
+	sound/player/mp/pain/small/painlight43.wav
+	sound/player/mp/pain/small/painlight53.wav
+	sound/player/mp/pain/small/painmed104.wav
+	sound/player/mp/pain/small/painmed106.wav
+}
+
+player_sounds_pain_medium_mp {
+	minDistance 10
+	maxDistance 10
+	volume 2
+	plain
+
+	sound/player/mp/pain/medium/painlarge21.wav
+	sound/player/mp/pain/medium/painlarge23.wav
+	sound/player/mp/pain/medium/painlarge25.wav
+	sound/player/mp/pain/medium/painlarge37.wav
+	sound/player/mp/pain/medium/painlarge50.wav
+	sound/player/mp/pain/medium/painlight39.wav
+	sound/player/mp/pain/medium/painlight48.wav
+	sound/player/mp/pain/medium/painmed09.wav
+	sound/player/mp/pain/medium/painmed12.wav
+	sound/player/mp/pain/medium/painmed18.wav
+	sound/player/mp/pain/medium/painmed29.wav
+	sound/player/mp/pain/medium/painmed42.wav
+	sound/player/mp/pain/medium/painmed47.wav
+	sound/player/mp/pain/medium/painmed50.wav
+	sound/player/mp/pain/medium/painmed59.wav
+	sound/player/mp/pain/medium/painmed79.wav
+	sound/player/mp/pain/medium/painmed82.wav
+	sound/player/mp/pain/medium/painmed89.wav
+	sound/player/mp/pain/medium/painmed105.wav
+}
+
+player_sounds_pain_big_mp {
+	minDistance 10
+	maxDistance 10
+	volume 2
+	plain
+
+	sound/player/mp/pain/big/painlarge12.wav
+	sound/player/mp/pain/big/painlarge13.wav
+	sound/player/mp/pain/big/painlarge15.wav
+	sound/player/mp/pain/big/painlarge16.wav
+	sound/player/mp/pain/big/painlarge18.wav
+	sound/player/mp/pain/big/painlarge26.wav
+	sound/player/mp/pain/big/painlarge27.wav
+	sound/player/mp/pain/big/painlarge28.wav
+	sound/player/mp/pain/big/painlarge29.wav
+	sound/player/mp/pain/big/painlarge36.wav
+	sound/player/mp/pain/big/painlarge41.wav
+	sound/player/mp/pain/big/painmed03.wav
+	sound/player/mp/pain/big/painmed07.wav
+	sound/player/mp/pain/big/painmed10.wav
+	sound/player/mp/pain/big/painmed22.wav
+	sound/player/mp/pain/big/painmed26.wav
+	sound/player/mp/pain/big/painmed27.wav
+	sound/player/mp/pain/big/painmed27.wav
+}
+
+player_sounds_pain_huge_mp {
+	minDistance 10
+	maxDistance 10
+	volume 2
+	plain
+
+	sound/player/mp/pain/huge/painlarge01.wav
+	sound/player/mp/pain/huge/painlarge04.wav
+	sound/player/mp/pain/huge/painlarge08.wav
+	sound/player/mp/pain/huge/painlarge32.wav
+	sound/player/mp/pain/huge/painlarge.wav
+}
+
+player_sounds_jump_mp {
+	minDistance 10
+	maxDistance 20
+	volume -1
+	plain
+
+	sound/player/mp/jump/jumpshort02.wav
+	sound/player/mp/jump/jumpshort07.wav
+	sound/player/mp/jump/jumpshort16.wav
+	sound/player/mp/jump/jumpshort19.wav
+	sound/player/mp/jump/jumpshort29.wav
+}
+
+player_sounds_jump_small_mp {
+
+	minDistance 3
+	maxDistance 20
+	volume -5
+		
+	sound/player/mp/jump/jumpshort29.wav	
+}
+
+player_sounds_land_mp {
+	minDistance 10
+	maxDistance 20
+	volume -1
+	plain
+
+	sound/player/mp/land/jumpdownfix01.wav
+	sound/player/mp/land/jumpdownfix03.wav
+	sound/player/mp/land/jumpdownfix07.wav
+	sound/player/mp/land/jumpdownfix08.wav
+	sound/player/mp/land/jumpdownfix09.wav
+	sound/player/mp/land/jumpdownfix13.wav
+	sound/player/mp/land/jumpdownfix17.wav
+	sound/player/mp/land/jumpdownfix33.wav
+}

@@ -1066,8 +1066,9 @@ idPlayer::idPlayer() {
 	focusGUIent				= NULL;
 	focusUI					= NULL;
 	focusCharacter			= NULL;
-	talkCursor				= 0;
+	focusPlayer				= NULL;
 	focusVehicle			= NULL;
+	talkCursor				= 0;
 	cursor					= NULL;
 
 	oldMouseX				= 0;
@@ -1106,12 +1107,6 @@ idPlayer::idPlayer() {
 	lastTeleFX				= -9999;
 	weaponCatchup			= false;
 	lastSnapshotSequence	= 0;
-
-	MPAim					= -1;
-	lastMPAim				= -1;
-	lastMPAimTime			= 0;
-	MPAimFadeTime			= 0;
-	MPAimHighlight			= false;
 
 	spawnedTime				= 0;
 	lastManOver				= false;
@@ -1235,8 +1230,9 @@ void idPlayer::Init( void ) {
 	focusGUIent				= NULL;
 	focusUI					= NULL;
 	focusCharacter			= NULL;
-	talkCursor				= 0;
+	focusPlayer				= NULL;
 	focusVehicle			= NULL;
+	talkCursor				= 0;
 
 	// remove any damage effects
 	playerView.ClearEffects();
@@ -1388,16 +1384,6 @@ void idPlayer::Init( void ) {
 	SetPrivateCameraView( NULL );
 
 	lastSnapshotSequence	= 0;
-
-	MPAim				= -1;
-	lastMPAim			= -1;
-	lastMPAimTime		= 0;
-	MPAimFadeTime		= 0;
-	MPAimHighlight		= false;
-
-	if ( hud ) {
-		hud->HandleNamedEvent( "aim_clear" );
-	}
 
 	cvarSystem->SetCVarBool( "ui_chat", false );
 }
@@ -1566,6 +1552,12 @@ void idPlayer::Spawn( void ) {
 	tipUp = false;
 	objectiveUp = false;
 
+	// ddynerman: defaults for these values are the single player fall deltas
+	fatalFallDelta = spawnArgs.GetFloat( "fatal_fall_delta", "65" );
+	hardFallDelta = spawnArgs.GetFloat( "hard_fall_delta", "45" );
+	softFallDelta = spawnArgs.GetFloat( "soft_fall_delta", "30" );
+	noFallDelta = spawnArgs.GetFloat( "no_fall_delta", "7" );
+
 	if ( inventory.levelTriggers.Num() ) {
 		PostEventMS( &EV_Player_LevelTrigger, 0 );
 	}
@@ -1724,6 +1716,11 @@ void idPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteVec3( viewBob );
 	savefile->WriteInt( landChange );
 	savefile->WriteInt( landTime );
+
+	savefile->WriteFloat( fatalFallDelta );
+	savefile->WriteFloat( hardFallDelta );
+	savefile->WriteFloat( softFallDelta );
+	savefile->WriteFloat( noFallDelta );
 
 	savefile->WriteInt( currentWeapon );
 	savefile->WriteInt( idealWeapon );
@@ -1956,6 +1953,11 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 	savefile->ReadVec3( viewBob );
 	savefile->ReadInt( landChange );
 	savefile->ReadInt( landTime );
+
+	savefile->ReadFloat( fatalFallDelta );
+	savefile->ReadFloat( hardFallDelta );
+	savefile->ReadFloat( softFallDelta );
+	savefile->ReadFloat( noFallDelta );
 
 	savefile->ReadInt( currentWeapon );
 	savefile->ReadInt( idealWeapon );
@@ -4329,6 +4331,7 @@ Clears the focus cursor
 */
 void idPlayer::ClearFocus( void ) {
 	focusCharacter	= NULL;
+	focusPlayer		= NULL;
 	focusGUIent		= NULL;
 	focusUI			= NULL;
 	focusVehicle	= NULL;
@@ -4351,6 +4354,7 @@ void idPlayer::UpdateFocus( void ) {
 	idEntity	*ent;
 	idUserInterface *oldUI;
 	idAI		*oldChar;
+	idPlayer	*oldPlayer;
 	int			oldTalkCursor;
 	int			i, j;
 	idVec3		start, end;
@@ -4368,15 +4372,22 @@ void idPlayer::UpdateFocus( void ) {
 
 	// only update the focus character when attack button isn't pressed so players
 	// can still chainsaw NPC's
-	if ( gameLocal.isMultiplayer || ( !focusCharacter && ( usercmd.buttons & BUTTON_ATTACK ) ) ) {
-		allowFocus = false;
-	} else {
+
+	// In multiplayer context, we always allow focus
+	if ( gameLocal.isMultiplayer ) {
 		allowFocus = true;
+	} else {
+		if ( !focusCharacter && ( usercmd.buttons & BUTTON_ATTACK ) ) {
+			allowFocus = false;
+		} else {
+			allowFocus = true;
+		}
 	}
 
 	oldFocus		= focusGUIent;
 	oldUI			= focusUI;
 	oldChar			= focusCharacter;
+	oldPlayer		= focusPlayer;
 	oldTalkCursor	= talkCursor;
 
 	if ( focusTime <= gameLocal.time ) {
@@ -4390,21 +4401,6 @@ void idPlayer::UpdateFocus( void ) {
 
 	start = GetEyePosition();
 	end = start + viewAngles.ToForward() * 80.0f;
-
-	// player identification -> names to the hud
-	if ( gameLocal.isMultiplayer && entityNumber == gameLocal.localClientNum ) {
-		idVec3 end = start + viewAngles.ToForward() * 768.0f;
-		gameLocal.clip.TracePoint( trace, start, end, MASK_SHOT_BOUNDINGBOX, this );
-		int iclient = -1;
-		if ( ( trace.fraction < 1.0f ) && ( trace.c.entityNum < MAX_CLIENTS ) ) {
-			iclient = trace.c.entityNum;
-		}
-		if ( MPAim != iclient ) {
-			lastMPAim = MPAim;
-			MPAim = iclient;
-			lastMPAimTime = gameLocal.realClientTime;
-		}
-	}
 
 	idBounds bounds( start );
 	bounds.AddPoint( end );
@@ -4450,6 +4446,20 @@ void idPlayer::UpdateFocus( void ) {
 				}
 				continue;
 			}
+
+			// player identification -> names to the hud
+			if ( ent->IsType( idPlayer::Type ) ) {
+				idVec3 end = start + viewAngles.ToForward() * 768.0f;
+				gameLocal.clip.TracePoint( trace, start, end, MASK_SHOT_BOUNDINGBOX, this );
+				if ( ( trace.fraction < 1.0f ) && ( trace.c.entityNum == ent->entityNumber ) ) {
+					ClearFocus();
+					focusPlayer = static_cast<idPlayer *>( ent );
+					focusTime = gameLocal.time + FOCUS_TIME;
+					break;
+				}
+				continue;
+			}
+
 
 			if ( ent->IsType( idAFEntity_Vehicle::GetClassType() ) ) {
 				gameLocal.clip.TracePoint( trace, start, end, MASK_SHOT_RENDERMODEL, this );
@@ -4574,9 +4584,23 @@ void idPlayer::UpdateFocus( void ) {
 		cursor->SetStateInt( "talkcursor", talkCursor );
 	}
 
+	// NPCs
 	if ( oldChar != focusCharacter && hud ) {
 		if ( focusCharacter ) {
 			hud->SetStateString( "npc", focusCharacter->spawnArgs.GetString( "npc_name", "Joe" ) );
+			hud->HandleNamedEvent( "showNPC" );
+			// HideTip();
+			// HideObjective();
+		} else {
+			hud->SetStateString( "npc", "" );
+			hud->HandleNamedEvent( "hideNPC" );
+		}
+	}
+
+	// Players
+	if ( oldPlayer != focusPlayer && hud ) {
+		if ( focusPlayer ) {
+			hud->SetStateString( "npc", focusPlayer->GetUserInfo()->GetString( "ui_name" ) );
 			hud->HandleNamedEvent( "showNPC" );
 			// HideTip();
 			// HideObjective();
@@ -4598,7 +4622,6 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 	idVec3		origin, velocity;
 	idVec3		gravityVector, gravityNormal;
 	float		delta;
-	float		hardDelta, fatalDelta;
 	float		dist;
 	float		vel, acc;
 	float		t;
@@ -4634,7 +4657,6 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 		const contactInfo_t &contact = physicsObj.GetContact( i );
 		if ( contact.material->GetSurfaceFlags() & SURF_NODAMAGE ) {
 			noDamage = true;
-			StartSound( "snd_land_hard", SND_CHANNEL_ANY, 0, false, NULL );
 			break;
 		}
 	}
@@ -4672,16 +4694,35 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 		return;
 	}
 
-	// allow falling a bit further for multiplayer
+	// Some bug in the player movement code causes double fall damage on the 2nd frame in certain situations,
+	// so hack around this.  Basically, if the next frame's velocity is going to be great enough to cause damage,
+	// don't do the damage this frame. This feels a lot safer than messing with things that could break player
+	// movement in worse ways.
 	if ( gameLocal.isMultiplayer ) {
-		fatalDelta	= 75.0f;
-		hardDelta	= 50.0f;
-	} else {
-		fatalDelta	= 65.0f;
-		hardDelta	= 45.0f;
+
+		float vel2 = GetPhysics()->GetLinearVelocity() * -gravityNormal;
+
+		a = acc / 2.0f;
+		b = vel2;
+		c = -dist;
+
+		den = b * b - 4.0f * a * c;
+		if ( den < 0 ) {
+			return;
+		}
+		t = ( -b - idMath::Sqrt( den ) ) / ( 2.0f * a );
+
+		float delta2 = vel2 + t * acc;
+		delta2 = delta2 * delta2 * 0.0001;
+
+		if ( delta2 > softFallDelta ) {
+			return;
+		}
 	}
 
-	if ( delta > fatalDelta ) {
+
+	// ddynerman: moved height delta selection to player def
+	if ( delta > fatalFallDelta && fatalFallDelta > 0.0f ) {
 		AI_HARDLANDING = true;
 		landChange = -32;
 		landTime = gameLocal.time;
@@ -4689,7 +4730,7 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 			pain_debounce_time = gameLocal.time + pain_delay + 1;  // ignore pain since we'll play our landing anim
 			Damage( NULL, NULL, idVec3( 0, 0, -1 ), "damage_fatalfall", 1.0f, 0 );
 		}
-	} else if ( delta > hardDelta ) {
+	} else if ( delta > hardFallDelta && hardFallDelta > 0.0f ) {
 		AI_HARDLANDING = true;
 		landChange	= -24;
 		landTime	= gameLocal.time;
@@ -4697,7 +4738,7 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 			pain_debounce_time = gameLocal.time + pain_delay + 1;  // ignore pain since we'll play our landing anim
 			Damage( NULL, NULL, idVec3( 0, 0, -1 ), "damage_hardfall", 1.0f, 0 );
 		}
-	} else if ( delta > 30 ) {
+	} else if ( delta > softFallDelta && softFallDelta > 0.0f ) {
 		AI_HARDLANDING = true;
 		landChange	= -16;
 		landTime	= gameLocal.time;
@@ -4705,12 +4746,20 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 			pain_debounce_time = gameLocal.time + pain_delay + 1;  // ignore pain since we'll play our landing anim
 			Damage( NULL, NULL, idVec3( 0, 0, -1 ), "damage_softfall", 1.0f, 0 );
 		}
-	} else if ( delta > 7 ) {
+	} else if ( delta > noFallDelta && noFallDelta > 0.0f ) {
 		AI_SOFTLANDING = true;
 		landChange	= -8;
 		landTime	= gameLocal.time;
-	} else if ( delta > 3 ) {
-		// just walk on
+	}
+
+	// ddynerman: sometimes the actual landing animation is pre-empted by another animation (i.e. sliding, moving forward)
+	// so we play the landing sound here instead of relying on the anim
+	if( AI_HARDLANDING ) {
+		StartSound ( "snd_land_hard", SND_CHANNEL_ANY, 0, false, NULL );
+		//StartSound ( "snd_land_hard_pain", SND_CHANNEL_ANY, 0, false, NULL );
+	} else if ( AI_SOFTLANDING ) {
+		// todo - 2 different landing sounds for variety?
+		//StartSound ( "snd_land_soft", SND_CHANNEL_ANY, 0, false, NULL );
 	}
 }
 
@@ -5554,10 +5603,6 @@ void idPlayer::Spectate( bool spectate ) {
 		physicsObj.DisableClip();
 		Hide();
 		Event_DisableWeapon();
-		if ( hud ) {
-			hud->HandleNamedEvent( "aim_clear" );
-			MPAimFadeTime = 0;
-		}
 	} else {
 		// put everything back together again
 		currentWeapon = -1;	// to make sure the def will be loaded if necessary
@@ -6135,8 +6180,6 @@ idPlayer::UpdateHud
 ==============
 */
 void idPlayer::UpdateHud( void ) {
-	idPlayer *aimed;
-
 	if ( !hud ) {
 		return;
 	}
@@ -6166,29 +6209,6 @@ void idPlayer::UpdateHud( void ) {
 					inventory.nextItemPickup = gameLocal.time + 400;
 				}
 			}
-		}
-	}
-
-	if ( gameLocal.realClientTime == lastMPAimTime ) {
-		if ( MPAim != -1 && gameLocal.gameType == GAME_TDM
-			&& gameLocal.entities[ MPAim ] && gameLocal.entities[ MPAim ]->IsType( idPlayer::GetClassType() )
-			&& static_cast< idPlayer * >( gameLocal.entities[ MPAim ] )->team == team ) {
-				aimed = static_cast< idPlayer * >( gameLocal.entities[ MPAim ] );
-				hud->SetStateString( "aim_text", gameLocal.userInfo[ MPAim ].GetString( "ui_name" ) );
-				hud->SetStateFloat( "aim_color", aimed->colorBarIndex );
-				hud->HandleNamedEvent( "aim_flash" );
-				MPAimHighlight = true;
-				MPAimFadeTime = 0;	// no fade till loosing focus
-		} else if ( MPAimHighlight ) {
-			hud->HandleNamedEvent( "aim_fade" );
-			MPAimFadeTime = gameLocal.realClientTime;
-			MPAimHighlight = false;
-		}
-	}
-	if ( MPAimFadeTime ) {
-		assert( !MPAimHighlight );
-		if ( gameLocal.realClientTime - MPAimFadeTime > 2000 ) {
-			MPAimFadeTime = 0;
 		}
 	}
 
@@ -6573,7 +6593,7 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 	AdjustHeartRate( DEAD_HEARTRATE, 10.0f, 0.0f, true );
 
 	if ( !g_testDeath.GetBool() ) {
-		playerView.Fade( colorBlack, 12000 );
+		playerView.Fade( colorBlack, 12000, gameLocal.isMultiplayer );
 	}
 
 	AI_DEAD = true;
@@ -7532,36 +7552,6 @@ void idPlayer::SetLastHitTime( int time ) {
 	}
 	if ( cursor ) {
 		cursor->HandleNamedEvent( "hitTime" );
-	}
-	if ( hud ) {
-		if ( MPAim != -1 ) {
-			if ( gameLocal.entities[ MPAim ] && gameLocal.entities[ MPAim ]->IsType( idPlayer::GetClassType() ) ) {
-				aimed = static_cast< idPlayer * >( gameLocal.entities[ MPAim ] );
-			}
-			assert( aimed );
-			// full highlight, no fade till loosing aim
-			hud->SetStateString( "aim_text", gameLocal.userInfo[ MPAim ].GetString( "ui_name" ) );
-			if ( aimed ) {
-				hud->SetStateFloat( "aim_color", aimed->colorBarIndex );
-			}
-			hud->HandleNamedEvent( "aim_flash" );
-			MPAimHighlight = true;
-			MPAimFadeTime = 0;
-		} else if ( lastMPAim != -1 ) {
-			if ( gameLocal.entities[ lastMPAim ] && gameLocal.entities[ lastMPAim ]->IsType( idPlayer::GetClassType() ) ) {
-				aimed = static_cast< idPlayer * >( gameLocal.entities[ lastMPAim ] );
-			}
-			assert( aimed );
-			// start fading right away
-			hud->SetStateString( "aim_text", gameLocal.userInfo[ lastMPAim ].GetString( "ui_name" ) );
-			if ( aimed ) {
-				hud->SetStateFloat( "aim_color", aimed->colorBarIndex );
-			}
-			hud->HandleNamedEvent( "aim_flash" );
-			hud->HandleNamedEvent( "aim_fade" );
-			MPAimHighlight = false;
-			MPAimFadeTime = gameLocal.realClientTime;
-		}
 	}
 }
 

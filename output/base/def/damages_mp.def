@@ -1,0 +1,46 @@
+/***********************************************************************
+
+	Damage Types
+
+***********************************************************************/
+
+entityDef damage_fists_mp {
+	"inherit"		"damage_fists"
+	// "damage"		"20"
+}
+
+entityDef damage_flashlight_mp {
+	"inherit"		"damage_flashlight"
+	// "damage"		"20"
+}
+
+entityDef damage_soulblast_mp {
+	"inherit"		"damage_soulblast"
+	// "damage"		"200"
+}
+
+entityDef damage_soulSplash_mp {
+	"inherit"		"damage_soulSplash"
+	// "damage"		"40"
+	// "radius"		"100"
+}
+
+entityDef damage_softfall_mp {
+	"inherit"	"damage_softfall"
+	"damage"	"3"
+}
+
+entityDef damage_hardfall_mp {
+	"inherit"	"damage_hardfall"
+	"damage"	"15"
+}
+
+entityDef damage_fatalfall_mp {
+	"inherit"	"damage_fatalfall"
+	"damage"	"30"
+}
+
+entityDef damage_explodingbarrel_mp {
+	"inherit"			"damage_explodingbarrel"
+	"selfDamageScale"	"1"
+}

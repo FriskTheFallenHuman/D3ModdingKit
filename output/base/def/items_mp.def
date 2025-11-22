@@ -1,0 +1,21 @@
+/***********************************************************************
+
+	Items
+
+***********************************************************************/
+
+entityDef item_armor_security_mp {
+	"inherit"	"item_armor_security"
+}
+
+entityDef item_armor_shard_mp {
+	"inherit"	"item_armor_shard"
+}
+
+entityDef item_medkit_mp {
+	"inherit"	"item_medkit"
+}
+
+entityDef item_medkit_small_mp {
+	"inherit"	"item_medkit_small"
+}

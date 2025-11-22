@@ -1,7 +1,0 @@
-sound water/water_splash {
-	minDistance		1
-	maxDistance		25
-
-	sound/nature/water/water_splash_1.wav
-	sound/nature/water/water_splash_2.wav
-}

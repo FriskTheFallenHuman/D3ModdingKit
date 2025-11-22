@@ -1,9 +1,0 @@
-	windowDef VoteWin {
-		rect 10, 235, 640, 30
-		text	"gui::vote"
-		forecolor 1, 1, 1, 0.8
-		textscale 0.33
-		font "fonts/an"
-		shadow 1
-		textalign	0
-	}

@@ -1,0 +1,36 @@
+/***********************************************************************
+
+	Hand Grenade
+
+***********************************************************************/
+
+entityDef weapon_handgrenade_mp {
+	"inherit"			"weapon_handgrenade"
+}
+
+entityDef projectile_grenade_mp {
+	"inherit"			"projectile_grenade"
+	"push"				"0"				// no additional push in MP
+	"net_fullphysics"	"1"				// predict bouncing, don't simplify the snapshots for this
+}
+
+entityDef moveable_item_grenades_mp {
+	"inherit"			"moveable_item_grenades"
+	"damage"			"80" //6-8-04 -Tim
+}
+
+entityDef damage_grenadeDirect_mp {
+	"inherit"		"damage_grenadeDirect"
+	"damage"		"75" //changed by Tim 6-17-04
+}
+
+entityDef damage_grenadeSplash_mp {
+	"inherit"		"damage_grenadeSplash"
+	"damage"		"75"  //changed by Tim 6-17-04
+	"radius"		"150" //changed by Tim 6-17-04
+}
+
+entityDef damage_grenadeSplash_inhand_mp {
+	"inherit"					"damage_grenadeSplash_mp"
+	"selfDamageScale"			"20"		// defaults to 0.5 in multiplayer, so override it to full damage so player dies.
+}

@@ -1,0 +1,29 @@
+/***********************************************************************
+
+	Shotgun
+
+***********************************************************************/
+
+entityDef weapon_shotgun_mp {
+	"inherit"			"weapon_shotgun"
+	"inv_ammo_shells"	"8"
+	"spread"			"11"
+}
+
+entityDef projectile_bullet_shotgun_mp {
+	"inherit"			"projectile_bullet_shotgun"
+	"net_instanthit"	"0"				// don't predict decals on walls because the predicted spread is way of
+	"velocity"			"20000 0 0"		// fast projectiles in MP
+	"mass"				"0.5"			// lower mass because of the high velocity
+	"tracers"			"0"				// no tracers in MP
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_shotgun_mp {
+	"inherit"			"moveable_item_shotgun"
+}
+
+entityDef damage_shotgun_mp {
+	"inherit"		"damage_shotgun"
+	"damage"		"15" //changed from 9 Tim 6-17-04
+}

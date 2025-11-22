@@ -1,0 +1,18 @@
+/***********************************************************************
+
+	Chainsaw
+
+***********************************************************************/
+
+entityDef weapon_chainsaw_mp {
+	"inherit"			"weapon_chainsaw"
+}
+
+entityDef moveable_item_chainsaw_mp {
+	"inherit"			"moveable_item_chainsaw"
+}
+
+entityDef damage_chainsaw_mp {
+	"inherit"		"damage_chainsaw"
+	// "damage"		"60"
+}

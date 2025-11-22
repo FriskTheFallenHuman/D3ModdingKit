@@ -1,0 +1,29 @@
+/***********************************************************************
+
+	Machinegun
+
+***********************************************************************/
+
+entityDef weapon_machinegun_mp {
+	"inherit"			"weapon_machinegun"
+	"spread"			"1"
+	"inv_ammo_clip"		"60"
+}
+
+entityDef projectile_bullet_machinegun_mp {
+	"inherit"			"projectile_bullet_machinegun"
+	"net_instanthit"	"1"				// predict decals on walls in MP
+	"velocity"			"20000 0 0"		// fast projectiles in MP
+	"mass"				"0.5"				// lower mass because of the high velocity
+	"tracers"			"0"				// no tracers in MP
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_machinegun_mp {
+	"inherit"			"moveable_item_machinegun"
+}
+
+entityDef damage_bullet_machinegun_mp {
+	"inherit"		"damage_bullet_machinegun"
+	"damage"		"12"
+}

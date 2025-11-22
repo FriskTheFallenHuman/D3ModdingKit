@@ -1,0 +1,27 @@
+/***********************************************************************
+
+	Plasma Gun
+
+***********************************************************************/
+
+entityDef weapon_plasmagun_mp {
+	"inherit"			"weapon_plasmagun"
+	"inv_ammo_cells"	"30"
+	"clipSize"			"30"
+}
+
+entityDef projectile_plasmablast_mp {
+	"inherit"			"projectile_plasmablast"
+	"mins"				"-4 -4 -4"
+	"maxs"				"4 4 4"
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_plasmagun_mp {
+	"inherit"			"moveable_item_plasmagun"
+}
+
+entityDef damage_plasmablast_mp {
+	"inherit"		"damage_plasmablast"
+	"damage"		"30"
+}

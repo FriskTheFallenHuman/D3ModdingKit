@@ -1,9 +1,0 @@
-void portal_switch()
-{
-
-            sys.trigger($info_portalsky_1);
-            sys.wait (1);
-            sys.trigger($info_portalsky_2);
-
-            
-}

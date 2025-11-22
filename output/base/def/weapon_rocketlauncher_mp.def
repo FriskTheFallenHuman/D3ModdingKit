@@ -1,0 +1,34 @@
+/***********************************************************************
+
+	Rocket Launcher
+
+***********************************************************************/
+
+entityDef weapon_rocketlauncher_mp {
+	"inherit"			"weapon_rocketlauncher"
+	"model"				"models/weapons/rocketlauncher/mp_rocketlauncher.lwo"
+}
+
+entityDef projectile_rocket_mp {
+	"inherit"			"projectile_rocket"
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_rocketlauncher_mp {
+	"inherit"			"moveable_item_rocketlauncher"
+}
+
+entityDef damage_rocketDirect_mp {
+	"inherit"		"damage_rocketDirect"
+	"damage"		"100"
+}
+
+entityDef damage_rocketSplash_mp {
+	"inherit"			"damage_rocketSplash"
+	"damage"			"100"
+	"radius"			"125" //changed by tim 6-22-04 from 100
+	"knockback"				"80"
+	"attackerPushScale"		"1.5"
+	"attackerDamageScale"	"0.4"
+	"selfDamageScale"		"0.75" //changed by jim 8-23-04 from 0.5
+}

@@ -302,9 +302,7 @@ void idItem::Spawn( void ) {
 		BecomeActive( TH_THINK );
 	}
 
-	//pulse = !spawnArgs.GetBool( "nopulse" );
-	//temp hack for tim
-	pulse = false;
+	pulse = !spawnArgs.GetBool( "nopulse" );
 	orgOrigin = GetPhysics()->GetOrigin();
 
 	canPickUp = !( spawnArgs.GetBool( "triggerFirst" ) || spawnArgs.GetBool( "no_touch" ) );

@@ -496,7 +496,7 @@ public:
 	// server side work for in/out of spectate. takes care of spawning it into the world as well
 	void					ServerSpectate( bool spectate );
 	// for very specific usage. != GetPhysics()
-	idPhysics				*GetPlayerPhysics( void );
+	idPhysics_Player		*GetPlayerPhysics( void );
 	void					TeleportDeath( int killer );
 	void					SetLeader( bool lead );
 	bool					IsLeader( void );
@@ -537,6 +537,12 @@ private:
 	idVec3					viewBob;
 	int						landChange;
 	int						landTime;
+
+	// ddynerman: we read fall deltas from spawnargs, cache them to save some lookups
+	float					fatalFallDelta;
+	float					hardFallDelta;
+	float					softFallDelta;
+	float					noFallDelta;
 
 	int						currentWeapon;
 	int						idealWeapon;
@@ -583,6 +589,7 @@ private:
 	idEntity *				focusGUIent;
 	idUserInterface *		focusUI;				// focusGUIent->renderEntity.gui, gui2, or gui3
 	idAI *					focusCharacter;
+	idPlayer *				focusPlayer;
 	int						talkCursor;				// show the state of the focusCharacter (0 == can't talk/dead, 1 == ready to talk, 2 == busy talking)
 	int						focusTime;
 	idAFEntity_Vehicle *	focusVehicle;
@@ -615,11 +622,6 @@ private:
 	int						lastTeleFX;
 	unsigned int			lastSnapshotSequence;	// track state hitches on clients
 	bool					weaponCatchup;			// raise up the weapon silently ( state catchups )
-	int						MPAim;					// player num in aim
-	int						lastMPAim;
-	int						lastMPAimTime;			// last time the aim changed
-	int						MPAimFadeTime;			// for GUI fade
-	bool					MPAimHighlight;
 	bool					isTelefragged;			// proper obituaries
 
 	idPlayerIcon			playerIcon;
@@ -694,7 +696,7 @@ ID_INLINE bool idPlayer::IsRespawning( void ) {
 	return respawning;
 }
 
-ID_INLINE idPhysics* idPlayer::GetPlayerPhysics( void ) {
+ID_INLINE idPhysics_Player* idPlayer::GetPlayerPhysics( void ) {
 	return &physicsObj;
 }
 

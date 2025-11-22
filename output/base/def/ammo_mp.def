@@ -1,0 +1,54 @@
+/***********************************************************************
+
+	Ammunition
+
+***********************************************************************/
+
+entityDef ammo_belt_small_mp {
+	"inherit"		"ammo_belt_small"
+	"inv_ammo_belt"	"120"
+}
+
+entityDef ammo_bullets_large_mp {
+	"inherit"	"ammo_bullets_large"
+}
+
+entityDef ammo_bullets_small_mp {
+	"inherit"	"ammo_bullets_small"
+}
+
+entityDef ammo_cells_large_mp {
+	"inherit"	"ammo_cells_large"
+}
+
+entityDef ammo_cells_small_mp {
+	"inherit"	"ammo_cells_small"
+}
+
+entityDef ammo_clip_large_mp {
+	"inherit"	"ammo_clip_large"
+}
+
+entityDef ammo_clip_small_mp {
+	"inherit"	"ammo_clip_small"
+}
+
+entityDef ammo_grenade_small_mp {
+	"inherit"	"ammo_grenade_small"
+}
+
+entityDef ammo_rockets_large_mp {
+	"inherit"	"ammo_rockets_large"
+}
+
+entityDef ammo_rockets_small_mp {
+	"inherit"	"ammo_rockets_small"
+}
+
+entityDef ammo_shells_large_mp {
+	"inherit"	"ammo_shells_large"
+}
+
+entityDef ammo_shells_small_mp {
+	"inherit"	"ammo_shells_small"
+}

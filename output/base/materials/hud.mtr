@@ -1,0 +1,29 @@
+textures/interface/directionalDamageLeft
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	{
+		blend blend
+		map textures/interface/dirdamageleft.tga
+		linear
+		colored
+		clamp
+	}
+}
+
+textures/interface/directionalDamageFront
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	{
+		blend blend
+		map textures/interface/dirdamagefront.tga
+		linear
+		colored
+		clamp
+	}
+}

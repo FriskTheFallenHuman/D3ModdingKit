@@ -74,7 +74,7 @@ public:
 	// that with a warp model or in double vision mode
 	void				RenderPlayerView( idUserInterface *hud );
 
-	void				Fade( idVec4 color, int time );
+	void				Fade( idVec4 color, int time, bool isMultiplayer = false ); // Hack for multiplayer: do not fade the screen on death
 
 	void				Flash( idVec4 color, int time );
 
@@ -106,6 +106,8 @@ private:
 	const idMaterial *	armorMaterial;		// armor damage view effect
 	const idMaterial *	berserkMaterial;	// berserk effect
 	const idMaterial *	irGogglesMaterial;	// ir effect
+	const idMaterial *	dirDmgLeftMaterial;	//
+	const idMaterial *	dirDmgFrontMaterial;//
 	const idMaterial *	bloodSprayMaterial; // blood spray
 	const idMaterial *	bfgMaterial;		// when targeted with BFG
 	const idMaterial *	lagoMaterial;		// lagometer drawing

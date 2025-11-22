@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
 
-This file is part of the Doom 3 GPL Source Code ("Doom 3 Source Code").
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,11 +54,20 @@ typedef enum {
 		PLAYER_VOTE_WAIT	// mark a player allowed to vote
 } playerVote_t;
 
+enum mpLeaderStatus_t {
+	LEAD_STATUS_NOTSET,
+	LEAD_STATUS_NOLEAD,
+	LEAD_STATUS_INLEAD
+};
+
 typedef struct mpPlayerState_s {
+	int				clientnum;		// client number.
 	int				ping;			// player ping
 	int				fragCount;		// kills
 	int				teamFragCount;	// team kills
 	int				wins;			// wins
+	bool			tiednotified;	// true if we have already notified the player of tied status.
+	mpLeaderStatus_t currentLeader; // true if is current leader.
 	playerVote_t	vote;			// player's vote
 	bool			scoreBoardUp;	// toggle based on player scoreboard button, used to activate de-activate the scoreboard gui
 	bool			ingame;
@@ -89,6 +98,14 @@ typedef enum {
 	SND_TWO,
 	SND_ONE,
 	SND_SUDDENDEATH,
+	SND_LEADGAINED,
+	SND_LEADLOST,
+	SND_LEADTIED,
+	SND_WELCOMEDOM,
+	SND_ONEFRAG,
+	SND_TWOFRAG,
+	SND_THREEFRAG,
+	SND_PREPAREFORBATTLE,
 	SND_COUNT
 } snd_evt_t;
 
@@ -108,7 +125,7 @@ public:
 	// checks rules and updates state of the mp game
 	void			Run( void );
 
-	// draws mp hud, scoredboard, etc..
+	// draws mp hud, scoredboard, etc.. 
 	bool			Draw( int clientNum );
 
 	// updates a player vote
@@ -138,6 +155,9 @@ public:
 		NEXTGAME,
 		STATE_COUNT
 	} gameState_t;
+
+	static snd_evt_t fragFeedbackSndTable[4];
+
 	static const char *GameStateStrings[ STATE_COUNT ];
 	idMultiplayerGame::gameState_t		GetGameState( void ) const;
 
@@ -214,7 +234,7 @@ public:
 	void			ProcessVoiceChat( int clientNum, bool team, int index );
 
 	void			Precache( void );
-
+	
 	// throttle UI switch rates
 	void			ThrottleUserInfo( void );
 	void			ToggleSpectate( void );
@@ -231,6 +251,7 @@ public:
 	void			ServerWriteInitialReliableMessages( int clientNum );
 	void			ClientReadStartState( const idBitMsg &msg );
 	void			ClientReadWarmupTime( const idBitMsg &msg );
+	void			ClientReadWarmupTimeLeft( const idBitMsg &msg );
 
 	void			ServerClientConnect( int clientNum );
 
@@ -241,6 +262,9 @@ private:
 	static const char	*ThrottleVars[];
 	static const char	*ThrottleVarsInEnglish[];
 	static const int	ThrottleDelay[];
+
+	void			ShowWarmupScreen( idUserInterface *hud, bool visible, int countdownTime );
+	int				warmupTimeLeft;
 
 	// state vars
 	gameState_t		gameState;				// what state the current game is in
@@ -306,13 +330,16 @@ private:
 	gameType_t		lastGameType;			// for restarts
 	int				startFragLimit;			// synchronize to clients in initial state, set on -> GAMEON
 
+	bool			firstBlood;
+	bool			fragWarningFeedback[4];
+
 private:
 	void			UpdatePlayerRanks();
 
 	// updates the passed gui with current score information
 	void			UpdateRankColor( idUserInterface *gui, const char *mask, int i, const idVec3 &vec );
 	void			UpdateScoreboard( idUserInterface *scoreBoard, idPlayer *player );
-
+	
 	void			ClearGuis( void );
 	void			DrawScoreBoard( idPlayer *player );
 	void			UpdateHud( idPlayer *player, idUserInterface *hud );

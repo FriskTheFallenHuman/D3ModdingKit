@@ -1,1 +1,0 @@
-This folder contains examples an how-tos about features of this Fork and/or obscure engine features

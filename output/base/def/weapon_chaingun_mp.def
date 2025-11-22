@@ -1,0 +1,29 @@
+/***********************************************************************
+
+	Chaingun
+
+***********************************************************************/
+
+entityDef weapon_chaingun_mp {
+	"inherit"			"weapon_chaingun"
+	"spread"			"1"
+	"inv_ammo_belt"		"60"
+}
+
+entityDef projectile_chaingunbullet_mp {
+	"inherit"			"projectile_chaingunbullet"
+	"net_instanthit"	"1"				// predict decals on walls in MP
+	"velocity"			"20000 0 0"		// fast projectiles in MP
+	"mass"				"1"				// lower mass because of the high velocity
+	"tracers"			"0"				// no tracers in MP
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_chaingun_mp {
+	"inherit"			"moveable_item_chaingun"
+}
+
+entityDef damage_bullet_chaingun_mp {
+	"inherit"		"damage_bullet_chaingun"
+	"damage"		"25" //changed by jim 8-23-04 from 30
+}

@@ -1,0 +1,31 @@
+/***********************************************************************
+
+	BFG
+
+***********************************************************************/
+
+entityDef weapon_bfg_mp {
+	"inherit"			"weapon_bfg"
+}
+
+entityDef projectile_bfg_mp {
+	"inherit"			"projectile_bfg"
+	"no_contents"		"0"
+	"velocity"			"250 0 0"
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_bfg_mp {
+	"inherit"			"moveable_item_bfg"
+}
+
+entityDef damage_bfg_mp {
+	"inherit"		"damage_bfg"
+	// "damage"		"200"
+}
+
+entityDef damage_bfgSplash_mp {
+	"inherit"		"damage_bfgSplash"
+	// "damage"		"40"
+	// "radius"		"100"
+}

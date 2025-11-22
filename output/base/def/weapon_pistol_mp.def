@@ -1,0 +1,27 @@
+/***********************************************************************
+
+	Pistol
+
+***********************************************************************/
+
+entityDef weapon_pistol_mp {
+	"inherit"			"weapon_pistol"
+}
+
+entityDef projectile_bullet_pistol_mp {
+	"inherit"			"projectile_bullet_pistol"
+	"net_instanthit"	"1"				// predict decals on walls in MP
+	"velocity"			"20000 0 0"		// fast projectiles in MP
+	"mass"				"1"				// lower mass because of the high velocity
+	"tracers"			"0"				// no tracers in MP
+	"push"				"0"				// no additional push in MP
+}
+
+entityDef moveable_item_pistol_mp {
+	"inherit"			"moveable_item_pistol"
+}
+
+entityDef damage_bullet_pistol_mp {
+	"inherit"		"damage_bullet_pistol"
+	"damage"		"15"
+}

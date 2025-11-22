@@ -3179,7 +3179,7 @@ bool idGameLocal::InhibitEntitySpawn( idDict &spawnArgs ) {
 
 	if ( gameLocal.isMultiplayer ) {
 		name = spawnArgs.GetString( "classname" );
-		if ( idStr::Icmp( name, "weapon_bfg" ) == 0 || idStr::Icmp( name, "weapon_soulcube" ) == 0 ) {
+		if ( idStr::Icmp( name, "weapon_soulcube" ) == 0 ) {
 			result = true;
 		}
 	}
