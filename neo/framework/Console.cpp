@@ -255,36 +255,59 @@ void idConsoleLocal::DrawTextBigRightAlign( float x, float &y, const char *text,
 idConsoleLocal::DrawFPS
 ==================
 */
-#define	FPS_FRAMES	6
+#define	FPS_FRAMES	64
 float idConsoleLocal::DrawFPS( float y ) {
-	static int previousTimes[FPS_FRAMES];
-	static int index;
-	static int previous;
+	static float previousTimes[FPS_FRAMES];
+	static int	index;
+	static double previous;
 
 	// don't use serverTime, because that will be drifting to
 	// correct for internet lag changes, timescales, timedemos, etc
-	int t = Sys_Milliseconds();
-	int frameTime = t - previous;
+	double t = Sys_MillisecondsPrecise();
+	float frameTime = t - previous;
 	previous = t;
 
 	previousTimes[index % FPS_FRAMES] = frameTime;
 	index++;
 	if ( index > FPS_FRAMES ) {
 		// average multiple frames together to smooth changes out a bit
-		int total = 0;
-		for ( int i = 0 ; i < FPS_FRAMES ; i++ ) {
-			total += previousTimes[i];
-		}
-		if ( !total ) {
-			total = 1;
-		}
-		int fps = 1000000 * FPS_FRAMES / total;
-		fps = ( fps + 500 ) / 1000;
+		float total = 0.0f;
+		float minTime = 10000;
+		float maxTime = 0;
 
-		const char * s = va( "%3dfps / %7.3fms", fps, static_cast<float>(total) / FPS_FRAMES);
+		for ( int i = 0 ; i < FPS_FRAMES ; i++ ) {
+			float pt = previousTimes[i];
+			total += pt;
+			minTime = Min( minTime, pt );
+			maxTime = Max( maxTime, pt );
+		}
+
+		if ( total == 0.0f ) {
+			total = 0.1f;
+		}
+
+		float fps = ( 1000.0f * FPS_FRAMES ) / total;
+
+
+		char *s = va( "%.2ffps", fps );
+		//int w = strlen( s ) * BIGCHAR_WIDTH;
+
+		//renderSystem->DrawBigStringExt( 635 - w, idMath::FtoiFast( y ) + 2, s, colorWhite, true, localConsole.charSetShader);
 
 		static idOverlayHandle handle;
 		PrintOverlay( handle, JUSTIFY_RIGHT, s, false, TEXTSIZE_LARGE );
+
+		if ( com_showFPS.GetInteger() > 1 ) {
+			y +=  BIGCHAR_HEIGHT + 4;
+
+			s = va( "avg %.2fms min %.2f max %.2f", total * (1.0f / FPS_FRAMES), minTime, maxTime );
+			//w = strlen ( s ) * SMALLCHAR_WIDTH;
+			//renderSystem->DrawSmallStringExt( 635 - w, idMath::FtoiFast( y ) + 2, s, colorWhite, true, localConsole.charSetShader );
+
+			static idOverlayHandle handle;
+			PrintOverlay( handle, JUSTIFY_RIGHT, s, false, TEXTSIZE_LARGE );
+		}
+
 	}
 
 	return y + BIGCHAR_HEIGHT + 4;

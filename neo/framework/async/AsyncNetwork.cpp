@@ -301,7 +301,6 @@ void idAsyncNetwork::SpawnServer_f( const idCmdArgs &args ) {
 	if ( idStr::Icmp( cvarSystem->GetCVarString( "si_gameType" ), "singleplayer" ) == 0 ) {
 		cvarSystem->SetCVarString( "si_gameType", "deathmatch" );
 	}
-	com_asyncInput.SetBool( false );
 	// make sure the current system state is compatible with net_serverDedicated
 	switch ( cvarSystem->GetCVarInteger( "net_serverDedicated" ) ) {
 		case 0:
@@ -350,7 +349,6 @@ void idAsyncNetwork::Connect_f( const idCmdArgs &args ) {
 		common->Printf( "USAGE: connect <serverName>\n" );
 		return;
 	}
-	com_asyncInput.SetBool( false );
 	client.ConnectToServer( args.Argv( 1 ) );
 }
 
