@@ -343,8 +343,6 @@ private:
 	bool				authWaitBox;
 
 	idStr				authMsg;
-
-	int					lastTicMsec;
 };
 
 extern idSessionLocal	sessLocal;

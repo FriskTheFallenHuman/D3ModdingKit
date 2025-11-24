@@ -293,6 +293,7 @@ public:
 	virtual bool			IsInitialized( void ) const { return true; }
 	virtual void			Frame( void ) {}
 	virtual void			GUIFrame( bool execCmd, bool network  ) {}
+	virtual void			Async( void ) {}
 	virtual void			StartupVariable( const char *match, bool once ) {}
 	virtual void			InitTool( const toolFlag_t tool, const idDict *dict ) {}
 	virtual void			ActivateTool( bool active ) {}
@@ -317,9 +318,6 @@ public:
 	virtual const char *	BindingFromKey( const char *key ) { return NULL; }
 	virtual int				ButtonState( int key ) { return 0; }
 	virtual int				KeyState( int key ) { return 0; }
-	virtual float			Get_com_engineHz_latched( void ) { return 1.0f; }
-	virtual int64_t			Get_com_engineHz_numerator( void ) { return NULL; }
-	virtual int64_t			Get_com_engineHz_denominator( void ) { return NULL; }
 };
 
 idCVar com_developer( "developer", "0", CVAR_BOOL|CVAR_SYSTEM, "developer mode" );
@@ -355,8 +353,6 @@ sysEvent_t		idSysLocal::GenerateMouseMoveEvent( int deltax, int deltay ) { sysEv
 
 void			idSysLocal::OpenURL( const char *url, bool quit ) { }
 void			idSysLocal::StartProcess( const char *exeName, bool quit ) { }
-
-bool			idSysLocal::IsGameWindowVisible( void ) { return false; }
 
 idSysLocal		sysLocal;
 idSys *			sys = &sysLocal;

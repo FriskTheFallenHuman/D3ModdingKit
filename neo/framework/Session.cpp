@@ -44,9 +44,9 @@ idCVar	idSessionLocal::com_wipeSeconds( "com_wipeSeconds", "1", CVAR_SYSTEM, "" 
 idCVar	idSessionLocal::com_guid( "com_guid", "", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_ROM, "" );
 
 idCVar	idSessionLocal::com_numQuicksaves( "com_numQuicksaves", "4", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_INTEGER|CVAR_NEW,
-                                           "number of quicksaves to keep before overwriting the oldest", 1, 99 );
+										   "number of quicksaves to keep before overwriting the oldest", 1, 99 );
 idCVar	idSessionLocal::com_disableAutoSaves( "com_disableAutoSaves", "0", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_BOOL|CVAR_NEW,
-                                              "Don't create Autosaves when entering a new map" );
+											  "Don't create Autosaves when entering a new map" );
 
 idSessionLocal		sessLocal;
 idSession			*session = &sessLocal;
@@ -370,8 +370,6 @@ idSessionLocal::idSessionLocal() {
 
 	menuSoundWorld = NULL;
 
-	lastTicMsec = 0;
-
 	Clear();
 }
 
@@ -506,7 +504,9 @@ void idSessionLocal::CompleteWipe() {
 		return;
 	}
 	while ( com_ticNumber < wipeStopTic ) {
-		com_ticNumber++;
+#if ID_CONSOLE_LOCK
+		emptyDrawCount = 0;
+#endif
 		UpdateScreen( true );
 	}
 }
@@ -2435,8 +2435,11 @@ idSessionLocal::Frame
 ===============
 */
 extern bool CheckOpenALDeviceAndRecoverIfNeeded();
-
 void idSessionLocal::Frame() {
+
+	if ( com_asyncSound.GetInteger() == 0 ) {
+		soundSystem->AsyncUpdateWrite( Sys_Milliseconds() );
+	}
 
 	// DG: periodically check if sound device is still there and try to reset it if not
 	//     (calling this from idSoundSystem::AsyncUpdate(), which runs in a separate thread
@@ -2457,6 +2460,42 @@ void idSessionLocal::Frame() {
 		Sys_GrabMouseCursor( true );
 	}
 #endif
+
+	// at startup, we may be backwards
+	if ( latchedTicNumber > com_ticNumber ) {
+		latchedTicNumber = com_ticNumber;
+	}
+
+	// se how many tics we should have before continuing
+	int	minTic = latchedTicNumber + 1;
+	if ( com_minTics.GetInteger() > 1 ) {
+		minTic = lastGameTic + com_minTics.GetInteger();
+	}
+
+	if ( readDemo ) {
+		if ( !timeDemo && numDemoFrames != 1 ) {
+			minTic = lastDemoTic + USERCMD_PER_DEMO_FRAME;
+		} else {
+			// timedemos and demoshots will run as fast as they can, other demos
+			// will not run more than 30 hz
+			minTic = latchedTicNumber;
+		}
+	} else if ( writeDemo ) {
+		minTic = lastGameTic + USERCMD_PER_DEMO_FRAME;		// demos are recorded at 30 hz
+	}
+
+	// fixedTic lets us run a forced number of usercmd each frame without timing
+	if ( com_fixedTic.GetInteger() ) {
+		minTic = latchedTicNumber;
+	}
+
+	while( 1 ) {
+		latchedTicNumber = com_ticNumber;
+		if ( latchedTicNumber >= minTic ) {
+			break;
+		}
+		Sys_WaitForEvent( TRIGGER_EVENT_ONE );
+	}
 
 	if ( authEmitTimeout ) {
 		// waiting for a game auth

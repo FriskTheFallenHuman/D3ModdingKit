@@ -40,14 +40,6 @@ idCVar sys_lang( "sys_lang", "english", CVAR_SYSTEM | CVAR_ARCHIVE,  "", sysLang
 idSysLocal			sysLocal;
 idSys *				sys = &sysLocal;
 
-bool idSysLocal::IsGameWindowVisible( void ) {
-#ifdef _WIN32
-	return Sys_IsWindowVisible();
-#else
-	return true;
-#endif // _WIN32
-}
-
 void idSysLocal::DebugPrintf( const char *fmt, ... ) {
 	va_list argptr;
 

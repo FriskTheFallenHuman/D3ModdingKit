@@ -443,8 +443,6 @@ public:
 
 	virtual void			OpenURL( const char *url, bool quit ) = 0;
 	virtual void			StartProcess( const char *exePath, bool quit ) = 0;
-
-	virtual bool			IsGameWindowVisible( void ) = 0;
 };
 
 extern idSys *				sys;
