@@ -265,6 +265,10 @@ void idGameLocal::Init( void ) {
 	// register game specific decl types
 	declManager->RegisterDeclType( "model",				DECL_MODELDEF,		idDeclAllocator<idDeclModelDef> );
 	declManager->RegisterDeclType( "export",			DECL_MODELEXPORT,	idDeclAllocator<idDecl> );
+	declManager->RegisterDeclType( "pda",				DECL_PDA,			idDeclAllocator<idDeclPDA> );
+	declManager->RegisterDeclType( "email",				DECL_EMAIL,			idDeclAllocator<idDeclEmail> );
+	declManager->RegisterDeclType( "video",				DECL_VIDEO,			idDeclAllocator<idDeclVideo> );
+	declManager->RegisterDeclType( "audio",				DECL_AUDIO,			idDeclAllocator<idDeclAudio> );
 
 	// register game specific decl folders
 	declManager->RegisterDeclFolder( "def",				".def",				DECL_ENTITYDEF );
@@ -274,7 +278,16 @@ void idGameLocal::Init( void ) {
 	declManager->RegisterDeclFolder( "newpdas",			".pda",				DECL_PDA );
 
 	cmdSystem->AddCommand( "listModelDefs", idListDecls_f<DECL_MODELDEF>, CMD_FL_SYSTEM|CMD_FL_GAME, "lists model defs" );
+	cmdSystem->AddCommand( "listPDAs", idListDecls_f<DECL_PDA>, CMD_FL_SYSTEM|CMD_FL_GAME, "lists PDAs" );
+	cmdSystem->AddCommand( "listEmails", idListDecls_f<DECL_EMAIL>, CMD_FL_SYSTEM|CMD_FL_GAME, "lists Emails" );
+	cmdSystem->AddCommand( "listVideos", idListDecls_f<DECL_VIDEO>, CMD_FL_SYSTEM|CMD_FL_GAME, "lists Videos" );
+	cmdSystem->AddCommand( "listAudios", idListDecls_f<DECL_AUDIO>, CMD_FL_SYSTEM|CMD_FL_GAME, "lists Audios" );
+
 	cmdSystem->AddCommand( "printModelDefs", idPrintDecls_f<DECL_MODELDEF>, CMD_FL_SYSTEM|CMD_FL_GAME, "prints a model def", idCmdSystem::ArgCompletion_Decl<DECL_MODELDEF> );
+	cmdSystem->AddCommand( "printPDA", idPrintDecls_f<DECL_PDA>, CMD_FL_SYSTEM|CMD_FL_GAME, "prints an PDA", idCmdSystem::ArgCompletion_Decl<DECL_PDA> );
+	cmdSystem->AddCommand( "printEmail", idPrintDecls_f<DECL_EMAIL>, CMD_FL_SYSTEM|CMD_FL_GAME, "prints an Email", idCmdSystem::ArgCompletion_Decl<DECL_EMAIL> );
+	cmdSystem->AddCommand( "printVideo", idPrintDecls_f<DECL_VIDEO>, CMD_FL_SYSTEM|CMD_FL_GAME, "prints a Audio", idCmdSystem::ArgCompletion_Decl<DECL_VIDEO> );
+	cmdSystem->AddCommand( "printAudio", idPrintDecls_f<DECL_AUDIO>, CMD_FL_SYSTEM, "prints an Video", idCmdSystem::ArgCompletion_Decl<DECL_AUDIO> );
 
 	Clear();
 

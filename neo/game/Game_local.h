@@ -64,6 +64,8 @@ class idProgram;
 class idThread;
 class idEditEntities;
 class idLocationEntity;
+class idDeclPDA;
+class idDeclVideo;
 
 //============================================================================
 
@@ -674,6 +676,10 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "physics/Physics_RigidBody.h"
 #include "physics/Physics_AF.h"
 #include "physics/Physics_Liquid.h"
+
+//Decls
+#include "decls/DeclModelDef.h"
+#include "decls/DeclPDA.h"
 
 #include "SmokeParticles.h"
 
