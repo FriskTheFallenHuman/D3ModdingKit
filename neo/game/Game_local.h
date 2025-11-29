@@ -339,6 +339,12 @@ public:
 
 	virtual bool			DownloadRequest( const char *IP, const char *guid, const char *paks, char urls[ MAX_STRING_CHARS ] );
 
+	virtual void			SelectTimeGroup( int timeGroup );
+	virtual int				GetTimeGroupTime( int timeGroup );
+	virtual void			GetBestGameType( const char *map, const char *gametype, char buf[ MAX_STRING_CHARS ] );
+
+	virtual void			GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] );
+
 	// ---------------------- Public idGameLocal Interface -------------------
 
 	void					Printf( VERIFY_FORMAT_STRING const char *fmt, ... ) const;
@@ -449,6 +455,8 @@ public:
 
 	bool					NeedRestart();
 
+	const char *			GetMapFileName( void ) { return mapFileName.c_str(); }
+
 private:
 	const static int		INITIAL_SPAWN_COUNT = 1;
 	const static int		INTERNAL_SAVEGAME_VERSION = 1; // DG: added this for >= 1304 savegames
@@ -545,15 +553,9 @@ private:
 	void					DumpOggSounds( void );
 	void					GetShakeSounds( const idDict *dict );
 
-	virtual void			SelectTimeGroup( int timeGroup );
-	virtual int				GetTimeGroupTime( int timeGroup );
-	virtual void			GetBestGameType( const char* map, const char* gametype, char buf[ MAX_STRING_CHARS ] );
-
 	void					Tokenize( idStrList &out, const char *in );
 
 	void					UpdateLagometer( int aheadOfServer, int dupeUsercmds );
-
-	virtual void			GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] );
 };
 
 //============================================================================

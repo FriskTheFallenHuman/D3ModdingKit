@@ -302,7 +302,10 @@ void idItem::Spawn( void ) {
 		BecomeActive( TH_THINK );
 	}
 
-	pulse = !spawnArgs.GetBool( "nopulse" );
+	// HACK, some maps hits the render limit
+	const bool isHellHoleMap = ( idStr::FindText( gameLocal.GetMapFileName(), "hellhole" ) >= 0 );
+	pulse = !spawnArgs.GetBool( "nopulse" ) && !isHellHoleMap;
+
 	orgOrigin = GetPhysics()->GetOrigin();
 
 	canPickUp = !( spawnArgs.GetBool( "triggerFirst" ) || spawnArgs.GetBool( "no_touch" ) );
