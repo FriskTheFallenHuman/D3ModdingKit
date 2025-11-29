@@ -195,7 +195,7 @@ void idDragEntity::Update( idPlayer *player ) {
 						newEnt = newEnt->GetBindMaster();
 					}
 
-					if ( newEnt->IsType( idAFEntity_Base::GetClassType() ) && static_cast<idAFEntity_Base *>(newEnt)->IsActiveAF() ) {
+					if ( newEnt->IsType( idAFEntity_Base::Type ) && static_cast<idAFEntity_Base *>(newEnt)->IsActiveAF() ) {
 						idAFEntity_Base *af = static_cast<idAFEntity_Base *>(newEnt);
 
 						// joint being dragged
@@ -205,7 +205,7 @@ void idDragEntity::Update( idPlayer *player ) {
 						// get the name of the body being dragged
 						newBodyName = af->GetAFPhysics()->GetBody( trace.c.id )->GetName();
 
-					} else if ( !newEnt->IsType( idWorldspawn::GetClassType() ) ) {
+					} else if ( !newEnt->IsType( idWorldspawn::Type ) ) {
 
 						if ( trace.c.id < 0 ) {
 							newJoint = CLIPMODEL_ID_TO_JOINT_HANDLE( trace.c.id );
@@ -228,7 +228,7 @@ void idDragEntity::Update( idPlayer *player ) {
 					bodyName = newBodyName;
 
 					if ( !cursor ) {
-						cursor = ( idCursor3D * )gameLocal.SpawnEntityType( idCursor3D::GetClassType() );
+						cursor = ( idCursor3D * )gameLocal.SpawnEntityType( idCursor3D::Type );
 					}
 
 					idPhysics *phys = dragEnt.GetEntity()->GetPhysics();
@@ -241,9 +241,9 @@ void idDragEntity::Update( idPlayer *player ) {
 					cursor->drag.SetPhysics( phys, id, localEntityPoint );
 					cursor->Show();
 
-					if ( phys->IsType( idPhysics_AF::GetClassType() ) ||
-							phys->IsType( idPhysics_RigidBody::GetClassType() ) ||
-								phys->IsType( idPhysics_Monster::GetClassType() ) ) {
+					if ( phys->IsType( idPhysics_AF::Type ) ||
+							phys->IsType( idPhysics_RigidBody::Type ) ||
+								phys->IsType( idPhysics_Monster::Type ) ) {
 						cursor->BecomeActive( TH_THINK );
 					}
 				}
@@ -324,7 +324,7 @@ void idDragEntity::BindSelected( void ) {
 
 	af = static_cast<idAFEntity_Base *>(dragEnt.GetEntity());
 
-	if ( !af || !af->IsType( idAFEntity_Base::GetClassType() ) || !af->IsActiveAF() ) {
+	if ( !af || !af->IsType( idAFEntity_Base::Type ) || !af->IsActiveAF() ) {
 		return;
 	}
 
@@ -376,7 +376,7 @@ void idDragEntity::UnbindSelected( void ) {
 
 	af = static_cast<idAFEntity_Base *>(selected.GetEntity());
 
-	if ( !af || !af->IsType( idAFEntity_Base::GetClassType() ) || !af->IsActiveAF() ) {
+	if ( !af || !af->IsType( idAFEntity_Base::Type ) || !af->IsActiveAF() ) {
 		return;
 	}
 
@@ -541,37 +541,37 @@ void idEditEntities::DisplayEntities( void ) {
 
 	switch( g_editEntityMode.GetInteger() ) {
 		case 1:
-			sit.typeInfo = &idLight::GetClassType();
+			sit.typeInfo = &idLight::Type;
 			sit.textKey = "texture";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 2:
-			sit.typeInfo = &idSound::GetClassType();
+			sit.typeInfo = &idSound::Type;
 			sit.textKey = "s_shader|name";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 3:
-			sit.typeInfo = &idAFEntity_Base::GetClassType();
+			sit.typeInfo = &idAFEntity_Base::Type;
 			sit.textKey = "articulatedFigure";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 4:
-			sit.typeInfo = &idFuncEmitter::GetClassType();
+			sit.typeInfo = &idFuncEmitter::Type;
 			sit.textKey = "model";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 5:
-			sit.typeInfo = &idAI::GetClassType();
+			sit.typeInfo = &idAI::Type;
 			sit.textKey = "name";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 6:
-			sit.typeInfo = &idEntity::GetClassType();
+			sit.typeInfo = &idEntity::Type;
 			sit.textKey = "name";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 7:
-			sit.typeInfo = &idEntity::GetClassType();
+			sit.typeInfo = &idEntity::Type;
 			sit.textKey = "model";
 			selectableEntityClasses.Append( sit );
 			break;
@@ -609,11 +609,11 @@ void idEditEntities::DisplayEntities( void ) {
 		bool drawArrows = false;
 		bool drawDirection = false;
 
-		if ( ent->GetType() == &idAFEntity_Base::GetClassType() ) {
+		if ( ent->GetType() == &idAFEntity_Base::Type ) {
 			if ( !static_cast<idAFEntity_Base *>(ent)->IsActiveAF() ) {
 				continue;
 			}
-		} else if ( ent->GetType() == &idSound::GetClassType() ) {
+		} else if ( ent->GetType() == &idSound::Type ) {
 			if ( ent->fl.selected ) {
 				drawArrows = true;
 			}
@@ -622,12 +622,12 @@ void idEditEntities::DisplayEntities( void ) {
 			if ( ss->HasDefaultSound() || ss->base->GetState() == DS_DEFAULTED ) {
 				color.Set( 1.0f, 0.0f, 1.0f, 1.0f );
 			}
-		} else if ( ent->GetType() == &idFuncEmitter::GetClassType() ) {
+		} else if ( ent->GetType() == &idFuncEmitter::Type ) {
 			if ( ent->fl.selected ) {
 				drawArrows = true;
 				drawDirection = true;
 			}
-		} else if ( ent->GetType() == &idLight::GetClassType() ) {
+		} else if ( ent->GetType() == &idLight::Type ) {
 			if ( ent->fl.selected ) {
 				drawArrows = true;
 				drawDirection = true;

@@ -61,7 +61,7 @@ are initialized before superclasses.
 ================
 */
 idTypeInfo::idTypeInfo( const char *classname, const char *superclass, idEventFunc<idClass> *eventCallbacks, idClass *( *CreateInstance )( void ),
-	void ( idClass::*Spawn )( void ), idStateFunc<idClass> *stateCallbacks, void ( idClass::*Save )( idSaveGame *savefile ) const, void ( idClass::*Restore )( idRestoreGame *savefile ) ) {
+	void ( idClass::*Spawn )( void ), void ( idClass::*Save )( idSaveGame *savefile ) const, void ( idClass::*Restore )( idRestoreGame *savefile ) ) {
 
 	idTypeInfo *type;
 	idTypeInfo **insert;
@@ -78,7 +78,6 @@ idTypeInfo::idTypeInfo( const char *classname, const char *superclass, idEventFu
 	this->freeEventMap		= false;
 	typeNum					= 0;
 	lastChild				= 0;
-	this->stateCallbacks	= stateCallbacks;
 
 	// Check if any subclasses were initialized before their superclass
 	for( type = typelist; type != NULL; type = type->next ) {
@@ -233,9 +232,6 @@ ABSTRACT_DECLARATION( NULL, idClass )
 	EVENT( EV_SafeRemove,			idClass::Event_SafeRemove )
 END_CLASS
 
-CLASS_STATES_DECLARATION( idClass )
-END_CLASS_STATES
-
 // alphabetical order
 idList<idTypeInfo *>	idClass::types;
 // typenum order
@@ -274,9 +270,6 @@ classSpawnFunc_t idClass::CallSpawnFunc( idTypeInfo *cls ) {
 			return func;
 		}
 	}
-
-	// hmmm.... stompage of memory has occured
-	assert( cls->Spawn != 0 );
 
 	( this->*cls->Spawn )();
 
@@ -398,10 +391,6 @@ void idClass::Init( void ) {
 
 	// init the event callback tables for all the classes
 	for( c = typelist; c != NULL; c = c->next ) {
-		// jnewquist: Make sure the superclass was actually registered!
-		if ( c->super == NULL && ( c->superclass && idStr::Cmp( c->superclass, "NULL" ) ) ) {
-			common->Error( "Superclass %s of %s was never registered!", c->superclass, c->classname );
-		}
 		c->Init();
 	}
 
@@ -637,15 +626,6 @@ void idClass::CancelEvents( const idEventDef *ev ) {
 
 /*
 ================
-idClass::EventIsPosted
-================
-*/
-bool idClass::EventIsPosted( const idEventDef *ev ) const {
-	return idEvent::EventIsPosted( this, ev );
-}
-
-/*
-================
 idClass::PostEventArgs
 ================
 */
@@ -669,12 +649,7 @@ bool idClass::PostEventArgs( const idEventDef *ev, int time, int numargs, ... ) 
 	// we service events on the client to avoid any bad code filling up the event pool
 	// we don't want them processed usually, unless when the map is (re)loading.
 	// we allow threads to run fine, though.
-	// bdube: added a check to see if this is a client entity
-	// jnewquist: Use accessor for static class type
-	bool isClient = !IsClient() && gameLocal.isClient;
-
-	if ( isClient && ( gameLocal.GameState() != GAMESTATE_STARTUP ) && !IsType( idThread::GetClassType() ) ) {
-		// RAVEN END
+	if ( gameLocal.isClient && ( gameLocal.GameState() != GAMESTATE_STARTUP ) && !IsType( idThread::Type ) ) {
 		return true;
 	}
 
@@ -973,8 +948,7 @@ bool idClass::ProcessEventArgPtr( const idEventDef *ev, intptr_t *data ) {
 	assert( ev );
 	assert( idEvent::initialized );
 
-	// jnewquist: Use accessor for static class type
-	if ( g_debugTriggers.GetBool() && ( ev == &EV_Activate ) && IsType( idEntity::GetClassType() ) ) {
+	if ( g_debugTriggers.GetBool() && ( ev == &EV_Activate ) && IsType( idEntity::Type ) ) {
 		const idEntity *ent = *reinterpret_cast<idEntity **>( data );
 		gameLocal.Printf( "%d: '%s' activated by '%s'\n", gameLocal.framenum, static_cast<idEntity *>( this )->GetName(), ent ? ent->GetName() : "NULL" );
 	}
@@ -1021,217 +995,4 @@ idClass::Event_SafeRemove
 void idClass::Event_SafeRemove( void ) {
 	// Forces the remove to be done at a safe time
 	PostEventMS( &EV_Remove, 0 );
-}
-
-// bdube: client entities
-/*
-================
-idClass::IsClient
-================
-*/
-bool idClass::IsClient( void ) const {
-	return false;
-}
-
-/*
-================
-idClass::ProcessState
-================
-*/
-stateResult_t idClass::ProcessState( const idStateFunc<idClass> *state, const stateParms_t &parms ) {
-	return ( this->*( state->function ) ) ( parms );
-}
-
-/*
-================
-idClass::ProcessState
-================
-*/
-stateResult_t idClass::ProcessState( const char *name, const stateParms_t &parms ) {
-	int				i;
-	idTypeInfo *	cls;
-
-	for( cls = GetType(); cls; cls = cls->super ) {
-		for( i = 0; cls->stateCallbacks[i].function; i++ ) {
-			if ( !idStr::Icmp( cls->stateCallbacks[i].name, name ) ) {
-				return ( this->*( cls->stateCallbacks[i].function ) ) ( parms );
-			}
-		}
-	}
-
-	return SRESULT_ERROR;
-}
-
-/*
-================
-idClass::FindState
-================
-*/
-const idStateFunc<idClass>* idClass::FindState( const char *name ) const {
-	int				i;
-	idTypeInfo *	cls;
-
-	for ( cls = GetType(); cls; cls = cls->super ) {
-		for ( i = 0; cls->stateCallbacks[i].function; i++ ) {
-			if ( !idStr::Icmp( cls->stateCallbacks[i].name, name ) ) {
-				return &cls->stateCallbacks[i];
-			}
-		}
-	}
-
-	return NULL;
-}
-
-/*
-================
-idClass::RegisterClasses
-================
-*/
-void idClass::RegisterClasses( void ) {
-#define REGISTER( name ) void Register_##name( void ); Register_##name();
-	REGISTER(idClass)
-	REGISTER(idPhysics)
-	REGISTER(idEntity)
-	REGISTER(idCamera)
-	REGISTER(idForce)
-	REGISTER(idForce_Constant)
-	REGISTER(idForce_Drag)
-	REGISTER(idForce_Field)
-	REGISTER(idForce_Spring)
-	REGISTER(idPhysics_Static)
-	REGISTER(idPhysics_StaticMulti)
-	REGISTER(idPhysics_Base)
-	REGISTER(idPhysics_Liquid)
-	REGISTER(idPhysics_Actor)
-	REGISTER(idPhysics_Monster)
-	REGISTER(idPhysics_Player)
-	REGISTER(idPhysics_Parametric)
-	REGISTER(idPhysics_RigidBody)
-	REGISTER(idPhysics_AF)
-	REGISTER(idAnimatedEntity)
-	REGISTER(idCursor3D)
-	REGISTER(idMultiModelAF)
-	REGISTER(idChain)
-	REGISTER(idAFAttachment)
-	REGISTER(idAFEntity_Base)
-	REGISTER(idAFEntity_Gibbable)
-	REGISTER(idAFEntity_Generic)
-	REGISTER(idAFEntity_WithAttachedHead)
-	REGISTER(idAFEntity_Vehicle)
-	REGISTER(idAFEntity_VehicleSimple)
-	REGISTER(idAFEntity_VehicleFourWheels)
-	REGISTER(idAFEntity_VehicleSixWheels)
-	REGISTER(idAFEntity_SteamPipe)
-	REGISTER(idAFEntity_ClawFourFingers)
-	REGISTER(idSpawnableEntity)
-	REGISTER(idPlayerStart)
-	REGISTER(idActivator)
-	REGISTER(idPathCorner)
-	REGISTER(idDamagable)
-	REGISTER(idExplodable)
-	REGISTER(idSpring)
-	REGISTER(idForceField)
-	REGISTER(idAnimated)
-	REGISTER(idStaticEntity)
-	REGISTER(idFuncEmitter)
-	REGISTER(idFuncSmoke)
-	REGISTER(idFuncSplat)
-	REGISTER(idTextEntity)
-	REGISTER(idLocationEntity)
-	REGISTER(idLocationSeparatorEntity)
-	REGISTER(idVacuumSeparatorEntity)
-	REGISTER(idVacuumEntity)
-	REGISTER(idBeam)
-	REGISTER(idLiquid)
-	REGISTER(idShaking)
-	REGISTER(idEarthQuake)
-	REGISTER(idFuncPortal)
-	REGISTER(idFuncAASPortal)
-	REGISTER(idFuncAASObstacle)
-	REGISTER(idFuncRadioChatter)
-	REGISTER(idPhantomObjects)
-	REGISTER(idActor)
-	REGISTER(idProjectile)
-	REGISTER(idGuidedProjectile)
-	REGISTER(idSoulCubeMissile)
-	REGISTER(idBFGProjectile)
-	REGISTER(idDebris)
-	REGISTER(idWeapon)
-	REGISTER(idLight)
-	REGISTER(idWorldspawn)
-	REGISTER(idItem)
-	REGISTER(idItemPowerup)
-	REGISTER(idObjective)
-	REGISTER(idVideoCDItem)
-	REGISTER(idPDAItem)
-	REGISTER(idMoveableItem)
-	REGISTER(idMoveablePDAItem)
-	REGISTER(idMoveableGibItem)
-	REGISTER(idItemRemover)
-	REGISTER(idObjectiveComplete)
-	REGISTER(idPlayer)
-	REGISTER(idMover)
-	REGISTER(idSplinePath)
-	REGISTER(idElevator)
-	REGISTER(idMover_Binary)
-	REGISTER(idDoor)
-	REGISTER(idPlat)
-	REGISTER(idMover_Periodic)
-	REGISTER(idRotater)
-	REGISTER(idBobber)
-	REGISTER(idPendulum)
-	REGISTER(idRiser)
-	REGISTER(idCameraView)
-	REGISTER(idCameraAnim)
-	REGISTER(idMoveable)
-	REGISTER(idBarrel)
-	REGISTER(idExplodingBarrel)
-	REGISTER(idTarget)
-	REGISTER(idTarget_Remove)
-	REGISTER(idTarget_Show)
-	REGISTER(idTarget_Damage)
-	REGISTER(idTarget_SessionCommand)
-	REGISTER(idTarget_EndLevel)
-	REGISTER(idTarget_WaitForButton)
-	REGISTER(idTarget_SetGlobalShaderTime)
-	REGISTER(idTarget_SetShaderParm)
-	REGISTER(idTarget_SetShaderTime)
-	REGISTER(idTarget_FadeEntity)
-	REGISTER(idTarget_LightFadeIn)
-	REGISTER(idTarget_LightFadeOut)
-	REGISTER(idTarget_Give)
-	REGISTER(idTarget_GiveEmail)
-	REGISTER(idTarget_SetModel)
-	REGISTER(idTarget_SetInfluence)
-	REGISTER(idTarget_SetKeyVal)
-	REGISTER(idTarget_SetFov)
-	REGISTER(idTarget_SetPrimaryObjective)
-	REGISTER(idTarget_LockDoor)
-	REGISTER(idTarget_CallObjectFunction)
-	REGISTER(idTarget_EnableLevelWeapons)
-	REGISTER(idTarget_Tip)
-	REGISTER(idTarget_GiveSecurity)
-	REGISTER(idTarget_RemoveWeapons)
-	REGISTER(idTarget_LevelTrigger)
-	REGISTER(idTarget_EnableStamina)
-	REGISTER(idTarget_FadeSoundClass)
-	REGISTER(idTrigger)
-	REGISTER(idTrigger_Multi)
-	REGISTER(idTrigger_EntityName)
-	REGISTER(idTrigger_Timer)
-	REGISTER(idTrigger_Count)
-	REGISTER(idTrigger_Hurt)
-	REGISTER(idTrigger_Fade)
-	REGISTER(idTrigger_Touch)
-	REGISTER(idSound)
-	REGISTER(idEntityFx)
-	REGISTER(idTeleporter)
-	REGISTER(idSecurityCamera)
-	REGISTER(idBrittleFracture)
-	REGISTER(idAI)
-	REGISTER(idCombatNode)
-	REGISTER(idTestModel)
-	REGISTER(idThread)
-	REGISTER(idAI_Vagary)
-#undef REGISTER
 }

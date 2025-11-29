@@ -45,12 +45,8 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
 - The Dark Mod / Hardcorps
   - Re-implemented water system
 - IcedTech3:
-  - Deprecated legacy async thread.
-  - Fixed a bug were DoomEdit would have slow performance.
   - IceTech3: Fixed Particle Editor crashing when creating a new particle.
-  - Fixed Multiplayer Not working after Async Removal.
   - Improved Multiplayer experience by merging some feedback code.
-  - Moved sound async to a separate thread.
   - Added OBJ support.
   - Moved AASfile to libs to match QuakeWars.
   - brush_t renamed to idEditorBrush and entity_t idEditorEntity.
@@ -61,7 +57,6 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
     * Camera movement is now based on delta time, and controled by radiant_cameraMoveSpeed.
     * Added grid lines.
   - Fixed a performance were idInteraction would allocate and link for objects that weren't in the light views frustum.
-  - Fixed a bug were timing would be incorrect in loading screens.
   - Created native versions of all AI_events and then new script functions to call the new native events.
   - Moved Weapon DoomScript native functions so they can be called in native and just in doomscript.
   - Added AnimatedEntity.cpp/h moved that from Entity.cpp/h
@@ -70,7 +65,6 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
   - Seperated DoomScript from idActor so it can be used with native.
   - Re-Added MayaImport:
     * Supports Maya SDK 2019 up to 2025 (2019 Below is untested)
-  - Gamesys integration from Quake 4/Quake Wars. Prevents dead stripping, and new state management code.
 - com.n0n3m4.diii4a:
   - Quake 4's map base .reverb config files for maps + default .efx for maps that lacks it.
 - Original Changes:

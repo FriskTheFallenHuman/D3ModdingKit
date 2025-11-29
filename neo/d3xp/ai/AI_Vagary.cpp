@@ -86,7 +86,7 @@ void idAI_Vagary::Event_ChooseObjectToThrow( const idVec3 &mins, const idVec3 &m
 			index = 0;
 		}
 		ent = entityList[ index ];
-		if ( !ent->IsType( idMoveable::GetClassType() ) ) {
+		if ( !ent->IsType( idMoveable::Type ) ) {
 			continue;
 		}
 
@@ -140,7 +140,7 @@ void idAI_Vagary::Event_ThrowObjectAtEnemy( idEntity *ent, float speed ) {
 
 	entPhys->SetLinearVelocity( vel );
 
-	if ( ent->IsType( idMoveable::GetClassType() ) ) {
+	if ( ent->IsType( idMoveable::Type ) ) {
 		idMoveable *ment = static_cast<idMoveable*>( ent );
 		ment->EnableDamage( true, 2.5f );
 	}

@@ -88,7 +88,7 @@ void idTrigger::DrawDebugInfo( void ) {
 			if ( viewTextBounds.IntersectsBounds( ent->GetPhysics()->GetAbsBounds() ) ) {
 				gameRenderWorld->DrawText( ent->name.c_str(), ent->GetPhysics()->GetAbsBounds().GetCenter(), 0.1f, colorWhite, axis, 1 );
 				gameRenderWorld->DrawText( ent->GetEntityDefName(), ent->GetPhysics()->GetAbsBounds().GetCenter() + up, 0.1f, colorWhite, axis, 1 );
-				if ( ent->IsType( idTrigger::GetClassType() ) ) {
+				if ( ent->IsType( idTrigger::Type ) ) {
 					func = static_cast<idTrigger *>( ent )->GetScriptFunction();
 				} else {
 					func = NULL;
@@ -371,7 +371,7 @@ idTrigger_Multi::CheckFacing
 */
 bool idTrigger_Multi::CheckFacing( idEntity *activator ) {
 	if ( spawnArgs.GetBool( "facing" ) ) {
-		if ( !activator->IsType( idPlayer::GetClassType() ) ) {
+		if ( !activator->IsType( idPlayer::Type ) ) {
 			return true;
 		}
 		idPlayer *player = static_cast< idPlayer* >( activator );
@@ -471,7 +471,7 @@ void idTrigger_Multi::Event_Touch( idEntity *other, trace_t *trace ) {
 		return;
 	}
 
-	bool player = other->IsType( idPlayer::GetClassType() );
+	bool player = other->IsType( idPlayer::Type );
 	if ( player ) {
 		if ( !touchClient ) {
 			return;
@@ -1006,7 +1006,7 @@ void idTrigger_Hurt::Event_Touch( idEntity *other, trace_t *trace ) {
 #ifdef _D3XP
 		bool playerOnly = spawnArgs.GetBool( "playerOnly" );
 		if ( playerOnly ) {
-			if ( !other->IsType( idPlayer::GetClassType() ) ) {
+			if ( !other->IsType( idPlayer::Type ) ) {
 				return;
 			}
 		}
@@ -1015,7 +1015,7 @@ void idTrigger_Hurt::Event_Touch( idEntity *other, trace_t *trace ) {
 
 #ifdef _D3XP
 		idVec3 dir = vec3_origin;
-		if ( spawnArgs.GetBool( "kick_from_center", "0" ) ) {
+		if(spawnArgs.GetBool("kick_from_center", "0")) {
 			dir = other->GetPhysics()->GetOrigin() - GetPhysics()->GetOrigin();
 			dir.Normalize();
 		}
@@ -1240,7 +1240,7 @@ void idTrigger_Flag::Spawn( void ) {
 
 	idStr funcname = spawnArgs.GetString( "eventflag", "" );
 	if ( funcname.Length() ) {
-		eventFlag = idEventDef::FindEvent( funcname );// gameLocal.program.FindFunction( funcname );//, &idItemTeam::GetClassType() );
+		eventFlag = idEventDef::FindEvent( funcname );// gameLocal.program.FindFunction( funcname );//, &idItemTeam::Type );
 		if ( eventFlag == NULL ) {
 			gameLocal.Warning( "trigger '%s' at (%s) event unknown '%s'", name.c_str(), GetPhysics()->GetOrigin().ToString(0), funcname.c_str() );
 		}
@@ -1256,7 +1256,7 @@ void idTrigger_Flag::Event_Touch( idEntity *other, trace_t *trace ) {
 	idItemTeam * flag = NULL;
 
 	if ( player ) {
-		if ( !other->IsType( idPlayer::GetClassType() ) )
+		if ( !other->IsType( idPlayer::Type ) )
 			return;
 
 		idPlayer * player = static_cast<idPlayer *>(other);
@@ -1283,7 +1283,7 @@ void idTrigger_Flag::Event_Touch( idEntity *other, trace_t *trace ) {
 		else
 			return;
 	} else {
-		if ( !other->IsType( idItemTeam::GetClassType() ) )
+		if ( !other->IsType( idItemTeam::Type ) )
 			return;
 
 		idItemTeam * item = static_cast<idItemTeam *>( other );

@@ -647,7 +647,7 @@ void idIK_Walk::Evaluate( void ) {
 	bool onPlat = false;
 	for ( i = 0; i < phys->GetNumContacts(); i++ ) {
 		idEntity *ent = gameLocal.entities[ phys->GetContact( i ).entityNum ];
-		if ( ent != NULL && ent->IsType( idPlat::GetClassType() ) ) {
+		if ( ent != NULL && ent->IsType( idPlat::Type ) ) {
 			onPlat = true;
 			break;
 		}

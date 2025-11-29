@@ -894,7 +894,7 @@ float idPhysics_Base::SetWaterLevelf() {
 		// trace for a water contact
 		// Tels: TODO This additional trace might be expensive because it is done every frame
 		if( gameLocal.clip.EntitiesTouchingBounds( bounds, MASK_WATER, e, 2 ) ) {
-			if( e[0]->GetPhysics()->IsType( idPhysics_Liquid::GetClassType() ) ) {
+			if( e[0]->GetPhysics()->IsType( idPhysics_Liquid::Type ) ) {
 				SetWater( static_cast<idPhysics_Liquid *>( e[0]->GetPhysics() ), e[0]->spawnArgs.GetFloat( "murkiness", "0" ) );
 				return 1.0f;
 			}

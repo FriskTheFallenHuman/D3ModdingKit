@@ -329,7 +329,7 @@ void idActor::SetupHead( void ) {
 		args.SetBool( "slowmo", spawnArgs.GetBool( "slowmo", "1" ) );
 #endif
 
-		headEnt = static_cast<idAFAttachment *>( gameLocal.SpawnEntityType( idAFAttachment::GetClassType(), &args ) );
+		headEnt = static_cast<idAFAttachment *>( gameLocal.SpawnEntityType( idAFAttachment::Type, &args ) );
 		headEnt->SetName( va( "%s_head", name.c_str() ) );
 		headEnt->SetBody( this, headModel, damageJoint );
 		head = headEnt;
@@ -649,7 +649,7 @@ void idActor::Hide( void ) {
 		next = ent->GetNextTeamEntity();
 		if ( ent->GetBindMaster() == this ) {
 			ent->Hide();
-			if ( ent->IsType( idLight::GetClassType() ) ) {
+			if ( ent->IsType( idLight::Type ) ) {
 				static_cast<idLight *>( ent )->Off();
 			}
 		}
@@ -674,12 +674,14 @@ void idActor::Show( void ) {
 		next = ent->GetNextTeamEntity();
 		if ( ent->GetBindMaster() == this ) {
 			ent->Show();
-			if ( ent->IsType( idLight::GetClassType() ) ) {
+			if ( ent->IsType( idLight::Type ) ) {
 #ifdef _D3XP
-				if ( !spawnArgs.GetBool( "lights_off", "0" ) ) {
+				if(!spawnArgs.GetBool("lights_off", "0")) {
 					static_cast<idLight *>( ent )->On();
 				}
 #endif
+
+
 			}
 		}
 	}
@@ -1119,7 +1121,7 @@ bool idActor::CanSee( idEntity *ent, bool useFov ) const {
 		return false;
 	}
 
-	if ( ent->IsType( idActor::GetClassType() ) ) {
+	if ( ent->IsType( idActor::Type ) ) {
 		toPos = ( ( idActor * )ent )->GetEyePosition();
 	} else {
 		toPos = ent->GetPhysics()->GetOrigin();
@@ -1840,7 +1842,7 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 		return;
 	}
 #else
-	if ( finalBoss && !inflictor->IsType( idSoulCubeMissile::GetClassType() ) ) {
+	if ( finalBoss && !inflictor->IsType( idSoulCubeMissile::Type ) ) {
 		return;
 	}
 #endif
@@ -2765,7 +2767,7 @@ idActor *idActor::NextEnemy( idEntity *ent ) {
 	if ( !ent || ( ent == this ) ) {
 		actor = enemyList.Next();
 	} else {
-		if ( !ent->IsType( idActor::GetClassType() ) ) {
+		if ( !ent->IsType( idActor::Type ) ) {
 			gameLocal.Error( "'%s' cannot be an enemy", ent->name.c_str() );
 		}
 

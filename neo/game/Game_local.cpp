@@ -292,10 +292,6 @@ void idGameLocal::Init( void ) {
 	Clear();
 
 	idEvent::Init();
-
-	// jnewquist: Register subclasses explicitly so they aren't dead-stripped
-	idClass::RegisterClasses();
-
 	idClass::Init();
 
 	InitConsoleCommands();
@@ -601,7 +597,7 @@ const idDict &idGameLocal::GetPersistentPlayerInfo( int clientNum ) {
 
 	persistentPlayerInfo[ clientNum ].Clear();
 	ent = entities[ clientNum ];
-	if ( ent && ent->IsType( idPlayer::GetClassType() ) ) {
+	if ( ent && ent->IsType( idPlayer::Type ) ) {
 		static_cast<idPlayer *>(ent)->SavePersistantInfo();
 	}
 
@@ -776,7 +772,7 @@ const idDict* idGameLocal::SetUserInfo( int clientNum, const idDict &userInfo, b
 				if ( i == clientNum ) {
 					continue;
 				}
-				if ( entities[ i ] && entities[ i ]->IsType( idPlayer::GetClassType() ) ) {
+				if ( entities[ i ] && entities[ i ]->IsType( idPlayer::Type ) ) {
 					if ( !idStr::Icmp( idGameLocal::userInfo[ clientNum ].GetString( "ui_name" ), idGameLocal::userInfo[ i ].GetString( "ui_name" ) ) ) {
 						idGameLocal::userInfo[ clientNum ].Set( "ui_name", va( "%s_", idGameLocal::userInfo[ clientNum ].GetString( "ui_name" ) ) );
 						modifiedInfo = true;
@@ -787,7 +783,7 @@ const idDict* idGameLocal::SetUserInfo( int clientNum, const idDict &userInfo, b
 			}
 		}
 
-		if ( entities[ clientNum ] && entities[ clientNum ]->IsType( idPlayer::GetClassType() ) ) {
+		if ( entities[ clientNum ] && entities[ clientNum ]->IsType( idPlayer::Type ) ) {
 			modifiedInfo |= static_cast<idPlayer *>( entities[ clientNum ] )->UserInfoChanged( canModify );
 		}
 
@@ -811,7 +807,7 @@ idGameLocal::GetUserInfo
 ============
 */
 const idDict* idGameLocal::GetUserInfo( int clientNum ) {
-	if ( entities[ clientNum ] && entities[ clientNum ]->IsType( idPlayer::GetClassType() ) ) {
+	if ( entities[ clientNum ] && entities[ clientNum ]->IsType( idPlayer::Type ) ) {
 		return &userInfo[ clientNum ];
 	}
 	return NULL;
@@ -965,7 +961,7 @@ void idGameLocal::LocalMapRestart( ) {
 	gamestate = GAMESTATE_SHUTDOWN;
 
 	for ( i = 0; i < MAX_CLIENTS; i++ ) {
-		if ( entities[ i ] && entities[ i ]->IsType( idPlayer::GetClassType() ) ) {
+		if ( entities[ i ] && entities[ i ]->IsType( idPlayer::Type ) ) {
 			static_cast< idPlayer * >( entities[ i ] )->PrepareForRestart();
 		}
 	}
@@ -1002,7 +998,7 @@ void idGameLocal::LocalMapRestart( ) {
 
 	// setup the client entities again
 	for ( i = 0; i < MAX_CLIENTS; i++ ) {
-		if ( entities[ i ] && entities[ i ]->IsType( idPlayer::GetClassType() ) ) {
+		if ( entities[ i ] && entities[ i ]->IsType( idPlayer::Type ) ) {
 			static_cast< idPlayer * >( entities[ i ] )->Restart();
 		}
 	}
@@ -1881,7 +1877,7 @@ void idGameLocal::SpawnPlayer( int clientNum ) {
 	}
 
 	// make sure it's a compatible class
-	if ( !ent->IsType( idPlayer::GetClassType() ) ) {
+	if ( !ent->IsType( idPlayer::Type ) ) {
 		Error( "'%s' spawned the player as a '%s'.  Player spawnclass must be a subclass of idPlayer.", args.GetString( "classname" ), ent->GetClassname() );
 	}
 
@@ -1917,7 +1913,7 @@ idPlayer *idGameLocal::GetClientByName( const char *name ) const {
 	idEntity *ent;
 	for ( i = 0 ; i < numClients ; i++ ) {
 		ent = entities[ i ];
-		if ( ent && ent->IsType( idPlayer::GetClassType() ) ) {
+		if ( ent && ent->IsType( idPlayer::Type ) ) {
 			if ( idStr::IcmpNoColor( name, userInfo[ i ].GetString( "ui_name" ) ) == 0 ) {
 				return static_cast<idPlayer *>( ent );
 			}
@@ -1960,7 +1956,7 @@ int idGameLocal::GetNextClientNum( int _current ) const {
 	current = 0;
 	for ( i = 0; i < numClients; i++) {
 		current = ( _current + i + 1 ) % numClients;
-		if ( entities[ current ] && entities[ current ]->IsType( idPlayer::GetClassType() ) ) {
+		if ( entities[ current ] && entities[ current ]->IsType( idPlayer::Type ) ) {
 			return current;
 		}
 	}
@@ -1983,7 +1979,7 @@ idPlayer *idGameLocal::GetLocalPlayer() const {
 		return NULL;
 	}
 
-	if ( !entities[ localClientNum ] || !entities[ localClientNum ]->IsType( idPlayer::GetClassType() ) ) {
+	if ( !entities[ localClientNum ] || !entities[ localClientNum ]->IsType( idPlayer::Type ) ) {
 		// not fully in game yet
 		return NULL;
 	}
@@ -2019,7 +2015,7 @@ void idGameLocal::SetupPlayerPVS( void ) {
 	playerPVS.i = -1;
 	for ( i = 0; i < numClients; i++ ) {
 		ent = entities[i];
-		if ( !ent || !ent->IsType( idPlayer::GetClassType() ) ) {
+		if ( !ent || !ent->IsType( idPlayer::Type ) ) {
 			continue;
 		}
 
@@ -2107,7 +2103,7 @@ void idGameLocal::UpdateGravity( void ) {
 
 		// update all physics objects
 		for( ent = spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
-			if ( ent->IsType( idAFEntity_Generic::GetClassType() ) ) {
+			if ( ent->IsType( idAFEntity_Generic::Type ) ) {
 				idPhysics *phys = ent->GetPhysics();
 				if ( phys ) {
 					phys->SetGravity( gravity );
@@ -2159,7 +2155,7 @@ void idGameLocal::SortActiveEntityList( void ) {
 			if ( !master || master == ent ) {
 				// check if there is an actor on the team
 				for ( part = ent; part != NULL; part = part->GetNextTeamEntity() ) {
-					if ( part->GetPhysics()->IsType( idPhysics_Actor::GetClassType() ) ) {
+					if ( part->GetPhysics()->IsType( idPhysics_Actor::Type ) ) {
 						break;
 					}
 				}
@@ -2177,7 +2173,7 @@ void idGameLocal::SortActiveEntityList( void ) {
 			if ( !master || master == ent ) {
 				// check if there is an entity on the team using parametric physics
 				for ( part = ent; part != NULL; part = part->GetNextTeamEntity() ) {
-					if ( part->GetPhysics()->IsType( idPhysics_Parametric::GetClassType() ) ) {
+					if ( part->GetPhysics()->IsType( idPhysics_Parametric::Type ) ) {
 						break;
 					}
 				}
@@ -2624,7 +2620,7 @@ void idGameLocal::CallObjectFrameCommand( idEntity *ent, const char *frameComman
 
 	func = ent->scriptObject.GetFunction( frameCommand );
 	if ( !func ) {
-		if ( !ent->IsType( idTestModel::GetClassType() ) ) {
+		if ( !ent->IsType( idTestModel::Type ) ) {
 			Error( "Unknown function '%s' called for frame command on entity '%s'", frameCommand, ent->name.c_str() );
 		}
 	} else {
@@ -3034,7 +3030,7 @@ idEntity *idGameLocal::SpawnEntityType( const idTypeInfo &classdef, const idDict
 	}
 #endif
 
-	if ( !classdef.IsType( idEntity::GetClassType() ) ) {
+	if ( !classdef.IsType( idEntity::Type ) ) {
 		Error( "Attempted to spawn non-entity class '%s'", classdef.classname );
 	}
 
@@ -3099,19 +3095,19 @@ bool idGameLocal::SpawnEntityDef( const idDict &args, idEntity **ent, bool setDe
 
 		cls = idClass::GetClass( spawn );
 		if ( !cls ) {
-			Warning( "Could not spawn '%s'.  Class '%s' not found %s.", classname, spawn, error.c_str() );
+			Warning( "Could not spawn '%s'.  Class '%s' not found%s.", classname, spawn, error.c_str() );
 			return false;
 		}
 
 		obj = cls->CreateInstance();
 		if ( !obj ) {
-			Warning( "Could not spawn '%s'. Instance could not be created %s.", classname, error.c_str() );
+			Warning( "Could not spawn '%s'. Instance could not be created%s.", classname, error.c_str() );
 			return false;
 		}
 
 		obj->CallSpawn();
 
-		if ( ent && obj->IsType( idEntity::GetClassType() ) ) {
+		if ( ent && obj->IsType( idEntity::Type ) ) {
 			*ent = static_cast<idEntity *>(obj);
 		}
 
@@ -3264,7 +3260,7 @@ void idGameLocal::SpawnMapEntities( void ) {
 	mapEnt = mapFile->GetEntity( 0 );
 	args = mapEnt->epairs;
 	args.SetInt( "spawn_entnum", ENTITYNUM_WORLD );
-	if ( !SpawnEntityDef( args ) || !entities[ ENTITYNUM_WORLD ] || !entities[ ENTITYNUM_WORLD ]->IsType( idWorldspawn::GetClassType() ) ) {
+	if ( !SpawnEntityDef( args ) || !entities[ ENTITYNUM_WORLD ] || !entities[ ENTITYNUM_WORLD ]->IsType( idWorldspawn::Type ) ) {
 		Error( "Problem spawning world entity" );
 	}
 
@@ -3528,7 +3524,7 @@ void idGameLocal::KillBox( idEntity *ent, bool catch_teleport ) {
 		}
 
 		// nail it
-		if ( hit->IsType( idPlayer::GetClassType() ) && static_cast< idPlayer * >( hit )->IsInTeleport() ) {
+		if ( hit->IsType( idPlayer::Type ) && static_cast< idPlayer * >( hit )->IsInTeleport() ) {
 			static_cast< idPlayer * >( hit )->TeleportDeath( ent->entityNumber );
 		} else if ( !catch_teleport ) {
 			hit->Damage( ent, ent, vec3_origin, "damage_telefrag", 1.0f, INVALID_JOINT );
@@ -3548,7 +3544,7 @@ idGameLocal::RequirementMet
 */
 bool idGameLocal::RequirementMet( idEntity *activator, const idStr &requires, int removeItem ) {
 	if ( requires.Length() ) {
-		if ( activator->IsType( idPlayer::GetClassType() ) ) {
+		if ( activator->IsType( idPlayer::Type ) ) {
 			idPlayer *player = static_cast<idPlayer *>(activator);
 			idDict *item = player->FindInventoryItem( requires );
 			if ( item ) {
@@ -3571,7 +3567,7 @@ idGameLocal::AlertAI
 ============
 */
 void idGameLocal::AlertAI( idEntity *ent ) {
-	if ( ent && ent->IsType( idActor::GetClassType() ) ) {
+	if ( ent && ent->IsType( idActor::Type ) ) {
 		// alert them for the next frame
 		lastAIAlertTime = time + msec;
 		lastAIAlertEntity = static_cast<idActor *>( ent );
@@ -3626,13 +3622,13 @@ void idGameLocal::RadiusDamage( const idVec3 &origin, idEntity *inflictor, idEnt
 	// get all entities touching the bounds
 	numListedEntities = clip.EntitiesTouchingBounds( bounds, -1, entityList, MAX_GENTITIES );
 
-	if ( inflictor && inflictor->IsType( idAFAttachment::GetClassType() ) ) {
+	if ( inflictor && inflictor->IsType( idAFAttachment::Type ) ) {
 		inflictor = static_cast<idAFAttachment*>(inflictor)->GetBody();
 	}
-	if ( attacker && attacker->IsType( idAFAttachment::GetClassType() ) ) {
+	if ( attacker && attacker->IsType( idAFAttachment::Type ) ) {
 		attacker = static_cast<idAFAttachment*>(attacker)->GetBody();
 	}
-	if ( ignoreDamage && ignoreDamage->IsType( idAFAttachment::GetClassType() ) ) {
+	if ( ignoreDamage && ignoreDamage->IsType( idAFAttachment::Type ) ) {
 		ignoreDamage = static_cast<idAFAttachment*>(ignoreDamage)->GetBody();
 	}
 
@@ -3645,16 +3641,16 @@ void idGameLocal::RadiusDamage( const idVec3 &origin, idEntity *inflictor, idEnt
 			continue;
 		}
 
-		if ( ent == inflictor || ( ent->IsType( idAFAttachment::GetClassType() ) && static_cast<idAFAttachment*>(ent)->GetBody() == inflictor ) ) {
+		if ( ent == inflictor || ( ent->IsType( idAFAttachment::Type ) && static_cast<idAFAttachment*>(ent)->GetBody() == inflictor ) ) {
 			continue;
 		}
 
-		if ( ent == ignoreDamage || ( ent->IsType( idAFAttachment::GetClassType() ) && static_cast<idAFAttachment*>(ent)->GetBody() == ignoreDamage ) ) {
+		if ( ent == ignoreDamage || ( ent->IsType( idAFAttachment::Type ) && static_cast<idAFAttachment*>(ent)->GetBody() == ignoreDamage ) ) {
 			continue;
 		}
 
 		// don't damage a dead player
-		if ( isMultiplayer && ent->entityNumber < MAX_CLIENTS && ent->IsType( idPlayer::GetClassType() ) && static_cast< idPlayer * >( ent )->health < 0 ) {
+		if ( isMultiplayer && ent->entityNumber < MAX_CLIENTS && ent->IsType( idPlayer::Type ) && static_cast< idPlayer * >( ent )->health < 0 ) {
 			continue;
 		}
 
@@ -3682,7 +3678,7 @@ void idGameLocal::RadiusDamage( const idVec3 &origin, idEntity *inflictor, idEnt
 
 			// get the damage scale
 			damageScale = dmgPower * ( 1.0f - dist / radius );
-			if ( ent == attacker || ( ent->IsType( idAFAttachment::GetClassType() ) && static_cast<idAFAttachment*>(ent)->GetBody() == attacker ) ) {
+			if ( ent == attacker || ( ent->IsType( idAFAttachment::Type ) && static_cast<idAFAttachment*>(ent)->GetBody() == attacker ) ) {
 				damageScale *= attackerDamageScale;
 			}
 
@@ -3718,10 +3714,10 @@ void idGameLocal::RadiusPush( const idVec3 &origin, const float radius, const fl
 	// get all clip models touching the bounds
 	numListedClipModels = clip.ClipModelsTouchingBounds( bounds, -1, clipModelList, MAX_GENTITIES );
 
-	if ( inflictor && inflictor->IsType( idAFAttachment::GetClassType() ) ) {
+	if ( inflictor && inflictor->IsType( idAFAttachment::Type ) ) {
 		inflictor = static_cast<const idAFAttachment*>(inflictor)->GetBody();
 	}
-	if ( ignore && ignore->IsType( idAFAttachment::GetClassType() ) ) {
+	if ( ignore && ignore->IsType( idAFAttachment::Type ) ) {
 		ignore = static_cast<const idAFAttachment*>(ignore)->GetBody();
 	}
 
@@ -3738,17 +3734,17 @@ void idGameLocal::RadiusPush( const idVec3 &origin, const float radius, const fl
 		ent = clipModel->GetEntity();
 
 		// never push projectiles
-		if ( ent->IsType( idProjectile::GetClassType() ) ) {
+		if ( ent->IsType( idProjectile::Type ) ) {
 			continue;
 		}
 
 		// players use "knockback" in idPlayer::Damage
-		if ( ent->IsType( idPlayer::GetClassType() ) && !quake ) {
+		if ( ent->IsType( idPlayer::Type ) && !quake ) {
 			continue;
 		}
 
 		// don't push the ignore entity
-		if ( ent == ignore || ( ent->IsType( idAFAttachment::GetClassType() ) && static_cast<idAFAttachment*>(ent)->GetBody() == ignore ) ) {
+		if ( ent == ignore || ( ent->IsType( idAFAttachment::Type ) && static_cast<idAFAttachment*>(ent)->GetBody() == ignore ) ) {
 			continue;
 		}
 
@@ -3757,7 +3753,7 @@ void idGameLocal::RadiusPush( const idVec3 &origin, const float radius, const fl
 		}
 
 		// scale the push for the inflictor
-		if ( ent == inflictor || ( ent->IsType( idAFAttachment::GetClassType() ) && static_cast<idAFAttachment*>(ent)->GetBody() == inflictor ) ) {
+		if ( ent == inflictor || ( ent->IsType( idAFAttachment::Type ) && static_cast<idAFAttachment*>(ent)->GetBody() == inflictor ) ) {
 			scale = inflictorScale;
 		} else {
 			scale = 1.0f;
@@ -3955,13 +3951,13 @@ void idGameLocal::SetCamera( idCamera *cam ) {
 					continue;
 				}
 
-				if ( ent->IsType( idAI::GetClassType() ) ) {
+				if ( ent->IsType( idAI::Type ) ) {
 					ai = static_cast<idAI *>( ent );
 					if ( !ai->GetEnemy() || !ai->IsActive() ) {
 						// no enemy, or inactive, so probably safe to ignore
 						continue;
 					}
-				} else if ( ent->IsType( idProjectile::GetClassType() ) ) {
+				} else if ( ent->IsType( idProjectile::Type ) ) {
 					// remove all projectiles
 				} else if ( ent->spawnArgs.GetBool( "cinematic_remove" ) ) {
 					// remove anything marked to be removed during cinematics
@@ -4050,7 +4046,7 @@ void idGameLocal::SpreadLocations() {
 
 	// for each location entity, make pointers from every area it touches
 	for( ent = spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
-		if ( !ent->IsType( idLocationEntity::GetClassType() ) ) {
+		if ( !ent->IsType( idLocationEntity::Type ) ) {
 			continue;
 		}
 		idVec3	point = ent->spawnArgs.GetVector( "origin" );
@@ -4240,7 +4236,7 @@ idEntity *idGameLocal::SelectInitialSpawnPoint( idPlayer *player ) {
 			pos = spawnSpots[ i ].ent->GetPhysics()->GetOrigin();
 			spawnSpots[ i ].dist = 0x7fffffff;
 			for( j = 0; j < MAX_CLIENTS; j++ ) {
-				if ( !entities[ j ] || !entities[ j ]->IsType( idPlayer::GetClassType() )
+				if ( !entities[ j ] || !entities[ j ]->IsType( idPlayer::Type )
 					|| entities[ j ] == player
 					|| static_cast< idPlayer * >( entities[ j ] )->spectating ) {
 					continue;

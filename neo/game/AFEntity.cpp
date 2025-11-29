@@ -904,7 +904,7 @@ void idAFEntity_Base::DropAFs( idEntity *ent, const char *type, idList<idEntity 
 		args.Set( "classname", kv->GetValue() );
 		gameLocal.SpawnEntityDef( args, &newEnt );
 
-		if ( newEnt && newEnt->IsType( idAFEntity_Base::GetClassType() ) ) {
+		if ( newEnt && newEnt->IsType( idAFEntity_Base::Type ) ) {
 			af = static_cast<idAFEntity_Base *>(newEnt);
 			af->GetPhysics()->SetOrigin( ent->GetPhysics()->GetOrigin() );
 			af->GetPhysics()->SetAxis( ent->GetPhysics()->GetAxis() );
@@ -1444,7 +1444,7 @@ void idAFEntity_WithAttachedHead::SetupHead( void ) {
 			gameLocal.Error( "Joint '%s' not found for 'head_joint' on '%s'", jointName.c_str(), name.c_str() );
 		}
 
-		headEnt = static_cast<idAFAttachment *>( gameLocal.SpawnEntityType( idAFAttachment::GetClassType(), NULL ) );
+		headEnt = static_cast<idAFAttachment *>( gameLocal.SpawnEntityType( idAFAttachment::Type, NULL ) );
 		headEnt->SetName( va( "%s_head", name.c_str() ) );
 		headEnt->SetBody( this, headModel, joint );
 		headEnt->SetCombatModel();
@@ -2591,7 +2591,7 @@ bool idGameEdit::AF_SpawnEntity( const char *fileName ) {
 	}
 	args.Set( "articulatedFigure", fileName );
 	args.Set( "nodrop", "1" );
-	ent = static_cast<idAFEntity_Generic *>(gameLocal.SpawnEntityType( idAFEntity_Generic::GetClassType(), &args));
+	ent = static_cast<idAFEntity_Generic *>(gameLocal.SpawnEntityType( idAFEntity_Generic::Type, &args));
 
 	// always update this entity
 	ent->BecomeActive( TH_THINK );
@@ -2618,7 +2618,7 @@ void idGameEdit::AF_UpdateEntities( const char *fileName ) {
 
 	// reload any idAFEntity_Generic which uses the given articulated figure file
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
-		if ( ent->IsType( idAFEntity_Base::GetClassType() ) ) {
+		if ( ent->IsType( idAFEntity_Base::Type ) ) {
 			af = static_cast<idAFEntity_Base *>(ent);
 			if ( name.Icmp( af->GetAFName() ) == 0 ) {
 				af->LoadAF();
@@ -2651,7 +2651,7 @@ void idGameEdit::AF_UndoChanges( void ) {
 
 		// reload all AF entities using the file
 		for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
-			if ( ent->IsType( idAFEntity_Base::GetClassType() ) ) {
+			if ( ent->IsType( idAFEntity_Base::Type ) ) {
 				af = static_cast<idAFEntity_Base *>(ent);
 				if ( idStr::Icmp( decl->GetName(), af->GetAFName() ) == 0 ) {
 					af->LoadAF();

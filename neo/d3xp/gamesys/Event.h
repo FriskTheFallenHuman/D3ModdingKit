@@ -104,8 +104,7 @@ public:
 
 								~idEvent();
 
-	static void					WriteDebugInfo( void );
-	static idEvent *			Alloc( const idEventDef *evdef, int numargs, va_list args );
+	static idEvent				*Alloc( const idEventDef *evdef, int numargs, va_list args );
 	static void					CopyArgs( const idEventDef *evdef, int numargs, va_list args, intptr_t data[ D_EVENT_MAXARGS ]  );
 
 	void						Free( void );
@@ -113,7 +112,6 @@ public:
 	byte						*GetData( void );
 
 	static void					CancelEvents( const idClass *obj, const idEventDef *evdef = NULL );
-	static bool					EventIsPosted( const idClass *obj, const idEventDef *evdef );
 	static void					ClearEventList( void );
 	static void					ServiceEvents( void );
 #ifdef _D3XP
@@ -125,6 +123,8 @@ public:
 	// save games
 	static void					Save( idSaveGame *savefile );					// archives object for save game file
 	static void					Restore( idRestoreGame *savefile );				// unarchives object from save game file
+	static void					SaveTrace( idSaveGame *savefile, const trace_t &trace );
+	static void					RestoreTrace( idRestoreGame *savefile, trace_t &trace );
 
 };
 

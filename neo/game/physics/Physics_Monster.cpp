@@ -160,7 +160,7 @@ monsterMoveResult_t idPhysics_Monster::StepMove( idVec3 &start, idVec3 &velocity
 		}
 	}
 
-	if ( blockingEntity && blockingEntity->IsType( idActor::GetClassType() ) ) {
+	if ( blockingEntity && blockingEntity->IsType( idActor::Type ) ) {
 		// try to step down in case walking into an actor while going down steps
 		down = noStepPos + gravityNormal * maxStepHeight;
 		gameLocal.clip.Translation( tr, noStepPos, down, clipModel, clipModel->GetAxis(), clipMask, self );

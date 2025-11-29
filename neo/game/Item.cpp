@@ -505,7 +505,7 @@ idItem::Event_Touch
 ================
 */
 void idItem::Event_Touch( idEntity *other, trace_t *trace ) {
-	if ( !other->IsType( idPlayer::GetClassType() ) ) {
+	if ( !other->IsType( idPlayer::Type ) ) {
 		return;
 	}
 
@@ -528,7 +528,7 @@ void idItem::Event_Trigger( idEntity *activator ) {
 		return;
 	}
 
-	if ( activator && activator->IsType( idPlayer::GetClassType() ) ) {
+	if ( activator && activator->IsType( idPlayer::Type ) ) {
 		Pickup( static_cast<idPlayer *>( activator ) );
 	}
 }
@@ -744,7 +744,7 @@ void idObjective::Event_Trigger( idEntity *activator ) {
 
 				// a tad slow but keeps from having to update all objectives in all maps with a name ptr
 				for( int i = 0; i < gameLocal.num_entities; i++ ) {
-					if ( gameLocal.entities[ i ] && gameLocal.entities[ i ]->IsType( idObjectiveComplete::GetClassType() ) ) {
+					if ( gameLocal.entities[ i ] && gameLocal.entities[ i ]->IsType( idObjectiveComplete::Type ) ) {
 						if ( idStr::Icmp( spawnArgs.GetString( "objectivetitle" ), gameLocal.entities[ i ]->spawnArgs.GetString( "objectivetitle" ) ) == 0 ){
 							gameLocal.entities[ i ]->spawnArgs.SetBool( "objEnabled", true );
 							break;
@@ -1307,7 +1307,7 @@ idItemRemover::Event_Trigger
 ================
 */
 void idItemRemover::Event_Trigger( idEntity *activator ) {
-	if ( activator->IsType( idPlayer::GetClassType() ) ) {
+	if ( activator->IsType( idPlayer::Type ) ) {
 		RemoveItem( static_cast<idPlayer *>(activator) );
 	}
 }

@@ -151,7 +151,7 @@ void idTestModel::Spawn( void ) {
 				sndKV = spawnArgs.MatchPrefix( "snd_", sndKV );
 			}
 
-			head = gameLocal.SpawnEntityType( idAnimatedEntity::GetClassType(), &args );
+			head = gameLocal.SpawnEntityType( idAnimatedEntity::Type, &args );
 			animator.GetJointTransform( joint, gameLocal.time, origin, axis );
 			origin = GetPhysics()->GetOrigin() + ( origin + modelOffset ) * GetPhysics()->GetAxis();
 			head.GetEntity()->SetModel( headModel );
@@ -789,7 +789,7 @@ void idTestModel::TestModel_f( const idCmdArgs &args ) {
 
 	dict.Set( "origin", offset.ToString() );
 	dict.Set( "angle", va( "%f", player->viewAngles.yaw + 180.0f ) );
-	gameLocal.testmodel = ( idTestModel * )gameLocal.SpawnEntityType( idTestModel::GetClassType(), &dict );
+	gameLocal.testmodel = ( idTestModel * )gameLocal.SpawnEntityType( idTestModel::Type, &dict );
 	gameLocal.testmodel->renderEntity.shaderParms[SHADERPARM_TIMEOFFSET] = -MS2SEC( gameLocal.time );
 }
 

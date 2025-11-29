@@ -368,7 +368,7 @@ void idTarget_SetShaderTime::Event_Activate( idEntity *activator ) {
 		ent = targets[ i ].GetEntity();
 		if ( ent ) {
 			ent->SetShaderParm( SHADERPARM_TIMEOFFSET, time );
-			if ( ent->IsType( idLight::GetClassType() ) ) {
+			if ( ent->IsType( idLight::Type ) ) {
 				static_cast<idLight *>(ent)->SetLightParm( SHADERPARM_TIMEOFFSET, time );
 			}
 		}
@@ -518,7 +518,7 @@ void idTarget_LightFadeIn::Event_Activate( idEntity *activator ) {
 		if ( !ent ) {
 			continue;
 		}
-		if ( ent->IsType( idLight::GetClassType() ) ) {
+		if ( ent->IsType( idLight::Type ) ) {
 			light = static_cast<idLight *>( ent );
 			light->FadeIn( time );
 		} else {
@@ -561,7 +561,7 @@ void idTarget_LightFadeOut::Event_Activate( idEntity *activator ) {
 		if ( !ent ) {
 			continue;
 		}
-		if ( ent->IsType( idLight::GetClassType() ) ) {
+		if ( ent->IsType( idLight::Type ) ) {
 			light = static_cast<idLight *>( ent );
 			light->FadeOut( time );
 		} else {
@@ -615,7 +615,7 @@ void idTarget_Give::Event_Activate( idEntity *activator ) {
 				d2.Copy( *dict );
 				d2.Set( "name", va( "givenitem_%i", giveNum++ ) );
 				idEntity *ent = NULL;
-				if ( gameLocal.SpawnEntityDef( d2, &ent ) && ent && ent->IsType( idItem::GetClassType() ) ) {
+				if ( gameLocal.SpawnEntityDef( d2, &ent ) && ent && ent->IsType( idItem::Type ) ) {
 					idItem *item = static_cast<idItem*>(ent);
 					item->GiveToPlayer( gameLocal.GetLocalPlayer() );
 				}
@@ -929,11 +929,11 @@ void idTarget_SetInfluence::Event_GatherEntities() {
 	for( i = 0; i < listedEntities; i++ ) {
 		idEntity *ent = entityList[ i ];
 		if ( ent ) {
-			if ( lights && ent->IsType( idLight::GetClassType() ) && ent->spawnArgs.FindKey( "color_demonic" ) ) {
+			if ( lights && ent->IsType( idLight::Type ) && ent->spawnArgs.FindKey( "color_demonic" ) ) {
 				lightList.Append( ent->entityNumber );
 				continue;
 			}
-			if ( sounds && ent->IsType( idSound::GetClassType() ) && ent->spawnArgs.FindKey( "snd_demonic" ) ) {
+			if ( sounds && ent->IsType( idSound::Type ) && ent->spawnArgs.FindKey( "snd_demonic" ) ) {
 				soundList.Append( ent->entityNumber );
 				continue;
 			}
@@ -941,7 +941,7 @@ void idTarget_SetInfluence::Event_GatherEntities() {
 				guiList.Append( ent->entityNumber );
 				continue;
 			}
-			if ( ent->IsType( idStaticEntity::GetClassType() ) && ent->spawnArgs.FindKey( "color_demonic" ) ) {
+			if ( ent->IsType( idStaticEntity::Type ) && ent->spawnArgs.FindKey( "color_demonic" ) ) {
 				genericList.Append( ent->entityNumber );
 				continue;
 			}
@@ -1034,7 +1034,7 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 
 	for ( i = 0; i < lightList.Num(); i++ ) {
 		ent = gameLocal.entities[lightList[i]];
-		if ( ent == NULL || !ent->IsType( idLight::GetClassType() ) ) {
+		if ( ent == NULL || !ent->IsType( idLight::Type ) ) {
 			continue;
 		}
 		light = static_cast<idLight *>(ent);
@@ -1051,7 +1051,7 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 
 	for ( i = 0; i < soundList.Num(); i++ ) {
 		ent = gameLocal.entities[soundList[i]];
-		if ( ent == NULL || !ent->IsType( idSound::GetClassType() ) ) {
+		if ( ent == NULL || !ent->IsType( idSound::Type ) ) {
 			continue;
 		}
 		sound = static_cast<idSound *>(ent);
@@ -1166,7 +1166,7 @@ void idTarget_SetInfluence::Event_RestoreInfluence() {
 
 	for ( i = 0; i < lightList.Num(); i++ ) {
 		ent = gameLocal.entities[lightList[i]];
-		if ( ent == NULL || !ent->IsType( idLight::GetClassType() ) ) {
+		if ( ent == NULL || !ent->IsType( idLight::Type ) ) {
 			continue;
 		}
 		light = static_cast<idLight *>(ent);
@@ -1181,7 +1181,7 @@ void idTarget_SetInfluence::Event_RestoreInfluence() {
 
 	for ( i = 0; i < soundList.Num(); i++ ) {
 		ent = gameLocal.entities[soundList[i]];
-		if ( ent == NULL || !ent->IsType( idSound::GetClassType() ) ) {
+		if ( ent == NULL || !ent->IsType( idSound::Type ) ) {
 			continue;
 		}
 		sound = static_cast<idSound *>(ent);
@@ -1399,7 +1399,7 @@ void idTarget_LockDoor::Event_Activate( idEntity *activator ) {
 	lock = spawnArgs.GetInt( "locked", "1" );
 	for( i = 0; i < targets.Num(); i++ ) {
 		ent = targets[ i ].GetEntity();
-		if ( ent && ent->IsType( idDoor::GetClassType() ) ) {
+		if ( ent && ent->IsType( idDoor::Type ) ) {
 			if ( static_cast<idDoor *>( ent )->IsLocked() ) {
 				static_cast<idDoor *>( ent )->Lock( 0 );
 			} else {

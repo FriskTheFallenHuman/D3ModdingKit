@@ -1395,7 +1395,7 @@ void idThread::Event_SetCamera( idEntity *ent ) {
 		return;
 	}
 
-	if ( !ent->IsType( idCamera::GetClassType() ) ) {
+	if ( !ent->IsType( idCamera::Type ) ) {
 		Error( "Entity is not a camera" );
 		return;
 	}
@@ -1488,7 +1488,7 @@ idThread::Event_GetTraceJoint
 void idThread::Event_GetTraceJoint( void ) {
 	if ( trace.fraction < 1.0f && trace.c.id < 0 ) {
 		idAFEntity_Base *af = static_cast<idAFEntity_Base *>( gameLocal.entities[ trace.c.entityNum ] );
-		if ( af && af->IsType( idAFEntity_Base::GetClassType() ) && af->IsActiveAF() ) {
+		if ( af && af->IsType( idAFEntity_Base::Type ) && af->IsActiveAF() ) {
 			ReturnString( af->GetAnimator()->GetJointName( CLIPMODEL_ID_TO_JOINT_HANDLE( trace.c.id ) ) );
 			return;
 		}
@@ -1504,7 +1504,7 @@ idThread::Event_GetTraceBody
 void idThread::Event_GetTraceBody( void ) {
 	if ( trace.fraction < 1.0f && trace.c.id < 0 ) {
 		idAFEntity_Base *af = static_cast<idAFEntity_Base *>( gameLocal.entities[ trace.c.entityNum ] );
-		if ( af && af->IsType( idAFEntity_Base::GetClassType() ) && af->IsActiveAF() ) {
+		if ( af && af->IsType( idAFEntity_Base::Type ) && af->IsActiveAF() ) {
 			int bodyId = af->BodyForClipModelId( trace.c.id );
 			idAFBody *body = af->GetAFPhysics()->GetBody( bodyId );
 			if ( body ) {

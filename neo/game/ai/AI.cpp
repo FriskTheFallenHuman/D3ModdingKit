@@ -977,7 +977,7 @@ void idAI::List_f( const idCmdArgs &args ) {
 	gameLocal.Printf( "------------------------------------------------\n" );
 	for( e = 0; e < MAX_GENTITIES; e++ ) {
 		check = static_cast<idAI *>(gameLocal.entities[ e ]);
-		if ( !check || !check->IsType( idAI::GetClassType() ) ) {
+		if ( !check || !check->IsType( idAI::Type ) ) {
 			continue;
 		}
 
@@ -1244,7 +1244,7 @@ void idAI::KickObstacles( const idVec3 &dir, float force, idEntity *alwaysKick )
 			continue;
 		}
 
-		if ( obEnt->IsType( idMoveable::GetClassType() ) && obEnt->GetPhysics()->IsPushable() ) {
+		if ( obEnt->IsType( idMoveable::Type ) && obEnt->GetPhysics()->IsPushable() ) {
 			delta = obEnt->GetPhysics()->GetOrigin() - org;
 			delta.NormalizeFast();
 			perpendicular.x = -delta.y;
@@ -2598,7 +2598,7 @@ void idAI::CheckObstacleAvoidance( const idVec3 &goalPos, idVec3 &newPos ) {
 
 	// if we had an obstacle, set our move status based on the type, and kick it out of the way if it's a moveable
 	if ( obstacle ) {
-		if ( obstacle->IsType( idActor::GetClassType() ) ) {
+		if ( obstacle->IsType( idActor::Type ) ) {
 			// monsters aren't kickable
 			if ( obstacle == enemy.GetEntity() ) {
 				move.moveStatus = MOVE_STATUS_BLOCKED_BY_ENEMY;
@@ -2711,7 +2711,7 @@ void idAI::AnimMove( void ) {
 		DirectDamage( attack, enemy.GetEntity() );
 	} else {
 		idEntity *blockEnt = physicsObj.GetSlideMoveEntity();
-		if ( blockEnt && blockEnt->IsType( idMoveable::GetClassType() ) && blockEnt->GetPhysics()->IsPushable() ) {
+		if ( blockEnt && blockEnt->IsType( idMoveable::Type ) && blockEnt->GetPhysics()->IsPushable() ) {
 			KickObstacles( viewAxis[ 0 ], kickForce, blockEnt );
 		}
 	}
@@ -2837,7 +2837,7 @@ void idAI::SlideMove( void ) {
 		DirectDamage( attack, enemy.GetEntity() );
 	} else {
 		idEntity *blockEnt = physicsObj.GetSlideMoveEntity();
-		if ( blockEnt && blockEnt->IsType( idMoveable::GetClassType() ) && blockEnt->GetPhysics()->IsPushable() ) {
+		if ( blockEnt && blockEnt->IsType( idMoveable::Type ) && blockEnt->GetPhysics()->IsPushable() ) {
 			KickObstacles( viewAxis[ 0 ], kickForce, blockEnt );
 		}
 	}
@@ -3085,7 +3085,7 @@ void idAI::FlyMove( void ) {
 		DirectDamage( attack, enemy.GetEntity() );
 	} else {
 		idEntity *blockEnt = physicsObj.GetSlideMoveEntity();
-		if ( blockEnt && blockEnt->IsType( idMoveable::GetClassType() ) && blockEnt->GetPhysics()->IsPushable() ) {
+		if ( blockEnt && blockEnt->IsType( idMoveable::Type ) && blockEnt->GetPhysics()->IsPushable() ) {
 			KickObstacles( viewAxis[ 0 ], kickForce, blockEnt );
 		} else if ( moveResult == MM_BLOCKED ) {
 			move.blockTime = gameLocal.time + 500;
@@ -3165,12 +3165,12 @@ int idAI::ReactionTo( const idEntity *ent ) {
 		return ATTACK_IGNORE;
 	}
 
-	if ( !ent->IsType( idActor::GetClassType() ) ) {
+	if ( !ent->IsType( idActor::Type ) ) {
 		return ATTACK_IGNORE;
 	}
 
 	const idActor *actor = static_cast<const idActor *>( ent );
-	if ( actor->IsType( idPlayer::GetClassType() ) && static_cast<const idPlayer *>(actor)->noclip ) {
+	if ( actor->IsType( idPlayer::Type ) && static_cast<const idPlayer *>(actor)->noclip ) {
 		// ignore players in noclip mode
 		return ATTACK_IGNORE;
 	}
@@ -3216,7 +3216,7 @@ bool idAI::Pain( idEntity *inflictor, idEntity *attacker, int damage, const idVe
 			AI_SPECIAL_DAMAGE = 0;
 		}
 
-		if ( enemy.GetEntity() != attacker && attacker->IsType( idActor::GetClassType() ) ) {
+		if ( enemy.GetEntity() != attacker && attacker->IsType( idActor::Type ) ) {
 			actor = ( idActor * )attacker;
 			if ( ReactionTo( actor ) & ATTACK_ON_DAMAGE ) {
 				gameLocal.AlertAI( actor );
@@ -3341,7 +3341,7 @@ void idAI::Killed( idEntity *inflictor, idEntity *attacker, int damage, const id
 	// end our looping ambient sound
 	StopSound( SND_CHANNEL_AMBIENT, false );
 
-	if ( attacker && attacker->IsType( idActor::GetClassType() ) ) {
+	if ( attacker && attacker->IsType( idActor::Type ) ) {
 		gameLocal.AlertAI( ( idActor * )attacker );
 	}
 
@@ -3391,7 +3391,7 @@ void idAI::Killed( idEntity *inflictor, idEntity *attacker, int damage, const id
 		kv = spawnArgs.MatchPrefix( "def_drops", kv );
 	}
 
-	if ( ( attacker && attacker->IsType( idPlayer::GetClassType() ) ) && ( inflictor && !inflictor->IsType( idSoulCubeMissile::GetClassType() ) ) ) {
+	if ( ( attacker && attacker->IsType( idPlayer::Type ) ) && ( inflictor && !inflictor->IsType( idSoulCubeMissile::Type ) ) ) {
 		static_cast< idPlayer* >( attacker )->AddAIKill();
 	}
 }
@@ -3497,7 +3497,7 @@ void idAI::Activate( idEntity *activator ) {
 		PlayCinematic();
 	} else {
 		AI_ACTIVATED = true;
-		if ( !activator || !activator->IsType( idPlayer::GetClassType() ) ) {
+		if ( !activator || !activator->IsType( idPlayer::Type ) ) {
 			player = gameLocal.GetLocalPlayer();
 		} else {
 			player = static_cast<idPlayer *>( activator );
@@ -3984,7 +3984,7 @@ bool idAI::GetAimDir( const idVec3 &firePos, idEntity *aimAtEnt, const idEntity 
 
 	if ( aimAtEnt == enemy.GetEntity() ) {
 		static_cast<idActor *>( aimAtEnt )->GetAIAimTargets( lastVisibleEnemyPos, targetPos1, targetPos2 );
-	} else if ( aimAtEnt->IsType( idActor::GetClassType() ) ) {
+	} else if ( aimAtEnt->IsType( idActor::Type ) ) {
 		static_cast<idActor *>( aimAtEnt )->GetAIAimTargets( aimAtEnt->GetPhysics()->GetOrigin(), targetPos1, targetPos2 );
 	} else {
 		targetPos1 = aimAtEnt->GetPhysics()->GetAbsBounds().GetCenter();
@@ -3995,7 +3995,7 @@ bool idAI::GetAimDir( const idVec3 &firePos, idEntity *aimAtEnt, const idEntity 
 	delta = firePos - targetPos1;
 	max_height = delta.LengthFast() * projectile_height_to_distance_ratio;
 	result = PredictTrajectory( firePos, targetPos1, projectileSpeed, projectileGravity, projectileClipModel, MASK_SHOT_RENDERMODEL, max_height, ignore, aimAtEnt, ai_debugTrajectory.GetBool() ? 1000 : 0, aimDir );
-	if ( result || !aimAtEnt->IsType( idActor::GetClassType() ) ) {
+	if ( result || !aimAtEnt->IsType( idActor::Type ) ) {
 		return result;
 	}
 
@@ -4042,7 +4042,7 @@ idProjectile *idAI::CreateProjectile( const idVec3 &pos, const idVec3 &dir ) {
 			gameLocal.Error( "Could not spawn entityDef '%s'", clsname );
 		}
 
-		if ( !ent->IsType( idProjectile::GetClassType() ) ) {
+		if ( !ent->IsType( idProjectile::Type ) ) {
 			clsname = ent->GetClassname();
 			gameLocal.Error( "'%s' is not an idProjectile", clsname );
 		}
@@ -4203,7 +4203,7 @@ possibly forcing a miss.  This is harmless behavior ATM, but is not intuitive.
 ================
 */
 void idAI::DamageFeedback( idEntity *victim, idEntity *inflictor, int &damage ) {
-	if ( ( victim == this ) && inflictor->IsType( idProjectile::GetClassType() ) ) {
+	if ( ( victim == this ) && inflictor->IsType( idProjectile::Type ) ) {
 		// monsters only get half damage from their own projectiles
 		damage = ( damage + 1 ) / 2;  // round up so we don't do 0 damage
 
@@ -4344,7 +4344,7 @@ bool idAI::AttackMelee( const char *meleeDefName ) {
 	// check for the "saving throw" automatic melee miss on lethal blow
 	// stupid place for this.
 	bool forceMiss = false;
-	if ( enemyEnt->IsType( idPlayer::GetClassType() ) && g_skill.GetInteger() < 2 ) {
+	if ( enemyEnt->IsType( idPlayer::Type ) && g_skill.GetInteger() < 2 ) {
 		int	damage, armor;
 		idPlayer *player = static_cast<idPlayer*>( enemyEnt );
 		player->CalcDamagePoints( this, this, meleeDef, 1.0f, INVALID_JOINT, &damage, &armor );
@@ -4412,7 +4412,7 @@ void idAI::PushWithAF( void ) {
 	af.ChangePose( this, gameLocal.time );
 	int num = af.EntitiesTouchingAF( touchList );
 	for( i = 0; i < num; i++ ) {
-		if ( touchList[ i ].touchedEnt->IsType( idProjectile::GetClassType() ) ) {
+		if ( touchList[ i ].touchedEnt->IsType( idProjectile::Type ) ) {
 			// skip projectiles
 			continue;
 		}
@@ -4428,7 +4428,7 @@ void idAI::PushWithAF( void ) {
 			pushed_ents[num_pushed++] = ent;
 			vel = ent->GetPhysics()->GetAbsBounds().GetCenter() - touchList[ i ].touchedByBody->GetWorldOrigin();
 			vel.Normalize();
-			if ( attack.Length() && ent->IsType( idActor::GetClassType() ) ) {
+			if ( attack.Length() && ent->IsType( idActor::Type ) ) {
 				ent->Damage( this, this, vel, attack, 1.0f, INVALID_JOINT );
 			} else {
 				ent->GetPhysics()->SetLinearVelocity( 100.0f * vel, touchList[ i ].touchedClipModel->GetId() );
@@ -4770,7 +4770,7 @@ bool idAI::UpdateAnimationControllers( void ) {
 		focusPos = currentFocusPos;
 	} else if ( focusEnt == enemy.GetEntity() ) {
 		focusPos = lastVisibleEnemyPos + lastVisibleEnemyEyeOffset - eyeVerticalOffset * enemy.GetEntity()->GetPhysics()->GetGravityNormal();
-	} else if ( focusEnt->IsType( idActor::GetClassType() ) ) {
+	} else if ( focusEnt->IsType( idActor::Type ) ) {
 		focusPos = static_cast<idActor *>( focusEnt )->GetEyePosition() - eyeVerticalOffset * focusEnt->GetPhysics()->GetGravityNormal();
 	} else {
 		focusPos = focusEnt->GetPhysics()->GetOrigin();
@@ -4997,7 +4997,7 @@ void idCombatNode::DrawDebugInfo( void ) {
 	idBounds		bounds( idVec3( -16, -16, 0 ), idVec3( 16, 16, 0 ) );
 
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
-		if ( !ent->IsType( idCombatNode::GetClassType() ) ) {
+		if ( !ent->IsType( idCombatNode::Type ) ) {
 			continue;
 		}
 

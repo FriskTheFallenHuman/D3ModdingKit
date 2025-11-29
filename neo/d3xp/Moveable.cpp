@@ -307,7 +307,7 @@ bool idMoveable::Collide( const trace_t &collision, const idVec3 &velocity ) {
 				f = v > maxDamageVelocity ? 1.0f : idMath::Sqrt( v - minDamageVelocity ) * ( 1.0f / idMath::Sqrt( maxDamageVelocity - minDamageVelocity ) );
 				dir = velocity;
 				dir.NormalizeFast();
-				if ( ent->IsType( idAI::GetClassType() ) && hasMonsterDamage ) {
+				if ( ent->IsType( idAI::Type ) && hasMonsterDamage ) {
 #ifdef _D3XP
 					if ( attacker ) {
 						ent->Damage( this, attacker, dir, monsterDamage, f, INVALID_JOINT );
@@ -342,7 +342,7 @@ bool idMoveable::Collide( const trace_t &collision, const idVec3 &velocity ) {
 	}
 
 #ifdef _D3XP
-	if ( this->IsType( idExplodingBarrel::GetClassType() ) ) {
+	if ( this->IsType( idExplodingBarrel::Type ) ) {
 		idExplodingBarrel *ebarrel = static_cast<idExplodingBarrel*>(this);
 
 		if ( !ebarrel->IsStable() ) {
@@ -1191,7 +1191,7 @@ void idExplodingBarrel::Killed( idEntity *inflictor, idEntity *attacker, int dam
 			dir.Normalize();
 
 			gameLocal.SpawnEntityDef( *debris_args, &ent, false );
-			if ( !ent || !ent->IsType( idDebris::GetClassType() ) ) {
+			if ( !ent || !ent->IsType( idDebris::Type ) ) {
 				gameLocal.Error( "'projectile_debris' is not an idDebris" );
 			}
 
@@ -1272,7 +1272,7 @@ void idExplodingBarrel::Event_Respawn() {
 	if ( minRespawnDist ) {
 		float minDist = -1;
 		for ( i = 0; i < gameLocal.numClients; i++ ) {
-			if ( !gameLocal.entities[ i ] || !gameLocal.entities[ i ]->IsType( idPlayer::GetClassType() ) ) {
+			if ( !gameLocal.entities[ i ] || !gameLocal.entities[ i ]->IsType( idPlayer::Type ) ) {
 				continue;
 			}
 			idVec3 v = gameLocal.entities[ i ]->GetPhysics()->GetOrigin() - GetPhysics()->GetOrigin();

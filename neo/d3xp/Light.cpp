@@ -996,7 +996,7 @@ void idLight::Event_SetSoundHandles( void ) {
 
 	for ( i = 0; i < targets.Num(); i++ ) {
 		targetEnt = targets[ i ].GetEntity();
-		if ( targetEnt && targetEnt->IsType( idLight::GetClassType() ) ) {
+		if ( targetEnt && targetEnt->IsType( idLight::Type ) ) {
 			idLight	*light = static_cast<idLight*>(targetEnt);
 			light->lightParent = this;
 

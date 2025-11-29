@@ -375,7 +375,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	}
 
 	// can't see wounds on the player model in single player mode
-	if ( !( IsType( idPlayer::GetClassType() ) && !gameLocal.isMultiplayer ) ) {
+	if ( !( IsType( idPlayer::Type ) && !gameLocal.isMultiplayer ) ) {
 		// place a wound overlay on the model
 		key = va( "mtr_wound_%s", materialType );
 		decal = spawnArgs.RandomPrefix( key, gameLocal.random );

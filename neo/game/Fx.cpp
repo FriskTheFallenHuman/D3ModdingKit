@@ -530,7 +530,7 @@ void idEntityFx::Run( int time ) {
 						gameLocal.Warning( "projectile \'%s\' not found", fxaction.data.c_str() );
 					} else {
 						gameLocal.SpawnEntityDef( *projectileDef, &ent, false );
-						if ( ent && ent->IsType( idProjectile::GetClassType() ) ) {
+						if ( ent && ent->IsType( idProjectile::Type ) ) {
 							projectile = ( idProjectile * )ent;
 							projectile->Create( this, GetPhysics()->GetOrigin(), GetPhysics()->GetAxis()[0] );
 							projectile->Launch( GetPhysics()->GetOrigin(), GetPhysics()->GetAxis()[0], vec3_origin );
@@ -692,7 +692,7 @@ idEntityFx *idEntityFx::StartFx( const char *fx, const idVec3 *useOrigin, const 
 	idDict args;
 	args.SetBool( "start", true );
 	args.Set( "fx", fx );
-	idEntityFx *nfx = static_cast<idEntityFx *>( gameLocal.SpawnEntityType( idEntityFx::GetClassType(), &args ) );
+	idEntityFx *nfx = static_cast<idEntityFx *>( gameLocal.SpawnEntityType( idEntityFx::Type, &args ) );
 	if ( nfx->Joint() && *nfx->Joint() ) {
 		nfx->BindToJoint( ent, nfx->Joint(), true );
 		nfx->SetOrigin( vec3_origin );

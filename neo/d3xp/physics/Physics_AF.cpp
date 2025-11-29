@@ -5724,7 +5724,7 @@ void idPhysics_AF::CheckForCollisions( float timeStep ) {
 				idEntity *ent = gameLocal.entities[collision.c.entityNum];
 
 				// if the object collides with something with a physics_liquid
-				if ( ent->GetPhysics()->IsType( idPhysics_Liquid::GetClassType() ) ) {
+				if ( ent->GetPhysics()->IsType( idPhysics_Liquid::Type ) ) {
 					idPhysics_Liquid *liquid = static_cast<idPhysics_Liquid *>(ent->GetPhysics());
 					impactInfo_t info;
 

@@ -840,7 +840,7 @@ void idRestoreGame::RestoreObjects( void ) {
 
 	// regenerate render entities and render lights because are not saved
 	for( i = 1; i < objects.Num(); i++ ) {
-		if ( objects[ i ]->IsType( idEntity::GetClassType() ) ) {
+		if ( objects[ i ]->IsType( idEntity::Type ) ) {
 			idEntity *ent = static_cast<idEntity *>( objects[ i ] );
 			ent->UpdateVisuals();
 			ent->Present();

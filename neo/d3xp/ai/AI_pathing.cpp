@@ -348,7 +348,7 @@ int GetObstacles( const idPhysics *physics, const idAAS *aas, const idEntity *ig
 			continue;
 		}
 
-		if ( obEnt->IsType( idActor::GetClassType() ) ) {
+		if ( obEnt->IsType( idActor::Type ) ) {
 			obPhys = obEnt->GetPhysics();
 			// ignore myself, my enemy, and dead bodies
 			if ( ( obPhys == physics ) || ( obEnt == ignore ) || ( obEnt->health <= 0 ) ) {
@@ -365,7 +365,7 @@ int GetObstacles( const idPhysics *physics, const idAAS *aas, const idEntity *ig
 					}
 				}
 			}
-		} else if ( obEnt->IsType( idMoveable::GetClassType() ) ) {
+		} else if ( obEnt->IsType( idMoveable::Type ) ) {
 			// moveables are considered obstacles
 		} else {
 			// ignore everything else

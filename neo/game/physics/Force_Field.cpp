@@ -179,11 +179,11 @@ void idForce_Field::Evaluate( int time ) {
 		idPhysics *physics = entity->GetPhysics();
 
 		if ( playerOnly ) {
-			if ( !physics->IsType( idPhysics_Player::GetClassType() ) ) {
+			if ( !physics->IsType( idPhysics_Player::Type ) ) {
 				continue;
 			}
 		} else if ( monsterOnly ) {
-			if ( !physics->IsType( idPhysics_Monster::GetClassType() ) ) {
+			if ( !physics->IsType( idPhysics_Monster::Type ) ) {
 				continue;
 			}
 		}

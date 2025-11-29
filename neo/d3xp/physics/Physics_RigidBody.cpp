@@ -361,7 +361,7 @@ bool idPhysics_RigidBody::CheckForCollisions( const float deltaTime, rigidBodyPS
 		// make sure the object didn't collide with something before hitting the water (we don't splash for that case)
 		if( !collided || ( waterCollision.fraction < collision.fraction ) ) {
 			// if the object collides with something with a physics_liquid
-			if ( ent->GetPhysics()->IsType( idPhysics_Liquid::GetClassType() ) ) {
+			if ( ent->GetPhysics()->IsType( idPhysics_Liquid::Type ) ) {
 				idPhysics_Liquid *liquid = static_cast<idPhysics_Liquid *>(ent->GetPhysics());
 				impactInfo_t info;
 
@@ -386,7 +386,7 @@ bool idPhysics_RigidBody::CheckForCollisions( const float deltaTime, rigidBodyPS
 
 				// grayman #1104 - we collided with water. should we detonate?
 
-				if ( this->self->IsType( idProjectile::GetClassType() ) ) {
+				if ( this->self->IsType( idProjectile::Type ) ) {
 					idProjectile* projectile = static_cast<idProjectile*>( this->self );
 					if ( projectile->DetonateOnWater() ) {
 						// Detonation doesn't occur here, but we have to tell the calling routines

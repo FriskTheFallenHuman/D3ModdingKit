@@ -88,7 +88,7 @@ void idTrigger::DrawDebugInfo( void ) {
 			if ( viewTextBounds.IntersectsBounds( ent->GetPhysics()->GetAbsBounds() ) ) {
 				gameRenderWorld->DrawText( ent->name.c_str(), ent->GetPhysics()->GetAbsBounds().GetCenter(), 0.1f, colorWhite, axis, 1 );
 				gameRenderWorld->DrawText( ent->GetEntityDefName(), ent->GetPhysics()->GetAbsBounds().GetCenter() + up, 0.1f, colorWhite, axis, 1 );
-				if ( ent->IsType( idTrigger::GetClassType() ) ) {
+				if ( ent->IsType( idTrigger::Type ) ) {
 					func = static_cast<idTrigger *>( ent )->GetScriptFunction();
 				} else {
 					func = NULL;
@@ -371,7 +371,7 @@ idTrigger_Multi::CheckFacing
 */
 bool idTrigger_Multi::CheckFacing( idEntity *activator ) {
 	if ( spawnArgs.GetBool( "facing" ) ) {
-		if ( !activator->IsType( idPlayer::GetClassType() ) ) {
+		if ( !activator->IsType( idPlayer::Type ) ) {
 			return true;
 		}
 		idPlayer *player = static_cast< idPlayer* >( activator );
@@ -465,7 +465,7 @@ void idTrigger_Multi::Event_Touch( idEntity *other, trace_t *trace ) {
 		return;
 	}
 
-	bool player = other->IsType( idPlayer::GetClassType() );
+	bool player = other->IsType( idPlayer::Type );
 	if ( player ) {
 		if ( !touchClient ) {
 			return;

@@ -248,10 +248,10 @@ Kills all the monsters in a level.
 ==================
 */
 void Cmd_KillMonsters_f( const idCmdArgs &args ) {
-	KillEntities( args, idAI::GetClassType() );
+	KillEntities( args, idAI::Type );
 
 	// kill any projectiles as well since they have pointers to the monster that created them
-	KillEntities( args, idProjectile::GetClassType() );
+	KillEntities( args, idProjectile::Type );
 }
 
 /*
@@ -265,7 +265,7 @@ void Cmd_KillMovables_f( const idCmdArgs &args ) {
 	if ( !gameLocal.GetLocalPlayer() || !gameLocal.CheatsOk( false ) ) {
 		return;
 	}
-	KillEntities( args, idMoveable::GetClassType() );
+	KillEntities( args, idMoveable::Type );
 }
 
 /*
@@ -279,8 +279,8 @@ void Cmd_KillRagdolls_f( const idCmdArgs &args ) {
 	if ( !gameLocal.GetLocalPlayer() || !gameLocal.CheatsOk( false ) ) {
 		return;
 	}
-	KillEntities( args, idAFEntity_Generic::GetClassType() );
-	KillEntities( args, idAFEntity_WithAttachedHead::GetClassType() );
+	KillEntities( args, idAFEntity_Generic::Type );
+	KillEntities( args, idAFEntity_WithAttachedHead::Type );
 }
 
 /*
@@ -1053,7 +1053,7 @@ void Cmd_PopLight_f( const idCmdArgs &args ) {
 	lastLight = NULL;
 	last = -1;
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
-		if ( !ent->IsType( idLight::GetClassType() ) ) {
+		if ( !ent->IsType( idLight::Type ) ) {
 			continue;
 		}
 
@@ -1095,7 +1095,7 @@ void Cmd_ClearLights_f( const idCmdArgs &args ) {
 	gameLocal.Printf( "Clearing all lights.\n" );
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = next ) {
 		next = ent->spawnNode.Next();
-		if ( !ent->IsType( idLight::GetClassType() ) ) {
+		if ( !ent->IsType( idLight::Type ) ) {
 			continue;
 		}
 
@@ -1143,7 +1143,7 @@ void Cmd_TestFx_f( const idCmdArgs &args ) {
 	dict.Set( "origin", offset.ToString() );
 	dict.Set( "test", "1");
 	dict.Set( "fx", name );
-	gameLocal.testFx = ( idEntityFx * )gameLocal.SpawnEntityType( idEntityFx::GetClassType(), &dict );
+	gameLocal.testFx = ( idEntityFx * )gameLocal.SpawnEntityType( idEntityFx::Type, &dict );
 }
 
 #define MAX_DEBUGLINES	128
@@ -1688,12 +1688,12 @@ static void Cmd_SaveSelected_f( const idCmdArgs &args ) {
 		mapEnt->epairs.Set( "name", s->name );
 	}
 
-	if ( s->IsType( idMoveable::GetClassType() ) ) {
+	if ( s->IsType( idMoveable::Type ) ) {
 		// save the moveable state
 		mapEnt->epairs.Set( "origin", s->GetPhysics()->GetOrigin().ToString( 8 ) );
 		mapEnt->epairs.Set( "rotation", s->GetPhysics()->GetAxis().ToString( 8 ) );
 	}
-	else if ( s->IsType( idAFEntity_Generic::GetClassType() ) || s->IsType( idAFEntity_WithAttachedHead::GetClassType() ) ) {
+	else if ( s->IsType( idAFEntity_Generic::Type ) || s->IsType( idAFEntity_WithAttachedHead::Type ) ) {
 		// save the articulated figure state
 		dict.Clear();
 		static_cast<idAFEntity_Base *>(s)->SaveState( dict );
@@ -1742,7 +1742,7 @@ static void Cmd_SaveMoveables_f( const idCmdArgs &args ) {
 	for( e = 0; e < MAX_GENTITIES; e++ ) {
 		m = static_cast<idMoveable *>(gameLocal.entities[ e ]);
 
-		if ( !m || !m->IsType( idMoveable::GetClassType() ) ) {
+		if ( !m || !m->IsType( idMoveable::Type ) ) {
 			continue;
 		}
 
@@ -1771,7 +1771,7 @@ static void Cmd_SaveMoveables_f( const idCmdArgs &args ) {
 	for( e = 0; e < MAX_GENTITIES; e++ ) {
 		m = static_cast<idMoveable *>(gameLocal.entities[ e ]);
 
-		if ( !m || !m->IsType( idMoveable::GetClassType() ) ) {
+		if ( !m || !m->IsType( idMoveable::Type ) ) {
 			continue;
 		}
 
@@ -1837,7 +1837,7 @@ static void Cmd_SaveRagdolls_f( const idCmdArgs &args ) {
 			continue;
 		}
 
-		if ( !af->IsType( idAFEntity_WithAttachedHead::GetClassType() ) && !af->IsType( idAFEntity_Generic::GetClassType() ) ) {
+		if ( !af->IsType( idAFEntity_WithAttachedHead::Type ) && !af->IsType( idAFEntity_Generic::Type ) ) {
 			continue;
 		}
 
@@ -1950,7 +1950,7 @@ static void Cmd_SaveLights_f( const idCmdArgs &args ) {
 	for( e = 0; e < MAX_GENTITIES; e++ ) {
 		light = static_cast<idLight*>(gameLocal.entities[ e ]);
 
-		if ( !light || !light->IsType( idLight::GetClassType() ) ) {
+		if ( !light || !light->IsType( idLight::Type ) ) {
 			continue;
 		}
 
@@ -2348,7 +2348,7 @@ void Cmd_SetActorState_f( const idCmdArgs &args ) {
 	}
 
 
-	if(!ent->IsType(idActor::GetClassType())) {
+	if(!ent->IsType(idActor::Type)) {
 		gameLocal.Printf( "entity not an actor\n" );
 		return;
 	}
