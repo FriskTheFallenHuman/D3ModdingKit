@@ -56,10 +56,12 @@ typedef struct playerPState_s {
 	idVec3					velocity;
 	idVec3					localOrigin;
 	idVec3					pushVelocity;
+	idVec3					lastPushVelocity;
 	float					stepUp;
 	int						movementType;
 	int						movementFlags;
 	int						movementTime;
+	int						crouchSlideTime;
 } playerPState_t;
 
 class idPhysics_Player : public idPhysics_Actor {
@@ -121,6 +123,11 @@ public:	// common physics interface
 	void					WriteToSnapshot( idBitMsgDelta &msg ) const;
 	void					ReadFromSnapshot( const idBitMsgDelta &msg );
 
+	bool					IsNoclip( void ) const;
+	bool					IsDead( void ) const;
+
+	void					SetClipModelNoLink( idClipModel *clip );
+
 private:
 	// player physics state
 	playerPState_t			current;
@@ -169,13 +176,24 @@ private:
 	void					SpectatorMove( void );
 	void					LadderMove( void );
 	void					CorrectAllSolid( trace_t &trace, int contents );
-	void					CheckGround( void );
+	void					CheckGround( bool checkStuck );
 	void					CheckDuck( void );
 	void					CheckLadder( void );
 	bool					CheckJump( void );
 	bool					CheckWaterJump( void );
 	void					DropTimers( void );
 	void					MovePlayer( int msec );
+
+	float					Pm_Accelerate( void );
+	float					Pm_AirAccelerate( void );
 };
+
+ID_INLINE bool idPhysics_Player::IsNoclip( void ) const {
+	return current.movementType == PM_NOCLIP;
+}
+
+ID_INLINE bool idPhysics_Player::IsDead( void ) const {
+	return current.movementType == PM_DEAD;
+}
 
 #endif /* !__PHYSICS_PLAYER_H__ */

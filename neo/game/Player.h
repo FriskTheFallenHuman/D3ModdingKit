@@ -663,6 +663,10 @@ private:
 
 	void					UseVehicle( void );
 
+	void					SpeedMP( void );
+	void					SpeedSP( void );
+
+private:
 	void					Event_GetButtons( void );
 	void					Event_GetMove( void );
 	void					Event_GetViewAngles( void );

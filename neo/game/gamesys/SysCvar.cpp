@@ -271,6 +271,9 @@ idCVar pm_thirdPerson(				"pm_thirdPerson",			"0",			CVAR_GAME | CVAR_NETWORKSYN
 idCVar pm_thirdPersonDeath(			"pm_thirdPersonDeath",		"0",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_BOOL, "enables third person view when player dies" );
 idCVar pm_modelView(				"pm_modelView",				"0",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_INTEGER, "draws camera from POV of player model (1 = always, 2 = when dead)", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 idCVar pm_airTics(					"pm_air",					"1800",			CVAR_GAME | CVAR_NETWORKSYNC | CVAR_INTEGER, "how long in milliseconds the player can go without air before he starts taking damage" );
+idCVar pm_acceloverride(			"pm_acceloverride",			"0",			CVAR_GAME | CVAR_FLOAT, "Adjust the player acceleration." );
+idCVar pm_frictionoverride(			"pm_frictionoverride",		"-1",			CVAR_GAME | CVAR_FLOAT, "Adjust the player friciton." );
+idCVar pm_forcespectatormove(		"pm_forcespectatormove",	"0",			CVAR_GAME | CVAR_FLOAT, "Force the player to move like a spectator (fly)." );
 
 idCVar g_showHud(					"g_showHud",				"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "" );
 idCVar g_showProjectilePct(			"g_showProjectilePct",		"0",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "enables display of player hit percentage" );

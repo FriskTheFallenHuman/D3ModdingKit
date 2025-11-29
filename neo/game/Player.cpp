@@ -5729,6 +5729,19 @@ idPlayer::AdjustSpeed
 ==============
 */
 void idPlayer::AdjustSpeed( void ) {
+	if ( gameLocal.isMultiplayer ) {
+		SpeedMP();
+	} else {
+		SpeedSP();
+	}
+}
+
+/*
+==============
+idPlayer::SpeedSP
+==============
+*/
+void idPlayer::SpeedSP( void ) {
 	float speed;
 	float rate;
 
@@ -5767,6 +5780,34 @@ void idPlayer::AdjustSpeed( void ) {
 		}
 		speed = pm_walkspeed.GetFloat();
 		bobFrac = 0.0f;
+	}
+
+	speed *= PowerUpModifier(SPEED);
+
+	if ( influenceActive == INFLUENCE_LEVEL3 ) {
+		speed *= 0.33f;
+	}
+
+	physicsObj.SetSpeed( speed, pm_crouchspeed.GetFloat() );
+}
+
+/*
+==============
+idPlayer::SpeedMP
+==============
+*/
+void idPlayer::SpeedMP( void ) {
+	float speed;
+
+	if ( spectating ) {
+		speed = pm_spectatespeed.GetFloat();
+		bobFrac = 0.0f;
+	} else if ( noclip ) {
+		speed = pm_noclipspeed.GetFloat();
+		bobFrac = 0.0f;
+	} else {
+		speed = 370; //pm_runspeed.GetFloat();
+		bobFrac = 1.0f;
 	}
 
 	speed *= PowerUpModifier(SPEED);
