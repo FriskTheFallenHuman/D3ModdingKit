@@ -698,6 +698,8 @@ public:
 	virtual bool			IsFullScreen( void ) const;
 	virtual int				GetScreenWidth( void ) const;
 	virtual int				GetScreenHeight( void ) const;
+	virtual int				GetWindowsWidth( void ) const;
+	virtual int				GetWindowsHeight( void ) const;
 	virtual idRenderWorld *	AllocRenderWorld( void );
 	virtual void			FreeRenderWorld( idRenderWorld *rw );
 	virtual void			BeginLevelLoad( void );
@@ -722,7 +724,7 @@ public:
 	virtual void			DrawDemoPics();
 	virtual void			BeginFrame( int windowWidth, int windowHeight );
 	virtual void			EndFrame( int *frontEndMsec, int *backEndMsec );
-	virtual void			TakeScreenshot( int width, int height, const char *fileName, int downSample, renderView_t *ref );
+	virtual void			TakeScreenshot( int width, int height, const char *fileName, int downSample, renderView_t *ref, SShotFormat_t overrideFormat );
 	virtual void			CropRenderSize( int width, int height, bool makePowerOfTwo = false, bool forceDimensions = false );
 	virtual void			CaptureRenderToImage( const char *imageName );
 	virtual void			CaptureRenderToFile( const char *fileName, bool fixAlpha );

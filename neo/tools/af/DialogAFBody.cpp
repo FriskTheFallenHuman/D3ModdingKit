@@ -249,7 +249,7 @@ void DialogAFBody::InitJointLists( void ) {
 
 	numJoints = model->NumJoints();
 	for ( int i = 0; i < numJoints; i++ ) {
-		const char *jointName = model->GetJointName( (jointHandle_t) i );
+		const char *jointName = model->GetJointName( i );
 		cm_comboBoneJoint1.AddString( jointName );
 		cm_comboBoneJoint2.AddString( jointName );
 		cm_originBoneCenterJoint1.AddString( jointName );
@@ -355,7 +355,7 @@ void DialogAFBody::InitModifiedJointList( void ) {
 
 	numJoints = model->NumJoints();
 	for ( i = 0; i < numJoints; i++ ) {
-		const char *jointName = model->GetJointName( (jointHandle_t) i );
+		const char *jointName = model->GetJointName( i );
 		for ( j = 0; j < file->bodies.Num(); j++ ) {
 			if ( file->bodies[j] == body ) {
 				continue;

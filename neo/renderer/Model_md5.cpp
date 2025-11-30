@@ -867,13 +867,10 @@ idRenderModelMD5::GetJointHandle
 ====================
 */
 jointHandle_t idRenderModelMD5::GetJointHandle( const char *name ) const {
-	const idMD5Joint *joint;
-	int	i;
-
-	joint = joints.Ptr();
-	for( i = 0; i < joints.Num(); i++, joint++ ) {
+	const idMD5Joint *joint = joints.Ptr();
+	for( int i = 0; i < joints.Num(); i++, joint++ ) {
 		if ( idStr::Icmp( joint->name.c_str(), name ) == 0 ) {
-			return ( jointHandle_t )i;
+			return i;
 		}
 	}
 

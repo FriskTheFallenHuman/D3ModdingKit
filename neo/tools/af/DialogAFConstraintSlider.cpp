@@ -110,7 +110,7 @@ void DialogAFConstraintSlider::InitJointLists( void ) {
 
 	int numJoints = model->NumJoints();
 	for ( int i = 0; i < numJoints; i++ ) {
-		const char *jointName = model->GetJointName( (jointHandle_t) i );
+		const char *jointName = model->GetJointName( i );
 		m_comboAxisJoint1.AddString( jointName );
 		m_comboAxisJoint2.AddString( jointName );
 	}

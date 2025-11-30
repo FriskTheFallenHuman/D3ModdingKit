@@ -280,14 +280,6 @@ PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 // GL_ARB_debug_output
 PFNGLDEBUGMESSAGECALLBACKARBPROC        qglDebugMessageCallbackARB;
 
-// eez: This is a slight hack for letting us select the desired screenshot format in other functions
-//  This is a hack to avoid adding another function parameter to idRenderSystem::TakeScreenshot(),
-//  which would break the API of the dhewm3 SDK for mods.
-//  Note that this is reset to -1 (which means: use value of r_screenshotFormat) at the end of
-//  idRenderSystemLocal::TakeScreenshot(), so if your code wants to enforce a specific format,
-//  it must set g_screenshotFormat accordingly before each call to TakeScreenshot().
-int g_screenshotFormat = -1;
-
 enum {
 	// Not all GL.h header know about GL_DEBUG_SEVERITY_NOTIFICATION_*.
 	QGL_DEBUG_SEVERITY_NOTIFICATION = 0x826B
@@ -1392,7 +1384,7 @@ Downsample is the number of steps to mipmap the image before saving it
 If ref == NULL, session->updateScreen will be used
 ==================
 */
-void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fileName, int blends, renderView_t *ref ) {
+void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fileName, int blends, renderView_t *ref, SShotFormat_t overrideFormat ) {
 	byte		*buffer, *swapBuffer;
 	int			i, j;
 
@@ -1448,27 +1440,26 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fil
 	}
 
 	// If no specific format is requested, default to using the CVar value.
-	if (g_screenshotFormat == -1) {
-		g_screenshotFormat = cvarSystem->GetCVarInteger( "r_screenshotFormat" );
+	if ( overrideFormat == -1 ) {
+		overrideFormat = (SShotFormat_t)cvarSystem->GetCVarInteger( "r_screenshotFormat" );
 	}
 
-	switch (g_screenshotFormat) {
+	switch ( overrideFormat ) {
 		default:
+		case FORMAT_TGA:
 			stbi_write_tga_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer );
 			break;
-		case 1:
+		case FORMAT_BMP:
 			stbi_write_bmp_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer);
 			break;
-		case 2:
+		case FORMAT_PNG:
 			stbi_write_png_compression_level = idMath::ClampInt( 0, 9, r_screenshotPngCompression.GetInteger() );
 			stbi_write_png_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer, 3 * width );
 			break;
-		case 3:
+		case FORMAT_JPEG:
 			stbi_write_jpg_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer, idMath::ClampInt( 1, 100, r_screenshotJpgQuality.GetInteger() ) );
 			break;
 	}
-
-	g_screenshotFormat = -1;
 
 	fileSystem->CloseFile(f);
 
@@ -1600,7 +1591,7 @@ void R_ScreenShot_f( const idCmdArgs &args ) {
 	// put the console away
 	console->Close();
 
-	tr.TakeScreenshot( width, height, checkname, blends, NULL );
+	tr.TakeScreenshot( width, height, checkname, blends, NULL, FORMAT_NONE );
 
 	common->Printf( "Wrote %s\n", checkname.c_str() );
 }
@@ -1728,8 +1719,7 @@ void R_EnvShot_f( const idCmdArgs &args ) {
 		ref.height = glConfig.vidHeight;
 		ref.viewaxis = axis[i];
 		sprintf( fullname, "env/%s%s", baseName, extensions[i] );
-		g_screenshotFormat = 0;
-		tr.TakeScreenshot( size, size, fullname, blends, &ref );
+		tr.TakeScreenshot( size, size, fullname, blends, &ref, FORMAT_NONE );
 	}
 
 	common->Printf( "Wrote %s, etc\n", fullname.c_str() );
@@ -2465,6 +2455,24 @@ idRenderSystemLocal::IsFullScreen
 */
 bool idRenderSystemLocal::IsFullScreen( void ) const {
 	return glConfig.isFullscreen;
+}
+
+/*
+========================
+idRenderSystemLocal::GetWindowsWidth
+========================
+*/
+int idRenderSystemLocal::GetWindowsWidth( void ) const {
+	return glConfig.winWidth;
+}
+
+/*
+========================
+idRenderSystemLocal::GetWindowsHeight
+========================
+*/
+int idRenderSystemLocal::GetWindowsHeight( void ) const {
+	return glConfig.winHeight;
 }
 
 /*

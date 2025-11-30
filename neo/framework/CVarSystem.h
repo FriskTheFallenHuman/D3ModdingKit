@@ -179,7 +179,7 @@ private:
 	static idCVar *			staticVars;
 };
 
-static idCVar const * const staticCVarsInvalid = (const idCVar*)(uintptr_t)0xFFFFFFFF;
+static idCVar const * const staticCVarsInvalid = (const idCVar*)(uintptr_t)UINTPTR_MAX;
 
 ID_INLINE idCVar::idCVar( const char *name, const char *value, int flags, const char *description,
 							argCompletion_t valueCompletion ) {

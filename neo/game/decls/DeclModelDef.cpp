@@ -600,9 +600,9 @@ bool idDeclModelDef::Parse( const char *text, const int textLength ) {
 			md5joint = md5joints;
 			for( i = 0; i < num; i++, md5joint++ ) {
 				joints[i].channel = ANIMCHANNEL_ALL;
-				joints[i].num = static_cast<jointHandle_t>( i );
+				joints[i].num = i;
 				if ( md5joint->parent ) {
-					joints[i].parentNum = static_cast<jointHandle_t>( md5joint->parent - md5joints );
+					joints[i].parentNum = md5joint->parent - md5joints;
 				} else {
 					joints[i].parentNum = INVALID_JOINT;
 				}

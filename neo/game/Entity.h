@@ -514,4 +514,7 @@ public:
 extern const idEventDef EV_SpawnBind;
 extern const idEventDef EV_UpdateCameraTarget;
 
+void UpdateGuiParms( idUserInterface *gui, const idDict *args );
+void AddRenderGui( const char *name, idUserInterface **gui, const idDict *args );
+
 #endif /* !__GAME_ENTITY_H__ */

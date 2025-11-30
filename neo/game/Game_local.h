@@ -66,6 +66,7 @@ class idEditEntities;
 class idLocationEntity;
 class idDeclPDA;
 class idDeclVideo;
+class idGameEditLocal;
 
 //============================================================================
 
@@ -560,6 +561,7 @@ private:
 //============================================================================
 
 extern idGameLocal			gameLocal;
+extern idGameEditLocal		gameEditLocal;
 extern idAnimManager		animationLib;
 
 //============================================================================
