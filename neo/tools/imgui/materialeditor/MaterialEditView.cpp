@@ -26,8 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "../ImGuiTools.h"
+#pragma hdrstop
+
 #include "MaterialEditView.h"
-#include "tools/imgui/materialeditor/MaterialEditor.h"
+#include "MaterialEditor.h"
 
 #define EDIT_HEIGHT 25
 

@@ -27,8 +27,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/sys_imgui.h"
-#include "../util/RegistryOptions.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
+
 #include "MEMainFrame.h"
 
 namespace ImGuiTools {

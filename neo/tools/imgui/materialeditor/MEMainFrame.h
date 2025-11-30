@@ -37,7 +37,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "MEOptions.h"
 #include "ConsoleView.h"
 #include "FindDialog.h"
-//#include "../common/PropTree/PropTreeView.h"
 #include "MaterialDocManager.h"
 #include "MaterialEditView.h"
 

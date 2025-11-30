@@ -28,11 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef CONSOLEVIEW_H_
 #define CONSOLEVIEW_H_
 
-#include "../util/ImGui_IdWidgets.h"
-#include "sys/sys_imgui.h"
-
 #include "MaterialEditor.h"
-#include "../util/SyntaxRichEditCtrl.h"
 
 class TextEditor;
 

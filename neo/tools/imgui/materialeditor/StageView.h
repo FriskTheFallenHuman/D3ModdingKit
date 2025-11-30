@@ -25,12 +25,12 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef STAGEVIEW_H_
 #define STAGEVIEW_H_
 
 #include "MaterialEditor.h"
 #include "MaterialView.h"
-//#include "ToggleListView.h"
 #include "MaterialView.h"
 #include "MaterialPropTreeView.h"
 

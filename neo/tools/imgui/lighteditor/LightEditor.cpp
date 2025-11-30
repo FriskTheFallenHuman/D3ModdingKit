@@ -28,17 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "LightEditor.h"
-
-#include "sys/sys_imgui.h"
-#include "../util/ImGui_IdWidgets.h"
-
-#include "idlib/math/Vector.h"
-
-#include "framework/Game.h"
-#include "framework/DeclEntityDef.h"
-#include "renderer/Material.h"
-#include "renderer/Image.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 namespace ImGuiTools
 {

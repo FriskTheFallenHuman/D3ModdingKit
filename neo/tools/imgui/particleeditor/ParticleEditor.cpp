@@ -26,17 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../util/ImGui_IdWidgets.h"
-
-#include "ParticleEditor.h"
-
-#include "sys/sys_imgui.h"
-
-#include "idlib/math/Vector.h"
-#include "idlib/math/Quat.h"
-
-#include "framework/FileSystem.h"
-#include "framework/Game.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 // ParticleEditor dialog
 

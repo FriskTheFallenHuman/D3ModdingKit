@@ -1,7 +1,7 @@
 
 
-#ifndef NEO_SYS_SYS_IMGUI_H_
-#define NEO_SYS_SYS_IMGUI_H_
+#ifndef _SYS_IMGUI_H_
+#define _SYS_IMGUI_H_
 
 #ifndef IMGUI_DISABLE
 #include "../libs/imgui/imgui.h"
@@ -15,14 +15,16 @@ enum D3ImGuiWindow {
 	D3_ImGuiWin_Settings    = 1, // advanced dhewm3 settings menu
 	D3_ImGuiWin_Demo        = 2, // ImGui demo window
 	D3_ImGuiWin_LightEditor = 4, // new ingame Light Editor
-	D3_ImGuiWin_AfEditor    = 8, // new AF Editor
-	D3_ImGuiWin_PDAEditor	= 16, // new PDA Editor
-	D3_ImGuiWin_ParticleEditor = 32, // new Particle Editor
-	D3_ImGuiWin_ScriptEditor = 64, // new Script Editor
-	D3_ImGuiWin_DeclBrowser = 128, // new Decl Browser
-	D3_ImGuiWin_MaterialEditor = 256, // next should be 512, then 1024, etc so a bitmask can be used
+	D3_ImGuiWin_SoundEditor = 8, // new ingame Sound Editor
+	D3_ImGuiWin_AfEditor    = 16, // new AF Editor
+	D3_ImGuiWin_PDAEditor	= 32, // new PDA Editor
+	D3_ImGuiWin_ParticleEditor = 64, // new Particle Editor
+	D3_ImGuiWin_ScriptEditor = 128, // new Script Editor
+	D3_ImGuiWin_DeclBrowser = 256, // new Decl Browser
+	D3_ImGuiWin_MaterialEditor = 512, // next should be 1024, then 2048, etc so a bitmask can be used
 
 	D3_ImGuiWin_AnyEditor = D3_ImGuiWin_LightEditor
+		| D3_ImGuiWin_SoundEditor
 		| D3_ImGuiWin_AfEditor
 		| D3_ImGuiWin_PDAEditor
 		| D3_ImGuiWin_ParticleEditor
@@ -146,4 +148,4 @@ inline bool WriteUserStyle() { return false; }
 }} //namespace D3::ImGuiHooks
 
 
-#endif /* NEO_SYS_SYS_IMGUI_H_ */
+#endif /* _SYS_IMGUI_H_ */

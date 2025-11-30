@@ -25,6 +25,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALPREVIEWPROPVIEW_H_
 #define MATERIALPREVIEWPROPVIEW_H_
 

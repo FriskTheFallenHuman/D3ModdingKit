@@ -25,13 +25,12 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALPROPTREEVIEW_H_
 #define MATERIALPROPTREEVIEW_H_
 
-#include "sys/sys_imgui.h"
 #include "MaterialView.h"
 #include "MaterialDef.h"
-#include "../util/RegistryOptions.h"
 
 namespace ImGuiTools {
 

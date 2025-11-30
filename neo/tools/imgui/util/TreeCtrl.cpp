@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "ImGui_IdWidgets.h"
-#include "imgui.h"
-
-#include "TreeCtrl.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 namespace ImGuiTools {
 
@@ -223,9 +221,9 @@ void TreeCtrl::DrawNode( TreeNode *node,  treeItemTooltip_t tooltip, treeItemSel
 		if ( ImGui::IsItemHovered() ) {
 			tooltipText.Clear();
 			if ( tooltip( data, node, tooltipText ) ) {
-                ImGui::BeginTooltip();
+				ImGui::BeginTooltip();
 				ImGui::TextUnformatted( tooltipText.c_str() );
-                ImGui::EndTooltip();
+				ImGui::EndTooltip();
 			}
 		}
 		if ( ImGui::IsItemFocused() ) {

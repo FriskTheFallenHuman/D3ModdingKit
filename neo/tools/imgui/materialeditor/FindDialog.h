@@ -29,9 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef FINDDIALOG_H_
 #define FINDDIALOG_H_
 
-#include "sys/sys_imgui.h"
 #include "MaterialEditor.h"
-#include "../util/RegistryOptions.h"
 
 namespace ImGuiTools {
 
@@ -51,24 +49,24 @@ public:
 
 	void					Start();
 
-    bool                    Draw( const ImVec2 &pos, const ImVec2 &size );
+	bool                    Draw( const ImVec2 &pos, const ImVec2 &size );
 
-    void                    UnableToFind();
+	void                    UnableToFind();
 
 protected:
 
 	//Messages
 	void        			OnBnClickedFindNext();
-    void           			OnCancel();
+	void           			OnCancel();
 
 	//Protected Operations
 	void					LoadFindSettings();
 	void					SaveFindSettings();
 
 protected:
-    bool                    visible;
+	bool                    visible;
 	bool					focus;
-    int                     message;
+	int                     message;
 	MEMainFrame*			parent;
 	MaterialSearchData_t	searchData;
 	rvRegistryOptions		registry;

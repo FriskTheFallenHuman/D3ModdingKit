@@ -1038,7 +1038,7 @@ idCommonLocal::InitTool
 void idCommonLocal::InitTool( const toolFlag_t tool, const idDict *dict ) {
 #ifndef IMGUI_DISABLE
 	if ( tool & EDITOR_SOUND ) {
-		//SoundEditorInit( dict );
+		ImGuiTools::SoundEditorInit( dict );
 	} else if ( tool & EDITOR_LIGHT ) {
 		ImGuiTools::LightEditorInit( dict );
 	} else if ( tool & EDITOR_PARTICLE ) {
@@ -1051,18 +1051,6 @@ void idCommonLocal::InitTool( const toolFlag_t tool, const idDict *dict ) {
 		ImGuiTools::ScriptEditorInit( dict );
 	} else if ( tool & EDITOR_DECL ) {
 		ImGuiTools::DeclBrowserInit( dict );
-	}
-#endif
-
-#ifdef ID_ALLOW_TOOLS
-	if ( tool & EDITOR_SOUND ) {
-		SoundEditorInit( dict );
-	} else if ( tool & EDITOR_LIGHT ) {
-		LightEditorInit( dict );
-	} else if ( tool & EDITOR_PARTICLE ) {
-		ParticleEditorInit( dict );
-	} else if ( tool & EDITOR_AF ) {
-		AFEditorInit( dict );
 	}
 #endif
 }
@@ -1298,11 +1286,8 @@ static void Com_EditLights_f( const idCmdArgs &args ) {
 #ifndef IMGUI_DISABLE
 	D3::ImGuiHooks::ShowInfoOverlay( "Shoot a light to open it in the Light Editor" );
 	cvarSystem->SetCVarInteger( "g_editEntityMode", 1 );
-#elif defined(ID_ALLOW_TOOLS)
-	LightEditorInit( NULL );
-	cvarSystem->SetCVarInteger( "g_editEntityMode", 1 );
 #else
-	common->Warning( "Editors not available because dhewm3 was built without ImGui or MFC Tools" );
+	common->Warning( "Editors not available because the engine was built without ImGui Tools" );
 #endif
 }
 
@@ -1315,10 +1300,8 @@ Com_EditPDAs_f
 static void Com_EditPDAs_f( const idCmdArgs &args ) {
 #ifndef IMGUI_DISABLE
 	ImGuiTools::PDAEditorInit( NULL );
-#elif defined(ID_ALLOW_TOOLS)
-	PDAEditorInit( NULL );
 #else
-	common->Warning( "Editors not available because dhewm3 was built without ImGui or MFC Tools" );
+	common->Warning( "Editors not available because the engine was built without ImGui Tools" );
 #endif
 }
 */
@@ -1329,13 +1312,11 @@ Com_EditAFs_f
 ==================
 */
 static void Com_EditAFs_f( const idCmdArgs &args ) {
-	// TODO: cvarSystem->SetCVarInteger( "g_editEntityMode", 3 ); ?
 #ifndef IMGUI_DISABLE
 	ImGuiTools::AfEditorInit();
-#elif defined(ID_ALLOW_TOOLS)
-	AFEditorInit( NULL );
+	cvarSystem->SetCVarInteger( "g_editEntityMode", 3 );
 #else
-	common->Warning( "Editors not available because dhewm3 was built without ImGui or MFC Tools" );
+	common->Warning( "Editors not available because the engine was built without ImGui Tools" );
 #endif
 }
 
@@ -1347,10 +1328,8 @@ Com_EditParticles_f
 static void Com_EditParticles_f(const idCmdArgs& args) {
 #ifndef IMGUI_DISABLE
 	ImGuiTools::ParticleEditorInit( NULL );
-#elif defined(ID_ALLOW_TOOLS)
-	ParticleEditorInit(NULL);
 #else
-	common->Warning( "Editors not available because dhewm3 was built without ImGui or MFC Tools" );
+	common->Warning( "Editors not available because the engine was built without ImGui Tools" );
 #endif
 }
 
@@ -1362,10 +1341,8 @@ Com_EditDecls_f
 static void Com_EditDecls_f( const idCmdArgs &args ) {
 #ifndef IMGUI_DISABLE
 	ImGuiTools::DeclBrowserInit( NULL );
-#elif defined(ID_ALLOW_TOOLS)
-	DeclBrowserInit( NULL );
 #else
-	common->Warning("Editors not available because dhewm3 was built without ImGui or MFC Tools");
+	common->Warning("Editors not available because the engine was built without ImGui Tools");
 #endif
 }
 
@@ -1377,10 +1354,8 @@ Com_EditScripts_f
 static void Com_EditScripts_f( const idCmdArgs &args ) {
 #ifndef IMGUI_DISABLE
 	ImGuiTools::ScriptEditorInit( NULL );
-#elif defined(ID_ALLOW_TOOLS)
-	ScriptEditorInit( NULL );
 #else
-	common->Warning("Editors not available because dhewm3 was built without ImGui or MFC Tools");
+	common->Warning("Editors not available because the engine was built without ImGui Tools");
 #endif
 }
 
@@ -1401,19 +1376,19 @@ static void Com_MaterialEditor_f( const idCmdArgs &args ) {
 #endif
 }
 
-
-#ifdef ID_ALLOW_TOOLS
 /*
 ==================
 Com_EditSounds_f
 ==================
 */
 static void Com_EditSounds_f( const idCmdArgs &args ) {
-	SoundEditorInit( NULL );
+#ifndef IMGUI_DISABLE
+	ImGuiTools::SoundEditorInit( NULL );
 	cvarSystem->SetCVarInteger( "g_editEntityMode", 2 );
+#else
+	common->Warning( "Editors not available because the engine was built without ImGui Tools" );
+#endif
 }
-
-#endif // ID_ALLOW_TOOLS
 
 /*
 ==================
@@ -2452,8 +2427,10 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "MatbuildDir", MatBuildDir_f, CMD_FL_TOOL, "builds interaction materials for a given directory.", idCmdSystem::ArgCompletion_MapName );
 #endif
 
+#ifdef ID_ALLOW_TOOLS
 	// editors
 	cmdSystem->AddCommand( "editLights", Com_EditLights_f, CMD_FL_TOOL, "launches the in-game Light Editor" );
+	cmdSystem->AddCommand( "editSounds", Com_EditSounds_f, CMD_FL_TOOL, "launches the in-game Sound Editor" );
 	//cmdSystem->AddCommand( "editPDAs", Com_EditPDAs_f, CMD_FL_TOOL, "launches the in-game PDA Editor" );
 	cmdSystem->AddCommand( "editAFs", Com_EditAFs_f, CMD_FL_TOOL, "launches the in-game Articulated Figure Editor" );
 	cmdSystem->AddCommand( "editDecls", Com_EditDecls_f, CMD_FL_TOOL, "launches the in-game Declaration Editor" );
@@ -2461,11 +2438,11 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "editScripts", Com_EditScripts_f, CMD_FL_TOOL, "launches the in-game Script Editor" );
 	//BSM Nerve: Add support for the material editor
 	cmdSystem->AddCommand( "materialEditor", Com_MaterialEditor_f, CMD_FL_TOOL, "launches the Material Editor" );
-#ifdef ID_ALLOW_TOOLS
+#ifdef _WIN32
 	cmdSystem->AddCommand( "editor", Com_Editor_f, CMD_FL_TOOL, "launches the level editor Radiant" );
-	cmdSystem->AddCommand( "editSounds", Com_EditSounds_f, CMD_FL_TOOL, "launches the in-game Sound Editor" );
 	cmdSystem->AddCommand( "editGUIs", Com_EditGUIs_f, CMD_FL_TOOL, "launches the GUI Editor" );
 	cmdSystem->AddCommand( "debugger", Com_ScriptDebugger_f, CMD_FL_TOOL, "launches the Script Debugger" );
+#endif
 #endif
 
 	cmdSystem->AddCommand( "printMemInfo", PrintMemInfo_f, CMD_FL_SYSTEM, "prints memory debugging data" );

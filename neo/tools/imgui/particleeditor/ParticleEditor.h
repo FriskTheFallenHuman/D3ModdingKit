@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PARTICLEEDITOR_H__
 #define __PARTICLEEDITOR_H__
 
-#include "../../edit_public.h"
-
 class idDeclParticle;
 class idParticleStage;
 

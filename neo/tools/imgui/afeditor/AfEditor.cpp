@@ -27,12 +27,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "../ImGuiTools.h"
+#pragma hdrstop
+
 #include "AfEditor.h"
-
-#include "../util/ImGui_IdWidgets.h"
-
-#include "framework/FileSystem.h"
-#include "framework/Game.h"
 
 namespace ImGuiTools
 {

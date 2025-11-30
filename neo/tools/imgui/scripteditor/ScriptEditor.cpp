@@ -26,15 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../../libs/ImGuiColorTextEdit/TextEditor.h"
-
-#include "../util/ImGui_IdWidgets.h"
-
-#include "ScriptEditor.h"
-
-#include "framework/FileSystem.h"
-
-#include "sys/sys_imgui.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 namespace ImGuiTools {
 

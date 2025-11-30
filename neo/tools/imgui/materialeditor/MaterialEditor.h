@@ -25,10 +25,9 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALEDITOR_H_
 #define MATERIALEDITOR_H_
-
-#include "../../edit_public.h"
 
 namespace ImGuiTools {
 

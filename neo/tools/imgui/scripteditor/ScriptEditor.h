@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SCRIPTEDITOR_H__
 #define __SCRIPTEDITOR_H__
 
-#include "../../edit_public.h"
-#include "../util/SyntaxRichEditCtrl.h"
-
 namespace ImGuiTools
 {
 

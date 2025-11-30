@@ -26,9 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../util/ImGui_IdWidgets.h"
-#include "../util/RegistryOptions.h"
-#include "tools/imgui/materialeditor/MaterialEditor.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 #include "MaterialPropTreeView.h"
 

@@ -27,6 +27,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "../ImGuiTools.h"
+#pragma hdrstop
+
 #include "AfPropertyEditor.h"
 
 namespace ImGuiTools

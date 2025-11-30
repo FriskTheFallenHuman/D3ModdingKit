@@ -26,11 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/sys_imgui.h"
-#include "framework/FileSystem.h"
-#include "idlib/Token.h"
-
-#include "RegistryOptions.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 namespace ImGuiTools {
 
@@ -54,11 +51,8 @@ void rvRegistryOptions::Init( const char *key ) {
 }
 
 void OutputString( idFile *file, const char *string ) {
-	char *out;
-	int i, c;
-
 	while ( 1 ) {
-		c = *string++;
+		int c = *string++;
 		switch( c ) {
 			case '\0': return;
 			case '\\': file->Printf( "\\\\" ); break;

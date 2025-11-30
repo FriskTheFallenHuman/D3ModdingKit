@@ -25,9 +25,9 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#include "../../libs/ImGuiColorTextEdit/TextEditor.h"
 
-#include "../util/ImGui_IdWidgets.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 #include "ConsoleView.h"
 

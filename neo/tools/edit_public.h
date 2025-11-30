@@ -64,24 +64,32 @@ bool	AreEditorsActive();
 
 void	DrawToolWindows();
 
+// in-game Light Editor
 void	LightEditorInit( const idDict *dict );
 
-void	AfEditorInit();
+// in-game Sound Editor
+void	SoundEditorInit( const idDict *spawnArgs );
+
+// in-game Articulated Figure Editor
+void	AfEditorInit( void );
 
 // in-game PDA Editor
 //void	PDAEditorInit( const idDict *spawnArgs );
 
+// in-game Particle Editor
 void	ParticleEditorInit( const idDict *spawnArgs );
 
+// in-game Script Editor
 void	ScriptEditorInit( const idDict *spawnArgs );
 
-void	DeclBrowserInit( const idDict* spawnArgs );
+// in-game Declaration Browser
+void	DeclBrowserInit( const idDict *spawnArgs );
 
-void	MaterialEditorInit();
-void	MaterialEditorDraw();
-void	MaterialEditorShutdown();
-void	MaterialEditorPrintConsole( const char* msg );
-
+//Material Editor
+void	MaterialEditorInit( void );
+void	MaterialEditorDraw( void );
+void	MaterialEditorShutdown( void );
+void	MaterialEditorPrintConsole( const char *msg );
 }
 
 
@@ -96,43 +104,6 @@ void	RadiantInit( void );
 void	RadiantShutdown( void );
 void	RadiantRun( void );
 void	RadiantPrint( const char *text );
-
-
-// in-game Light Editor
-void	LightEditorInit( const idDict *spawnArgs );
-void	LightEditorShutdown( void );
-void	LightEditorRun( void );
-
-
-// in-game Sound Editor
-void	SoundEditorInit( const idDict *spawnArgs );
-void	SoundEditorShutdown( void );
-void	SoundEditorRun( void );
-
-
-// in-game Articulated Figure Editor
-void	AFEditorInit( const idDict *spawnArgs );
-void	AFEditorShutdown( void );
-void	AFEditorRun( void );
-
-
-// in-game Particle Editor
-void	ParticleEditorInit( const idDict *spawnArgs );
-void	ParticleEditorShutdown( void );
-void	ParticleEditorRun( void );
-
-// in-game Script Editor
-void	ScriptEditorInit( const idDict *spawnArgs );
-void	ScriptEditorShutdown( void );
-void	ScriptEditorRun( void );
-
-
-// in-game Declaration Browser
-void	DeclBrowserInit( const idDict *spawnArgs );
-void	DeclBrowserShutdown( void );
-void	DeclBrowserRun( void );
-void	DeclBrowserReloadDeclarations( void );
-
 
 // GUI Editor
 void	GUIEditorInit( void );

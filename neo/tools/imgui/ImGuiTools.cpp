@@ -27,22 +27,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-
-//#include "../imgui/BFGimgui.h"
-
-#include "framework/Common.h"
-#include "framework/Game.h"
-
-#include "idlib/CmdArgs.h"
-
-#include "sys/sys_imgui.h"
-
-#include "afeditor/AfEditor.h"
-#include "lighteditor/LightEditor.h"
-//#include "pdaeditor/PDAEditor.h"
-#include "particleeditor/ParticleEditor.h"
-#include "scripteditor/ScriptEditor.h"
-#include "decleditor/DeclBrowser.h"
+#include "ImGuiTools.h"
+#pragma hdrstop
 
 static bool releaseMouse = false;
 
@@ -149,7 +135,12 @@ void DrawToolWindows()
 	{
 		ScriptEditor::Instance().Draw();
 	}
-	if ( DeclBrowser::Instance().IsShown() ) {
+	if ( SoundEditor::Instance().IsShown() )
+	{
+		SoundEditor::Instance().Draw();
+	}
+	if ( DeclBrowser::Instance().IsShown() )
+	{
 		DeclBrowser::Instance().Draw();
 	}
 	ImGuiTools::MaterialEditorDraw();
@@ -177,6 +168,30 @@ void LightEditorInit( const idDict* dict )
 	LightEditor::ReInit( dict, ent );
 
 	D3::ImGuiHooks::OpenWindow( D3::ImGuiHooks::D3_ImGuiWin_LightEditor );
+}
+
+void SoundEditorInit( const idDict *spawnArgs )
+{
+	if ( spawnArgs == NULL ) {
+		return;
+	}
+
+	idEntity *ent = GetSelectedEntity( spawnArgs, "idSound" );
+	if ( ent == NULL ) {
+		return;
+	}
+
+	// NOTE: we can't access idEntity (it's just a declaration), because it should
+	// be game/mod specific. but we can at least check the spawnclass from the dict.
+	assert( idStr::Icmp( spawnArgs->GetString( "spawnclass" ), "idSound" ) == 0
+			  && "SoundEditorInit() must only be called with light entities or NULL!" );
+
+	SoundEditor::Instance().ShowIt( true );
+	impl::SetReleaseToolMouse( true );
+
+	SoundEditor::ReInit( spawnArgs, ent );
+
+	D3::ImGuiHooks::OpenWindow( D3::ImGuiHooks::D3_ImGuiWin_SoundEditor );
 }
 
 void AfEditorInit() // TODO: why no passed spawnargs?

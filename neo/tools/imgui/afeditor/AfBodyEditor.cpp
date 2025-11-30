@@ -27,11 +27,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "AfBodyEditor.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
-#include "framework/Game.h"
-#include "idlib/geometry/TraceModel.h"
-#include "renderer/Model.h"
+#include "AfBodyEditor.h"
 
 #define ARRAY_COUNT IM_ARRAYSIZE
 

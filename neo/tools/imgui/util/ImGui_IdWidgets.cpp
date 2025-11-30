@@ -27,18 +27,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/sys_imgui.h"
-#include "sys/platform.h"
-
-#include "idlib/math/Vector.h"
-
-#include "idlib/Heap.h"
-#include "idlib/containers/StrList.h"
-#include "ImGui_IdWidgets.h"
-
-#include "framework/FileSystem.h"
-
-#include "renderer/Material.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 static const char* bodyContentsNames[5] =
 {

@@ -870,6 +870,8 @@ if(IMGUI)
 		tools/imgui/util/SyntaxRichEditCtrl.cpp
 		tools/imgui/util/TreeCtrl.h
 		tools/imgui/util/TreeCtrl.cpp
+		tools/imgui/util/PathTreeCtrl.h
+		tools/imgui/util/PathTreeCtrl.cpp
 		tools/imgui/util/RegistryOptions.h
 		tools/imgui/util/RegistryOptions.cpp
 
@@ -884,6 +886,8 @@ if(IMGUI)
 
 		tools/imgui/lighteditor/LightEditor.h
 		tools/imgui/lighteditor/LightEditor.cpp
+		tools/imgui/soundeditor/SoundEditor.h
+		tools/imgui/soundeditor/SoundEditor.cpp
 		#tools/imgui/pdaeditor/PDAEditor.h
 		#tools/imgui/pdaeditor/PDAEditor.cpp
 		tools/imgui/particleeditor/ParticleEditor.h
@@ -891,8 +895,6 @@ if(IMGUI)
 		tools/imgui/scripteditor/ScriptEditor.h
 		tools/imgui/scripteditor/ScriptEditor.cpp
 
-		tools/imgui/decleditor/PathTreeCtrl.h
-		tools/imgui/decleditor/PathTreeCtrl.cpp
 		tools/imgui/decleditor/DeclBrowser.h
 		tools/imgui/decleditor/DeclBrowser.cpp
 		tools/imgui/decleditor/DeclEditor.h
@@ -1183,27 +1185,15 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 	file(GLOB src_compiler_roqvq	  "tools/compilers/roqvq/*.cpp") # FIXME: some of those were added before
 	add_globbed_headers(src_compiler_roqvq "tools/compilers/roqvq")
 	#tools
-	# Articulated Frame editor.
-	file(GLOB src_afeditor "tools/af/*.cpp")
-	add_globbed_headers(src_afeditor "tools/af")
-	# Declaration editor
-	file(GLOB src_decleditor "tools/decl/*.cpp")
-	add_globbed_headers(src_decleditor "tools/decl")
 	# GUI Editor.
 	file(GLOB src_gui_editor "tools/guied/*.cpp")
 	add_globbed_headers(src_gui_editor "tools/guied")
 	# Material editor
 	file(GLOB src_materialeditor "tools/materialeditor/*.cpp")
 	add_globbed_headers(src_materialeditor "tools/materialeditor")
-	# Particle Editor
-	file(GLOB src_particleeditor "tools/particle/*.cpp")
-	add_globbed_headers(src_particleeditor "tools/particle")
 	# Radiant (Map editor)
 	file(GLOB src_map_editor "tools/radiant/*.cpp")
 	add_globbed_headers(src_map_editor "tools/radiant")
-	# Script editor
-	file(GLOB src_script_editor "tools/script/*.cpp")
-	add_globbed_headers(src_script_editor "tools/script")
 	# Script Debugger
 	set(src_debuggerClient
 		tools/debugger/DebuggerClient.h
@@ -1221,24 +1211,16 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 		${src_debuggerServer}
 		${src_debuggerClient}
 	)
-	# sound editor?
-	file(GLOB src_sound_editor "tools/sound/*.cpp")
-	add_globbed_headers(src_sound_editor "tools/sound")
-	
+
 
 	# The numerous tools in a nice list.
 	list(APPEND src_editor_tools
 		${src_comafx}
 		${src_tools_common}
 		${src_compiler_renderbump}
-		${src_afeditor}
-		${src_decleditor}
 		${src_gui_editor}
 		${src_materialeditor}
-		${src_particleeditor}
 		${src_map_editor}
-		${src_script_editor}
-		${src_sound_editor}
 		${src_script_debugger}
 		"tools/edit_public.h"
 		)

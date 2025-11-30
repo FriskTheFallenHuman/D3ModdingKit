@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../util/ImGui_IdWidgets.h"
-
-#include "PathTreeCtrl.h"
-#include "DeclBrowser.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 namespace ImGuiTools {
 

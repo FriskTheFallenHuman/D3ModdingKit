@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLEDITOR_H__
 #define __DECLEDITOR_H__
 
-#include "../util/SyntaxRichEditCtrl.h"
-
 namespace ImGuiTools {
 
 // DeclEditor dialog

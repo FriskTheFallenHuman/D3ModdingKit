@@ -25,13 +25,13 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#include "sys/sys_imgui.h"
+
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 #include "MaterialEditor.h"
 #include "MEMainFrame.h"
 #include "MaterialDef.h"
-
-#include "framework/CmdSystem.h"
 
 #define TAB_CONTROL 0x1006
 
@@ -516,7 +516,7 @@ void MEMainFrame::Draw() {
 			}
 			ImGui::EndChild();
 			ImGui::EndTabItem();
-        }
+		}
 		if (ImGui::BeginTabItem("Console"))
 		{
 			m_consoleView->Draw(ImVec2(0, 0), ImVec2(800, 600));

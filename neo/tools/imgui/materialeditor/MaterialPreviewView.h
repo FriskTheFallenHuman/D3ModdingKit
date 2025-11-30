@@ -25,16 +25,12 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALPREVIEWVIEW_H_
 #define MATERIALPREVIEWVIEW_H_
 
-#include "../util/ImGui_IdWidgets.h"
-#include "renderer/Material.h"
-#include "sys/sys_imgui.h"
-
 #include "MaterialDoc.h"
 #include "MaterialView.h"
-//#include "../radiant/GLWidget.h"
 
 namespace ImGuiTools {
 

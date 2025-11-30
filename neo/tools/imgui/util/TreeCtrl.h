@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __TREECTRL_H__
 #define __TREECTRL_H__
 
-#include "idlib/Str.h"
-#include "idlib/Heap.h"
-#include "idlib/containers/Hierarchy.h"
-#include "idlib/containers/List.h"
-
 namespace ImGuiTools {
 
 /*

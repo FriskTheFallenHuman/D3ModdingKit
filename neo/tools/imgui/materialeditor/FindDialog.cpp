@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../util/ImGui_IdWidgets.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 #include "FindDialog.h"
-
 #include "MEMainFrame.h"
 
 namespace ImGuiTools {
@@ -38,11 +38,11 @@ namespace ImGuiTools {
 * Constructor for FindDialog.
 */
 FindDialog::FindDialog(MEMainFrame *pParent)
-    : visible(false)
-    , focus(false)
-    , message(0)
+	: visible(false)
+	, focus(false)
+	, message(0)
 {
-    registry.Init("MaterialEditor_Find");
+	registry.Init("MaterialEditor_Find");
 	parent = pParent;
 }
 
@@ -56,79 +56,79 @@ FindDialog::~FindDialog() {
 * Creates and instance of the find dialog.
 */
 void FindDialog::Start() {
-    visible = true;
-    focus = true;
-    message = 0;
-    LoadFindSettings();
+	visible = true;
+	focus = true;
+	message = 0;
+	LoadFindSettings();
 }
 
 bool FindDialog::Draw( const ImVec2 &pos, const ImVec2 &size ) {
-    bool accepted = false;
+	bool accepted = false;
 
-    if (!visible) {
-        return accepted;
-    }
+	if (!visible) {
+		return accepted;
+	}
 
-    ImVec2 oldCursorPos = ImGui::GetCursorPos();
+	ImVec2 oldCursorPos = ImGui::GetCursorPos();
 
-    ImGui::SetCursorPos( pos );
-    // FIXME: find a better color
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(50, 50, 50, 255));
-    bool ret = ImGui::BeginChild( "Find", size, ImGuiChildFlags_Borders | ImGuiChildFlags_FrameStyle );
-    if ( ret ) {
+	ImGui::SetCursorPos( pos );
+	// FIXME: find a better color
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, IM_COL32(50, 50, 50, 255));
+	bool ret = ImGui::BeginChild( "Find", size, ImGuiChildFlags_Borders | ImGuiChildFlags_FrameStyle );
+	if ( ret ) {
 
-        if ( ImGui::InputTextStr( "Find What", &searchData.searchText ) ) {
-            message = 0;
-        }
+		if ( ImGui::InputTextStr( "Find What", &searchData.searchText ) ) {
+			message = 0;
+		}
 		if ( focus ) {
 			ImGui::SetKeyboardFocusHere( -1 );
 			focus = false;
 		}
 
-        bool nameOnly = searchData.nameOnly;
-        if ( ImGui::Checkbox( "Name Only", &nameOnly ) ) {
-            searchData.nameOnly = nameOnly;
-            message = 0;
-        }
+		bool nameOnly = searchData.nameOnly;
+		if ( ImGui::Checkbox( "Name Only", &nameOnly ) ) {
+			searchData.nameOnly = nameOnly;
+			message = 0;
+		}
 
-        ImGui::Text( "Look In:" );
-        if ( ImGui::RadioButton( "Current Material", &searchData.searchScope, 0 ) ) {
-            message = 0;
-        }
-        ImGui::SameLine();
-        if ( ImGui::RadioButton( "Open Materials", &searchData.searchScope, 1 ) ) {
-            message = 0;
-        }
-        ImGui::SameLine();
-        if ( ImGui::RadioButton( "All Materials", &searchData.searchScope, 2 ) ) {
-            message = 0;
-        }
+		ImGui::Text( "Look In:" );
+		if ( ImGui::RadioButton( "Current Material", &searchData.searchScope, 0 ) ) {
+			message = 0;
+		}
+		ImGui::SameLine();
+		if ( ImGui::RadioButton( "Open Materials", &searchData.searchScope, 1 ) ) {
+			message = 0;
+		}
+		ImGui::SameLine();
+		if ( ImGui::RadioButton( "All Materials", &searchData.searchScope, 2 ) ) {
+			message = 0;
+		}
 
-        if ( ImGui::Button( "Find Next" ) ) {
-            OnBnClickedFindNext();
-        }
-        ImGui::SameLine();
-        if ( ImGui::Button( "Cancel" ) ) {
-            OnCancel();
-            visible = false;
-            message = 0;
-            accepted = true;
-        }
+		if ( ImGui::Button( "Find Next" ) ) {
+			OnBnClickedFindNext();
+		}
+		ImGui::SameLine();
+		if ( ImGui::Button( "Cancel" ) ) {
+			OnCancel();
+			visible = false;
+			message = 0;
+			accepted = true;
+		}
 
-        if ( message ) {
-            ImGui::TextColored( ImVec4( 1, 0, 0, 1 ), "Unable to find '%s'", searchData.searchText.c_str() );
-        }
-    }
-    ImGui::EndChild();
-    ImGui::PopStyleColor();
+		if ( message ) {
+			ImGui::TextColored( ImVec4( 1, 0, 0, 1 ), "Unable to find '%s'", searchData.searchText.c_str() );
+		}
+	}
+	ImGui::EndChild();
+	ImGui::PopStyleColor();
 
-    ImGui::SetCursorPos( oldCursorPos );
+	ImGui::SetCursorPos( oldCursorPos );
 
-    return accepted;
+	return accepted;
 }
 
 void FindDialog::UnableToFind() {
-    message = 1;
+	message = 1;
 }
 
 /**

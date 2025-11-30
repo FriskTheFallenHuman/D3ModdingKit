@@ -25,10 +25,9 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALDEF_H_
 #define MATERIALDEF_H_
-
-#include "idlib/containers/HashTable.h"
 
 namespace ImGuiTools {
 

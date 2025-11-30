@@ -25,12 +25,11 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALMODIFIER_H_
 #define MATERIALMODIFIER_H_
 
 #include "MaterialEditor.h"
-#include "idlib/containers/StrList.h"
-#include "../util/TreeCtrl.h"
 
 namespace ImGuiTools {
 

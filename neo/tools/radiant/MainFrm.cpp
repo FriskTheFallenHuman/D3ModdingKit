@@ -5735,6 +5735,7 @@ void CMainFrame::OnSelectionInvert() {
  =======================================================================================================================
  */
 void CMainFrame::OnProjectedLight() {
+	void LightEditorInit( const idDict *spawnArgs );
 	LightEditorInit( NULL );
 }
 

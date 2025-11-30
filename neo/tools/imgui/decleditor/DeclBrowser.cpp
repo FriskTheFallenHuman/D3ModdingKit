@@ -26,15 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "../util/ImGui_IdWidgets.h"
-#include "sys/sys_imgui.h"
-
-#include "framework/FileSystem.h"
-
-#include "PathTreeCtrl.h"
-#include "DeclNew.h"
-#include "DeclEditor.h"
-#include "DeclBrowser.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 const int DECLTYPE_SHIFT			= 24;
 const int DECLINDEX_MASK			= ( 1 << DECLTYPE_SHIFT ) - 1;

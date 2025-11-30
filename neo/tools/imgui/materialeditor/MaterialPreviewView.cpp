@@ -26,19 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
-#include "framework/EventLoop.h"
-#include "framework/Session.h"
-#include "imgui.h"
-#include "imgui_internal.h"
-#include "renderer/Image.h"
-#include "renderer/ModelManager.h"
 #include "../../renderer/tr_local.h"
 
-
-//#include "../radiant/QE3.H"
 #include "MaterialDoc.h"
-#include "renderer/RenderSystem.h"
 #include "MaterialPreviewView.h"
 
 namespace ImGuiTools {

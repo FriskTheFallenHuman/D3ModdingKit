@@ -27,10 +27,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "AfConstraintEditor.h"
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
-#include "framework/Game.h"
-#include "renderer/Model.h"
+#include "AfConstraintEditor.h"
 
 #define ARRAY_COUNT IM_ARRAYSIZE
 

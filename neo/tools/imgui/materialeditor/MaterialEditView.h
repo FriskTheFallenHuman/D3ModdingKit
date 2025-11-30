@@ -25,18 +25,14 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALEDITVIEW_H_
 #define MATERIALEDITVIEW_H_
-
-#include "../util/ImGui_IdWidgets.h"
-#include "sys/sys_imgui.h"
 
 #include "MaterialEditor.h"
 #include "MaterialView.h"
 #include "MaterialPropTreeView.h"
 #include "StageView.h"
-
-#include "../util/SyntaxRichEditCtrl.h"
 
 namespace ImGuiTools {
 

@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-#include "../util/ImGui_IdWidgets.h"
-
-#include "idlib/containers/StrList.h"
-#include "framework/DeclAF.h"
-
 namespace ImGuiTools
 {
 

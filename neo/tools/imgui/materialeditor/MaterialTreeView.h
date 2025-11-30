@@ -25,14 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALTREEVIEW_H_
 #define MATERIALTREEVIEW_H_
 
-#include "../util/ImGui_IdWidgets.h"
-
-#include "idlib/Str.h"
-#include "idlib/containers/HashTable.h"
-#include "../util/TreeCtrl.h"
 #include "MaterialEditor.h"
 #include "MaterialView.h"
 

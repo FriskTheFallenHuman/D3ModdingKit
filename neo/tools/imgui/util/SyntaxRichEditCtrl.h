@@ -46,10 +46,6 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "../../edit_public.h"
-
-#include "idlib/containers/StrList.h"
-
 class TextEditor;
 
 namespace ImGuiTools {

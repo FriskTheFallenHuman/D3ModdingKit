@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PATHTREECTRL_H__
 #define __PATHTREECTRL_H__
 
-#include "idlib/Str.h"
-#include "idlib/Heap.h"
-#include "idlib/containers/Hierarchy.h"
-#include "../util/TreeCtrl.h"
-
 namespace ImGuiTools {
 
 /*

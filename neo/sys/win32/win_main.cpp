@@ -658,8 +658,8 @@ uintptr_t Sys_DLL_Load( const char *dllName ) {
 			// "[193 (0xC1)] is not a valid Win32 application"
 			// probably going to be common. Lets try to be less cryptic.
 			common->Warning( "LoadLibrary( \"%s\" ) Failed ! [%i (0x%X)]\tprobably the DLL is of the wrong architecture, "
-			                 "like x64 instead of x86 (this build of dhewm3 expects %s)",
-			                 dllName, e, e, D3_ARCH );
+							 "like x64 instead of x86 (this build of dhewm3 expects %s)",
+							 dllName, e, e, D3_ARCH );
 			return 0;
 		}
 
@@ -729,7 +729,7 @@ void Sys_DLL_Unload( uintptr_t dllHandle ) {
 		LPVOID lpMsgBuf;
 		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER,
-		    NULL,
+			NULL,
 			lastError,
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 			(LPTSTR) &lpMsgBuf,
@@ -946,7 +946,7 @@ static void setHighDPIMode(void)
 	}
 	if (shcoreDLL) {
 		D3_GetDpiForMonitor = (HRESULT (STDAPICALLTYPE *)(HMONITOR, D3_MONITOR_DPI_TYPE, UINT *, UINT *))
-		                          GetProcAddress(shcoreDLL, "GetDpiForMonitor");
+								  GetProcAddress(shcoreDLL, "GetDpiForMonitor");
 	}
 #endif // ID_ALLOW_TOOLS
 }
@@ -1023,19 +1023,19 @@ int Win_ChoosePixelFormat(HDC hdc)
   #define D3_CpuPause() SDL_CPUPauseInstruction()
 #elif defined(__GNUC__)
   #if (__i386 || __x86_64__)
-    #define D3_CpuPause() asm volatile("pause")
+	#define D3_CpuPause() asm volatile("pause")
   #elif defined(__aarch64__) || (defined(__ARM_ARCH) && __ARM_ARCH >= 7) || defined(__ARM_ARCH_6K__)
-    #define D3_CpuPause() asm volatile("yield")
+	#define D3_CpuPause() asm volatile("yield")
   #elif defined(__powerpc__) || defined(__powerpc64__)
-    #define D3_CpuPause() asm volatile("or 27,27,27")
+	#define D3_CpuPause() asm volatile("or 27,27,27")
   #elif defined(__riscv) && __riscv_xlen == 64
-    #define D3_CpuPause() asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
+	#define D3_CpuPause() asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
   #endif
 #elif defined(_MSC_VER)
   #if defined(_M_IX86) || defined(_M_X64)
-    #define D3_CpuPause() _mm_pause()
+	#define D3_CpuPause() _mm_pause()
   #elif defined(_M_ARM) || defined(_M_ARM64)
-    #define D3_CpuPause() __yield()
+	#define D3_CpuPause() __yield()
   #endif
 #endif
 
@@ -1080,7 +1080,7 @@ static void Win_InitTime() {
 		double loopsPer10usec = 0.005 / onePauseIterTime;
 		pauseLoopsPer5usec = loopsPer10usec;
 		printf( "Win_InitTime(): A call to Sys_MillisecondsPrecise() takes about %g nsec; 1mio pause loops took %g ms => pauseLoopsPer5usec = %zd\n",
-		        callDiff*1000.0, diff, pauseLoopsPer5usec );
+				callDiff*1000.0, diff, pauseLoopsPer5usec );
 		if ( pauseLoopsPer5usec == 0 )
 			pauseLoopsPer5usec = 1;
 	} else {
@@ -1214,7 +1214,7 @@ static void redirect_output(void)
 			if( _mkdir(myGamesPath) != 0 && errno != EEXIST ) {
 				char msg[2048];
 				D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s).\nPermission problem?",
-				                myGamesPath, errno, strerror(errno) );
+								myGamesPath, errno, strerror(errno) );
 				MessageBoxA( NULL, msg, "Can't create 'My Games' directory!", MB_OK | MB_ICONERROR );
 				exit(1);
 			}
@@ -1223,7 +1223,7 @@ static void redirect_output(void)
 		if( _mkdir(path) != 0 && errno != EEXIST ) {
 			char msg[2048];
 			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s'\n(for savegames, configs and logs),\n error number is %d (%s)\nIs Documents/My Games/ write protected?",
-			                path, errno, strerror(errno) );
+							path, errno, strerror(errno) );
 			MessageBoxA( NULL, msg, "Can't create 'My Games/dhewm3' directory!", MB_OK | MB_ICONERROR );
 			exit(1);
 		}
@@ -1263,7 +1263,7 @@ static void redirect_output(void)
 		} else {
 			char msg[2048];
 			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/dhewm3/\n or dhewm3log.txt write protected?",
-			                stdoutPath, errno, strerror(errno) );
+							stdoutPath, errno, strerror(errno) );
 			MessageBoxA( NULL, msg, "Can't create dhewm3log.txt!", MB_OK | MB_ICONERROR );
 			exit(1);
 		}
@@ -1284,7 +1284,7 @@ static void redirect_output(void)
 		} else {
 			char msg[2048];
 			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/dhewm3/ write protected?",
-			                stderrPath, errno, strerror(errno) );
+							stderrPath, errno, strerror(errno) );
 			MessageBoxA( NULL, msg, "Can't create stderr.txt!", MB_OK | MB_ICONERROR );
 			exit(1);
 		}
@@ -1423,23 +1423,6 @@ int SDL_main(int argc, char *argv[]) {
 				//	PDAEditorRun();
 				//}
 #endif
-				if ( com_editors & EDITOR_SOUND ) {
-					// in-game Sound Editor
-					SoundEditorRun();
-				}
-				if ( com_editors & EDITOR_DECL ) {
-					// in-game Declaration Browser
-					DeclBrowserRun();
-				}
-
-				if ( com_editors & EDITOR_PARTICLE ) {
-					// in-game Particle Editor
-					ParticleEditorRun();
-				}
-				if ( com_editors & EDITOR_SCRIPT ) {
-					// in-game Script Editor
-					ScriptEditorRun();
-				}
 			}
 		}
 #endif
@@ -1501,7 +1484,7 @@ void idSysLocal::StartProcess( const char *exePath, bool doexit ) {
 
 	if( !CreateProcess( NULL, szPathOrig, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ) ) {
 		common->Error( "Could not start process: '%s' ", szPathOrig );
-	    return;
+		return;
 	}
 
 	if ( doexit ) {

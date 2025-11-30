@@ -28,7 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef MEOPTIONS_H_
 #define MEOPTIONS_H_
 
-#include "sys/sys_imgui.h"
 #include "../util/RegistryOptions.h"
 
 namespace ImGuiTools {

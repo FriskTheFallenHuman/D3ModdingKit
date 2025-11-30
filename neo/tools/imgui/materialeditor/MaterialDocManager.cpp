@@ -26,8 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "renderer/Material.h"
-
+#include "../ImGuiTools.h"
+#pragma hdrstop
 
 #include "MaterialDocManager.h"
 #include "MaterialView.h"

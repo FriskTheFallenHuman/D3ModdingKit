@@ -29,14 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-#include "sys/sys_imgui.h"
-
-#include "idlib/Str.h"
-#include "idlib/containers/List.h"
-#include "idlib/math/Vector.h"
-
-#include "framework/Game.h"
-
 namespace ImGuiTools
 {
 

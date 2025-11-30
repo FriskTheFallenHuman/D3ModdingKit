@@ -25,6 +25,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #ifndef MATERIALDOCMANAGER_H_
 #define MATERIALDOCMANAGER_H_
 
