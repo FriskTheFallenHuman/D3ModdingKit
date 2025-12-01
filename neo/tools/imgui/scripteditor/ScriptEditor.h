@@ -45,6 +45,7 @@ public:
 
 	void					Reset();
 	void					Draw();
+	void					Exit( void );
 
 	void					ShowIt(bool show) {
 		isShown = show;
@@ -58,6 +59,7 @@ protected:
 	void					OnBnClickedCancel();
 
 private:
+	bool					showTool;
 	bool					isShown;
 	idStr					windowText;
 	idStr					errorText;

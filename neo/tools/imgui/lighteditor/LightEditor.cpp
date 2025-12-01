@@ -564,7 +564,7 @@ static float* vecToArr( idVec3& v )
 
 void LightEditor::Draw()
 {
-	bool showTool = isShown;
+	showTool = isShown;
 	if( ImGui::Begin( title, &showTool ) ) //, ImGuiWindowFlags_ShowBorders ) )
 	{
 		bool changes = false;
@@ -781,9 +781,20 @@ void LightEditor::Draw()
 	if( isShown && !showTool )
 	{
 		isShown = showTool;
-		impl::SetReleaseToolMouse( false );
-		D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_LightEditor );
+		Exit();
 	}
+}
+
+void LightEditor::Exit( void )
+{
+	// close this tool, release mouse, clear editor flags and reset edit mode
+	showTool = false;
+	LightEditor::Instance().ShowIt( false );
+	impl::SetReleaseToolMouse( false );
+	D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_LightEditor );
+	// clear editor flag and reset edit mode cvar
+	com_editors &= ~EDITOR_LIGHT;
+	cvarSystem->SetCVarInteger( "g_editEntityMode", 0 );
 }
 
 } //namespace ImGuiTools

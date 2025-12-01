@@ -84,6 +84,7 @@ public:
 class LightEditor
 {
 private:
+	bool				showTool;
 	bool				isShown;
 
 	idStr				title;
@@ -110,6 +111,7 @@ private:
 #endif
 
 	void				Init( const idDict* dict, idEntity* light );
+	void				Exit( void );
 	void				Reset();
 
 	void				LoadLightTextures();

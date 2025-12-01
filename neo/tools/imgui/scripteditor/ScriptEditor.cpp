@@ -77,10 +77,8 @@ void ScriptEditor::Reset() {
 
 void ScriptEditor::Draw()
 {
-	bool showTool;
-	bool clickedNew = false, clickedSelect = false;
-
 	showTool = isShown;
+	bool clickedNew = false, clickedSelect = false;
 
 	if ( ImGui::Begin( windowText.c_str(), &showTool, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar ) ) {
 		impl::SetReleaseToolMouse(true);
@@ -104,9 +102,9 @@ void ScriptEditor::Draw()
 					OnBnClickedOk();
 				}
 
-				if (ImGui::MenuItem("Close", "Ctrl+W"))
+				if (ImGui::MenuItem("Exit"))
 				{
-					showTool = false;
+					Exit();
 				}
 
 				ImGui::EndMenu();
@@ -146,9 +144,24 @@ void ScriptEditor::Draw()
 	if ( isShown && !showTool )
 	{
 		isShown = showTool;
-		impl::SetReleaseToolMouse( false );
-		D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_ScriptEditor );
+		Exit();
 	}
+}
+
+/*
+================
+ScriptEditor::Exit
+================
+*/
+void ScriptEditor::Exit( void )
+{
+	// close this tool, release mouse, clear editor flags and reset edit mode
+	showTool = false;
+	ScriptEditor::Instance().ShowIt( false );
+	impl::SetReleaseToolMouse( false );
+	D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_ScriptEditor );
+	// clear editor flag
+	com_editors &= ~EDITOR_SCRIPT;
 }
 
 /*

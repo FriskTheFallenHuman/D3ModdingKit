@@ -121,6 +121,8 @@ public:
 	void					Reset();
 	void					Draw();
 
+	void					Exit( void );
+
 	void			ShowIt(bool show) {
 		isShown = show;
 	}
@@ -152,6 +154,7 @@ private:
 	void		OnBtnZdn();
 
 private:
+	bool				showTool;
 	bool				isShown;
 
 	DeclNewSelect		particleNewDlg;

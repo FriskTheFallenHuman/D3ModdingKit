@@ -78,10 +78,8 @@ ParticleEditor::ParticleEditor()
 void ParticleEditor::Draw()
 {
 	int i, num;
-	bool showTool;
-	bool clickedNew = false, clickedSelect = false;
-
 	showTool = isShown;
+	bool clickedNew = false, clickedSelect = false;
 
 	if ( ImGui::Begin( "Particle Editor", &showTool, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar ) ) {
 		impl::SetReleaseToolMouse( true );
@@ -105,9 +103,11 @@ void ParticleEditor::Draw()
 					OnBnClickedButtonSave();
 				}
 
-				if( ImGui::MenuItem( "Close", "Ctrl+W" ) )
+				ImGui::Separator();
+
+				if ( ImGui::MenuItem( "Exit" ) )
 				{
-					showTool = false;
+					Exit();
 				}
 
 				ImGui::EndMenu();
@@ -706,9 +706,20 @@ void ParticleEditor::Draw()
 	if ( isShown && !showTool )
 	{
 		isShown = showTool;
-		impl::SetReleaseToolMouse( false );
-		D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_ParticleEditor );
+		Exit();
 	}
+}
+
+void ParticleEditor::Exit( void )
+{
+	// close this tool, release mouse, clear editor flags and reset edit mode
+	showTool = false;
+	ParticleEditor::Instance().ShowIt( false );
+	impl::SetReleaseToolMouse( false );
+	D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_ParticleEditor );
+	// clear editor flag and reset edit mode cvar
+	com_editors &= ~EDITOR_PARTICLE;
+	cvarSystem->SetCVarInteger( "g_editEntityMode", 0 );
 }
 
 // ParticleEditor message handlers
