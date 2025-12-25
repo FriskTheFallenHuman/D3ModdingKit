@@ -478,7 +478,6 @@ public:
 	afx_msg void OnAxialTextureByWidth();
 	afx_msg void OnAxialTextureByHeight();
 	afx_msg void OnAxialTextureArbitrary();
-	afx_msg void OnSelectionExportToobj();
 	afx_msg void OnSelectionExportToCM();
 	afx_msg void OnViewRenderselection();
 	afx_msg void OnSelectNomodels();

@@ -798,7 +798,7 @@ void CDialogTextures::addStrList( const char *root, const idStrList &list, int i
 
 void CDialogTextures::addModels(bool rootItems) {
 	idFileList *files;
-	files = fileSystem->ListFilesTree("models", ".ase|.lwo|.ma|.obj", true);
+	files = fileSystem->ListFilesTree("models", ".ase|.lwo|.md3|.ma", true);
 	if ( files->GetNumFiles() ) {
 		addStrList( TypeNames[MODELS], files->GetList(), MODELS );
 	}

@@ -124,8 +124,8 @@ const int MAX_EXPRESSION_REGISTERS = 4096;
 #include "../cm/CollisionModel.h"
 
 // AAS files and manager
-#include "../libs/aasfile/AASFile.h"
-#include "../libs/aasfile/AASFileManager.h"
+#include "../aas/AASFile.h"
+#include "../aas/AASFileManager.h"
 
 // MayaImport
 #include "../MayaImport/maya_main.h"

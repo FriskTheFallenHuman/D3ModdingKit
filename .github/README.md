@@ -47,8 +47,6 @@ Compared to the original _dhewm 3_, the changes of _D3Modding Kit_ worth mention
 - IcedTech3:
   - IceTech3: Fixed Particle Editor crashing when creating a new particle.
   - Improved Multiplayer experience by merging some feedback code.
-  - Added OBJ support.
-  - Moved AASfile to libs to match QuakeWars.
   - brush_t renamed to idEditorBrush and entity_t idEditorEntity.
   - Brushes will now be a single idRenderModel rather then each side of a brush also having its own render model.
   - Varius Changes for DoomEdit:

@@ -471,7 +471,8 @@ if(WIN32)
 		winmm
 		iphlpapi
 		wsock32
-		ole32)
+		ole32
+)
 endif()
 
 # Inform us of the current branch we're on.
@@ -519,13 +520,13 @@ if(NOT APPLE AND NOT WIN32)
 endif()
 
 set(src_aas_file
-	libs/aasfile/AASFile.cpp
-	libs/aasfile/AASFile_optimize.cpp
-	libs/aasfile/AASFile_sample.cpp
-	libs/aasfile/AASFileManager.cpp
+	aas/AASFile.cpp
+	aas/AASFile_optimize.cpp
+	aas/AASFile_sample.cpp
+	aas/AASFileManager.cpp
 )
 
-add_globbed_headers(src_aas_file "libs/aasfile")
+add_globbed_headers(src_aas_file "aas")
 
 set(src_renderer
 	renderer/Cinematic.cpp
@@ -549,7 +550,6 @@ set(src_renderer
 	renderer/Model_ma.cpp
 	renderer/Model_md3.cpp
 	renderer/Model_md5.cpp
-	renderer/Model_obj.cpp
 	renderer/Model_prt.cpp
 	renderer/Model_sprite.cpp
 	renderer/RenderEntity.cpp

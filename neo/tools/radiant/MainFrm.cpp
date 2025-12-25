@@ -414,7 +414,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_SELECT_AXIALTEXTURE_BYWIDTH, &CMainFrame::OnAxialTextureByWidth)
 	ON_COMMAND(ID_SELECT_AXIALTEXTURE_BYHEIGHT, &CMainFrame::OnAxialTextureByHeight)
 	ON_COMMAND(ID_SELECT_AXIALTEXTURE_ARBITRARY, &CMainFrame::OnAxialTextureArbitrary)
-	ON_COMMAND(ID_SELECTION_EXPORT_TOOBJ, &CMainFrame::OnSelectionExportToobj)
 	ON_COMMAND(ID_SELECTION_EXPORT_TOCM, &CMainFrame::OnSelectionExportToCM)
 	ON_COMMAND(ID_VIEW_RENDERSELECTION, &CMainFrame::OnViewRenderselection)
 	ON_COMMAND(ID_SELECT_NOMODELS, &CMainFrame::OnSelectNomodels)
@@ -6163,12 +6162,6 @@ void CMainFrame::OnAxialTextureArbitrary() {
 		g_bAxialMode = true;
 	}
 	Sys_UpdateWindows(W_CAMERA);
-}
-
-extern void Select_ToOBJ();
-void CMainFrame::OnSelectionExportToobj()
-{
-	Select_ToOBJ();
 }
 
 extern void Select_ToCM();

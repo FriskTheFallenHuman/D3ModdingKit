@@ -1604,45 +1604,11 @@ int idEditorBrushoTris(idEditorBrush *brush, idTriList *tris, idMatList *mats, b
 
 /*
 ==================
-Select_ToOBJ
-==================
-*/
-void Select_ToOBJ() {
-	int i;
-	CFileDialog dlgFile(FALSE, "obj", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "Wavefront object files (*.obj)|*.obj||", g_pParentWnd);
-	if (dlgFile.DoModal() == IDOK) {
-		idTriList tris(1024);
-		idMatList mats(1024);
-
-		for (idEditorBrush *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-
-			if ( b->hiddenBrush ) {
-				continue;
-			}
-
-			if (FilterBrush(b)) {
-				continue;
-			}
-
-			idEditorBrushoTris(b, &tris, &mats, true, false);
-		}
-
-		Tris_ToOBJ(dlgFile.GetPathName().GetBuffer(0), &tris, &mats);
-
-		for( i = 0; i < tris.Num(); i++ ) {
-			R_FreeStaticTriSurf( tris[i] );
-		}
-		tris.Clear();
-	}
-}
-
-/*
-==================
 Select_ToCM
 ==================
 */
 void Select_ToCM() {
-	CFileDialog dlgFile( FALSE, "lwo, ase, obj", NULL, 0, "(*.obj)|*.obj|(*.lwo)|*.lwo|(*.ase)|*.ase|(*.ma)|*.ma||", g_pParentWnd );
+	CFileDialog dlgFile( FALSE, "lwo, ase, ma", NULL, 0, "(*.lwo)|*.lwo|(*.ase)|*.ase|(*.ma)|*.ma||", g_pParentWnd );
 
 	if ( dlgFile.DoModal() == IDOK ) {
 		idMapEntity *mapEnt;

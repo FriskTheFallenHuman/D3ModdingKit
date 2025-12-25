@@ -118,10 +118,13 @@ void CPreviewDlg::BuildTree() {
 		files = fileSystem->ListFilesTree( "models", ".ase" );
 		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
 		fileSystem->FreeFileList( files );
-		files = fileSystem->ListFilesTree( "models", ".ma" );
+		files = fileSystem->ListFilesTree( "models", ".md5mesh" );
 		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
 		fileSystem->FreeFileList( files );
-		files = fileSystem->ListFilesTree( "models", ".obj" );
+		files = fileSystem->ListFilesTree( "models", ".md3" );
+		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
+		fileSystem->FreeFileList( files );
+		files = fileSystem->ListFilesTree( "models", ".ma" );
 		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
 		fileSystem->FreeFileList( files );
 	} else if ( currentMode == SOUNDS ) {
