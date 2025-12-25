@@ -471,8 +471,7 @@ if(WIN32)
 		winmm
 		iphlpapi
 		wsock32
-		ole32
-	)
+		ole32)
 endif()
 
 # Inform us of the current branch we're on.
