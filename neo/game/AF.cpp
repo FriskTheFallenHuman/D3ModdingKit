@@ -603,9 +603,10 @@ bool idAF::LoadBody( const idDeclAF_Body *fb, const idJointMat *joints ) {
 	animator->GetJointList( fb->containedJoints, jointList );
 	for( i = 0; i < jointList.Num(); i++ ) {
 		if ( jointBody[ jointList[ i ] ] != -1 ) {
-			gameLocal.Warning( "%s: joint '%s' is already contained by body '%s'",
+			gameLocal.Warning( "%s: joint '%s' is already contained by body '%s' but adding to body '%s' instead",
 						name.c_str(), animator->GetJointName( jointList[i] ),
-							physicsObj.GetBody( jointBody[ jointList[ i ] ] )->GetName().c_str() );
+							physicsObj.GetBody( jointBody[ jointList[ i ] ] )->GetName().c_str(),
+							physicsObj.GetBody( id )->GetName().c_str() );
 		}
 		jointBody[ jointList[ i ] ] = id;
 	}

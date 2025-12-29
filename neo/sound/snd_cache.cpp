@@ -438,7 +438,7 @@ void idSoundSample::Load( void ) {
 	timestamp = GetNewTimeStamp();
 
 	if ( timestamp == FILE_NOT_FOUND_TIMESTAMP ) {
-		common->Warning( "Couldn't load sound " S_COLOR_GREEN "'%s' " S_COLOR_WHITE "using default", name.c_str() );
+		common->Warning( "Couldn't load sound '%s' using default", name.c_str() );
 		MakeDefault();
 		return;
 	}
@@ -448,7 +448,7 @@ void idSoundSample::Load( void ) {
 	waveformatex_t info;
 
 	if ( fh.Open( name, &info ) == -1 ) {
-		common->Warning( "Couldn't load sound " S_COLOR_GREEN "'%s' " S_COLOR_WHITE "using default", name.c_str() );
+		common->Warning( "Couldn't load sound '%s' using default", name.c_str() );
 		MakeDefault();
 		return;
 	}
@@ -613,7 +613,7 @@ void idSoundSample::Reload( bool force ) {
 
 		if ( newTimestamp == FILE_NOT_FOUND_TIMESTAMP ) {
 			if ( !defaultSound ) {
-				common->Warning( "Couldn't load sound " S_COLOR_GREEN "'%s' " S_COLOR_WHITE "using default", name.c_str() );
+				common->Warning( "Couldn't load sound '%s' using default", name.c_str() );
 				MakeDefault();
 			}
 			return;

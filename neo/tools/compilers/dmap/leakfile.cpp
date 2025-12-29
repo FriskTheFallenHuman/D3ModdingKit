@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -40,7 +41,6 @@ Save out name.line for qe3 to read
 ==============================================================================
 */
 
-
 /*
 =============
 LeakFile
@@ -50,62 +50,64 @@ that leads from the outside leaf to a specifically
 occupied leaf
 =============
 */
-void LeakFile (tree_t *tree)
+void LeakFile( tree_t* tree )
 {
 	idVec3	mid;
-	FILE	*linefile;
+	FILE*	linefile;
 	idStr	filename;
 	idStr	ospath;
-	node_t	*node;
+	node_t* node;
 	int		count;
 
-	if (!tree->outside_node.occupied)
+	if( !tree->outside_node.occupied )
+	{
 		return;
+	}
 
-	common->Printf ("--- LeakFile ---\n");
+	common->Printf( "--- LeakFile ---\n" );
 
 	//
 	// write the points to the file
 	//
 	sprintf( filename, "%s.lin", dmapGlobals.mapFileBase );
-	ospath = fileSystem->RelativePathToOSPath( filename );
+	ospath	 = fileSystem->RelativePathToOSPath( filename );
 	linefile = fopen( ospath, "w" );
-	if ( !linefile ) {
+	if( !linefile )
+	{
 		common->Error( "Couldn't open %s\n", filename.c_str() );
 	}
 
 	count = 0;
-	node = &tree->outside_node;
-	while (node->occupied > 1)
+	node  = &tree->outside_node;
+	while( node->occupied > 1 )
 	{
-		int			next;
-		uPortal_t	*p, *nextportal = NULL;
-		node_t		*nextnode = NULL;
-		int			s;
+		int		   next;
+		uPortal_t *p, *nextportal = NULL;
+		node_t*	   nextnode = NULL;
+		int		   s;
 
 		// find the best portal exit
 		next = node->occupied;
-		for (p=node->portals ; p ; p = p->next[!s])
+		for( p = node->portals; p; p = p->next[!s] )
 		{
-			s = (p->nodes[0] == node);
-			if (p->nodes[s]->occupied
-				&& p->nodes[s]->occupied < next)
+			s = ( p->nodes[0] == node );
+			if( p->nodes[s]->occupied && p->nodes[s]->occupied < next )
 			{
 				nextportal = p;
-				nextnode = p->nodes[s];
-				next = nextnode->occupied;
+				nextnode   = p->nodes[s];
+				next	   = nextnode->occupied;
 			}
 		}
 		node = nextnode;
-		mid = nextportal->winding->GetCenter();
-		fprintf (linefile, "%f %f %f\n", mid[0], mid[1], mid[2]);
+		mid	 = nextportal->winding->GetCenter();
+		fprintf( linefile, "%f %f %f\n", mid[0], mid[1], mid[2] );
 		count++;
 	}
 	// add the occupant center
 	node->occupant->mapEntity->epairs.GetVector( "origin", "", mid );
 
-	fprintf (linefile, "%f %f %f\n", mid[0], mid[1], mid[2]);
-	common->Printf ("%5i point linefile\n", count+1);
+	fprintf( linefile, "%f %f %f\n", mid[0], mid[1], mid[2] );
+	common->Printf( "%5i point linefile\n", count + 1 );
 
-	fclose (linefile);
+	fclose( linefile );
 }

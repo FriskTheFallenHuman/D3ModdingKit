@@ -41,7 +41,11 @@ If you have questions concerning this license or the applicable additional terms
 #pragma comment(lib, "uxtheme.lib")
 
 #include "win_local.h"
+#ifdef ID_ALLOW_TOOLS
 #include "rc/resource.h"
+#else
+#include "rc/dhewm3_resource.h"
+#endif
 
 #define COPY_ID			1
 #define QUIT_ID			2
@@ -347,7 +351,9 @@ void Sys_CreateConsole( void ) {
 		return;
 	}
 
+#ifdef _MSC_VER
 	SetWindowTheme( s_wcd.hWnd, L"Explorer", NULL );
+#endif
 
 	//
 	// create fonts

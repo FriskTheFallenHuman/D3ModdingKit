@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,33 +30,40 @@ If you have questions concerning this license or the applicable additional terms
 #include "../ImGuiTools.h"
 #pragma hdrstop
 
-const int DECLTYPE_SHIFT			= 24;
-const int DECLINDEX_MASK			= ( 1 << DECLTYPE_SHIFT ) - 1;
-const int DECLTYPE_SCRIPT			= 126;
-const int DECLTYPE_GUI				= 127;
+const int DECLTYPE_SHIFT  = 24;
+const int DECLINDEX_MASK  = ( 1 << DECLTYPE_SHIFT ) - 1;
+const int DECLTYPE_SCRIPT = 126;
+const int DECLTYPE_GUI	  = 127;
 
-#define GetIdFromTypeAndIndex( type, index )		( ( (int)type << DECLTYPE_SHIFT ) | index )
-#define GetTypeFromId( id )							( (declType_t) ( (int)id >> DECLTYPE_SHIFT ) )
-#define GetIndexFromId( id )						( (int)id & DECLINDEX_MASK )
+#define GetIdFromTypeAndIndex( type, index ) ( ( ( int )type << DECLTYPE_SHIFT ) | index )
+#define GetTypeFromId( id )					 ( ( declType_t )( ( int )id >> DECLTYPE_SHIFT ) )
+#define GetIndexFromId( id )				 ( ( int )id & DECLINDEX_MASK )
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
-bool DeclBrowserOnToolTipNotify( void *data, TreeNode *item, idStr &tooltipText ) {
-	return reinterpret_cast<DeclBrowser *>(data)->OnToolTipNotify( item, tooltipText );
+bool DeclBrowserOnToolTipNotify( void* data, TreeNode* item, idStr& tooltipText )
+{
+	return reinterpret_cast<DeclBrowser*>( data )->OnToolTipNotify( item, tooltipText );
 }
-void DeclBrowserOnTreeSelChanged( void *data, bool doubleClicked ) {
-	reinterpret_cast<DeclBrowser *>(data)->OnTreeSelChanged( doubleClicked );
+void DeclBrowserOnTreeSelChanged( void* data, bool doubleClicked )
+{
+	reinterpret_cast<DeclBrowser*>( data )->OnTreeSelChanged( doubleClicked );
 }
-void DeclBrowserOnTreeContextMenu( void *data, TreeNode *item ) {
+void DeclBrowserOnTreeContextMenu( void* data, TreeNode* item )
+{
 	// nop
 }
-void DeclBrowserOnTreeBeginDrag( void *data, TreeNode *item ) {
+void DeclBrowserOnTreeBeginDrag( void* data, TreeNode* item )
+{
 	// nop
 }
-void DeclBrowserOnTreeEndDrag( void *data, TreeNode *source, TreeNode *destination ) {
+void DeclBrowserOnTreeEndDrag( void* data, TreeNode* source, TreeNode* destination )
+{
 	// nop
 }
-void DeclBrowserOnTreeInput( void *data, bool prepare, TreeNode *item ) {
+void DeclBrowserOnTreeInput( void* data, bool prepare, TreeNode* item )
+{
 	// nop
 }
 
@@ -64,29 +72,30 @@ void DeclBrowserOnTreeInput( void *data, bool prepare, TreeNode *item ) {
 DeclBrowser::DeclBrowser
 ================
 */
-DeclBrowser::DeclBrowser()
-	: isShown(false)
-	, statusBarText()
-	, declTree()
-	, findNameStatic()
-	, findTextStatic()
-	, findNameEdit()
-	, findTextEdit()
-	, findButtonEnabled(false)
-	, editButtonEnabled(false)
-	, newButtonEnabled(false)
-	, reloadButtonEnabled(false)
-	, cancelButtonEnabled(false)
-	, baseDeclTree()
-	, numListedDecls(0)
-	, findNameString()
-	, findTextString()
-	, declNewDlg()
-	, declEditorDlg()
+DeclBrowser::DeclBrowser() :
+	isShown( false ),
+	statusBarText(),
+	declTree(),
+	findNameStatic(),
+	findTextStatic(),
+	findNameEdit(),
+	findTextEdit(),
+	findButtonEnabled( false ),
+	editButtonEnabled( false ),
+	newButtonEnabled( false ),
+	reloadButtonEnabled( false ),
+	cancelButtonEnabled( false ),
+	baseDeclTree(),
+	numListedDecls( 0 ),
+	findNameString(),
+	findTextString(),
+	declNewDlg(),
+	declEditorDlg()
 {
 }
 
-DeclBrowser& DeclBrowser::Instance() {
+DeclBrowser& DeclBrowser::Instance()
+{
 	static DeclBrowser instance;
 	return instance;
 }
@@ -96,61 +105,73 @@ DeclBrowser& DeclBrowser::Instance() {
 DeclBrowser::Draw
 ================
 */
-void DeclBrowser::Draw() {
+void DeclBrowser::Draw()
+{
 	bool showTool;
 
 	showTool = isShown;
 
-	if ( ImGui::Begin( "Decl Browser", &showTool, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+	if( ImGui::Begin( "Decl Browser", &showTool, ImGuiWindowFlags_AlwaysAutoResize ) )
+	{
 		impl::SetReleaseToolMouse( true );
 
-		if ( ImGui::BeginChild( "Decl Tree", ImVec2( 300, 400 ) ) ) {
+		if( ImGui::BeginChild( "Decl Tree", ImVec2( 300, 400 ) ) )
+		{
 			ImGui::SetItemTooltip( "decl browser" );
 			declTree.Draw( DeclBrowserOnToolTipNotify, DeclBrowserOnTreeSelChanged, DeclBrowserOnTreeContextMenu, DeclBrowserOnTreeBeginDrag, DeclBrowserOnTreeEndDrag, DeclBrowserOnTreeInput, this );
 			ImGui::EndChild();
 		}
 
-		if ( ImGui::InputTextStr( "Search names", &findNameEdit ) ) {
+		if( ImGui::InputTextStr( "Search names", &findNameEdit ) )
+		{
 		}
 		ImGui::SetItemTooltip( "search for declarations with matching name, use meta characters: *, ? and [abc...]" );
-		if ( ImGui::InputTextStr( "Search text", &findTextEdit ) ) {
+		if( ImGui::InputTextStr( "Search text", &findTextEdit ) )
+		{
 		}
 		ImGui::SetItemTooltip( "search for declarations containing text" );
-		if ( ImGui::Button( "Find" ) ) {
+		if( ImGui::Button( "Find" ) )
+		{
 			OnBnClickedFind();
 		}
 		ImGui::SetItemTooltip( "find declarations matching the search strings" );
 		ImGui::SameLine();
-		if ( ImGui::Button( "Edit" ) ) {
+		if( ImGui::Button( "Edit" ) )
+		{
 			OnBnClickedEdit();
 		}
 		ImGui::SetItemTooltip( "edit selected declaration" );
 		ImGui::SameLine();
-		if ( ImGui::Button( "New" ) ) {
+		if( ImGui::Button( "New" ) )
+		{
 			OnBnClickedNew();
 		}
 		ImGui::SetItemTooltip( "create new declaration" );
 		ImGui::SameLine();
-		if ( ImGui::Button( "Reload" ) ) {
+		if( ImGui::Button( "Reload" ) )
+		{
 			ReloadDeclarations();
 		}
 		ImGui::SetItemTooltip( "reload declarations" );
 		ImGui::SameLine();
-		if ( ImGui::Button( "Close" ) ) {
+		if( ImGui::Button( "Close" ) )
+		{
 			showTool = false;
 		}
 
-		if ( declNewDlg.Draw() ) {
+		if( declNewDlg.Draw() )
+		{
 			OnBnClickedNewAccepted();
 		}
 
-		if ( declEditorDlg.Draw() ) {
+		if( declEditorDlg.Draw() )
+		{
 			// nothing to do
 		}
 	}
 	ImGui::End();
 
-	if ( isShown && !showTool )
+	if( isShown && !showTool )
 	{
 		isShown = showTool;
 		impl::SetReleaseToolMouse( false );
@@ -163,19 +184,22 @@ void DeclBrowser::Draw() {
 DeclBrowser::AddDeclTypeToTree
 ================
 */
-template< class type >
-int idListDeclSortCompare( const type *a, const type *b ) {
-	return idStr::IcmpPath( (*a)->GetName(), (*b)->GetName() );
+template<class type>
+int idListDeclSortCompare( const type* a, const type* b )
+{
+	return idStr::IcmpPath( ( *a )->GetName(), ( *b )->GetName() );
 }
 
-void DeclBrowser::AddDeclTypeToTree( declType_t type, const char *root, PathTreeCtrl &tree ) {
-	int i;
+void DeclBrowser::AddDeclTypeToTree( declType_t type, const char* root, PathTreeCtrl& tree )
+{
+	int					  i;
 	idList<const idDecl*> decls;
-	idPathTreeStack stack;
-	idStr rootStr, declName;
+	idPathTreeStack		  stack;
+	idStr				  rootStr, declName;
 
 	decls.SetNum( declManager->GetNumDecls( type ) );
-	for ( i = 0; i < decls.Num(); i++ ) {
+	for( i = 0; i < decls.Num(); i++ )
+	{
 		decls[i] = declManager->DeclByIndex( type, i, false );
 	}
 	decls.Sort( idListDeclSortCompare );
@@ -185,11 +209,12 @@ void DeclBrowser::AddDeclTypeToTree( declType_t type, const char *root, PathTree
 
 	stack.PushRoot( NULL );
 
-	for ( i = 0; i < decls.Num(); i++) {
+	for( i = 0; i < decls.Num(); i++ )
+	{
 		declName = rootStr + decls[i]->GetName();
 
 		declName.BackSlashesToSlashes();
-		declName.Strip(' ');
+		declName.Strip( ' ' );
 
 		tree.AddPathToTree( declName, GetIdFromTypeAndIndex( type, decls[i]->Index() ), stack );
 	}
@@ -200,17 +225,19 @@ void DeclBrowser::AddDeclTypeToTree( declType_t type, const char *root, PathTree
 DeclBrowser::AddScriptsToTree
 ================
 */
-void DeclBrowser::AddScriptsToTree( PathTreeCtrl &tree ) {
-	int i;
+void DeclBrowser::AddScriptsToTree( PathTreeCtrl& tree )
+{
+	int				i;
 	idPathTreeStack stack;
-	idStr scriptName;
-	idFileList *files;
+	idStr			scriptName;
+	idFileList*		files;
 
 	files = fileSystem->ListFilesTree( "script", ".script", true );
 
 	stack.PushRoot( NULL );
 
-	for ( i = 0; i < files->GetNumFiles(); i++) {
+	for( i = 0; i < files->GetNumFiles(); i++ )
+	{
 		scriptName = files->GetFile( i );
 
 		scriptName.BackSlashesToSlashes();
@@ -227,17 +254,19 @@ void DeclBrowser::AddScriptsToTree( PathTreeCtrl &tree ) {
 DeclBrowser::AddGUIsToTree
 ================
 */
-void DeclBrowser::AddGUIsToTree( PathTreeCtrl &tree ) {
-	int i;
+void DeclBrowser::AddGUIsToTree( PathTreeCtrl& tree )
+{
+	int				i;
 	idPathTreeStack stack;
-	idStr scriptName;
-	idFileList *files;
+	idStr			scriptName;
+	idFileList*		files;
 
 	files = fileSystem->ListFilesTree( "guis", ".gui", true );
 
 	stack.PushRoot( NULL );
 
-	for ( i = 0; i < files->GetNumFiles(); i++) {
+	for( i = 0; i < files->GetNumFiles(); i++ )
+	{
 		scriptName = files->GetFile( i );
 
 		scriptName.BackSlashesToSlashes();
@@ -254,14 +283,16 @@ void DeclBrowser::AddGUIsToTree( PathTreeCtrl &tree ) {
 DeclBrowser::InitBaseDeclTree
 ================
 */
-void DeclBrowser::InitBaseDeclTree( void ) {
+void DeclBrowser::InitBaseDeclTree( void )
+{
 	int i;
 
 	numListedDecls = 0;
 	baseDeclTree.DeleteAllItems();
 
-	for ( i = 0; i < declManager->GetNumDeclTypes(); i++ ) {
-		AddDeclTypeToTree( (declType_t)i, declManager->GetDeclNameFromType( (declType_t)i ), baseDeclTree );
+	for( i = 0; i < declManager->GetNumDeclTypes(); i++ )
+	{
+		AddDeclTypeToTree( ( declType_t )i, declManager->GetDeclNameFromType( ( declType_t )i ), baseDeclTree );
 	}
 
 	AddScriptsToTree( baseDeclTree );
@@ -273,15 +304,17 @@ void DeclBrowser::InitBaseDeclTree( void ) {
 DeclBrowser::GetDeclName
 ================
 */
-void DeclBrowser::GetDeclName( TreeNode *item, idStr &typeName, idStr &declName ) const {
-	TreeNode *parent;
-	idStr itemName;
+void DeclBrowser::GetDeclName( TreeNode* item, idStr& typeName, idStr& declName ) const
+{
+	TreeNode* parent;
+	idStr	  itemName;
 
 	declName.Clear();
-	for( parent = declTree.GetParentItem( item ); parent && parent != declTree.GetRootItem(); parent = declTree.GetParentItem( parent ) ) {
+	for( parent = declTree.GetParentItem( item ); parent && parent != declTree.GetRootItem(); parent = declTree.GetParentItem( parent ) )
+	{
 		itemName = declTree.GetItemText( item );
 		declName = itemName + "/" + declName;
-		item = parent;
+		item	 = parent;
 	}
 	declName.Strip( '/' );
 	typeName = declTree.GetItemText( item );
@@ -292,24 +325,28 @@ void DeclBrowser::GetDeclName( TreeNode *item, idStr &typeName, idStr &declName 
 DeclBrowser::GetDeclFromTreeItem
 ================
 */
-const idDecl *DeclBrowser::GetDeclFromTreeItem( TreeNode *item ) const {
-	int id, index;
-	declType_t type;
-	const idDecl *decl;
+const idDecl* DeclBrowser::GetDeclFromTreeItem( TreeNode* item ) const
+{
+	int			  id, index;
+	declType_t	  type;
+	const idDecl* decl;
 
-	if ( !item ) {
+	if( !item )
+	{
 		return NULL;
 	}
 
-	if ( declTree.GetChildItem( item ) ) {
+	if( declTree.GetChildItem( item ) )
+	{
 		return NULL;
 	}
 
-	id = declTree.GetItemData( item );
-	type = GetTypeFromId( id );
+	id	  = declTree.GetItemData( item );
+	type  = GetTypeFromId( id );
 	index = GetIndexFromId( id );
 
-	if ( type < 0 || type >= declManager->GetNumDeclTypes() ) {
+	if( type < 0 || type >= declManager->GetNumDeclTypes() )
+	{
 		return NULL;
 	}
 
@@ -323,7 +360,8 @@ const idDecl *DeclBrowser::GetDeclFromTreeItem( TreeNode *item ) const {
 DeclBrowser::GetSelectedDecl
 ================
 */
-const idDecl *DeclBrowser::GetSelectedDecl( void ) const {
+const idDecl* DeclBrowser::GetSelectedDecl( void ) const
+{
 	return GetDeclFromTreeItem( declTree.GetSelectedItem() );
 }
 
@@ -332,31 +370,36 @@ const idDecl *DeclBrowser::GetSelectedDecl( void ) const {
 DeclBrowser::EditSelected
 ================
 */
-void DeclBrowser::EditSelected( void ) {
-	int id, index;
-	idDict spawnArgs;
-	const idDecl *decl;
-	declType_t type;
-	TreeNode *item;
+void DeclBrowser::EditSelected( void )
+{
+	int			  id, index;
+	idDict		  spawnArgs;
+	const idDecl* decl;
+	declType_t	  type;
+	TreeNode*	  item;
 
 	item = declTree.GetSelectedItem();
 
-	if ( declTree.GetChildItem( item ) ) {
+	if( declTree.GetChildItem( item ) )
+	{
 		return;
 	}
 
-	id = declTree.GetItemData( item );
-	type = GetTypeFromId( id );
+	id	  = declTree.GetItemData( item );
+	type  = GetTypeFromId( id );
 	index = GetIndexFromId( id );
 
-	switch( type ) {
-		case DECL_AF: {
+	switch( type )
+	{
+		case DECL_AF:
+		{
 			decl = declManager->DeclByIndex( type, index, false );
 			spawnArgs.Set( "articulatedFigure", decl->GetName() );
 			ImGuiTools::AfEditorInit(); // TODO: pass spawnArgs
 			break;
 		}
-		case DECL_PARTICLE: {
+		case DECL_PARTICLE:
+		{
 			decl = declManager->DeclByIndex( type, index, false );
 			spawnArgs.Set( "model", decl->GetName() );
 			ImGuiTools::ParticleEditorInit( &spawnArgs );
@@ -371,7 +414,8 @@ void DeclBrowser::EditSelected( void ) {
 		}
 		*/
 		case DECLTYPE_SCRIPT:
-		case DECLTYPE_GUI: {
+		case DECLTYPE_GUI:
+		{
 			idStr typeName, declName;
 			GetDeclName( item, typeName, declName );
 			idStr fileName = typeName + "/" + declName + ( ( type == DECLTYPE_SCRIPT ) ? ".script" : ".gui" );
@@ -379,10 +423,11 @@ void DeclBrowser::EditSelected( void ) {
 			ImGuiTools::ScriptEditorInit( &spawnArgs );
 			break;
 		}
-		default: {
+		default:
+		{
 			decl = declManager->DeclByIndex( type, index, false );
-			
-			declEditorDlg.Start( const_cast<idDecl *>( decl ) );
+
+			declEditorDlg.Start( const_cast<idDecl*>( decl ) );
 			break;
 		}
 	}
@@ -393,8 +438,9 @@ void DeclBrowser::EditSelected( void ) {
 DeclBrowserCompareDecl
 ================
 */
-bool DeclBrowserCompareDecl( void *data, TreeNode *item, const char *name ) {
-	return reinterpret_cast<DeclBrowser *>(data)->CompareDecl( item, name );
+bool DeclBrowserCompareDecl( void* data, TreeNode* item, const char* name )
+{
+	return reinterpret_cast<DeclBrowser*>( data )->CompareDecl( item, name );
 }
 
 /*
@@ -402,39 +448,49 @@ bool DeclBrowserCompareDecl( void *data, TreeNode *item, const char *name ) {
 DeclBrowser::CompareDecl
 ================
 */
-bool DeclBrowser::CompareDecl( TreeNode *item, const char *name ) const {
-	if ( findNameString.Length() ) {
-		if ( !idStr::Filter( findNameString, name, false ) ) {
+bool DeclBrowser::CompareDecl( TreeNode* item, const char* name ) const
+{
+	if( findNameString.Length() )
+	{
+		if( !idStr::Filter( findNameString, name, false ) )
+		{
 			return false;
 		}
 	}
 
-	if ( findTextString.Length() ) {
-		int id, index;
+	if( findTextString.Length() )
+	{
+		int		   id, index;
 		declType_t type;
 
-		id = declTree.GetItemData( item );
-		type = GetTypeFromId( id );
+		id	  = declTree.GetItemData( item );
+		type  = GetTypeFromId( id );
 		index = GetIndexFromId( id );
 
-		if ( type == DECLTYPE_SCRIPT || type == DECLTYPE_GUI ) {
+		if( type == DECLTYPE_SCRIPT || type == DECLTYPE_GUI )
+		{
 			// search for the text in the script or gui
 			idStr text;
-			void *buffer;
-			if ( fileSystem->ReadFile( idStr( name ) + ( ( type == DECLTYPE_SCRIPT ) ? ".script" : ".gui" ), &buffer ) == -1 ) {
+			void* buffer;
+			if( fileSystem->ReadFile( idStr( name ) + ( ( type == DECLTYPE_SCRIPT ) ? ".script" : ".gui" ), &buffer ) == -1 )
+			{
 				return false;
 			}
-			text = (char *) buffer;
+			text = ( char* )buffer;
 			fileSystem->FreeFile( buffer );
-			if ( text.Find( findTextString, false ) == -1 ) {
+			if( text.Find( findTextString, false ) == -1 )
+			{
 				return false;
 			}
-		} else {
+		}
+		else
+		{
 			// search for the text in the decl
-			const idDecl *decl = declManager->DeclByIndex( type, index, false );
-			char *declText = (char *)_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
+			const idDecl* decl	   = declManager->DeclByIndex( type, index, false );
+			char*		  declText = ( char* )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
 			decl->GetText( declText );
-			if ( idStr::FindText( declText, findTextString, false ) == -1 ) {
+			if( idStr::FindText( declText, findTextString, false ) == -1 )
+			{
 				return false;
 			}
 		}
@@ -448,15 +504,15 @@ bool DeclBrowser::CompareDecl( TreeNode *item, const char *name ) const {
 DeclBrowser::Reset
 ================
 */
-void DeclBrowser::Reset()  {
-
+void DeclBrowser::Reset()
+{
 	InitBaseDeclTree();
 
 	findNameString = "*";
-	findNameEdit = findNameString;
+	findNameEdit   = findNameString;
 
 	findTextString = "";
-	findTextEdit = findTextString;
+	findTextEdit   = findTextString;
 
 	numListedDecls = baseDeclTree.SearchTree( DeclBrowserCompareDecl, this, declTree );
 
@@ -468,7 +524,8 @@ void DeclBrowser::Reset()  {
 DeclBrowser::ReloadDeclarations
 ================
 */
-void DeclBrowser::ReloadDeclarations( void ) {
+void DeclBrowser::ReloadDeclarations( void )
+{
 	InitBaseDeclTree();
 	OnBnClickedFind();
 }
@@ -480,11 +537,14 @@ void DeclBrowser::ReloadDeclarations( void ) {
 DeclBrowser::OnToolTipNotify
 ================
 */
-bool DeclBrowser::OnToolTipNotify( TreeNode *item, idStr &tooltipText ) const {
-	if ( item ) {
-		const idDecl *decl = GetDeclFromTreeItem( item );
+bool DeclBrowser::OnToolTipNotify( TreeNode* item, idStr& tooltipText ) const
+{
+	if( item )
+	{
+		const idDecl* decl = GetDeclFromTreeItem( item );
 
-		if ( !decl ) {
+		if( !decl )
+		{
 			return false;
 		}
 
@@ -501,21 +561,25 @@ bool DeclBrowser::OnToolTipNotify( TreeNode *item, idStr &tooltipText ) const {
 DeclBrowser::OnTreeSelChanged
 ================
 */
-void DeclBrowser::OnTreeSelChanged( bool doubleClicked ) {
-
-	const idDecl *decl = GetSelectedDecl();
-	if ( decl ) {
+void DeclBrowser::OnTreeSelChanged( bool doubleClicked )
+{
+	const idDecl* decl = GetSelectedDecl();
+	if( decl )
+	{
 		statusBarText = va( "%d decls listed    -    %s, line: %d", numListedDecls, decl->GetFileName(), decl->GetLineNum() );
-		findNameEdit = va( "%s/%s", declManager->GetDeclNameFromType( decl->GetType() ), decl->GetName() );
-	} else {
-		TreeNode *item = declTree.GetSelectedItem();
-		idStr typeName, declName;
+		findNameEdit  = va( "%s/%s", declManager->GetDeclNameFromType( decl->GetType() ), decl->GetName() );
+	}
+	else
+	{
+		TreeNode* item = declTree.GetSelectedItem();
+		idStr	  typeName, declName;
 		GetDeclName( item, typeName, declName );
-		findNameEdit = va( "%s/%s*", typeName.c_str(), declName.c_str() );
+		findNameEdit  = va( "%s/%s*", typeName.c_str(), declName.c_str() );
 		statusBarText = va( "%d decls listed", numListedDecls );
 	}
 
-	if ( doubleClicked ) {
+	if( doubleClicked )
+	{
 		OnBnClickedEdit();
 	}
 }
@@ -525,9 +589,10 @@ void DeclBrowser::OnTreeSelChanged( bool doubleClicked ) {
 DeclBrowser::OnTreeDblclk
 ================
 */
-void DeclBrowser::OnTreeDblclk() {
+void DeclBrowser::OnTreeDblclk()
+{
 	// post a message as if the edit button was clicked to make sure the editor gets focus
-	//PostMessage( WM_COMMAND, ( BN_CLICKED << 16 ) | editButton.GetDlgCtrlID(), 0 );
+	// PostMessage( WM_COMMAND, ( BN_CLICKED << 16 ) | editButton.GetDlgCtrlID(), 0 );
 }
 
 /*
@@ -535,14 +600,15 @@ void DeclBrowser::OnTreeDblclk() {
 DeclBrowser::OnBnClickedFind
 ================
 */
-void DeclBrowser::OnBnClickedFind() {
+void DeclBrowser::OnBnClickedFind()
+{
 	idStr windowText;
 
-	windowText = findNameEdit;
+	windowText	   = findNameEdit;
 	findNameString = windowText;
 	findNameString.Strip( ' ' );
 
-	windowText = findTextEdit;
+	windowText	   = findTextEdit;
 	findTextString = windowText;
 	findTextString.Strip( ' ' );
 
@@ -556,7 +622,8 @@ void DeclBrowser::OnBnClickedFind() {
 DeclBrowser::OnBnClickedEdit
 ================
 */
-void DeclBrowser::OnBnClickedEdit() {
+void DeclBrowser::OnBnClickedEdit()
+{
 	EditSelected();
 }
 
@@ -565,32 +632,37 @@ void DeclBrowser::OnBnClickedEdit() {
 DeclBrowser::OnBnClickedNew
 ================
 */
-void DeclBrowser::OnBnClickedNew() {
-	TreeNode *item;
-	idStr typeName, declName;
-	const idDecl *decl;
+void DeclBrowser::OnBnClickedNew()
+{
+	TreeNode*	  item;
+	idStr		  typeName, declName;
+	const idDecl* decl;
 
 	declNewDlg.SetDeclTree( &baseDeclTree );
 
 	item = declTree.GetSelectedItem();
-	if ( item ) {
+	if( item )
+	{
 		GetDeclName( item, typeName, declName );
 		declNewDlg.SetDefaultType( typeName );
 		declNewDlg.SetDefaultName( declName );
 	}
 
 	decl = GetSelectedDecl();
-	if ( decl ) {
+	if( decl )
+	{
 		declNewDlg.SetDefaultFile( decl->GetFileName() );
 	}
 
 	declNewDlg.Start();
 }
 
-void DeclBrowser::OnBnClickedNewAccepted() {
-	const idDecl *decl = declNewDlg.GetNewDecl();
+void DeclBrowser::OnBnClickedNewAccepted()
+{
+	const idDecl* decl = declNewDlg.GetNewDecl();
 
-	if ( decl ) {
+	if( decl )
+	{
 		idStr declName = declManager->GetDeclNameFromType( decl->GetType() );
 		declName += "/";
 		declName += decl->GetName();
@@ -598,7 +670,7 @@ void DeclBrowser::OnBnClickedNewAccepted() {
 		int id = GetIdFromTypeAndIndex( decl->GetType(), decl->Index() );
 
 		baseDeclTree.InsertPathIntoTree( declName, id );
-		TreeNode *item = declTree.InsertPathIntoTree( declName, id );
+		TreeNode* item = declTree.InsertPathIntoTree( declName, id );
 		declTree.SelectItem( item );
 
 		EditSelected();
@@ -610,8 +682,8 @@ void DeclBrowser::OnBnClickedNewAccepted() {
 DeclBrowser::OnBnClickedReload
 ================
 */
-void DeclBrowser::OnBnClickedReload() {
-
+void DeclBrowser::OnBnClickedReload()
+{
 	declManager->Reload( false );
 
 	ReloadDeclarations();

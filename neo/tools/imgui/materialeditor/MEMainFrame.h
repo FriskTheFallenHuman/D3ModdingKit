@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -40,86 +41,86 @@ If you have questions concerning this license or the applicable additional terms
 #include "MaterialDocManager.h"
 #include "MaterialEditView.h"
 
-namespace ImGuiTools {
-
-/**
-* The main window for the material editor.
-*/
-class MEMainFrame : public MaterialView
+namespace ImGuiTools
 {
 
+/**
+ * The main window for the material editor.
+ */
+class MEMainFrame : public MaterialView
+{
 public:
 	MEMainFrame();
 	virtual ~MEMainFrame();
 
-	//Public Operations
-	void						PrintConsoleMessage(const char *msg);
+	// Public Operations
+	void PrintConsoleMessage( const char* msg );
 
-	bool						PreCreateWindow();
-	void						OnCreateClient();
+	bool PreCreateWindow();
+	void OnCreateClient();
 
-	//Message Handlers
-	int							OnCreate();
-	void						OnDestroy();
+	// Message Handlers
+	int	 OnCreate();
+	void OnDestroy();
 
-	void						SetActiveWindow(MaterialEditorWindow_t window);
+	void SetActiveWindow( MaterialEditorWindow_t window );
 
-	void						Draw();
+	void Draw();
 
-	//Menu Message Handlers
-	void						OnFileExit();
-	void						OnFileSaveMaterial();
-	void						OnFileSaveFile();
-	void						OnFileSaveAll();
-	bool						IsFileSaveMaterialEnabled();
-	bool						IsFileSaveEnabled();
-	bool						IsFileSaveAllEnabled();
+	// Menu Message Handlers
+	void OnFileExit();
+	void OnFileSaveMaterial();
+	void OnFileSaveFile();
+	void OnFileSaveAll();
+	bool IsFileSaveMaterialEnabled();
+	bool IsFileSaveEnabled();
+	bool IsFileSaveAllEnabled();
 
-	void						OnApplyMaterial();
-	void						OnApplyFile();
-	void						OnApplyAll();
-	bool						IsApplyMaterialEnabled();
-	bool						IsApplyFileEnabled();
-	bool						IsApplyAllEnabled();
+	void OnApplyMaterial();
+	void OnApplyFile();
+	void OnApplyAll();
+	bool IsApplyMaterialEnabled();
+	bool IsApplyFileEnabled();
+	bool IsApplyAllEnabled();
 
-	void						OnEditCut();
-	void						OnEditCopy();
-	void						OnEditPaste();
-	void						OnEditDelete();
-	void						OnEditRename();
-	bool						IsEditCutEnabled();
-	bool						IsEditCopyEnabled();
-	bool						IsEditPasteEnabled();
-	bool						IsEditDeleteEnabled();
-	bool						IsEditRenameEnabled();
+	void OnEditCut();
+	void OnEditCopy();
+	void OnEditPaste();
+	void OnEditDelete();
+	void OnEditRename();
+	bool IsEditCutEnabled();
+	bool IsEditCopyEnabled();
+	bool IsEditPasteEnabled();
+	bool IsEditDeleteEnabled();
+	bool IsEditRenameEnabled();
 
-	void				OnEditFind();
-	void				OnEditFindNext();
+	void OnEditFind();
+	void OnEditFindNext();
 
-	void				OnEditUndo();
-	void				OnEditRedo();
-	bool				IsEditUndoEnabled();
-	bool				IsEditRedoEnabled();
+	void OnEditUndo();
+	void OnEditRedo();
+	bool IsEditUndoEnabled();
+	bool IsEditRedoEnabled();
 
-	void				OnViewIncludeFile();
-	void				OnReloadArbPrograms();
-	void				OnReloadImages();
-
-private:
-	//Methods for Find interactions
-	friend						FindDialog;
-	void						CloseFind();
-	void						FindNext(MaterialSearchData_t* search);
-
-	//MaterialView Interface
-	virtual void				MV_OnMaterialSelectionChange(MaterialDoc* pMaterial);
+	void OnViewIncludeFile();
+	void OnReloadArbPrograms();
+	void OnReloadImages();
 
 private:
-	//Status and Toolbars
-	//CStatusBar					m_wndStatusBar;
-	//CToolBar					m_wndToolBar;
+	// Methods for Find interactions
+	friend FindDialog;
+	void		 CloseFind();
+	void		 FindNext( MaterialSearchData_t* search );
 
-	//Splitter windows
+	// MaterialView Interface
+	virtual void MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
+
+private:
+	// Status and Toolbars
+	// CStatusBar					m_wndStatusBar;
+	// CToolBar					m_wndToolBar;
+
+	// Splitter windows
 	/*
 	CTabCtrl					m_tabs;
 	CSplitterWnd				m_splitterWnd;
@@ -127,37 +128,37 @@ private:
 	CSplitterWnd				m_previewSplitter;
 	CSplitterWnd*				m_materialEditSplitter;
 	*/
-	float						editSplitterWidth;
-	float						editSplitterPos;
-	float						editSplitterHeight;
-	float						previewSplitterWidth;
-	float						previewSplitterPos;
-	float						previewSplitterHeight;
+	float					 editSplitterWidth;
+	float					 editSplitterPos;
+	float					 editSplitterHeight;
+	float					 previewSplitterWidth;
+	float					 previewSplitterPos;
+	float					 previewSplitterHeight;
 
-	//Child Views
-	MaterialTreeView*			m_materialTreeView;
-	StageView*					m_stageView;
-	MaterialPropTreeView*		m_materialPropertyView;
-	MaterialPreviewView*		m_materialPreviewView;
-	MaterialPreviewPropView*	m_previewPropertyView;
-	ConsoleView*				m_consoleView;
+	// Child Views
+	MaterialTreeView*		 m_materialTreeView;
+	StageView*				 m_stageView;
+	MaterialPropTreeView*	 m_materialPropertyView;
+	MaterialPreviewView*	 m_materialPreviewView;
+	MaterialPreviewPropView* m_previewPropertyView;
+	ConsoleView*			 m_consoleView;
 
-	MaterialEditView*			m_materialEditView;
+	MaterialEditView*		 m_materialEditView;
 
-	//Find Data
-	FindDialog*		 			m_find;
-	MaterialSearchData_t		searchData;
+	// Find Data
+	FindDialog*				 m_find;
+	MaterialSearchData_t	 searchData;
 
-	//Document Management
-	MaterialDocManager			materialDocManager;
-	MaterialDoc*				currentDoc;
+	// Document Management
+	MaterialDocManager		 materialDocManager;
+	MaterialDoc*			 currentDoc;
 
-	//Options
-	MEOptions					options;
+	// Options
+	MEOptions				 options;
 
-	bool						includeFileInMaterialList;
+	bool					 includeFileInMaterialList;
 
-	MaterialEditorWindow_t		activeWindow;
+	MaterialEditorWindow_t	 activeWindow;
 };
 
 }

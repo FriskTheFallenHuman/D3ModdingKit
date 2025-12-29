@@ -1234,8 +1234,7 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 
 	// DG: I enhanced the information in savegames a bit for dhewm3 1.5.1
 	//     for which I bumped th BUILD_NUMBER to 1304
-	if( savegame.GetBuildNumber() >= 1304 )
-	{
+	if ( savegame.GetBuildNumber() >= 1304 ) {
 		savegame.ReadInternalSavegameVersion();
 		if( savegame.GetInternalSavegameVersion() > INTERNAL_SAVEGAME_VERSION ) {
 			Warning( "Savegame from newer dhewm3 version, don't know how to load! (its version is %d, only up to %d supported)",
@@ -3489,6 +3488,9 @@ int idGameLocal::EntitiesWithinRadius( const idVec3 org, float radius, idEntity 
 	for( ent = spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
 		if ( ent->GetPhysics()->GetAbsBounds().IntersectsBounds( bo ) ) {
 			entityList[entCount++] = ent;
+			if ( entCount == maxCount ) {
+				return entCount;
+			}
 		}
 	}
 

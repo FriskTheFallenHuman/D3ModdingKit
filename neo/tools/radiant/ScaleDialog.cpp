@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,25 +35,26 @@ If you have questions concerning this license or the applicable additional terms
 #include "ScaleDialog.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CScaleDialog dialog
 
-CScaleDialog::CScaleDialog( CWnd *pParent )
-	: CDialogEx( CScaleDialog::IDD, pParent ) {
+CScaleDialog::CScaleDialog( CWnd* pParent ) :
+	CDialogEx( CScaleDialog::IDD, pParent )
+{
 	m_fZ = 1.0f;
 	m_fX = 1.0f;
 	m_fY = 1.0f;
 }
 
-
-void CScaleDialog::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_Z, m_fZ);
-	DDX_Text(pDX, IDC_EDIT_X, m_fX);
-	DDX_Text(pDX, IDC_EDIT_Y, m_fY);
+void CScaleDialog::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Text( pDX, IDC_EDIT_Z, m_fZ );
+	DDX_Text( pDX, IDC_EDIT_X, m_fX );
+	DDX_Text( pDX, IDC_EDIT_Y, m_fY );
 }
 
-BEGIN_MESSAGE_MAP(CScaleDialog, CDialogEx)
+BEGIN_MESSAGE_MAP( CScaleDialog, CDialogEx )
 END_MESSAGE_MAP()

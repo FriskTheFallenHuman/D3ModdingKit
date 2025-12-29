@@ -29,15 +29,15 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_CLASS_H__
 #define __SYS_CLASS_H__
 
-class idClass;
-class idTypeInfo;
-
 /*
 
 Base class for all game objects.  Provides fast run-time type checking and run-time
 instancing of objects.
 
 */
+
+class idClass;
+class idTypeInfo;
 
 extern const idEventDef EV_Remove;
 extern const idEventDef EV_SafeRemove;
@@ -95,7 +95,7 @@ public:																	\
 	static	idTypeInfo						Type;						\
 	static	idClass							*CreateInstance( void );	\
 	virtual	idTypeInfo						*GetType( void ) const;		\
-	static	idEventFunc<nameofclass>		eventCallbacks[]
+	static	idEventFunc<nameofclass>		eventCallbacks[];
 
 /*
 ================
@@ -141,7 +141,7 @@ public:																	\
 	static	idTypeInfo						Type;						\
 	static	idClass							*CreateInstance( void );	\
 	virtual	idTypeInfo						*GetType( void ) const;		\
-	static	idEventFunc<nameofclass>		eventCallbacks[]
+	static	idEventFunc<nameofclass>		eventCallbacks[];
 
 /*
 ================

@@ -594,6 +594,9 @@ void idAI::Restore( idRestoreGame *savefile ) {
 	savefile->ReadString( projectileName );
 	if ( projectileName.Length() ) {
 		projectileDef = gameLocal.FindEntityDefDict( projectileName );
+		if ( !projectileDef ) {
+			gameLocal.Warning( "Unknown projectileDef '%s'", projectileName.c_str() );
+		}
 	} else {
 		projectileDef = NULL;
 	}
@@ -1310,7 +1313,7 @@ void idAI::SetAAS( void ) {
 			aas = NULL;
 		}
 	}
-	gameLocal.DWarning( S_COLOR_WHITE "'%s' " S_COLOR_GRAY "has no AAS file\n", name.c_str() );
+	gameLocal.Warning( "'%s' has no AAS file\n", name.c_str() );
 }
 
 /*

@@ -1828,7 +1828,7 @@ bool idProgram::CompileText( const char *source, const char *text, bool console 
 	filenum = GetFilenum( ospath );
 
 	try {
-		compiler.CompileFile( text, filename, console );
+		compiler.CompileFile( text, ospath.c_str(), console );
 
 		// check to make sure all functions prototyped have code
 		for( i = 0; i < varDefs.Num(); i++ ) {

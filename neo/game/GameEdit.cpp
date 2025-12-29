@@ -1394,6 +1394,9 @@ idRenderModel *idGameEditLocal::AF_CreateMesh( const idDict &args, idVec3 &meshO
 
 	classname = args.GetString( "classname" );
 	defArgs = gameLocal.FindEntityDefDict( classname );
+	if ( !defArgs ) {
+		gameLocal.Error( "Unknown classname '%s'", classname );
+	}
 
 	// get the articulated figure
 	afName = GetArgString( args, defArgs, "articulatedFigure" );

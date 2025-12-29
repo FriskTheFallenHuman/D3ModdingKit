@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,45 +32,44 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "MaterialEditor.h"
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 class MEMainFrame;
 
 /**
-* Dialog that provides an input box and several checkboxes to define
-* the parameters of a search. These parameters include: text string, search
-* scope and search only name flag.
-*/
+ * Dialog that provides an input box and several checkboxes to define
+ * the parameters of a search. These parameters include: text string, search
+ * scope and search only name flag.
+ */
 class FindDialog
 {
-
 public:
-	FindDialog(MEMainFrame *pParent);
+	FindDialog( MEMainFrame* pParent );
 	virtual ~FindDialog();
 
-	void					Start();
+	void Start();
 
-	bool                    Draw( const ImVec2 &pos, const ImVec2 &size );
+	bool Draw( const ImVec2& pos, const ImVec2& size );
 
-	void                    UnableToFind();
-
-protected:
-
-	//Messages
-	void        			OnBnClickedFindNext();
-	void           			OnCancel();
-
-	//Protected Operations
-	void					LoadFindSettings();
-	void					SaveFindSettings();
+	void UnableToFind();
 
 protected:
-	bool                    visible;
-	bool					focus;
-	int                     message;
-	MEMainFrame*			parent;
-	MaterialSearchData_t	searchData;
-	rvRegistryOptions		registry;
+	// Messages
+	void OnBnClickedFindNext();
+	void OnCancel();
+
+	// Protected Operations
+	void LoadFindSettings();
+	void SaveFindSettings();
+
+protected:
+	bool				 visible;
+	bool				 focus;
+	int					 message;
+	MEMainFrame*		 parent;
+	MaterialSearchData_t searchData;
+	rvRegistryOptions	 registry;
 };
 
 }

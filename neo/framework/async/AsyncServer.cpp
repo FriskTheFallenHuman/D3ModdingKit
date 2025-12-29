@@ -1849,7 +1849,7 @@ void idAsyncServer::ProcessConnectMessage( const netadr_t from, const idBitMsg &
 			// initialize
 			clients[ clientNum ].channel.Init( from, serverId );
 			clients[ clientNum ].OS = OS;
-			strncpy( clients[ clientNum ].guid, guid, 12 );
+			idStr::Copynz( clients[ clientNum ].guid, guid, 12 );
 			clients[ clientNum ].guid[11] = 0;
 			break;
 		}

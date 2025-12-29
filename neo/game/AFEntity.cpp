@@ -1091,7 +1091,7 @@ void idAFEntity_Gibbable::Damage( idEntity *inflictor, idEntity *attacker, const
 
 	const idDict *damageDef = gameLocal.FindEntityDefDict( damageDefName );
 	if ( !damageDef ) {
-		gameLocal.Error( "Unknown damageDef '%s'", damageDefName );
+		gameLocal.Error( "Unknown damageDef '%s'\n", damageDefName );
 	}
 
 	// add a check for gib = 1 to prevent ragdolls from decaying if the value is 0

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,21 +33,21 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEHideModifier.h"
 
-rvGEHideModifier::rvGEHideModifier ( const char* name, idWindow* window, bool hide ) :
-	rvGEModifier ( name, window )
+rvGEHideModifier::rvGEHideModifier( const char* name, idWindow* window, bool hide ) :
+	rvGEModifier( name, window )
 {
-	mParent		= NULL;
-	mHide		= hide;
-	mUndoHide	= mWrapper->IsHidden ( );
+	mParent	  = NULL;
+	mHide	  = hide;
+	mUndoHide = mWrapper->IsHidden();
 
 	// If unhiding then find any parent window along the way that may be hidden and prevent
 	// this window from being visible
-	if ( !hide )
+	if( !hide )
 	{
 		mParent = mWindow;
-		while ( NULL != (mParent = mParent->GetParent ( ) ) )
+		while( NULL != ( mParent = mParent->GetParent() ) )
 		{
-			if ( rvGEWindowWrapper::GetWrapper(mParent)->IsHidden ( ) )
+			if( rvGEWindowWrapper::GetWrapper( mParent )->IsHidden() )
 			{
 				break;
 			}
@@ -61,13 +62,13 @@ rvGEHideModifier::Apply
 Apply the hide modifier by setting the visible state of the wrapper window
 ================
 */
-bool rvGEHideModifier::Apply ( void )
+bool rvGEHideModifier::Apply( void )
 {
-	mWrapper->SetHidden ( mHide );
+	mWrapper->SetHidden( mHide );
 
-	if ( mParent )
+	if( mParent )
 	{
-		rvGEWindowWrapper::GetWrapper ( mParent )->SetHidden ( mHide );
+		rvGEWindowWrapper::GetWrapper( mParent )->SetHidden( mHide );
 	}
 
 	return true;
@@ -80,13 +81,13 @@ rvGEHideModifier::Undo
 Undo the hide modifier by setting the undo visible state of the wrapper window
 ================
 */
-bool rvGEHideModifier::Undo ( void )
+bool rvGEHideModifier::Undo( void )
 {
-	mWrapper->SetHidden ( mUndoHide );
+	mWrapper->SetHidden( mUndoHide );
 
-	if ( mParent )
+	if( mParent )
 	{
-		rvGEWindowWrapper::GetWrapper ( mParent )->SetHidden ( mUndoHide );
+		rvGEWindowWrapper::GetWrapper( mParent )->SetHidden( mUndoHide );
 	}
 
 	return true;

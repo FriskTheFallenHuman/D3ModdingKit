@@ -322,7 +322,7 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		desktop->foreColor = idVec4( 1.0f, 1.0f, 1.0f, 1.0f );
 		desktop->backColor = idVec4( 0.0f, 0.0f, 0.0f, 1.0f );
 		desktop->SetupFromState();
-		common->Warning( "Couldn't load gui: " S_COLOR_GREEN "'%s'", qpath );
+		common->Warning( "Couldn't load gui: '%s'", qpath );
 		loading = false;
 		return false;
 	}

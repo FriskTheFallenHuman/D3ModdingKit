@@ -21,7 +21,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -49,26 +50,30 @@ void SoundEditor::Init( const idDict* dict, idEntity* speaker )
 {
 	Reset();
 
-	if ( soundShaders.Num() == 0 ) {
+	if( soundShaders.Num() == 0 )
+	{
 		AddSounds();
 	}
-	if ( soundFiles.Num() == 0 ) {
+	if( soundFiles.Num() == 0 )
+	{
 		AddWaves();
 	}
 
 	speakerEntity = speaker;
 
-	if ( dict != NULL ) {
+	if( dict != NULL )
+	{
 		// if we have a speaker entity, fetch its origin for the title
-		if ( speaker != NULL ) {
+		if( speaker != NULL )
+		{
 			gameEdit->EntityGetOrigin( speaker, entityPos );
 		}
 		const char* name = dict->GetString( "name", NULL );
-		entityName = name ? name : gameEdit->GetUniqueEntityName( "speaker" );
-		title = idStr::Format( "Sound Editor: %s at (%s)###SoundEditor", entityName.c_str(), entityPos.ToString() );
+		entityName		 = name ? name : gameEdit->GetUniqueEntityName( "speaker" );
+		title			 = idStr::Format( "Sound Editor: %s at (%s)###SoundEditor", entityName.c_str(), entityPos.ToString() );
 
 		Set( dict );
-		
+
 		// populate sounds lists
 		AddGroups();
 		AddSpeakers();
@@ -76,7 +81,7 @@ void SoundEditor::Init( const idDict* dict, idEntity* speaker )
 	}
 }
 
-void SoundEditor::ReInit( const idDict *dict, idEntity *speaker )
+void SoundEditor::ReInit( const idDict* dict, idEntity* speaker )
 {
 	// TODO: if the soundeditor is currently shown, show a warning first about saving current changes to the last speaker?
 	Instance().Init( dict, speaker );
@@ -87,28 +92,28 @@ void SoundEditor::Reset()
 	title = "Sound Editor";
 	strShader.Clear();
 	playSound.Clear();
-	fVolume = 0.0f;
-	fMin = 1.0f;
-	fMax = 10.0f;
-	bPlay = true;
+	fVolume	   = 0.0f;
+	fMin	   = 1.0f;
+	fMax	   = 10.0f;
+	bPlay	   = true;
 	bTriggered = false;
-	bOmni = false;
+	bOmni	   = false;
 	strGroup.Clear();
-	bGroupOnly = false;
-	bOcclusion = false;
+	bGroupOnly	= false;
+	bOcclusion	= false;
 	leadThrough = 0.0f;
-	plain = false;
-	random = 0.0f;
-	wait = 0.0f;
-	shakes = 0.0f;
-	looping = true;
-	unclamped = false;
+	plain		= false;
+	random		= 0.0f;
+	wait		= 0.0f;
+	shakes		= 0.0f;
+	looping		= true;
+	unclamped	= false;
 
-	autoRefresh = true;
+	autoRefresh	   = true;
 	didAutoRefresh = false;
 
 	dropErrorBuf[0] = '\0';
-	showDropError = false;
+	showDropError	= false;
 
 	soundShaders.Clear();
 	soundFiles.Clear();
@@ -116,12 +121,12 @@ void SoundEditor::Reset()
 	speakersList.Clear();
 	inUseSounds.Clear();
 
-	selectedGroupIndex = -1;
+	selectedGroupIndex	 = -1;
 	selectedSpeakerIndex = -1;
-	shaderBuf[0] = '\0';
-	groupBuf[0] = '\0';
-	volumeBuf[0] = '\0';
-	newSpeakerBuf[0] = '\0';
+	shaderBuf[0]		 = '\0';
+	groupBuf[0]			 = '\0';
+	volumeBuf[0]		 = '\0';
+	newSpeakerBuf[0]	 = '\0';
 
 	speakerEntity = NULL;
 	entityName.Clear();
@@ -129,37 +134,40 @@ void SoundEditor::Reset()
 
 void SoundEditor::Set( const idDict* dict )
 {
-	if ( dict == NULL ) {
+	if( dict == NULL )
+	{
 		return;
 	}
-	fVolume = dict->GetFloat( "s_volume", "0" );
-	fMin = dict->GetFloat( "s_mindistance", "1" );
-	fMax = dict->GetFloat( "s_maxdistance", "10" );
+	fVolume		= dict->GetFloat( "s_volume", "0" );
+	fMin		= dict->GetFloat( "s_mindistance", "1" );
+	fMax		= dict->GetFloat( "s_maxdistance", "10" );
 	leadThrough = dict->GetFloat( "s_leadthrough", "0.1" );
-	plain = dict->GetBool( "s_plain" );
-	strShader = dict->GetString( "s_shader" );
-	strGroup = dict->GetString( "soundgroup" );
-	bOmni = dict->GetInt( "s_omni", "-1" );
-	bOcclusion = dict->GetBool( "s_occlusion", "0" );
-	bTriggered = dict->GetInt( "s_waitfortrigger", "-1" );
-	random = dict->GetFloat( "random" );
-	wait = dict->GetFloat( "wait" );
-	shakes = dict->GetFloat( "s_shakes" );
-	looping = dict->GetBool( "s_looping" );
-	unclamped = dict->GetBool( "s_unclamped" );
+	plain		= dict->GetBool( "s_plain" );
+	strShader	= dict->GetString( "s_shader" );
+	strGroup	= dict->GetString( "soundgroup" );
+	bOmni		= dict->GetInt( "s_omni", "-1" );
+	bOcclusion	= dict->GetBool( "s_occlusion", "0" );
+	bTriggered	= dict->GetInt( "s_waitfortrigger", "-1" );
+	random		= dict->GetFloat( "random" );
+	wait		= dict->GetFloat( "wait" );
+	shakes		= dict->GetFloat( "s_shakes" );
+	looping		= dict->GetBool( "s_looping" );
+	unclamped	= dict->GetBool( "s_unclamped" );
 
-	idStr::Copynz( shaderBuf, strShader.c_str(), sizeof(shaderBuf) );
-	idStr::Copynz( groupBuf, strGroup.c_str(), sizeof(groupBuf) );
-	idStr::snPrintf( volumeBuf, sizeof(volumeBuf), "%.2f", fVolume );
+	idStr::Copynz( shaderBuf, strShader.c_str(), sizeof( shaderBuf ) );
+	idStr::Copynz( groupBuf, strGroup.c_str(), sizeof( groupBuf ) );
+	idStr::snPrintf( volumeBuf, sizeof( volumeBuf ), "%.2f", fVolume );
 }
 
 void SoundEditor::AddSounds()
 {
 	soundShaders.Clear();
 	int count = declManager->GetNumDecls( DECL_SOUND );
-	for ( int i = 0; i < count; i++ ) {
+	for( int i = 0; i < count; i++ )
+	{
 		const idSoundShader* s = declManager->SoundByIndex( i, false );
-		if ( s ) {
+		if( s )
+		{
 			soundShaders.Append( s->GetName() );
 		}
 	}
@@ -170,8 +178,10 @@ void SoundEditor::AddWaves()
 {
 	soundFiles.Clear();
 	idFileList* files = fileSystem->ListFilesTree( "sound", ".wav|.ogg", true );
-	if ( files ) {
-		for ( int i = 0; i < files->GetNumFiles(); i++ ) {
+	if( files )
+	{
+		for( int i = 0; i < files->GetNumFiles(); i++ )
+		{
 			idStr f = files->GetFile( i );
 			soundFiles.Append( f );
 		}
@@ -185,19 +195,23 @@ void SoundEditor::AddInUseSounds()
 	inUseSounds.Clear();
 	idList<const char*> list;
 	list.SetNum( 512 );
-	int count = gameEdit->MapGetEntitiesMatchingClassWithString( "speaker", "", list.Ptr(), list.Num() );
+	int		  count = gameEdit->MapGetEntitiesMatchingClassWithString( "speaker", "", list.Ptr(), list.Num() );
 	idStrList list2;
-	for ( int i = 0; i < count; i++ ) {
+	for( int i = 0; i < count; i++ )
+	{
 		const idDict* dict = gameEdit->MapGetEntityDict( list[i] );
-		if ( dict ) {
+		if( dict )
+		{
 			const char* p = dict->GetString( "s_shader" );
-			if ( p && *p ) {
+			if( p && *p )
+			{
 				list2.AddUnique( p );
 			}
 		}
 	}
 	list2.Sort();
-	for ( int i = 0; i < list2.Num(); i++ ) {
+	for( int i = 0; i < list2.Num(); i++ )
+	{
 		inUseSounds.Append( list2[i] );
 	}
 }
@@ -205,7 +219,7 @@ void SoundEditor::AddInUseSounds()
 bool SoundEditor::DropSpeaker( const char* spawnName )
 {
 	idAngles viewAngles;
-	idVec3 org;
+	idVec3	 org;
 
 	gameEdit->PlayerGetViewAngles( viewAngles );
 	gameEdit->PlayerGetEyePosition( org );
@@ -220,18 +234,24 @@ bool SoundEditor::DropSpeaker( const char* spawnName )
 	args.Set( "s_shakes", "0" );
 
 	idStr name;
-	if ( spawnName && spawnName[0] ) {
+	if( spawnName && spawnName[0] )
+	{
 		name = spawnName;
-	} else if ( newSpeakerBuf[0] != '\0' ) {
+	}
+	else if( newSpeakerBuf[0] != '\0' )
+	{
 		name = newSpeakerBuf;
-	} else {
+	}
+	else
+	{
 		name = gameEdit->GetUniqueEntityName( "speaker" );
 	}
 	args.Set( "name", name );
 
 	idEntity* ent = NULL;
 	gameEdit->SpawnEntityDef( args, &ent );
-	if ( ent ) {
+	if( ent )
+	{
 		gameEdit->EntityUpdateChangeableSpawnArgs( ent, NULL );
 		gameEdit->ClearEntitySelection();
 		gameEdit->AddSelectedEntity( ent );
@@ -241,7 +261,8 @@ bool SoundEditor::DropSpeaker( const char* spawnName )
 	gameEdit->MapAddEntity( &args );
 
 	const idDict* dict = gameEdit->MapGetEntityDict( args.GetString( "name" ) );
-	if ( dict ) {
+	if( dict )
+	{
 		Set( dict );
 	}
 	AddGroups();
@@ -261,16 +282,23 @@ void SoundEditor::DeleteSelectedSpeakers()
 	list.SetNum( count );
 
 	bool removed = false;
-	if ( count ) {
-		for ( int i = 0; i < count; i++ ) {
+	if( count )
+	{
+		for( int i = 0; i < count; i++ )
+		{
 			const idDict* dict = gameEdit->EntityGetSpawnArgs( list[i] );
-			if ( dict == NULL ) continue;
-			const char* name = dict->GetString( "name" );
+			if( dict == NULL )
+			{
+				continue;
+			}
+			const char*	  name	  = dict->GetString( "name" );
 			const idDict* mapdict = gameEdit->MapGetEntityDict( name );
-			if ( mapdict ) {
+			if( mapdict )
+			{
 				gameEdit->MapRemoveEntity( name );
 				idEntity* gameEnt = gameEdit->FindEntity( name );
-				if ( gameEnt ) {
+				if( gameEnt )
+				{
 					gameEdit->EntityStopSound( gameEnt );
 					gameEdit->EntityDelete( gameEnt );
 					removed = true;
@@ -278,7 +306,8 @@ void SoundEditor::DeleteSelectedSpeakers()
 			}
 		}
 	}
-	if ( removed ) {
+	if( removed )
+	{
 		AddGroups();
 		AddSpeakers();
 		AddInUseSounds();
@@ -302,22 +331,29 @@ void SoundEditor::ApplyChanges( bool volumeOnly )
 	int count = gameEdit->GetSelectedEntities( list.Ptr(), list.Num() );
 	list.SetNum( count );
 
-	if ( count ) {
-		for ( int i = 0; i < count; i++ ) {
+	if( count )
+	{
+		for( int i = 0; i < count; i++ )
+		{
 			const idDict* dict = gameEdit->EntityGetSpawnArgs( list[i] );
-			if ( dict == NULL ) {
+			if( dict == NULL )
+			{
 				continue;
 			}
-			const char* name = dict->GetString( "name" );
+			const char*	  name	  = dict->GetString( "name" );
 			const idDict* mapDict = gameEdit->MapGetEntityDict( name );
-			if ( mapDict ) {
-				if ( volumeOnly ) {
+			if( mapDict )
+			{
+				if( volumeOnly )
+				{
 					float cur = mapDict->GetFloat( "s_volume" );
 					cur += fVolume;
 					gameEdit->MapSetEntityKeyVal( name, "s_volume", va( "%f", cur ) );
 					gameEdit->MapSetEntityKeyVal( name, "s_justVolume", "1" );
 					gameEdit->EntityUpdateChangeableSpawnArgs( list[i], mapDict );
-				} else {
+				}
+				else
+				{
 					idDict src;
 					src.SetFloat( "s_volume", mapDict->GetFloat( "s_volume" ) );
 					src.SetFloat( "s_mindistance", fMin );
@@ -343,15 +379,18 @@ void SoundEditor::ApplyChanges( bool volumeOnly )
 
 void SoundEditor::Draw()
 {
-	showTool = isShown;
-	bool openedDropSpeaker = false;
-	ImGuiWindowFlags wflags = ImGuiWindowFlags_MenuBar;
+	showTool						   = isShown;
+	bool			 openedDropSpeaker = false;
+	ImGuiWindowFlags wflags			   = ImGuiWindowFlags_MenuBar;
 
-	if ( ImGui::Begin( title.c_str(), &showTool, wflags ) ) {
-
-		if ( ImGui::BeginMenuBar() ) {
-			if ( ImGui::BeginMenu( "File" ) ) {
-				if ( ImGui::MenuItem( "Refresh Lists" ) ) {
+	if( ImGui::Begin( title.c_str(), &showTool, wflags ) )
+	{
+		if( ImGui::BeginMenuBar() )
+		{
+			if( ImGui::BeginMenu( "File" ) )
+			{
+				if( ImGui::MenuItem( "Refresh Lists" ) )
+				{
 					AddSounds();
 					AddWaves();
 					AddGroups();
@@ -360,38 +399,46 @@ void SoundEditor::Draw()
 				}
 
 				bool toggled = ImGui::MenuItem( "Auto Refresh", NULL, &autoRefresh );
-				if ( toggled && autoRefresh ) {
+				if( toggled && autoRefresh )
+				{
 					// only reset the one-shot flag when the user actually enabled it
 					didAutoRefresh = false;
 				}
 
 				ImGui::Separator();
 
-				if ( ImGui::MenuItem( "Exit" ) ) {
+				if( ImGui::MenuItem( "Exit" ) )
+				{
 					Exit();
 				}
 				ImGui::EndMenu();
 			}
 
-			if ( ImGui::BeginMenu( "Edit" ) ) {
-				if ( ImGui::MenuItem( "Apply" ) ) {
+			if( ImGui::BeginMenu( "Edit" ) )
+			{
+				if( ImGui::MenuItem( "Apply" ) )
+				{
 					ApplyChanges( false );
 				}
-				if ( ImGui::MenuItem( "Save Map" ) ) {
+				if( ImGui::MenuItem( "Save Map" ) )
+				{
 					gameEdit->MapSave();
 				}
 				ImGui::EndMenu();
 			}
 
-			if ( ImGui::BeginMenu( "Speakers" ) ) {
-				if ( ImGui::MenuItem( "Drop Speaker" ) ) {
+			if( ImGui::BeginMenu( "Speakers" ) )
+			{
+				if( ImGui::MenuItem( "Drop Speaker" ) )
+				{
 					openedDropSpeaker = true;
-
 				}
-				if ( ImGui::MenuItem( "Delete Selected" ) ) {
+				if( ImGui::MenuItem( "Delete Selected" ) )
+				{
 					DeleteSelectedSpeakers();
 				}
-				if ( ImGui::MenuItem( "Refresh Speakers" ) ) {
+				if( ImGui::MenuItem( "Refresh Speakers" ) )
+				{
 					AddSpeakers();
 					AddInUseSounds();
 				}
@@ -401,15 +448,17 @@ void SoundEditor::Draw()
 			ImGui::EndMenuBar();
 		}
 
-		if ( openedDropSpeaker ) {
+		if( openedDropSpeaker )
+		{
 			dropErrorBuf[0] = '\0';
-			showDropError = false;
+			showDropError	= false;
 
 			ImGui::OpenPopup( "Drop Speaker" );
 		}
 
 		// If auto-refresh is enabled, perform one refresh when editor is opened
-		if ( autoRefresh && !didAutoRefresh ) {
+		if( autoRefresh && !didAutoRefresh )
+		{
 			AddSounds();
 			AddWaves();
 			AddGroups();
@@ -419,32 +468,43 @@ void SoundEditor::Draw()
 		}
 
 		// Drop Speaker modal popup
-		if ( ImGui::BeginPopupModal( "Drop Speaker", NULL, ImGuiWindowFlags_AlwaysAutoResize|ImGuiWindowFlags_NoDecoration ) ) {
+		if( ImGui::BeginPopupModal( "Drop Speaker", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration ) )
+		{
 			ImGui::Text( "Enter new speaker name:" );
 			ImGui::Spacing();
-			ImGui::InputText( "##dropName", newSpeakerBuf, sizeof(newSpeakerBuf) );
-			if ( showDropError ) {
+			ImGui::InputText( "##dropName", newSpeakerBuf, sizeof( newSpeakerBuf ) );
+			if( showDropError )
+			{
 				ImGui::TextColored( ImVec4( 1.0f, 0.25f, 0.25f, 1.0f ), "%s", dropErrorBuf );
 			}
 			ImGui::Spacing();
-			if ( ImGui::Button( "OK" ) ) {
-
-				if ( newSpeakerBuf[0] == '\0' ) {
+			if( ImGui::Button( "OK" ) )
+			{
+				if( newSpeakerBuf[0] == '\0' )
+				{
 					idStr::Copynz( dropErrorBuf, "Name cannot be empty", sizeof( dropErrorBuf ) );
 					showDropError = true;
-				} else {
-					const idDict* m = gameEdit->MapGetEntityDict( newSpeakerBuf );
-					idEntity* ge = gameEdit->FindEntity( newSpeakerBuf );
-					if ( m || ge ) {
+				}
+				else
+				{
+					const idDict* m	 = gameEdit->MapGetEntityDict( newSpeakerBuf );
+					idEntity*	  ge = gameEdit->FindEntity( newSpeakerBuf );
+					if( m || ge )
+					{
 						idStr::Copynz( dropErrorBuf, "Name already in use", sizeof( dropErrorBuf ) );
 						showDropError = true;
-					} else {
+					}
+					else
+					{
 						bool ok = DropSpeaker( newSpeakerBuf );
-						if ( ok ) {
+						if( ok )
+						{
 							newSpeakerBuf[0] = '\0';
-							showDropError = false;
+							showDropError	 = false;
 							ImGui::CloseCurrentPopup();
-						} else {
+						}
+						else
+						{
 							idStr::Copynz( dropErrorBuf, "Failed to spawn speaker (see logs)", sizeof( dropErrorBuf ) );
 							showDropError = true;
 						}
@@ -452,7 +512,8 @@ void SoundEditor::Draw()
 				}
 			}
 			ImGui::SameLine();
-			if ( ImGui::Button( "Cancel" ) ) {
+			if( ImGui::Button( "Cancel" ) )
+			{
 				showDropError = false;
 				ImGui::CloseCurrentPopup();
 			}
@@ -465,72 +526,89 @@ void SoundEditor::Draw()
 
 		// Left: Sound Shaders
 		ImGui::Text( "Sound Shaders" );
-		ImGui::BeginChild( "##shaders", ImVec2(0,220), true );
+		ImGui::BeginChild( "##shaders", ImVec2( 0, 220 ), true );
 		{
-			idList<idStr> groupNames;
-			idList< idList<idStr> > groupItems;
+			idList<idStr>		  groupNames;
+			idList<idList<idStr>> groupItems;
 			groupNames.Clear();
 			groupItems.Clear();
-			for ( int i = 0; i < soundShaders.Num(); i++ ) {
-				idStr full = soundShaders[i];
-				int idx = full.Last('/');
+			for( int i = 0; i < soundShaders.Num(); i++ )
+			{
+				idStr full	   = soundShaders[i];
+				int	  idx	   = full.Last( '/' );
 				idStr filePart = ( idx >= 0 ) ? full.Left( idx ) : "<root>";
-				int g = groupNames.FindIndex( filePart );
-				if ( g == -1 ) {
+				int	  g		   = groupNames.FindIndex( filePart );
+				if( g == -1 )
+				{
 					groupNames.Append( filePart );
 					idList<idStr> items;
 					items.Clear();
 					items.Append( full );
 					groupItems.Append( items );
-				} else {
+				}
+				else
+				{
 					groupItems[g].Append( full );
 				}
 			}
 
-			for ( int gi = 0; gi < groupNames.Num(); gi++ ) {
-				if ( gi != 0 ) ImGui::Separator();
-				const idStr &grp = groupNames[gi];
-				if ( ImGui::TreeNode( grp.c_str() ) ) {
-					idList<idStr> &items = groupItems[gi];
-					for ( int k = 0; k < items.Num(); k++ ) {
-						const char* nm = items[k].c_str();
-						bool sel = ( strShader.Length() && strShader.Icmp( nm ) == 0 );
-						if ( ImGui::Selectable( nm, sel ) ) {
+			for( int gi = 0; gi < groupNames.Num(); gi++ )
+			{
+				if( gi != 0 )
+				{
+					ImGui::Separator();
+				}
+				const idStr& grp = groupNames[gi];
+				if( ImGui::TreeNode( grp.c_str() ) )
+				{
+					idList<idStr>& items = groupItems[gi];
+					for( int k = 0; k < items.Num(); k++ )
+					{
+						const char* nm	= items[k].c_str();
+						bool		sel = ( strShader.Length() && strShader.Icmp( nm ) == 0 );
+						if( ImGui::Selectable( nm, sel ) )
+						{
 							strShader = nm;
 							playSound = strShader;
-							idStr::Copynz( shaderBuf, strShader.c_str(), sizeof(shaderBuf) );
+							idStr::Copynz( shaderBuf, strShader.c_str(), sizeof( shaderBuf ) );
 
 							// try to populate properties from the sound shader decl
-							const idSoundShader *sd = declManager->FindSound( strShader, false );
-							if ( sd ) {
-								const soundShaderParms_t *p = sd->GetParms();
-								if ( p ) {
-									fVolume = p->volume;
-									fMin = p->minDistance;
-									fMax = p->maxDistance;
-									shakes = p->shakes;
-									int flags = p->soundShaderFlags;
-									bOmni = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
-									looping = ( flags & SSF_LOOPING ) != 0;
-									unclamped = ( flags & SSF_UNCLAMPED ) != 0;
+							const idSoundShader* sd = declManager->FindSound( strShader, false );
+							if( sd )
+							{
+								const soundShaderParms_t* p = sd->GetParms();
+								if( p )
+								{
+									fVolume	   = p->volume;
+									fMin	   = p->minDistance;
+									fMax	   = p->maxDistance;
+									shakes	   = p->shakes;
+									int flags  = p->soundShaderFlags;
+									bOmni	   = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
+									looping	   = ( flags & SSF_LOOPING ) != 0;
+									unclamped  = ( flags & SSF_UNCLAMPED ) != 0;
 									bOcclusion = ( flags & SSF_NO_OCCLUSION ) == 0;
 								}
 							}
 
 							// Play on select if enabled
-							if ( bPlay ) {
-								idSoundWorld *sw = soundSystem->GetPlayingSoundWorld();
-								if ( sw ) {
+							if( bPlay )
+							{
+								idSoundWorld* sw = soundSystem->GetPlayingSoundWorld();
+								if( sw )
+								{
 									sw->PlayShaderDirectly( playSound );
 								}
 							}
 
 							// Double-click should play immediately
 							// TODO: Why does not work?
-							if ( ImGui::IsMouseDoubleClicked( 0 ) && ImGui::IsItemHovered() ) {
-								const idStr toPlay = ( playSound.Length() ? playSound : strShader );
-								idSoundWorld *sw = soundSystem->GetPlayingSoundWorld();
-								if ( sw ) {
+							if( ImGui::IsMouseDoubleClicked( 0 ) && ImGui::IsItemHovered() )
+							{
+								const idStr	  toPlay = ( playSound.Length() ? playSound : strShader );
+								idSoundWorld* sw	 = soundSystem->GetPlayingSoundWorld();
+								if( sw )
+								{
 									sw->PlayShaderDirectly( toPlay );
 								}
 								ApplyChanges( false );
@@ -546,48 +624,56 @@ void SoundEditor::Draw()
 		ImGui::NextColumn();
 
 		ImGui::Text( "Wave Files (sound/*)" );
-		ImGui::BeginChild( "##waves", ImVec2(0,220), true );
+		ImGui::BeginChild( "##waves", ImVec2( 0, 220 ), true );
 		{
-			for ( int i = 0; i < soundFiles.Num(); i++ ) {
-				idStr f = soundFiles[i];
-				const char* nm = f.c_str();
-				bool sel = ( playSound.Length() && playSound.Icmp( nm ) == 0 );
+			for( int i = 0; i < soundFiles.Num(); i++ )
+			{
+				idStr		f	= soundFiles[i];
+				const char* nm	= f.c_str();
+				bool		sel = ( playSound.Length() && playSound.Icmp( nm ) == 0 );
 				ImGui::PushID( i );
-				if ( ImGui::Selectable( nm, sel ) ) {
+				if( ImGui::Selectable( nm, sel ) )
+				{
 					playSound = nm;
-					idStr::Copynz( shaderBuf, playSound.c_str(), sizeof(shaderBuf) );
+					idStr::Copynz( shaderBuf, playSound.c_str(), sizeof( shaderBuf ) );
 
 					// if the selected wave corresponds to a sound shader, populate parms
 					const idSoundShader* sd = declManager->FindSound( playSound, false );
-					if ( sd ) {
+					if( sd )
+					{
 						const soundShaderParms_t* p = sd->GetParms();
-						if ( p ) {
-							fVolume = p->volume;
-							fMin = p->minDistance;
-							fMax = p->maxDistance;
-							shakes = p->shakes;
-							int flags = p->soundShaderFlags;
-							bOmni = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
-							looping = ( flags & SSF_LOOPING ) != 0;
-							unclamped = ( flags & SSF_UNCLAMPED ) != 0;
+						if( p )
+						{
+							fVolume	   = p->volume;
+							fMin	   = p->minDistance;
+							fMax	   = p->maxDistance;
+							shakes	   = p->shakes;
+							int flags  = p->soundShaderFlags;
+							bOmni	   = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
+							looping	   = ( flags & SSF_LOOPING ) != 0;
+							unclamped  = ( flags & SSF_UNCLAMPED ) != 0;
 							bOcclusion = ( flags & SSF_NO_OCCLUSION ) == 0;
 						}
 					}
 
 					// Play on select if enabled
-					if ( bPlay ) {
+					if( bPlay )
+					{
 						idSoundWorld* sw = soundSystem->GetPlayingSoundWorld();
-						if ( sw ) {
+						if( sw )
+						{
 							sw->PlayShaderDirectly( playSound );
 						}
 					}
 
 					// Double-click should play immediately
 					// TODO: Why does not work?
-					if ( ImGui::IsMouseDoubleClicked( 0 ) && ImGui::IsItemHovered() ) {
-						const idStr toPlay = ( playSound.Length() ? playSound : strShader );
-						idSoundWorld *sw = soundSystem->GetPlayingSoundWorld();
-						if ( sw ) {
+					if( ImGui::IsMouseDoubleClicked( 0 ) && ImGui::IsItemHovered() )
+					{
+						const idStr	  toPlay = ( playSound.Length() ? playSound : strShader );
+						idSoundWorld* sw	 = soundSystem->GetPlayingSoundWorld();
+						if( sw )
+						{
 							sw->PlayShaderDirectly( toPlay );
 						}
 						ApplyChanges( false );
@@ -598,14 +684,16 @@ void SoundEditor::Draw()
 		}
 		ImGui::EndChild();
 
-		ImGui::Columns(1);
+		ImGui::Columns( 1 );
 
 		ImGui::SeparatorText( "Properties" );
-		if ( ImGui::InputText( "Shader", shaderBuf, sizeof(shaderBuf) ) ) {
+		if( ImGui::InputText( "Shader", shaderBuf, sizeof( shaderBuf ) ) )
+		{
 			strShader = shaderBuf;
 		}
-		if ( ImGui::DragFloat( "Volume", &fVolume, 0.1f, -1000.0f, 1000.0f, "%.2f" ) ) {
-			idStr::snPrintf( volumeBuf, sizeof(volumeBuf), "%.2f", fVolume );
+		if( ImGui::DragFloat( "Volume", &fVolume, 0.1f, -1000.0f, 1000.0f, "%.2f" ) )
+		{
+			idStr::snPrintf( volumeBuf, sizeof( volumeBuf ), "%.2f", fVolume );
 		}
 		ImGui::DragFloat( "Min Distance", &fMin, 0.1f, 0.0f, 10000.0f );
 		ImGui::DragFloat( "Max Distance", &fMax, 0.1f, 0.0f, 10000.0f );
@@ -619,24 +707,34 @@ void SoundEditor::Draw()
 		groupsList.SetNum( 1024 );
 		int gcount = gameEdit->MapGetUniqueMatchingKeyVals( "soundgroup", groupsList.Ptr(), groupsList.Num() );
 		groupsList.SetNum( gcount );
-		if ( gcount > 0 ) {
+		if( gcount > 0 )
+		{
 			ImGui::Text( "Group" );
-			if ( selectedGroupIndex >= gcount ) selectedGroupIndex = -1;
-			if ( selectedGroupIndex == -1 && strGroup.Length() ) {
-				for ( int i = 0; i < gcount; i++ ) {
-					if ( idStr::Icmp( groupsList[i], strGroup ) == 0 ) {
+			if( selectedGroupIndex >= gcount )
+			{
+				selectedGroupIndex = -1;
+			}
+			if( selectedGroupIndex == -1 && strGroup.Length() )
+			{
+				for( int i = 0; i < gcount; i++ )
+				{
+					if( idStr::Icmp( groupsList[i], strGroup ) == 0 )
+					{
 						selectedGroupIndex = i;
 						break;
 					}
 				}
 			}
-			if ( ImGui::BeginCombo( "##Group", ( selectedGroupIndex >= 0 ) ? groupsList[selectedGroupIndex] : "<none>" ) ) {
-				for ( int i = 0; i < gcount; i++ ) {
+			if( ImGui::BeginCombo( "##Group", ( selectedGroupIndex >= 0 ) ? groupsList[selectedGroupIndex] : "<none>" ) )
+			{
+				for( int i = 0; i < gcount; i++ )
+				{
 					bool isSel = ( selectedGroupIndex == i );
-					if ( ImGui::Selectable( groupsList[i], isSel ) ) {
+					if( ImGui::Selectable( groupsList[i], isSel ) )
+					{
 						selectedGroupIndex = i;
-						strGroup = groupsList[i];
-						idStr::Copynz( groupBuf, strGroup.c_str(), sizeof(groupBuf) );
+						strGroup		   = groupsList[i];
+						idStr::Copynz( groupBuf, strGroup.c_str(), sizeof( groupBuf ) );
 					}
 				}
 				ImGui::EndCombo();
@@ -648,40 +746,51 @@ void SoundEditor::Draw()
 		speakersList.SetNum( 512 );
 		int scount = gameEdit->MapGetEntitiesMatchingClassWithString( "speaker", "", speakersList.Ptr(), speakersList.Num() );
 		speakersList.SetNum( scount );
-		if ( scount > 0 ) {
+		if( scount > 0 )
+		{
 			ImGui::Text( "Speaker" );
-			if ( selectedSpeakerIndex >= scount ) selectedSpeakerIndex = -1;
-			if ( ImGui::BeginCombo( "##Speaker", ( selectedSpeakerIndex >= 0 ) ? speakersList[selectedSpeakerIndex] : "<none>" ) ) {
-				for ( int i = 0; i < scount; i++ ) {
+			if( selectedSpeakerIndex >= scount )
+			{
+				selectedSpeakerIndex = -1;
+			}
+			if( ImGui::BeginCombo( "##Speaker", ( selectedSpeakerIndex >= 0 ) ? speakersList[selectedSpeakerIndex] : "<none>" ) )
+			{
+				for( int i = 0; i < scount; i++ )
+				{
 					bool isSel = ( selectedSpeakerIndex == i );
-					if ( ImGui::Selectable( speakersList[i], isSel ) ) {
+					if( ImGui::Selectable( speakersList[i], isSel ) )
+					{
 						selectedSpeakerIndex = i;
 						// select in editor and auto-populate from speaker's sound shader
 						gameEdit->ClearEntitySelection();
 						idEntity* ge = gameEdit->FindEntity( speakersList[i] );
-						if ( ge ) {
+						if( ge )
+						{
 							gameEdit->AddSelectedEntity( ge );
 							const idDict* d = gameEdit->EntityGetSpawnArgs( ge );
 							Set( d );
 							// extract shader name from speaker and auto-select it
 							const char* shaderName = d->GetString( "s_shader" );
-							if ( shaderName && shaderName[0] ) {
+							if( shaderName && shaderName[0] )
+							{
 								strShader = shaderName;
 								playSound = strShader;
-								idStr::Copynz( shaderBuf, strShader.c_str(), sizeof(shaderBuf) );
+								idStr::Copynz( shaderBuf, strShader.c_str(), sizeof( shaderBuf ) );
 								// populate properties from shader decl if available
 								const idSoundShader* sd = declManager->FindSound( shaderName, false );
-								if ( sd ) {
+								if( sd )
+								{
 									const soundShaderParms_t* p = sd->GetParms();
-									if ( p ) {
-										fVolume = p->volume;
-										fMin = p->minDistance;
-										fMax = p->maxDistance;
-										shakes = p->shakes;
-										int flags = p->soundShaderFlags;
-										bOmni = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
-										looping = ( flags & SSF_LOOPING ) != 0;
-										unclamped = ( flags & SSF_UNCLAMPED ) != 0;
+									if( p )
+									{
+										fVolume	   = p->volume;
+										fMin	   = p->minDistance;
+										fMax	   = p->maxDistance;
+										shakes	   = p->shakes;
+										int flags  = p->soundShaderFlags;
+										bOmni	   = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
+										looping	   = ( flags & SSF_LOOPING ) != 0;
+										unclamped  = ( flags & SSF_UNCLAMPED ) != 0;
 										bOcclusion = ( flags & SSF_NO_OCCLUSION ) == 0;
 									}
 								}
@@ -695,28 +804,34 @@ void SoundEditor::Draw()
 
 		// Show all shader flags (read-only) for the currently selected shader/wave
 		const idSoundShader* curShaderDecl = NULL;
-		if ( strShader.Length() ) {
+		if( strShader.Length() )
+		{
 			curShaderDecl = declManager->FindSound( strShader, false );
-		} else if ( playSound.Length() ) {
+		}
+		else if( playSound.Length() )
+		{
 			curShaderDecl = declManager->FindSound( playSound, false );
 		}
-		if ( curShaderDecl ) {
+		if( curShaderDecl )
+		{
 			const soundShaderParms_t* p = curShaderDecl->GetParms();
-			if ( p ) {
-				int flags = p->soundShaderFlags;
-				bool fPrivate = ( flags & SSF_PRIVATE_SOUND ) != 0;
+			if( p )
+			{
+				int	 flags		  = p->soundShaderFlags;
+				bool fPrivate	  = ( flags & SSF_PRIVATE_SOUND ) != 0;
 				bool fAntiPrivate = ( flags & SSF_ANTI_PRIVATE_SOUND ) != 0;
 				bool fNoOcclusion = ( flags & SSF_NO_OCCLUSION ) != 0;
-				bool fGlobal = ( flags & SSF_GLOBAL ) != 0;
-				bool fOmni = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
-				bool fLoop = ( flags & SSF_LOOPING ) != 0;
-				bool fPlayOnce = ( flags & SSF_PLAY_ONCE ) != 0;
-				bool fUnclamped = ( flags & SSF_UNCLAMPED ) != 0;
-				bool fNoFlicker = ( flags & SSF_NO_FLICKER ) != 0;
-				bool fNoDups = ( flags & SSF_NO_DUPS ) != 0;
+				bool fGlobal	  = ( flags & SSF_GLOBAL ) != 0;
+				bool fOmni		  = ( flags & SSF_OMNIDIRECTIONAL ) != 0;
+				bool fLoop		  = ( flags & SSF_LOOPING ) != 0;
+				bool fPlayOnce	  = ( flags & SSF_PLAY_ONCE ) != 0;
+				bool fUnclamped	  = ( flags & SSF_UNCLAMPED ) != 0;
+				bool fNoFlicker	  = ( flags & SSF_NO_FLICKER ) != 0;
+				bool fNoDups	  = ( flags & SSF_NO_DUPS ) != 0;
 				ImGui::SeparatorText( "Shader Flags" );
 				ImGui::BeginDisabled();
-				if ( ImGui::CollapsingHeader( "Advanced Flags", ImGuiTreeNodeFlags_DefaultOpen ) ) {
+				if( ImGui::CollapsingHeader( "Advanced Flags", ImGuiTreeNodeFlags_DefaultOpen ) )
+				{
 					ImGui::Indent();
 					ImGui::Checkbox( "Private Sound", &fPrivate );
 					ImGui::Checkbox( "Anti-Private Sound", &fAntiPrivate );
@@ -725,7 +840,8 @@ void SoundEditor::Draw()
 					ImGui::Checkbox( "No Duplicates", &fNoDups );
 					ImGui::Unindent();
 				}
-				if ( ImGui::CollapsingHeader( "Playback Flags", ImGuiTreeNodeFlags_DefaultOpen ) ) {
+				if( ImGui::CollapsingHeader( "Playback Flags", ImGuiTreeNodeFlags_DefaultOpen ) )
+				{
 					ImGui::Indent();
 					ImGui::Checkbox( "Looping", &fLoop );
 					ImGui::Checkbox( "Play Once", &fPlayOnce );
@@ -733,7 +849,8 @@ void SoundEditor::Draw()
 					ImGui::Checkbox( "Unclamped", &fUnclamped );
 					ImGui::Unindent();
 				}
-				if ( ImGui::CollapsingHeader( "Propagation Flags", ImGuiTreeNodeFlags_DefaultOpen ) ) {
+				if( ImGui::CollapsingHeader( "Propagation Flags", ImGuiTreeNodeFlags_DefaultOpen ) )
+				{
 					ImGui::Indent();
 					ImGui::Checkbox( "No Occlusion", &fNoOcclusion );
 					ImGui::Unindent();
@@ -745,7 +862,8 @@ void SoundEditor::Draw()
 		ImGui::End();
 	}
 
-	if ( isShown && !showTool ) {
+	if( isShown && !showTool )
+	{
 		isShown = showTool;
 		Exit();
 	}

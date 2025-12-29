@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -37,7 +38,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "framework/Game.h"
 #include "framework/DeclPDA.h"
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /////////////////////////////////////////////////////////////////////////////
 // PDAEditor
@@ -53,11 +55,12 @@ PDAEditor::PDAEditor()
 	isShown = false;
 }
 
-void PDAEditor::Reset() {
+void PDAEditor::Reset()
+{
 	// Indicate the PDA dialog is opened
 	com_editors |= EDITOR_PDA;
-	
-	pdaListSel = -1;
+
+	pdaListSel	 = -1;
 	emailListSel = -1;
 	audioListSel = -1;
 	videoListSel = -1;
@@ -72,34 +75,39 @@ void PDAEditor::Reset() {
 	PopulatePDAList();
 }
 
-void PDAEditor::Draw() {
-	int i, num;
+void PDAEditor::Draw()
+{
+	int	 i, num;
 	bool selected;
 	bool showTool;
 
 	showTool = isShown;
 
 	idStr windowName = windowTitle + "###PDA Editor";
-	if ( ImGui::Begin( windowName, &showTool, ImGuiWindowFlags_AlwaysAutoResize)) //, ImGuiWindowFlags_ShowBorders ) )
+	if( ImGui::Begin( windowName, &showTool, ImGuiWindowFlags_AlwaysAutoResize ) ) //, ImGuiWindowFlags_ShowBorders ) )
 	{
-		if ( ImGui::BeginTable( "table", 3 ) )
+		if( ImGui::BeginTable( "table", 3 ) )
 		{
 			ImGui::PushID( "pda" );
 			ImGui::TableNextRow();
-			ImGui::TableSetColumnIndex(0);
+			ImGui::TableSetColumnIndex( 0 );
 			ImGui::Text( "PDAs:" );
-			if ( ImGui::BeginListBox( "##PDAList", ImVec2( 300, 200 ) ) ) {
+			if( ImGui::BeginListBox( "##PDAList", ImVec2( 300, 200 ) ) )
+			{
 				num = pdaList.Num();
-				for ( i = 0; i < num; i++ ) {
+				for( i = 0; i < num; i++ )
+				{
 					ImGui::PushID( i );
 
 					selected = ( i == pdaListSel );
 
-					if ( ImGui::Selectable( pdaList[i].c_str(), selected ) ) {
+					if( ImGui::Selectable( pdaList[i].c_str(), selected ) )
+					{
 						OnSelChangePDA( i );
 					}
 
-					if ( selected ) {
+					if( selected )
+					{
 						ImGui::SetItemDefaultFocus();
 					}
 
@@ -107,7 +115,8 @@ void PDAEditor::Draw() {
 				}
 				ImGui::EndListBox();
 			}
-			if ( ImGui::Button( "Add" ) ) {
+			if( ImGui::Button( "Add" ) )
+			{
 				OnBtnClickedPDAAdd();
 			}
 			/*
@@ -118,10 +127,12 @@ void PDAEditor::Draw() {
 			}
 			*/
 
-			if ( ImGui::BeginPopupModal( "PDAAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "PDAAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted = addPDADlg.Draw();
 
-				if ( accepted ) {
+				if( accepted )
+				{
 					addPDADlg.name.ToLower();
 					idDecl* decl = declManager->CreateNewDecl( DECL_PDA, addPDADlg.name, "newpdas/" + addPDADlg.name + ".pda" );
 					decl->ReplaceSourceFileText();
@@ -167,53 +178,58 @@ void PDAEditor::Draw() {
 
 			ImGui::PopID();
 
-			ImGui::TableSetColumnIndex(1);
+			ImGui::TableSetColumnIndex( 1 );
 			ImGui::PushID( "pdaEdit" );
 			ImGui::SetNextItemWidth( 300 );
-			if ( ImGui::InputTextStr( "Full Name", &fullName ) ) {
-
+			if( ImGui::InputTextStr( "Full Name", &fullName ) )
+			{
 			}
 			ImGui::SetNextItemWidth( 300 );
-			if ( ImGui::InputTextStr( "Short Name", &shortName ) ) {
-
+			if( ImGui::InputTextStr( "Short Name", &shortName ) )
+			{
 			}
 			ImGui::SetNextItemWidth( 300 );
-			if ( ImGui::InputTextStr( "Title", &title ) ) {
-
+			if( ImGui::InputTextStr( "Title", &title ) )
+			{
 			}
 			ImGui::SetNextItemWidth( 300 );
-			if ( ImGui::InputTextStr( "Post (Location)", &post ) ) {
-
+			if( ImGui::InputTextStr( "Post (Location)", &post ) )
+			{
 			}
 			ImGui::SetNextItemWidth( 300 );
-			if ( ImGui::InputTextStr( "Security Level", &security ) ) {
-
+			if( ImGui::InputTextStr( "Security Level", &security ) )
+			{
 			}
 			ImGui::SetNextItemWidth( 50 );
-			if ( ImGui::Button( "Rand" ) ) {
+			if( ImGui::Button( "Rand" ) )
+			{
 				OnBtnClickedRandom();
 			}
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth( 255 );
-			if ( ImGui::InputTextStr( "ID number", &idnum ) ) {
-
+			if( ImGui::InputTextStr( "ID number", &idnum ) )
+			{
 			}
 			ImGui::PopID();
 
 			ImGui::PushID( "audio" );
-			ImGui::Dummy( ImVec2(0, 20) );
+			ImGui::Dummy( ImVec2( 0, 20 ) );
 			ImGui::Text( "Audio Logs:" );
-			if (ImGui::BeginListBox( "##audioList", ImVec2( 300, 200 ) ) ) {
+			if( ImGui::BeginListBox( "##audioList", ImVec2( 300, 200 ) ) )
+			{
 				num = audioList.Num();
-				for ( i = 0; i < num; i++ ) {
+				for( i = 0; i < num; i++ )
+				{
 					ImGui::PushID( i );
 
 					selected = ( i == audioListSel );
-					if ( ImGui::Selectable( audioList[i].c_str(), selected ) ) {
+					if( ImGui::Selectable( audioList[i].c_str(), selected ) )
+					{
 						audioListSel = i;
 					}
 
-					if ( selected ) {
+					if( selected )
+					{
 						ImGui::SetItemDefaultFocus();
 					}
 
@@ -221,11 +237,13 @@ void PDAEditor::Draw() {
 				}
 				ImGui::EndListBox();
 			}
-			if ( ImGui::Button( "Add" ) ) {
+			if( ImGui::Button( "Add" ) )
+			{
 				OnBtnClickedAudioAdd();
 			}
 			ImGui::SameLine();
-			if ( ImGui::Button( "Edit" ) ) {
+			if( ImGui::Button( "Edit" ) )
+			{
 				OnBtnClickedAudioEdit();
 			}
 			/*
@@ -235,20 +253,24 @@ void PDAEditor::Draw() {
 				OnBtnClickedAudioDel();
 			}
 			*/
-			if ( ImGui::BeginPopupModal( "AudioAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "AudioAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted;
 
 				accepted = editAudioDlg.Draw();
-				if ( accepted ) {
+				if( accepted )
+				{
 					OnAudioAdd();
 				}
 
 				ImGui::EndPopup();
 			}
-			if ( ImGui::BeginPopupModal( "AudioEdit", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "AudioEdit", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted = editAudioDlg.Draw();
 
-				if ( accepted ) {
+				if( accepted )
+				{
 					OnAudioEdit();
 				}
 
@@ -256,20 +278,24 @@ void PDAEditor::Draw() {
 			}
 			ImGui::PopID();
 
-			ImGui::TableSetColumnIndex(2);
+			ImGui::TableSetColumnIndex( 2 );
 			ImGui::PushID( "email" );
 			ImGui::Text( "Email" );
-			if ( ImGui::BeginListBox( "##emailList", ImVec2( 300, 200 ) ) ) {
+			if( ImGui::BeginListBox( "##emailList", ImVec2( 300, 200 ) ) )
+			{
 				num = emailList.Num();
-				for ( i = 0; i < num; i++ ) {
+				for( i = 0; i < num; i++ )
+				{
 					ImGui::PushID( i );
 
 					selected = ( i == emailListSel );
-					if ( ImGui::Selectable( emailList[i].c_str(), selected ) ) {
+					if( ImGui::Selectable( emailList[i].c_str(), selected ) )
+					{
 						emailListSel = i;
 					}
 
-					if ( selected ) {
+					if( selected )
+					{
 						ImGui::SetItemDefaultFocus();
 					}
 
@@ -277,11 +303,13 @@ void PDAEditor::Draw() {
 				}
 				ImGui::EndListBox();
 			}
-			if ( ImGui::Button( "Add" ) ) {
+			if( ImGui::Button( "Add" ) )
+			{
 				OnBtnClickedEmailAdd();
 			}
 			ImGui::SameLine();
-			if ( ImGui::Button( "Edit" ) ) {
+			if( ImGui::Button( "Edit" ) )
+			{
 				OnBtnClickedEmailEdit();
 			}
 			/*
@@ -291,20 +319,24 @@ void PDAEditor::Draw() {
 				OnBtnClickedEmailDel();
 			}
 			*/
-			if ( ImGui::BeginPopupModal( "EmailAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "EmailAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted;
 
 				accepted = editEmailDlg.Draw();
-				if ( accepted ) {
+				if( accepted )
+				{
 					OnEmailAdd();
 				}
 
 				ImGui::EndPopup();
 			}
-			if ( ImGui::BeginPopupModal( "EmailEdit", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "EmailEdit", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted = editEmailDlg.Draw();
 
-				if ( accepted ) {
+				if( accepted )
+				{
 					OnEmailEdit();
 				}
 
@@ -312,28 +344,34 @@ void PDAEditor::Draw() {
 			}
 			ImGui::PopID();
 
-			ImGui::PushID("video");
-			ImGui::Dummy(ImVec2(0, 20));
-			ImGui::Text("Videos");
-			if ( ImGui::BeginListBox( "##videoList", ImVec2( 300, 200 ) ) ) {
+			ImGui::PushID( "video" );
+			ImGui::Dummy( ImVec2( 0, 20 ) );
+			ImGui::Text( "Videos" );
+			if( ImGui::BeginListBox( "##videoList", ImVec2( 300, 200 ) ) )
+			{
 				num = videoList.Num();
-				for ( i = 0; i < num; i++ ) {
+				for( i = 0; i < num; i++ )
+				{
 					selected = ( i == videoListSel );
-					if ( ImGui::Selectable( videoList[i].c_str(), selected ) ) {
+					if( ImGui::Selectable( videoList[i].c_str(), selected ) )
+					{
 						videoListSel = i;
 					}
 
-					if ( selected ) {
+					if( selected )
+					{
 						ImGui::SetItemDefaultFocus();
 					}
 				}
 				ImGui::EndListBox();
 			}
-			if ( ImGui::Button( "Add" ) ) {
+			if( ImGui::Button( "Add" ) )
+			{
 				OnBtnClickedVideoAdd();
 			}
 			ImGui::SameLine();
-			if ( ImGui::Button( "Edit" ) ) {
+			if( ImGui::Button( "Edit" ) )
+			{
 				OnBtnClickedVideoEdit();
 			}
 			/*
@@ -344,20 +382,24 @@ void PDAEditor::Draw() {
 			}
 			*/
 
-			if ( ImGui::BeginPopupModal( "VideoAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "VideoAdd", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted;
 
 				accepted = editVideoDlg.Draw();
-				if ( accepted ) {
+				if( accepted )
+				{
 					OnVideoAdd();
 				}
 
 				ImGui::EndPopup();
 			}
-			if ( ImGui::BeginPopupModal( "VideoEdit", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) ) {
+			if( ImGui::BeginPopupModal( "VideoEdit", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+			{
 				bool accepted = editVideoDlg.Draw();
 
-				if ( accepted ) {
+				if( accepted )
+				{
 					OnVideoEdit();
 				}
 
@@ -369,19 +411,21 @@ void PDAEditor::Draw() {
 		}
 
 		ImGui::BeginDisabled( !saveButtonEnabled );
-		if ( ImGui::Button( "Save" ) ) {
+		if( ImGui::Button( "Save" ) )
+		{
 			OnBtnClickedSave();
 			showTool = false;
 		}
 		ImGui::EndDisabled();
 		ImGui::SameLine();
-		if ( ImGui::Button( "Cancel" ) ) {
+		if( ImGui::Button( "Cancel" ) )
+		{
 			showTool = false;
 		}
 	}
 	ImGui::End();
 
-	if ( isShown && !showTool )
+	if( isShown && !showTool )
 	{
 		isShown = showTool;
 		impl::SetReleaseToolMouse( false );
@@ -392,9 +436,9 @@ void PDAEditor::Draw() {
 /////////////////////////////////////////////////////////////////////////////
 // CDialogPDAEditor message handlers
 
-void PDAEditor::OnDestroy() {
-
-	//com_editors &= ~EDITOR_PDA;
+void PDAEditor::OnDestroy()
+{
+	// com_editors &= ~EDITOR_PDA;
 
 	isShown = false;
 }
@@ -402,11 +446,12 @@ void PDAEditor::OnDestroy() {
 void PDAEditor::PopulatePDAList()
 {
 	int i;
-	int num = declManager->GetNumDecls(DECL_PDA);
+	int num = declManager->GetNumDecls( DECL_PDA );
 	pdaList.Resize( num );
 	pdaList.Clear();
-	for ( i=0; i < num; i++ ) {
-		const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex(DECL_PDA, i) );
+	for( i = 0; i < num; i++ )
+	{
+		const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, i ) );
 		pdaList.Append( pda->GetName() );
 	}
 	pdaListSel = -1;
@@ -423,21 +468,23 @@ void PDAEditor::OnSelChangePDA( int index )
 {
 	int i, num;
 
-	if ( index < 0 ) {
-		pdaListSel = -1;
-		emailListSel = -1;
-		audioListSel = -1;
-		videoListSel = -1;
-		windowTitle = "PDA Editor";
+	if( index < 0 )
+	{
+		pdaListSel		  = -1;
+		emailListSel	  = -1;
+		audioListSel	  = -1;
+		videoListSel	  = -1;
+		windowTitle		  = "PDA Editor";
 		saveButtonEnabled = false;
 		return;
 	}
 
 	pdaListSel = index;
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex( DECL_PDA, index ) );
-	if ( !pda ) {
-		pdaListSel = -1;
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	if( !pda )
+	{
+		pdaListSel	 = -1;
 		emailListSel = -1;
 		audioListSel = -1;
 		videoListSel = -1;
@@ -446,11 +493,14 @@ void PDAEditor::OnSelChangePDA( int index )
 
 	windowTitle = idStr::Format( "PDA Editor - %s", pda->GetName() );
 
-	idFile *file = fileSystem->OpenFileAppend( pda->GetFileName() );
-	if ( file ) {
+	idFile* file = fileSystem->OpenFileAppend( pda->GetFileName() );
+	if( file )
+	{
 		fileSystem->CloseFile( file );
 		saveButtonEnabled = true;
-	} else {
+	}
+	else
+	{
 		windowTitle += " [Read Only]";
 		saveButtonEnabled = false;
 	}
@@ -459,7 +509,8 @@ void PDAEditor::OnSelChangePDA( int index )
 	emailList.Resize( num );
 	emailList.Clear();
 	emailListSel = -1;
-	for ( i=0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		emailList.Append( pda->GetEmailByIndex( i )->GetSubject() );
 	}
 
@@ -467,7 +518,8 @@ void PDAEditor::OnSelChangePDA( int index )
 	audioList.Resize( num );
 	audioList.Clear();
 	audioListSel = -1;
-	for ( i=0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		audioList.Append( pda->GetAudioByIndex( i )->GetAudioName() );
 	}
 
@@ -475,30 +527,33 @@ void PDAEditor::OnSelChangePDA( int index )
 	videoList.Resize( num );
 	videoList.Clear();
 	videoListSel = -1;
-	for ( i=0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		videoList.Append( pda->GetVideoByIndex( i )->GetVideoName() );
 	}
 
-	fullName = pda->GetFullName();
+	fullName  = pda->GetFullName();
 	shortName = pda->GetPdaName();
-	post = pda->GetPost();
-	title = pda->GetTitle();
-	security = pda->GetSecurity();
-	idnum = pda->GetID();
+	post	  = pda->GetPost();
+	title	  = pda->GetTitle();
+	security  = pda->GetSecurity();
+	idnum	  = pda->GetID();
 }
 
 void PDAEditor::OnBtnClickedSave()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pdaConst = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex(DECL_PDA, index) );
-	if ( pdaConst ) {
-		idDeclPDA *pda = const_cast<idDeclPDA *>(pdaConst);
+	const idDeclPDA* pdaConst = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	if( pdaConst )
+	{
+		idDeclPDA* pda = const_cast<idDeclPDA*>( pdaConst );
 
-		idStr declText = "\n";
+		idStr	   declText = "\n";
 		declText += "pda ";
 		declText += pda->GetName();
 		declText += " {\n";
@@ -511,21 +566,24 @@ void PDAEditor::OnBtnClickedSave()
 		declText += "\ttitle   \t\t\"" + title + "\"\n";
 		declText += "\tsecurity\t\t\"" + security + "\"\n";
 
-		for ( int i = 0; i < pda->GetNumEmails(); i++ ) {
+		for( int i = 0; i < pda->GetNumEmails(); i++ )
+		{
 			declText += "\tpda_email\t\t\"";
-			declText += pda->GetEmailByIndex(i)->GetName();
+			declText += pda->GetEmailByIndex( i )->GetName();
 			declText += "\"\n";
 		}
 
-		for ( int i = 0; i < pda->GetNumAudios(); i++ ) {
+		for( int i = 0; i < pda->GetNumAudios(); i++ )
+		{
 			declText += "\tpda_audio\t\t\"";
-			declText += pda->GetAudioByIndex(i)->GetName();
+			declText += pda->GetAudioByIndex( i )->GetName();
 			declText += "\"\n";
 		}
 
-		for ( int i = 0; i < pda->GetNumVideos(); i++ ) {
+		for( int i = 0; i < pda->GetNumVideos(); i++ )
+		{
 			declText += "\tpda_video\t\t\"";
-			declText += pda->GetVideoByIndex(i)->GetName();
+			declText += pda->GetVideoByIndex( i )->GetName();
 			declText += "\"\n";
 		}
 
@@ -537,34 +595,38 @@ void PDAEditor::OnBtnClickedSave()
 	}
 }
 
-DialogPDAAdd::DialogPDAAdd() {
+DialogPDAAdd::DialogPDAAdd()
+{
 	Reset();
 }
 
-void DialogPDAAdd::Reset() {
+void DialogPDAAdd::Reset()
+{
 	name.Clear();
 }
 
-bool DialogPDAAdd::Draw() {
+bool DialogPDAAdd::Draw()
+{
 	ImGui::InputTextStr( "Name", &name );
 
 	bool isAccepted = false;
-	if ( ImGui::Button( "OK" ) ) {
+	if( ImGui::Button( "OK" ) )
+	{
 		isAccepted = true;
 		ImGui::CloseCurrentPopup();
 	}
 	ImGui::SameLine();
-	if ( ImGui::Button( "Cancel" ) ) {
+	if( ImGui::Button( "Cancel" ) )
+	{
 		isAccepted = false;
 		ImGui::CloseCurrentPopup();
 	}
 	return isAccepted;
 }
 
-
 void PDAEditor::OnBtnClickedRandom()
 {
-	idnum = idStr::Format("%d-%02X", 1000+(rand()%8999), (rand()%255));
+	idnum = idStr::Format( "%d-%02X", 1000 + ( rand() % 8999 ), ( rand() % 255 ) );
 }
 
 void PDAEditor::OnBtnClickedPDAAdd()
@@ -581,20 +643,23 @@ void PDAEditor::OnBtnClickedPDADel()
 void PDAEditor::OnBtnClickedEmailAdd()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex(DECL_PDA, index) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( pda ) {
+	if( pda )
+	{
 		idStr name;
 
 		// Search for an unused name
-		int newIndex = pda->GetNumEmails();
-		do {
-			name = idStr::Format("%s_email_%d", pda->GetName(), newIndex++);
-		} while ( declManager->FindType(DECL_EMAIL, name, false) != NULL );
+		int	  newIndex = pda->GetNumEmails();
+		do
+		{
+			name = idStr::Format( "%s_email_%d", pda->GetName(), newIndex++ );
+		} while( declManager->FindType( DECL_EMAIL, name, false ) != NULL );
 
 		editEmailDlg.Reset();
 		editEmailDlg.SetName( name );
@@ -605,17 +670,19 @@ void PDAEditor::OnBtnClickedEmailAdd()
 void PDAEditor::OnEmailAdd()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
-	if ( !pda ) {
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	if( !pda )
+	{
 		return;
 	}
 
-	idStr &name = editEmailDlg.GetName();
-	idDeclEmail *email = static_cast<idDeclEmail *>( declManager->CreateNewDecl( DECL_EMAIL, name, pda->GetFileName() ) );
+	idStr&		 name  = editEmailDlg.GetName();
+	idDeclEmail* email = static_cast<idDeclEmail*>( declManager->CreateNewDecl( DECL_EMAIL, name, pda->GetFileName() ) );
 	email->SetText( editEmailDlg.GetDeclText() );
 	email->ReplaceSourceFileText();
 	email->Invalidate();
@@ -623,7 +690,7 @@ void PDAEditor::OnEmailAdd()
 	pda->AddEmail( name );
 
 	// Get it again to reparse
-	const idDeclEmail *emailConst = static_cast<const idDeclEmail *>( declManager->FindType( DECL_EMAIL, name ) );
+	const idDeclEmail* emailConst = static_cast<const idDeclEmail*>( declManager->FindType( DECL_EMAIL, name ) );
 	emailList.Append( emailConst->GetSubject() );
 
 	// Save the pda to include this email in the list
@@ -634,18 +701,21 @@ void PDAEditor::OnEmailAdd()
 void PDAEditor::OnBtnClickedEmailEdit()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( !pda ) {
+	if( !pda )
+	{
 		return;
 	}
 
 	index = emailListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
@@ -656,28 +726,31 @@ void PDAEditor::OnBtnClickedEmailEdit()
 void PDAEditor::OnEmailEdit()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( !pda ) {
+	if( !pda )
+	{
 		return;
 	}
 
 	index = emailListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	idDeclEmail* email = const_cast<idDeclEmail *>( pda->GetEmailByIndex( index ) );
+	idDeclEmail* email = const_cast<idDeclEmail*>( pda->GetEmailByIndex( index ) );
 	email->SetText( editEmailDlg.GetDeclText() );
 	email->ReplaceSourceFileText();
 	email->Invalidate();
 
 	// Get it again to reparse
-	email = const_cast<idDeclEmail *>( pda->GetEmailByIndex( index ) );
+	email = const_cast<idDeclEmail*>( pda->GetEmailByIndex( index ) );
 
 	emailList.RemoveIndex( index );
 	emailList.Insert( email->GetSubject(), index );
@@ -690,20 +763,23 @@ void PDAEditor::OnBtnClickedEmailDel()
 void PDAEditor::OnBtnClickedAudioAdd()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( pda ) {
+	if( pda )
+	{
 		idStr name;
 
 		// Search for an unused name
-		int newIndex = pda->GetNumAudios();
-		do {
-			name = idStr::Format("%s_audio_%d", pda->GetName(), newIndex++);
-		} while ( declManager->FindType(DECL_AUDIO, name, false) != NULL );
+		int	  newIndex = pda->GetNumAudios();
+		do
+		{
+			name = idStr::Format( "%s_audio_%d", pda->GetName(), newIndex++ );
+		} while( declManager->FindType( DECL_AUDIO, name, false ) != NULL );
 
 		editAudioDlg.Reset();
 		editAudioDlg.SetName( name );
@@ -714,17 +790,19 @@ void PDAEditor::OnBtnClickedAudioAdd()
 void PDAEditor::OnAudioAdd()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
-	if ( !pda ) {
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	if( !pda )
+	{
 		return;
 	}
 
-	idStr &name = editAudioDlg.GetName();
-	idDeclEmail *email = static_cast<idDeclEmail *>( declManager->CreateNewDecl( DECL_AUDIO, name, pda->GetFileName() ) );
+	idStr&		 name  = editAudioDlg.GetName();
+	idDeclEmail* email = static_cast<idDeclEmail*>( declManager->CreateNewDecl( DECL_AUDIO, name, pda->GetFileName() ) );
 	email->SetText( editAudioDlg.GetDeclText() );
 	email->ReplaceSourceFileText();
 	email->Invalidate();
@@ -732,7 +810,7 @@ void PDAEditor::OnAudioAdd()
 	pda->AddAudio( name );
 
 	// Get it again to reparse
-	const idDeclAudio *audioConst = static_cast<const idDeclAudio *>( declManager->FindType( DECL_AUDIO, name ) );
+	const idDeclAudio* audioConst = static_cast<const idDeclAudio*>( declManager->FindType( DECL_AUDIO, name ) );
 	audioList.Append( audioConst->GetAudioName() );
 
 	// Save the pda to include this audio in the list
@@ -743,18 +821,21 @@ void PDAEditor::OnAudioAdd()
 void PDAEditor::OnBtnClickedAudioEdit()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( !pda ) {
+	if( !pda )
+	{
 		return;
 	}
 
 	index = audioListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
@@ -762,30 +843,34 @@ void PDAEditor::OnBtnClickedAudioEdit()
 	ImGui::OpenPopup( "AudioEdit" );
 }
 
-void PDAEditor::OnAudioEdit() {
+void PDAEditor::OnAudioEdit()
+{
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( !pda ) {
+	if( !pda )
+	{
 		return;
 	}
 
 	index = audioListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	idDeclAudio *audio = const_cast<idDeclAudio *>( pda->GetAudioByIndex( index ) );
+	idDeclAudio* audio = const_cast<idDeclAudio*>( pda->GetAudioByIndex( index ) );
 	audio->SetText( editAudioDlg.GetDeclText() );
 	audio->ReplaceSourceFileText();
 	audio->Invalidate();
 
 	// Get it again to reparse
-	audio = const_cast<idDeclAudio *>( pda->GetAudioByIndex( index ) );
+	audio = const_cast<idDeclAudio*>( pda->GetAudioByIndex( index ) );
 
 	audioList.RemoveIndex( index );
 	audioList.Insert( audio->GetAudioName(), index );
@@ -798,20 +883,23 @@ void PDAEditor::OnBtnClickedAudioDel()
 void PDAEditor::OnBtnClickedVideoAdd()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( pda ) {
+	if( pda )
+	{
 		idStr name;
 
 		// Search for an unused name
-		int newIndex = pda->GetNumVideos();
-		do {
-			name = idStr::Format("%s_video_%d", pda->GetName(), newIndex++);
-		} while ( declManager->FindType(DECL_VIDEO, name, false) != NULL );
+		int	  newIndex = pda->GetNumVideos();
+		do
+		{
+			name = idStr::Format( "%s_video_%d", pda->GetName(), newIndex++ );
+		} while( declManager->FindType( DECL_VIDEO, name, false ) != NULL );
 
 		editVideoDlg.Reset();
 		editVideoDlg.SetName( name );
@@ -819,19 +907,22 @@ void PDAEditor::OnBtnClickedVideoAdd()
 	}
 }
 
-void PDAEditor::OnVideoAdd() {
+void PDAEditor::OnVideoAdd()
+{
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
-	if ( !pda ) {
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	if( !pda )
+	{
 		return;
 	}
 
-	idStr &name = editVideoDlg.GetName();
-	idDeclVideo *video = static_cast<idDeclVideo *>( declManager->CreateNewDecl( DECL_VIDEO, name, pda->GetFileName() ) );
+	idStr&		 name  = editVideoDlg.GetName();
+	idDeclVideo* video = static_cast<idDeclVideo*>( declManager->CreateNewDecl( DECL_VIDEO, name, pda->GetFileName() ) );
 	video->SetText( editVideoDlg.GetDeclText() );
 	video->ReplaceSourceFileText();
 	video->Invalidate();
@@ -839,7 +930,7 @@ void PDAEditor::OnVideoAdd() {
 	pda->AddVideo( name );
 
 	// Get it again to reparse
-	const idDeclVideo *videoConst = static_cast<const idDeclVideo *>( declManager->FindType( DECL_VIDEO, name ) );
+	const idDeclVideo* videoConst = static_cast<const idDeclVideo*>( declManager->FindType( DECL_VIDEO, name ) );
 	videoList.Append( videoConst->GetVideoName() );
 
 	// Save the pda to include this video in the list
@@ -850,18 +941,21 @@ void PDAEditor::OnVideoAdd() {
 void PDAEditor::OnBtnClickedVideoEdit()
 {
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA *>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( !pda ) {
+	if( !pda )
+	{
 		return;
 	}
 
 	index = videoListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
@@ -869,30 +963,34 @@ void PDAEditor::OnBtnClickedVideoEdit()
 	ImGui::OpenPopup( "VideoEdit" );
 }
 
-void PDAEditor::OnVideoEdit() {
+void PDAEditor::OnVideoEdit()
+{
 	int index = pdaListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	const idDeclPDA *pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
+	const idDeclPDA* pda = dynamic_cast<const idDeclPDA*>( declManager->DeclByIndex( DECL_PDA, index ) );
 
-	if ( !pda ) {
+	if( !pda )
+	{
 		return;
 	}
 
 	index = videoListSel;
-	if ( index < 0 ) {
+	if( index < 0 )
+	{
 		return;
 	}
 
-	idDeclVideo *video = const_cast<idDeclVideo *>( pda->GetVideoByIndex( index ) );
+	idDeclVideo* video = const_cast<idDeclVideo*>( pda->GetVideoByIndex( index ) );
 	video->SetText( editVideoDlg.GetDeclText() );
 	video->ReplaceSourceFileText();
 	video->Invalidate();
 
 	// Get it again to reparse
-	video = const_cast<idDeclVideo *>( pda->GetVideoByIndex( index ) );
+	video = const_cast<idDeclVideo*>( pda->GetVideoByIndex( index ) );
 
 	videoList.RemoveIndex( index );
 	videoList.Insert( video->GetVideoName(), index );
@@ -901,9 +999,6 @@ void PDAEditor::OnVideoEdit() {
 void PDAEditor::OnBtnClickedVideoDel()
 {
 }
-
-
-
 
 DialogPDAEditEmail::DialogPDAEditEmail()
 {
@@ -920,12 +1015,14 @@ bool DialogPDAEditEmail::Draw()
 
 	bool isAccepted = false;
 
-	if ( ImGui::Button( "OK" ) ) {
+	if( ImGui::Button( "OK" ) )
+	{
 		isAccepted = true;
 		ImGui::CloseCurrentPopup();
 	}
 	ImGui::SameLine();
-	if ( ImGui::Button( "Cancel" ) ) {
+	if( ImGui::Button( "Cancel" ) )
+	{
 		isAccepted = false;
 		ImGui::CloseCurrentPopup();
 	}
@@ -940,19 +1037,21 @@ DialogPDAEditAudio::DialogPDAEditAudio()
 
 bool DialogPDAEditAudio::Draw()
 {
-	ImGui::InputTextStr("Wave", &wave);
-	ImGui::InputTextStr("Audio Name", &audioName);
-	ImGui::InputTextMultilineStr("Info", &info);
-	ImGui::InputTextStr("Preview", &preview);
+	ImGui::InputTextStr( "Wave", &wave );
+	ImGui::InputTextStr( "Audio Name", &audioName );
+	ImGui::InputTextMultilineStr( "Info", &info );
+	ImGui::InputTextStr( "Preview", &preview );
 
 	bool isAccepted = false;
 
-	if ( ImGui::Button( "OK" ) ) {
+	if( ImGui::Button( "OK" ) )
+	{
 		isAccepted = true;
 		ImGui::CloseCurrentPopup();
 	}
 	ImGui::SameLine();
-	if ( ImGui::Button( "Cancel" ) ) {
+	if( ImGui::Button( "Cancel" ) )
+	{
 		isAccepted = false;
 		ImGui::CloseCurrentPopup();
 	}
@@ -967,20 +1066,22 @@ DialogPDAEditVideo::DialogPDAEditVideo()
 
 bool DialogPDAEditVideo::Draw()
 {
-	ImGui::InputTextStr("Video Name", &videoName);
-	ImGui::InputTextMultilineStr("Info", &info);
-	ImGui::InputTextStr("Roq", &video);
-	ImGui::InputTextStr("Wave", &audio);
-	ImGui::InputTextStr("Preview", &preview);
+	ImGui::InputTextStr( "Video Name", &videoName );
+	ImGui::InputTextMultilineStr( "Info", &info );
+	ImGui::InputTextStr( "Roq", &video );
+	ImGui::InputTextStr( "Wave", &audio );
+	ImGui::InputTextStr( "Preview", &preview );
 
 	bool isAccepted = false;
 
-	if ( ImGui::Button("OK" ) ) {
+	if( ImGui::Button( "OK" ) )
+	{
 		isAccepted = true;
 		ImGui::CloseCurrentPopup();
 	}
 	ImGui::SameLine();
-	if ( ImGui::Button( "Cancel" ) ) {
+	if( ImGui::Button( "Cancel" ) )
+	{
 		isAccepted = false;
 		ImGui::CloseCurrentPopup();
 	}
@@ -1002,23 +1103,23 @@ void DialogPDAEditEmail::Reset()
 	name.Clear();
 }
 
-void DialogPDAEditEmail::SetName( idStr &_name )
+void DialogPDAEditEmail::SetName( idStr& _name )
 {
 	name = _name;
 }
 
-idStr &DialogPDAEditEmail::GetName()
+idStr& DialogPDAEditEmail::GetName()
 {
 	return name;
 }
 
-void DialogPDAEditEmail::SetEmail( const idDeclEmail *email )
+void DialogPDAEditEmail::SetEmail( const idDeclEmail* email )
 {
-	to = email->GetTo();
-	from = email->GetFrom();
-	date = email->GetDate();
+	to		= email->GetTo();
+	from	= email->GetFrom();
+	date	= email->GetDate();
 	subject = email->GetSubject();
-	body = email->GetBody();
+	body	= email->GetBody();
 
 	name = email->GetName();
 }
@@ -1026,7 +1127,7 @@ void DialogPDAEditEmail::SetEmail( const idDeclEmail *email )
 idStr DialogPDAEditEmail::GetDeclText()
 {
 	idStr mungedBody = body;
-	mungedBody.Replace("\n", "\\n\"\n\"");
+	mungedBody.Replace( "\n", "\\n\"\n\"" );
 
 	idStr declText;
 	declText += "\n";
@@ -1056,22 +1157,22 @@ void DialogPDAEditAudio::Reset()
 	name.Clear();
 }
 
-void DialogPDAEditAudio::SetName(idStr& _name)
+void DialogPDAEditAudio::SetName( idStr& _name )
 {
 	name = _name;
 }
 
-idStr &DialogPDAEditAudio::GetName()
+idStr& DialogPDAEditAudio::GetName()
 {
 	return name;
 }
 
-void DialogPDAEditAudio::SetAudio( const idDeclAudio *_audio )
+void DialogPDAEditAudio::SetAudio( const idDeclAudio* _audio )
 {
-	wave = _audio->GetWave();
+	wave	  = _audio->GetWave();
 	audioName = _audio->GetAudioName();
-	info = _audio->GetInfo();
-	preview = _audio->GetPreview();
+	info	  = _audio->GetInfo();
+	preview	  = _audio->GetPreview();
 
 	name = _audio->GetName();
 }
@@ -1079,7 +1180,7 @@ void DialogPDAEditAudio::SetAudio( const idDeclAudio *_audio )
 idStr DialogPDAEditAudio::GetDeclText()
 {
 	idStr escapedInfo = info;
-	escapedInfo.Replace("\n", "\\n");
+	escapedInfo.Replace( "\n", "\\n" );
 
 	idStr declText;
 
@@ -1108,7 +1209,7 @@ void DialogPDAEditVideo::Reset()
 	name.Clear();
 }
 
-void DialogPDAEditVideo::SetName(idStr& _name)
+void DialogPDAEditVideo::SetName( idStr& _name )
 {
 	name = _name;
 }
@@ -1118,13 +1219,13 @@ idStr& DialogPDAEditVideo::GetName()
 	return name;
 }
 
-void DialogPDAEditVideo::SetVideo(const idDeclVideo* _video)
+void DialogPDAEditVideo::SetVideo( const idDeclVideo* _video )
 {
-	video = _video->GetRoq();
-	audio = _video->GetWave();
+	video	  = _video->GetRoq();
+	audio	  = _video->GetWave();
 	videoName = _video->GetVideoName();
-	info = _video->GetInfo();
-	preview = _video->GetPreview();
+	info	  = _video->GetInfo();
+	preview	  = _video->GetPreview();
 
 	name = _video->GetName();
 }
@@ -1132,7 +1233,7 @@ void DialogPDAEditVideo::SetVideo(const idDeclVideo* _video)
 idStr DialogPDAEditVideo::GetDeclText()
 {
 	idStr escapedInfo = info;
-	escapedInfo.Replace("\n", "\\n");
+	escapedInfo.Replace( "\n", "\\n" );
 
 	idStr declText;
 	declText += "\n";

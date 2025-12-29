@@ -324,7 +324,12 @@ int idCollisionModelManagerLocal::RotateEdgeThroughEdge( cm_traceWork_t *tw, con
 			q = - b - sqrtd;
 		}
 		frac1 = q / a;
-		frac2 = c / q;
+		if ( q == 0.0f ) {
+			frac2 = 0.0f;
+		}
+		else {
+			frac2 = c / q;
+		}
 	}
 
 	if ( tw->angle < 0.0f ) {

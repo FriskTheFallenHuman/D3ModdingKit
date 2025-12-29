@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,20 +30,19 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-
 #include "sys/win32/rc/resource.h"
 // FIXME: SteelStorm2 has this whole file commented out
 
-idCVar rbfg_DefaultWidth( "rbfg_DefaultWidth", "0", 0, "" );
-idCVar rbfg_DefaultHeight( "rbfg_DefaultHeight", "0", 0, "" );
+idCVar		 rbfg_DefaultWidth( "rbfg_DefaultWidth", "0", 0, "" );
+idCVar		 rbfg_DefaultHeight( "rbfg_DefaultHeight", "0", 0, "" );
 
 static idStr RBFName;
 
-static bool CheckPow2(int Num)
+static bool	 CheckPow2( int Num )
 {
-	while(Num)
+	while( Num )
 	{
-		if ((Num & 1) && (Num != 1))
+		if( ( Num & 1 ) && ( Num != 1 ) )
 		{
 			return false;
 		}
@@ -53,48 +53,49 @@ static bool CheckPow2(int Num)
 	return true;
 }
 
-static void Com_WriteConfigToFile(const char *filename) {
-	common->Warning("Some renderbump code called Com_WriteConfigTiFile(\"%s\") which is not implemented!\n", filename);
+static void Com_WriteConfigToFile( const char* filename )
+{
+	common->Warning( "Some renderbump code called Com_WriteConfigTiFile(\"%s\") which is not implemented!\n", filename );
 }
 
-static BOOL CALLBACK RBFProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam)
+static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam )
 {
-	switch (message)
+	switch( message )
 	{
 		case WM_INITDIALOG:
-			SetDlgItemInt(hwndDlg, IDC_RBF_WIDTH, rbfg_DefaultWidth.GetInteger(), FALSE);
-			SetDlgItemInt(hwndDlg, IDC_RBF_HEIGHT, rbfg_DefaultHeight.GetInteger(), FALSE);
-			SetDlgItemText(hwndDlg, IDC_RBF_FILENAME, RBFName);
+			SetDlgItemInt( hwndDlg, IDC_RBF_WIDTH, rbfg_DefaultWidth.GetInteger(), FALSE );
+			SetDlgItemInt( hwndDlg, IDC_RBF_HEIGHT, rbfg_DefaultHeight.GetInteger(), FALSE );
+			SetDlgItemText( hwndDlg, IDC_RBF_FILENAME, RBFName );
 			return TRUE;
 
 		case WM_COMMAND:
-			switch (LOWORD(wParam))
+			switch( LOWORD( wParam ) )
 			{
 				case IDOK:
+				{
+					int width, height;
+
+					width  = GetDlgItemInt( hwndDlg, IDC_RBF_WIDTH, 0, FALSE );
+					height = GetDlgItemInt( hwndDlg, IDC_RBF_HEIGHT, 0, FALSE );
+
+					rbfg_DefaultWidth.SetInteger( width );
+					rbfg_DefaultHeight.SetInteger( height );
+
+					Com_WriteConfigToFile( CONFIG_FILE );
+
+					if( !CheckPow2( width ) || !CheckPow2( height ) )
 					{
-						int		width, height;
-
-						width = GetDlgItemInt(hwndDlg, IDC_RBF_WIDTH, 0, FALSE);
-						height = GetDlgItemInt(hwndDlg, IDC_RBF_HEIGHT, 0, FALSE);
-
-						rbfg_DefaultWidth.SetInteger( width );
-						rbfg_DefaultHeight.SetInteger( height );
-
-						Com_WriteConfigToFile( CONFIG_FILE );
-
-						if (!CheckPow2(width) || !CheckPow2(height))
-						{
-							return TRUE;
-						}
-
-						DestroyWindow(hwndDlg);
-
-						cmdSystem->BufferCommandText( CMD_EXEC_APPEND, va("renderbumpflat -size %d %d %s\n", width, height, RBFName.c_str() ) );
 						return TRUE;
 					}
 
+					DestroyWindow( hwndDlg );
+
+					cmdSystem->BufferCommandText( CMD_EXEC_APPEND, va( "renderbumpflat -size %d %d %s\n", width, height, RBFName.c_str() ) );
+					return TRUE;
+				}
+
 				case IDCANCEL:
-					DestroyWindow(hwndDlg);
+					DestroyWindow( hwndDlg );
 					return TRUE;
 			}
 	}
@@ -102,13 +103,13 @@ static BOOL CALLBACK RBFProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARAM l
 	return FALSE;
 }
 
-void DoRBFDialog(const char *FileName)
+void DoRBFDialog( const char* FileName )
 {
 	RBFName = FileName;
 
 	Sys_GrabMouseCursor( false );
 
-	DialogBox(0, MAKEINTRESOURCE(IDD_RENDERBUMPFLAT), 0, (DLGPROC)RBFProc);
+	DialogBox( 0, MAKEINTRESOURCE( IDD_RENDERBUMPFLAT ), 0, ( DLGPROC )RBFProc );
 
 	Sys_GrabMouseCursor( true );
 }

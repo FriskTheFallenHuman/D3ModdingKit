@@ -802,6 +802,8 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 	tw.trace.fraction = 1.0f;
 	tw.trace.c.contents = 0;
 	tw.trace.c.type = CONTACT_NONE;
+	tw.trace.c.material = NULL;
+	tw.trace.c.id = 0;
 	tw.contents = contentMask;
 	tw.isConvex = true;
 	tw.rotation = false;
@@ -889,8 +891,8 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 		if ( session->rw ) {
 			session->rw->DebugArrow( colorRed, start, end, 1 );
 		}
-		common->Printf( "idCollisionModelManagerLocal::Translation: huge translation from (%.2f %.2f %.2f) to (%.2f %.2f %.2f)\n",
-				start.x, start.y, start.z, end.x, end.y, end.z);
+		common->Printf( "idCollisionModelManagerLocal::Translation: huge translation from (%.2f %.2f %.2f) to (%.2f %.2f %.2f) of entity: %s\n",
+				start.x, start.y, start.z, end.x, end.y, end.z, tw.model->name.c_str() );
 		return;
 	}
 

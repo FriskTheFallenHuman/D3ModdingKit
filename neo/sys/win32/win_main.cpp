@@ -475,9 +475,9 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 				s = path;
 				s.AppendPath(BASE_GAMEDIR);
 				if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFDIR)) {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 					common->Warning( "using path of executable: %s", path.c_str() );
-	#endif // _DEBUG
+#endif // _DEBUG
 					return true;
 				} else {
 					path.Clear();
@@ -1479,7 +1479,7 @@ void idSysLocal::StartProcess( const char *exePath, bool doexit ) {
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
 
-	strncpy( szPathOrig, exePath, _MAX_PATH );
+	idStr::Copynz( szPathOrig, exePath, _MAX_PATH );
 	szPathOrig[_MAX_PATH-1] = 0;
 
 	if( !CreateProcess( NULL, szPathOrig, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ) ) {

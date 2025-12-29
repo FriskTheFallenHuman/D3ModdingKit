@@ -413,7 +413,6 @@ void idPlayerView::WeaponFireFeedback( const idDict *weaponDef ) {
 		int	finish = gameLocal.time + g_kickTime.GetFloat() * recoilTime;
 		kickFinishTime = finish;
 	}
-
 }
 
 /*
@@ -568,7 +567,6 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 			renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, bfgMaterial );
 		}
-
 	}
 
 	// test a single material drawn over everything
@@ -590,7 +588,6 @@ idPlayerView::DoubleVision
 ===================
 */
 void idPlayerView::DoubleVision( idUserInterface *hud, const renderView_t *view, int offset ) {
-
 	if ( !g_doubleVision.GetBool() ) {
 		SingleView( hud, view );
 		return;
@@ -722,7 +719,6 @@ idPlayerView::InfluenceVision
 ===================
 */
 void idPlayerView::InfluenceVision( idUserInterface *hud, const renderView_t *view ) {
-
 	float distance = 0.0f;
 	float pct = 1.0f;
 	if ( player->GetInfluenceEntity() ) {

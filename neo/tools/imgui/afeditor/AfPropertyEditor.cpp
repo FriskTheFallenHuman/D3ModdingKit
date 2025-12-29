@@ -20,7 +20,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,13 +35,13 @@ If you have questions concerning this license or the applicable additional terms
 
 namespace ImGuiTools
 {
-AfPropertyEditor::AfPropertyEditor( idDeclAF* newDecl )
-	: decl( newDecl )
-	, contentWidget( MakePhysicsContentsSelector() )
-	, clipMaskWidget( MakePhysicsContentsSelector() )
-	, linearTolerance( 0 )
-	, angularTolerance( 0 )
-	, currentModel( 0 )
+AfPropertyEditor::AfPropertyEditor( idDeclAF* newDecl ) :
+	decl( newDecl ),
+	contentWidget( MakePhysicsContentsSelector() ),
+	clipMaskWidget( MakePhysicsContentsSelector() ),
+	linearTolerance( 0 ),
+	angularTolerance( 0 ),
+	currentModel( 0 )
 {
 	contentWidget.UpdateWithBitFlags( decl->contents );
 	clipMaskWidget.UpdateWithBitFlags( decl->clipMask );
@@ -61,7 +62,7 @@ bool AfPropertyEditor::Do()
 		if( ImGui::Combo( "Models", &currentModel, StringListItemGetter, &modelDefs, modelDefs.Num() ) )
 		{
 			decl->model = modelDefs[currentModel];
-			changed = true;
+			changed		= true;
 		}
 		ImGui::InputTextStr( "Skin", &decl->skin, ImGuiInputTextFlags_CharsNoBlank );
 	}
@@ -103,7 +104,7 @@ bool AfPropertyEditor::Do()
 	}
 
 	// TODO(Stephen): Figure out what these properties are for.
-	//if (ImGui::CollapsingHeader("Suspend Movement"))
+	// if (ImGui::CollapsingHeader("Suspend Movement"))
 	//{
 	//	ImGui::InputInt("No Move Time", (int*)&decl->noMoveTime);
 	//	ImGui::InputInt("Linear Tolerance", &linearTolerance);

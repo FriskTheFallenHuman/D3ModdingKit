@@ -426,7 +426,9 @@ void idChoiceWindow::Draw(int time, float x, float y) {
 		shadowRect.x += textShadow;
 		shadowRect.y += textShadow;
 
-		dc->DrawText( shadowText, textScale, textAlign, colorBlack, shadowRect, false, -1 );
+		if (choices.Num() > 0) {
+			dc->DrawText( shadowText, textScale, textAlign, colorBlack, shadowRect, false, -1 );
+		}
 	}
 
 	if ( hover && !noEvents && Contains(gui->CursorX(), gui->CursorY()) ) {

@@ -20,7 +20,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -40,17 +41,17 @@ static bool ConstraintItemGetter( void* data, int index, const char** items );
 
 static bool CVarCheckBox( const char* label, const char* cvarname );
 
-AfEditor::AfEditor()
-	: isShown( false )
-	, fileSelection( 0 )
-	, currentAf( 0 )
-	, currentConstraint( 0 )
-	, currentBodySelection( 0 )
-	, currentEntity( 0 )
-	, decl( nullptr )
-	, body( nullptr )
-	, constraint( nullptr )
-	, propertyEditor( nullptr )
+AfEditor::AfEditor() :
+	isShown( false ),
+	fileSelection( 0 ),
+	currentAf( 0 ),
+	currentConstraint( 0 ),
+	currentBodySelection( 0 ),
+	currentEntity( 0 ),
+	decl( nullptr ),
+	body( nullptr ),
+	constraint( nullptr ),
+	propertyEditor( nullptr )
 {
 }
 
@@ -76,9 +77,9 @@ void AfEditor::Draw()
 	{
 		impl::SetReleaseToolMouse( true );
 
-		bool changedAf = false;
+		bool changedAf		 = false;
 		bool openedAfBrowser = false;
-		bool clickedNew = false;
+		bool clickedNew		 = false;
 
 		if( ImGui::BeginMenuBar() )
 		{
@@ -92,7 +93,7 @@ void AfEditor::Draw()
 				if( ImGui::MenuItem( "Open..", "Ctrl+O" ) )
 				{
 					afList.shouldPopulate = true;
-					openedAfBrowser = true;
+					openedAfBrowser		  = true;
 				}
 
 				if( ImGui::MenuItem( "Save", "Ctrl+S" ) )
@@ -269,7 +270,7 @@ void AfEditor::Draw()
 							{
 								// TODO: Should do some data validation on the body name.
 								decl->NewBody( bodyName );
-								bodyName[0] = '\0';
+								bodyName[0]			 = '\0';
 								currentBodySelection = decl->bodies.Num() - 1;
 								bodyEditors.Append( new AfBodyEditor( decl, decl->bodies[currentBodySelection] ) );
 								ImGui::CloseCurrentPopup();

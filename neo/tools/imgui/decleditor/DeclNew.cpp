@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,25 +30,26 @@ If you have questions concerning this license or the applicable additional terms
 #include "../ImGuiTools.h"
 #pragma hdrstop
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /*
 ================
 DeclNew::DeclNew
 ================
 */
-DeclNew::DeclNew()
-	: typeList()
-	, typeListSel(-1)
-	, nameEdit()
-	, fileEdit()
-	, errorText()
-	, declTree(NULL)
-	, defaultType()
-	, defaultName()
-	, newDecl(NULL)
-	, state(DONE)
-	, selectDlg( DECL_AF, "af", ".af", "AFs" )
+DeclNew::DeclNew() :
+	typeList(),
+	typeListSel( -1 ),
+	nameEdit(),
+	fileEdit(),
+	errorText(),
+	declTree( NULL ),
+	defaultType(),
+	defaultName(),
+	newDecl( NULL ),
+	state( DONE ),
+	selectDlg( DECL_AF, "af", ".af", "AFs" )
 {
 }
 
@@ -56,12 +58,14 @@ DeclNew::DeclNew()
 DeclNew::InitTypeList
 ================
 */
-void DeclNew::InitTypeList( void ) {
+void DeclNew::InitTypeList( void )
+{
 	int i;
 
 	typeList.Clear();
-	for ( i = 0; i < declManager->GetNumDeclTypes(); i++ ) {
-		typeList.Append( declManager->GetDeclNameFromType( (declType_t)i ) );
+	for( i = 0; i < declManager->GetNumDeclTypes(); i++ )
+	{
+		typeList.Append( declManager->GetDeclNameFromType( ( declType_t )i ) );
 	}
 	typeListSel = -1;
 }
@@ -71,48 +75,57 @@ void DeclNew::InitTypeList( void ) {
 DeclNew::Reset
 ================
 */
-void DeclNew::Reset()  {
+void DeclNew::Reset()
+{
 	InitTypeList();
 
 	typeListSel = typeList.FindIndex( defaultType );
-	nameEdit = defaultName;
-	fileEdit = defaultFile;
-	newDecl = NULL;
-	state = DONE;
+	nameEdit	= defaultName;
+	fileEdit	= defaultFile;
+	newDecl		= NULL;
+	state		= DONE;
 }
 
-void DeclNew::Start() {
+void DeclNew::Start()
+{
 	Reset();
 
 	state = NAME;
 
-	ImGui::OpenPopup("New Declaration");
+	ImGui::OpenPopup( "New Declaration" );
 }
 
-bool DeclNew::Draw() {
-	if ( state == DONE ) {
+bool DeclNew::Draw()
+{
+	if( state == DONE )
+	{
 		return false;
 	}
 
 	bool accepted = false;
 	bool canceled = false;
 
-	if ( ImGui::BeginPopupModal( "New Declaration", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+	if( ImGui::BeginPopupModal( "New Declaration", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
+	{
 		ImGui::TextColored( ImVec4( 1, 0, 0, 1 ), "%s", errorText.c_str() );
 
-		const char *previewValue = typeListSel == -1 ? NULL : typeList[typeListSel].c_str();
+		const char* previewValue = typeListSel == -1 ? NULL : typeList[typeListSel].c_str();
 
-		if ( ImGui::BeginCombo( "Type##typeListSelect", previewValue ) ) {
+		if( ImGui::BeginCombo( "Type##typeListSelect", previewValue ) )
+		{
 			ImGui::SetItemTooltip( "select the declaration type to create" );
 
-			for ( int i = 0; i < typeList.Num(); i++ ) {
+			for( int i = 0; i < typeList.Num(); i++ )
+			{
 				bool selected = ( i == typeListSel );
 
 				ImGui::PushID( i );
-				if ( ImGui::Selectable( typeList[i].c_str(), selected ) ) {
+				if( ImGui::Selectable( typeList[i].c_str(), selected ) )
+				{
 					typeListSel = i;
 				}
-				if ( selected ) {
+				if( selected )
+				{
 					ImGui::SetItemDefaultFocus();
 				}
 				ImGui::PopID();
@@ -121,40 +134,45 @@ bool DeclNew::Draw() {
 			ImGui::EndCombo();
 		}
 
-		if ( ImGui::InputTextStr( "Name", &nameEdit ) ) {
-
+		if( ImGui::InputTextStr( "Name", &nameEdit ) )
+		{
 		}
 		ImGui::SetItemTooltip( "enter a name for the new declaration" );
-		if ( ImGui::InputTextStr( "File", &fileEdit ) ) {
-
+		if( ImGui::InputTextStr( "File", &fileEdit ) )
+		{
 		}
 		ImGui::SetItemTooltip( "enter the name of the file to add the declaration to" );
 		ImGui::SameLine();
-		if ( ImGui::Button( "..." ) ) {
-			//selectDlg.Start();
+		if( ImGui::Button( "..." ) )
+		{
+			// selectDlg.Start();
 			OnBnClickedFile();
 		}
 		ImGui::SetItemTooltip( "select existing file to add the declaration to" );
 
-		if ( selectDlg.Draw() ) {
+		if( selectDlg.Draw() )
+		{
 			// accepted
-			//fileEdit = fileSystem->OSPathToRelativePath( dlgFile.m_ofn.lpstrFile );
+			// fileEdit = fileSystem->OSPathToRelativePath( dlgFile.m_ofn.lpstrFile );
 			fileEdit = selectDlg.GetDecl()->GetFileName();
 		}
 
-		if ( ImGui::Button( "OK" ) ) {
+		if( ImGui::Button( "OK" ) )
+		{
 			OnBnClickedOk();
-			if ( newDecl ) {
+			if( newDecl )
+			{
 				accepted = true;
-				state = DONE;
+				state	 = DONE;
 				ImGui::CloseCurrentPopup();
 			}
 		}
 		ImGui::SetItemTooltip( "create new declaration" );
 		ImGui::SameLine();
-		if ( ImGui::Button( "Cancel" ) ) {
+		if( ImGui::Button( "Cancel" ) )
+		{
 			accepted = false;
-			state = DONE;
+			state	 = DONE;
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SetItemTooltip( "cancel" );
@@ -172,35 +190,69 @@ bool DeclNew::Draw() {
 DeclNew::OnBnClickedFile
 ================
 */
-void DeclNew::OnBnClickedFile() {
+void DeclNew::OnBnClickedFile()
+{
 	idStr typeName, folder, ext;
 	idStr path;
 
 	errorText.Clear();
 
-	if ( typeListSel == -1 ) {
+	if( typeListSel == -1 )
+	{
 		errorText = "Select a declaration type first.";
 		return;
 	}
 
 	declType_t type = declManager->GetDeclTypeFromName( typeName );
-	if ( type >= declManager->GetNumDeclTypes() ) {
+	if( type >= declManager->GetNumDeclTypes() )
+	{
 		errorText = "Unknown declaration type.";
 		return;
 	}
 
-	switch( type ) {
+	switch( type )
+	{
 		// FIXME: SteelStorm2 has a _v1 suffix for materials, def and fx - why?
-		case DECL_TABLE:		folder = "materials";	ext = ".mtr";					break;
-		case DECL_MATERIAL:		folder = "materials";	ext = ".mtr";					break;
-		case DECL_SKIN:			folder = "skins";		ext = ".skin";					break;
-		case DECL_SOUND:		folder = "sound";		ext = ".sndshd";				break;
-		case DECL_ENTITYDEF:	folder = "def";			ext = ".def|.decl";				break;
-		case DECL_MODELDEF:		folder = "def";			ext = ".def";					break;
-		case DECL_FX:			folder = "fx";			ext = ".fx";					break;
-		case DECL_PARTICLE:		folder = "particles";	ext = ".prt";					break;
-		case DECL_AF:			folder = "af";			ext = ".af";					break;
-		default:				folder = "def";			ext = ".decl";					break;
+		case DECL_TABLE:
+			folder = "materials";
+			ext	   = ".mtr";
+			break;
+		case DECL_MATERIAL:
+			folder = "materials";
+			ext	   = ".mtr";
+			break;
+		case DECL_SKIN:
+			folder = "skins";
+			ext	   = ".skin";
+			break;
+		case DECL_SOUND:
+			folder = "sound";
+			ext	   = ".sndshd";
+			break;
+		case DECL_ENTITYDEF:
+			folder = "def";
+			ext	   = ".def|.decl";
+			break;
+		case DECL_MODELDEF:
+			folder = "def";
+			ext	   = ".def";
+			break;
+		case DECL_FX:
+			folder = "fx";
+			ext	   = ".fx";
+			break;
+		case DECL_PARTICLE:
+			folder = "particles";
+			ext	   = ".prt";
+			break;
+		case DECL_AF:
+			folder = "af";
+			ext	   = ".af";
+			break;
+		default:
+			folder = "def";
+			ext	   = ".decl";
+			break;
 	}
 
 	path = fileSystem->RelativePathToOSPath( folder );
@@ -214,41 +266,48 @@ void DeclNew::OnBnClickedFile() {
 DeclNew::OnBnClickedOk
 ================
 */
-void DeclNew::OnBnClickedOk() {
+void DeclNew::OnBnClickedOk()
+{
 	idStr typeName, declName, fileName;
 
 	errorText.Clear();
 
-	if ( !declTree ) {
+	if( !declTree )
+	{
 		errorText = "No declaration tree available.";
 		return;
 	}
 
-	if ( typeListSel == -1 ) {
+	if( typeListSel == -1 )
+	{
 		errorText = "No declaration type selected.";
 		return;
 	}
 	typeName = typeList[typeListSel];
 
 	declName = nameEdit;
-	if ( declName.Length() == 0 ) {
+	if( declName.Length() == 0 )
+	{
 		errorText = "No declaration name specified.";
 		return;
 	}
 
 	fileName = fileEdit;
-	if ( fileName.Length() == 0 ) {
+	if( fileName.Length() == 0 )
+	{
 		errorText = "No file name specified.";
 		return;
 	}
 
-	if ( declTree->FindItem( idStr( typeName + "/" + declName ) ) ) {
+	if( declTree->FindItem( idStr( typeName + "/" + declName ) ) )
+	{
 		errorText = "Declaration already exists.";
 		return;
 	}
 
 	declType_t type = declManager->GetDeclTypeFromName( typeName );
-	if ( type >= declManager->GetNumDeclTypes() ) {
+	if( type >= declManager->GetNumDeclTypes() )
+	{
 		errorText = "Unknown declaration type.";
 		return;
 	}
@@ -261,8 +320,8 @@ void DeclNew::OnBnClickedOk() {
 DeclNew::OnBnClickedCancel
 ================
 */
-void DeclNew::OnBnClickedCancel() {
-
+void DeclNew::OnBnClickedCancel()
+{
 }
 
 }

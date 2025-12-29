@@ -130,9 +130,6 @@ enum sysPath_t {
 	PATH_CONFIG,
 	PATH_SAVE,
 	PATH_EXE
-#if defined(__AROS__)
-	, PATH_LAUNCH
-#endif
 };
 
 template<class type> class idList;		// for Sys_ListFiles

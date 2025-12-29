@@ -21,7 +21,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -39,78 +40,78 @@ namespace ImGuiTools
 class SoundEditor
 {
 private:
-    bool            isShown;
-    bool            showTool;
-    idStr           title;
+	bool				isShown;
+	bool				showTool;
+	idStr				title;
 
-    // current selection / values
-    idStr           strShader;
-    idStr           playSound;
-    float           fVolume;
-    float           fMin;
-    float           fMax;
-    bool            bPlay;
-    bool            bTriggered;
-    bool            bOmni;
-    idStr           strGroup;
-    bool            bGroupOnly;
-    bool            bOcclusion;
-    float           leadThrough;
-    bool            plain;
-    float           random;
-    float           wait;
-    float           shakes;
-    bool            looping;
-    bool            unclamped;
+	// current selection / values
+	idStr				strShader;
+	idStr				playSound;
+	float				fVolume;
+	float				fMin;
+	float				fMax;
+	bool				bPlay;
+	bool				bTriggered;
+	bool				bOmni;
+	idStr				strGroup;
+	bool				bGroupOnly;
+	bool				bOcclusion;
+	float				leadThrough;
+	bool				plain;
+	float				random;
+	float				wait;
+	float				shakes;
+	bool				looping;
+	bool				unclamped;
 
-    idList<idStr>   soundFiles; // shader names and wave file names in separate lists
-    idList<idStr>   soundShaders;
-    idList<const char *> groupsList;
-    idList<const char *> speakersList;
-    idList<idStr>    inUseSounds;
+	idList<idStr>		soundFiles; // shader names and wave file names in separate lists
+	idList<idStr>		soundShaders;
+	idList<const char*> groupsList;
+	idList<const char*> speakersList;
+	idList<idStr>		inUseSounds;
 
-    // UI state
-    int             selectedGroupIndex;
-    int             selectedSpeakerIndex;
-    char            shaderBuf[512];
-    char            groupBuf[512];
-    char            volumeBuf[32];
-    char            newSpeakerBuf[256];
-    bool            autoRefresh;
-    bool            didAutoRefresh;
-    // drop speaker popup state
-    char            dropErrorBuf[256];
-    bool            showDropError;
+	// UI state
+	int					selectedGroupIndex;
+	int					selectedSpeakerIndex;
+	char				shaderBuf[512];
+	char				groupBuf[512];
+	char				volumeBuf[32];
+	char				newSpeakerBuf[256];
+	bool				autoRefresh;
+	bool				didAutoRefresh;
+	// drop speaker popup state
+	char				dropErrorBuf[256];
+	bool				showDropError;
 
-    // current speaker entity being edited
-    idEntity *      speakerEntity;
-    idStr           entityName;
-    idVec3          entityPos;
+	// current speaker entity being edited
+	idEntity*			speakerEntity;
+	idStr				entityName;
+	idVec3				entityPos;
 
-    SoundEditor();
+	SoundEditor();
 
-    void Init( const idDict* dict, idEntity* speaker );
+	void Init( const idDict* dict, idEntity* speaker );
 
-    void Exit( void );
-    void AddSounds( void );
-    void AddWaves( void );
-    void AddGroups( void );
-    void AddSpeakers( void );
+	void Exit( void );
+	void AddSounds( void );
+	void AddWaves( void );
+	void AddGroups( void );
+	void AddSpeakers( void );
 
 public:
-    static SoundEditor& Instance();
-    static void	ReInit( const idDict *dict, idEntity *speaker );
+	static SoundEditor& Instance();
+	static void			ReInit( const idDict* dict, idEntity* speaker );
 
-    inline void ShowIt( bool show ) { isShown = show; }
-    inline bool IsShown() const { return isShown; }
+	inline void			ShowIt( bool show ) { isShown = show; }
+	inline bool			IsShown() const { return isShown; }
 
-    void Draw( void );
-    void Reset( void );
-    void Set( const idDict* dict );
-    void ApplyChanges( bool volumeOnly );
-    bool DropSpeaker( const char* name = NULL );
-    void DeleteSelectedSpeakers();
-    void AddInUseSounds();
+	void				Draw( void );
+	void				Reset( void );
+	void				Set( const idDict* dict );
+	void				ApplyChanges( bool volumeOnly );
+	bool				DropSpeaker( const char* name = NULL );
+	void				DeleteSelectedSpeakers();
+	void				AddInUseSounds();
 };
 
 } // namespace ImGuiTools

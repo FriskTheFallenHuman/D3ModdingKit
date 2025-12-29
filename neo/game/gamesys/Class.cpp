@@ -461,7 +461,9 @@ void * idClass::operator new( size_t s ) {
 	unsigned int *ptr = (unsigned int *)p;
 	int size = s;
 	assert( ( size & (sizeof(intptr_t) - 1) ) == 0 );
-	size >>= 3;
+	// bugfix - shifting by 2 gives the number of DWORDs to fill.
+	// Shifting by 3 is incorrect as it only fills the memory half way.
+	size >>= 2;
 	for ( int i = 1; i < size; i++ ) {
 		ptr[i] = 0xcdcdcdcd;
 	}
@@ -483,7 +485,9 @@ void * idClass::operator new( size_t s, int, int, char *, int ) {
 	unsigned int *ptr = (unsigned int *)p;
 	int size = s;
 	assert( ( size & (sizeof(intptr_t) - 1) ) == 0 );
-	size >>= 3;
+	// bugfix - shifting by 2 gives the number of DWORDs to fill.
+	// Shifting by 3 is incorrect as it only fills the memory half way.
+	size >>= 2;
 	for ( int i = 1; i < size; i++ ) {
 		ptr[i] = 0xcdcdcdcd;
 	}

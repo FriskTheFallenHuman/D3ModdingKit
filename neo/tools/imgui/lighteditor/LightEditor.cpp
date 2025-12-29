@@ -21,7 +21,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -38,8 +39,8 @@ void LightInfo::Defaults()
 {
 	lightType = LIGHT_POINT;
 
-	strTexture = "";
-	equalRadius = true;
+	strTexture		 = "";
+	equalRadius		 = true;
 	explicitStartEnd = false;
 	lightStart.Zero();
 	lightEnd.Zero();
@@ -50,44 +51,43 @@ void LightInfo::Defaults()
 	color[0] = color[1] = color[2] = 1.0f;
 
 	lightRadius.Zero();
-	castShadows = true;
+	castShadows	 = true;
 	skipSpecular = false;
-	hasCenter = false;
-	//lightStyle = -1;
+	hasCenter	 = false;
+	// lightStyle = -1;
 }
-
 
 void LightInfo::DefaultPoint()
 {
 	idVec3 oldColor = color;
 	Defaults();
-	color = oldColor;
-	lightType = LIGHT_POINT;
+	color		   = oldColor;
+	lightType	   = LIGHT_POINT;
 	lightRadius[0] = lightRadius[1] = lightRadius[2] = 300;
-	equalRadius = true;
+	equalRadius										 = true;
 }
 
 void LightInfo::DefaultProjected()
 {
 	idVec3 oldColor = color;
 	Defaults();
-	color = oldColor;
-	lightType = LIGHT_SPOT;
+	color		   = oldColor;
+	lightType	   = LIGHT_SPOT;
 	lightTarget[2] = -256;
-	lightUp[1] = -128;
-	lightRight[0] = -128;
+	lightUp[1]	   = -128;
+	lightRight[0]  = -128;
 }
 
 void LightInfo::DefaultSun()
 {
 	idVec3 oldColor = color;
 	Defaults();
-	color = oldColor;
+	color	  = oldColor;
 	lightType = LIGHT_SUN;
 	lightCenter.Set( 4, 4, 32 );
 	lightRadius[0] = lightRadius[1] = 2048;
-	lightRadius[2] = 1024;
-	equalRadius = false;
+	lightRadius[2]					= 1024;
+	equalRadius						= false;
 }
 
 void LightInfo::FromDict( const idDict* e )
@@ -102,7 +102,7 @@ void LightInfo::FromDict( const idDict* e )
 	lightEnd.Zero();
 	lightCenter.Zero();
 
-	castShadows = !e->GetBool( "noshadows" );
+	castShadows	 = !e->GetBool( "noshadows" );
 	skipSpecular = e->GetBool( "nospecular" );
 
 	strTexture = e->GetString( "texture" );
@@ -137,7 +137,7 @@ void LightInfo::FromDict( const idDict* e )
 			explicitStartEnd = false;
 			// create a start a quarter of the way to the target
 			lightStart = lightTarget * 0.25;
-			lightEnd = lightTarget;
+			lightEnd   = lightTarget;
 		}
 	}
 	else
@@ -156,7 +156,7 @@ void LightInfo::FromDict( const idDict* e )
 				radius = 300;
 			}
 			lightRadius[0] = lightRadius[1] = lightRadius[2] = radius;
-			equalRadius = true;
+			equalRadius										 = true;
 		}
 		if( e->GetVector( "light_center", "", lightCenter ) )
 		{
@@ -165,7 +165,7 @@ void LightInfo::FromDict( const idDict* e )
 	}
 
 	// RB: Quake 1 light styles
-	//lightStyle = e->GetInt( "style", "-1" );
+	// lightStyle = e->GetInt( "style", "-1" );
 }
 
 // the returned idDict is supposed to be used by idGameEdit::EntityChangeSpawnArgs()
@@ -265,7 +265,6 @@ LightInfo::LightInfo()
 	Defaults();
 }
 
-
 // ########### LightEditor #############
 
 LightEditor& LightEditor::Instance()
@@ -273,7 +272,6 @@ LightEditor& LightEditor::Instance()
 	static LightEditor instance;
 	return instance;
 }
-
 
 // static
 void LightEditor::ReInit( const idDict* dict, idEntity* light )
@@ -305,11 +303,11 @@ void LightEditor::Init( const idDict* dict, idEntity* light )
 		gameEdit->EntityGetOrigin( light, entityPos );
 
 		const char* name = dict->GetString( "name", NULL );
-		entityName = name ? name :  gameEdit->GetUniqueEntityName( "light" );
-		title = idStr::Format( "Light Editor: %s at (%s)###LightEditor", entityName.c_str(), entityPos.ToString() );
+		entityName		 = name ? name : gameEdit->GetUniqueEntityName( "light" );
+		title			 = idStr::Format( "Light Editor: %s at (%s)###LightEditor", entityName.c_str(), entityPos.ToString() );
 
 		currentTextureIndex = 0;
-		currentTexture = NULL;
+		currentTexture		= NULL;
 		if( original.strTexture.Length() > 0 )
 		{
 			const char* curTex = original.strTexture.c_str();
@@ -325,7 +323,7 @@ void LightEditor::Init( const idDict* dict, idEntity* light )
 		}
 
 #if 0 // dhewm3 doesn't have this
-		// RB: light styles
+	  // RB: light styles
 		if( original.lightStyle >= 0 )
 		{
 			currentStyleIndex = original.lightStyle + 1;
@@ -338,7 +336,7 @@ void LightEditor::Init( const idDict* dict, idEntity* light )
 
 void LightEditor::Reset()
 {
-	title = "Light Editor: no Light selected!";
+	title		= "Light Editor: no Light selected!";
 	entityPos.x = idMath::INFINITY;
 	entityPos.y = idMath::INFINITY;
 	entityPos.z = idMath::INFINITY;
@@ -346,17 +344,17 @@ void LightEditor::Reset()
 	original.Defaults();
 	cur.Defaults();
 
-	lightEntity = NULL;
+	lightEntity			= NULL;
 	currentTextureIndex = 0;
-	currentTexture = NULL;
-	//currentTextureMaterial = NULL;
-	//currentStyleIndex = 0;
+	currentTexture		= NULL;
+	// currentTextureMaterial = NULL;
+	// currentStyleIndex = 0;
 }
 
 static idImage* GetLightEditorImage( const idMaterial* mat )
 {
 	// this is similar to what the original light editor does; rbd3bfg iterates through all stages to find a non-null image
-	idImage* ret = (mat->GetNumStages() > 0) ? mat->GetStage(0)->texture.image : NULL;
+	idImage* ret = ( mat->GetNumStages() > 0 ) ? mat->GetStage( 0 )->texture.image : NULL;
 	return ret ? ret : mat->GetEditorImage();
 }
 
@@ -371,7 +369,7 @@ void LightEditor::LoadLightTextures()
 		// just get the name of the light material
 		const idMaterial* mat = declManager->MaterialByIndex( i, false );
 
-		idStr matName = mat->GetName();
+		idStr			  matName = mat->GetName();
 		matName.ToLower(); // FIXME: why? (this is from old doom3 code)
 
 		if( matName.Icmpn( "lights/", strlen( "lights/" ) ) == 0 || matName.Icmpn( "fogs/", strlen( "fogs/" ) ) == 0 )
@@ -384,7 +382,7 @@ void LightEditor::LoadLightTextures()
 				idImage* editorImage = GetLightEditorImage( mat );
 				if( editorImage->texnum == idImage::TEXTURE_NOT_LOADED )
 				{
-					//editorImage->DeferredLoadImage(); // this is BFG-specific
+					// editorImage->DeferredLoadImage(); // this is BFG-specific
 
 					// TODO: use this instead? otherwise defaulted isn't set
 					editorImage->ActuallyLoadImage( true, true );
@@ -531,7 +529,7 @@ void LightEditor::SaveChanges()
 	}
 	else if( entityPos.x != idMath::INFINITY )
 	{
-		assert(0 && "unimplemented");
+		assert( 0 && "unimplemented" );
 #if 0 // DG: FIXME what is this about?!
 		entityName = gameEdit->GetUniqueEntityName( "light" );
 		d.Set( "name", entityName );
@@ -639,15 +637,15 @@ void LightEditor::Draw()
 			{
 				cur.DefaultPoint();
 				currentTextureIndex = 0; // cur.DefaultPoint() resets cur.strTexture to "", so sync this here
-				currentTexture = NULL;
-				changes = true;
+				currentTexture		= NULL;
+				changes				= true;
 			}
 			else if( lightSelectionRadioBtn == LIGHT_SUN && lightSelectionRadioBtn != cur.lightType )
 			{
 				cur.DefaultSun();
 				currentTextureIndex = 0; // cur.DefaultPoint() resets cur.strTexture to "", so sync this here
-				currentTexture = NULL;
-				changes = true;
+				currentTexture		= NULL;
+				changes				= true;
 			}
 
 			ImGui::PushItemWidth( -1.0f ); // align end of Drag* with right window border
@@ -660,7 +658,7 @@ void LightEditor::Draw()
 				if( ImGui::DragFloat( "##radEquil", &cur.lightRadius.x, 1.0f, 0.0f, 10000.0f, "%.1f" ) )
 				{
 					cur.lightRadius.z = cur.lightRadius.y = cur.lightRadius.x;
-					changes = true;
+					changes								  = true;
 				}
 			}
 			else
@@ -671,9 +669,9 @@ void LightEditor::Draw()
 
 			ImGui::Spacing();
 
-			//changes |= ImGui::Checkbox( "Parallel", &cur.isParallel ); // now handled as "sun"
+			// changes |= ImGui::Checkbox( "Parallel", &cur.isParallel ); // now handled as "sun"
 
-			//ImGui::Spacing();
+			// ImGui::Spacing();
 
 			changes |= ImGui::Checkbox( "Center", &cur.hasCenter );
 			if( cur.hasCenter )
@@ -690,8 +688,8 @@ void LightEditor::Draw()
 			{
 				cur.DefaultProjected();
 				currentTextureIndex = 0; // cur.DefaultPoint() resets cur.strTexture to "", so sync this here
-				currentTexture = NULL;
-				changes = true;
+				currentTexture		= NULL;
+				changes				= true;
 			}
 
 			changes |= ImGui::DragVec3( "Target", cur.lightTarget, 1.0f, 0.0f, 0.0f, "%.1f" );
@@ -733,9 +731,8 @@ void LightEditor::Draw()
 		{
 			ImVec2 size( currentTexture->uploadWidth, currentTexture->uploadHeight );
 
-			//ImGui::Image( ( void* )currentTextureMaterial, size, ImVec2( 0, 0 ), ImVec2( 1, 1 ),
-			ImGui::Image( currentTexture->texnum, size, ImVec2( 0, 0 ), ImVec2( 1, 1 ),
-						  ImColor( 255, 255, 255, 255 ), ImColor( 255, 255, 255, 128 ) );
+			// ImGui::Image( ( void* )currentTextureMaterial, size, ImVec2( 0, 0 ), ImVec2( 1, 1 ),
+			ImGui::Image( currentTexture->texnum, size, ImVec2( 0, 0 ), ImVec2( 1, 1 ), ImColor( 255, 255, 255, 255 ), ImColor( 255, 255, 255, 128 ) );
 		}
 
 #if 0 // dhewm3 has no Quake lightstyles
@@ -797,4 +794,4 @@ void LightEditor::Exit( void )
 	cvarSystem->SetCVarInteger( "g_editEntityMode", 0 );
 }
 
-} //namespace ImGuiTools
+} // namespace ImGuiTools

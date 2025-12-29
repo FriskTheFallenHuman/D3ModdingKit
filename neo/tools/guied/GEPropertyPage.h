@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,20 +33,18 @@ If you have questions concerning this license or the applicable additional terms
 class rvGEPropertyPage
 {
 public:
+	rvGEPropertyPage();
 
-	rvGEPropertyPage ( );
+	virtual bool			Init( void ) { return true; }
+	virtual bool			Apply( void ) { return true; }
+	virtual bool			SetActive( void ) { return true; }
+	virtual bool			KillActive( void ) { return true; }
+	virtual int				HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam );
 
-	virtual bool	Init			( void ) { return true; }
-	virtual bool	Apply			( void ) { return true; }
-	virtual bool	SetActive		( void ) { return true; }
-	virtual bool	KillActive		( void ) { return true; }
-	virtual int		HandleMessage	( UINT msg, WPARAM wParam, LPARAM lParam );
-
-	static INT_PTR CALLBACK WndProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	static INT_PTR CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 protected:
-
-	HWND		mPage;
+	HWND mPage;
 };
 
 #endif // GEPROPERTYPAGE_H_

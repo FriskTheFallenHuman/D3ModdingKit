@@ -20,7 +20,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,51 +33,29 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "AfConstraintEditor.h"
 
-#define ARRAY_COUNT IM_ARRAYSIZE
+static const char* constraintTypeNames[] = { "Invalid", "Fixed", "Ball and Socket Joint", "Universal Joint", "Hinge", "Slider", "Spring" };
 
-static const char* constraintTypeNames[] =
-{
-	"Invalid",
-	"Fixed",
-	"Ball and Socket Joint",
-	"Universal Joint",
-	"Hinge",
-	"Slider",
-	"Spring"
-};
+static const char* afVecTypeNames[] = { "coordinates", "joint", "bone center", "bone direction" };
 
-static const char* afVecTypeNames[] =
-{
-	"coordinates",
-	"joint",
-	"bone center",
-	"bone direction"
-};
-
-static const char* constraintLimitTypeNames[] =
-{
-	"none",
-	"cone",
-	"pyramid"
-};
+static const char* constraintLimitTypeNames[] = { "none", "cone", "pyramid" };
 
 namespace ImGuiTools
 {
 
 static bool ConstraintLimitTypeGetter( void* data, int index, const char** out );
 
-AfConstraintEditor::AfConstraintEditor( idDeclAF* newDecl, idDeclAF_Constraint* newConstraint )
-	: decl( newDecl )
-	, constraint( newConstraint )
-	, anchorType( 0 )
-	, shaft1Type( 0 )
-	, shaft2Type( 0 )
-	, limitOrientationType( 0 )
-	, body1( 0 )
-	, body2( 0 )
-	, jointAnchor1( 0 )
-	, jointAnchor2( 0 )
-	, jointShaft1( 0 )
+AfConstraintEditor::AfConstraintEditor( idDeclAF* newDecl, idDeclAF_Constraint* newConstraint ) :
+	decl( newDecl ),
+	constraint( newConstraint ),
+	anchorType( 0 ),
+	shaft1Type( 0 ),
+	shaft2Type( 0 ),
+	limitOrientationType( 0 ),
+	body1( 0 ),
+	body2( 0 ),
+	jointAnchor1( 0 ),
+	jointAnchor2( 0 ),
+	jointShaft1( 0 )
 {
 	InitJointLists();
 }
@@ -108,7 +87,7 @@ bool AfConstraintEditor::Do()
 	if( ImGui::CollapsingHeader( "General" ) )
 	{
 		ImGui::Columns( 2, "constraintGeneral2" );
-		changed = ImGui::Combo( "Type##General", ( int* )&constraint->type, constraintTypeNames, ARRAY_COUNT( constraintTypeNames ) ) || changed;
+		changed = ImGui::Combo( "Type##General", ( int* )&constraint->type, constraintTypeNames, IM_ARRAYSIZE( constraintTypeNames ) ) || changed;
 		changed = ImGui::DragFloat( "Friction##Friction", &constraint->friction ) || changed;
 
 		if( constraint->type == DECLAF_CONSTRAINT_SPRING )
@@ -122,13 +101,13 @@ bool AfConstraintEditor::Do()
 			changed = ImGui::DragFloat( "Damping", &constraint->damping, 0.001f, 0.0f, 1.0f ) || changed;
 			ImGui::SameLine();
 			HelpMarker( "Spring damping" );
-			changed = ImGui::DragFloat(	"Length", &constraint->restLength, 0.001f, 0.0f, 1.0f ) || changed;
+			changed = ImGui::DragFloat( "Length", &constraint->restLength, 0.001f, 0.0f, 1.0f ) || changed;
 			ImGui::SameLine();
 			HelpMarker( "Rest length of the spring" );
-			changed = ImGui::DragFloat(	"Min Length", &constraint->minLength, 0.001f, 0.0f, 1.0f ) || changed;
+			changed = ImGui::DragFloat( "Min Length", &constraint->minLength, 0.001f, 0.0f, 1.0f ) || changed;
 			ImGui::SameLine();
 			HelpMarker( "Minimum length of the spring" );
-			changed = ImGui::DragFloat(	"Max Length", &constraint->maxLength, 0.001f, 0.0f, 1.0f ) || changed;
+			changed = ImGui::DragFloat( "Max Length", &constraint->maxLength, 0.001f, 0.0f, 1.0f ) || changed;
 			ImGui::SameLine();
 			HelpMarker( "Maximum length of the spring" );
 		}
@@ -142,11 +121,11 @@ bool AfConstraintEditor::Do()
 				if( ImGui::Selectable( decl->bodies[n]->name, isSelected ) )
 				{
 					constraint->body1 = decl->bodies[n]->name;
-					changed = true;
+					changed			  = true;
 				}
 				if( isSelected )
 				{
-					ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+					ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 				}
 			}
 			ImGui::EndCombo();
@@ -160,11 +139,11 @@ bool AfConstraintEditor::Do()
 				if( ImGui::Selectable( decl->bodies[n]->name, isSelected ) )
 				{
 					constraint->body2 = decl->bodies[n]->name;
-					changed = true;
+					changed			  = true;
 				}
 				if( isSelected )
 				{
-					ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+					ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 				}
 			}
 			ImGui::EndCombo();
@@ -177,7 +156,7 @@ bool AfConstraintEditor::Do()
 	{
 		ImGui::PushID( "Anchor1" );
 		ImGui::Columns( 2, "anchorColumn2" );
-		changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+		changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 		ImGui::NextColumn();
 		changed = InputAfVector( &constraint->anchor ) || changed;
 		ImGui::Columns( 1 );
@@ -190,7 +169,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "Anchor2" );
 			ImGui::Columns( 2, "anchorColumn2" );
-			changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor2.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor2.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->anchor2 ) || changed;
 			ImGui::Columns( 1 );
@@ -204,7 +183,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "Shaft 1" );
 			ImGui::Columns( 2, "shaft12" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[0].type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[0].type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->shaft[0] ) || changed;
 			ImGui::Columns( 1 );
@@ -215,7 +194,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "Shaft 2" );
 			ImGui::Columns( 2, "shaft22" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[1].type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[1].type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->shaft[1] ) || changed;
 			ImGui::Columns( 1 );
@@ -243,7 +222,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "LimitType" );
 			ImGui::Columns( 2, "limit2" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->limit, ConstraintLimitTypeGetter, nullptr, ARRAY_COUNT( constraintLimitTypeNames ) - 1 ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->limit, ConstraintLimitTypeGetter, nullptr, IM_ARRAYSIZE( constraintLimitTypeNames ) - 1 ) || changed;
 			ImGui::NextColumn();
 			switch( constraint->limit )
 			{
@@ -264,7 +243,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "LimitO" );
 			ImGui::Columns( 2, "limitOrientation2" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->limitAxis.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->limitAxis.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->limitAxis ) || changed;
 			ImGui::Columns( 1 );
@@ -295,11 +274,11 @@ bool AfConstraintEditor::InputAfVector( idAFVector* afVec )
 					if( ImGui::Selectable( joints[n], is_selected ) )
 					{
 						afVec->joint1 = joints[n];
-						changed = true;
+						changed		  = true;
 					}
 					if( is_selected )
 					{
-						ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 				}
 				ImGui::EndCombo();
@@ -315,11 +294,11 @@ bool AfConstraintEditor::InputAfVector( idAFVector* afVec )
 					if( ImGui::Selectable( joints[n], is_selected ) )
 					{
 						afVec->joint1 = joints[n];
-						changed = true;
+						changed		  = true;
 					}
 					if( is_selected )
 					{
-						ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 				}
 				ImGui::EndCombo();
@@ -332,11 +311,11 @@ bool AfConstraintEditor::InputAfVector( idAFVector* afVec )
 					if( ImGui::Selectable( joints[n], is_selected ) )
 					{
 						afVec->joint2 = joints[n];
-						changed = true;
+						changed		  = true;
 					}
 					if( is_selected )
 					{
-						ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 				}
 				ImGui::EndCombo();
@@ -371,7 +350,7 @@ bool ConstraintLimitTypeGetter( void* data, int index, const char** out )
 {
 	index += 1;
 
-	if( index < 0 || index > ARRAY_COUNT( constraintLimitTypeNames ) )
+	if( index < 0 || index > IM_ARRAYSIZE( constraintLimitTypeNames ) )
 	{
 		*out = constraintLimitTypeNames[0];
 		return false;

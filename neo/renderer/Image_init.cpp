@@ -218,47 +218,44 @@ to allow you to see the mapping coordinates on a surface
 ==================
 */
 #define	DEFAULT_SIZE	16
+#define	BLOCK_SIZE   4
+
 void idImage::MakeDefault() {
 	int		x, y;
 	byte	data[DEFAULT_SIZE][DEFAULT_SIZE][4];
 
-#ifdef _DEBUG
+	if( imgName != "_default" && globalImages->defaultImage->texnum != idImage::TEXTURE_NOT_LOADED ) {
+		texnum = globalImages->defaultImage->texnum;
+		uploadWidth = DEFAULT_SIZE;
+		uploadHeight = DEFAULT_SIZE;
+		type = TT_2D;
+		defaulted = true;
+		return;
+	}
+
+	// RGBA definitions
+	const byte PINK[4]  = { 255,   0, 255, 255 };
+	const byte BLACK[4] = {   0,   0,   0, 255 };
+
 	if ( com_developer.GetBool() ) {
-		// grey center
-		for ( y = 0 ; y < DEFAULT_SIZE ; y++ ) {
-			for ( x = 0 ; x < DEFAULT_SIZE ; x++ ) {
-				data[y][x][0] = 32;
-				data[y][x][1] = 32;
-				data[y][x][2] = 32;
-				data[y][x][3] = 255;
+		for (int y = 0; y < DEFAULT_SIZE; y++) {
+			for (int x = 0; x < DEFAULT_SIZE; x++) {
+				// In what block are we?
+				int bx = x / BLOCK_SIZE;
+				int by = y / BLOCK_SIZE;
+
+				// even sum ? pink, odd ? black
+				bool isPink = ((bx + by) & 1) == 0;
+				const byte* col = isPink ? PINK : BLACK;
+
+				// write RGBA
+				data[y][x][0] = col[0];
+				data[y][x][1] = col[1];
+				data[y][x][2] = col[2];
+				data[y][x][3] = col[3];
 			}
 		}
-
-		// white border
-		for ( x = 0 ; x < DEFAULT_SIZE ; x++ ) {
-			data[0][x][0] =
-				data[0][x][1] =
-				data[0][x][2] =
-				data[0][x][3] = 255;
-
-			data[x][0][0] =
-				data[x][0][1] =
-				data[x][0][2] =
-				data[x][0][3] = 255;
-
-			data[DEFAULT_SIZE-1][x][0] =
-				data[DEFAULT_SIZE-1][x][1] =
-				data[DEFAULT_SIZE-1][x][2] =
-				data[DEFAULT_SIZE-1][x][3] = 255;
-
-			data[x][DEFAULT_SIZE-1][0] =
-				data[x][DEFAULT_SIZE-1][1] =
-				data[x][DEFAULT_SIZE-1][2] =
-				data[x][DEFAULT_SIZE-1][3] = 255;
-		}
-	} else
-#endif
-	{
+	} else {
 		for ( y = 0 ; y < DEFAULT_SIZE ; y++ ) {
 			for ( x = 0 ; x < DEFAULT_SIZE ; x++ ) {
 				data[y][x][0] = 0;
@@ -271,7 +268,7 @@ void idImage::MakeDefault() {
 
 	GenerateImage( (byte *)data,
 		DEFAULT_SIZE, DEFAULT_SIZE,
-		TF_DEFAULT, true, TR_REPEAT, TD_DEFAULT );
+		TF_NEAREST, true, TR_REPEAT, TD_HIGH_QUALITY );
 
 	defaulted = true;
 }
@@ -1004,7 +1001,7 @@ idImage::Reload
 void idImage::Reload( bool checkPrecompressed, bool force ) {
 	// always regenerate functional images
 	if ( generatorFunction ) {
-		common->DPrintf( "regenerating" S_COLOR_GREEN " %s.\n", imgName.c_str() );
+		common->DPrintf( "regenerating '%s'.\n", imgName.c_str() );
 		generatorFunction( this );
 		return;
 	}
@@ -1024,7 +1021,7 @@ void idImage::Reload( bool checkPrecompressed, bool force ) {
 		}
 	}
 
-	common->DPrintf( "reloading" S_COLOR_GREEN " %s.\n", imgName.c_str() );
+	common->DPrintf( "reloading %s.\n", imgName.c_str() );
 
 	PurgeImage();
 
@@ -1442,7 +1439,7 @@ idImage *idImageManager::ImageFromFunction( const char *_name, void (*generatorF
 	for ( image = imageHashTable[hash] ; image; image = image->hashNext ) {
 		if ( name.Icmp( image->imgName ) == 0 ) {
 			if ( image->generatorFunction != generatorFunction ) {
-				common->DPrintf( "WARNING: reused image %s with mixed generators\n", name.c_str() );
+				common->DWarning( "reused image '%s' with mixed generators\n", name.c_str() );
 			}
 			return image;
 		}
@@ -1476,14 +1473,18 @@ idImage	*idImageManager::ImageFromFile( const char *_name, textureFilter_t filte
 	idImage	*image;
 	int hash;
 
-	if ( !_name || !_name[0] || idStr::Icmp( _name, "default" ) == 0 || idStr::Icmp( _name, "_default" ) == 0 ) {
+	if ( !_name || !_name[0] || idStr::Icmp( _name, "default" ) == 0 || idStr::Icmp( _name, "_default" ) == 0 || idStr::Icmp( _name, "unnamed" )  == 0 || strstr( _name, "default_material" ) || strstr( _name, "_emptyname" ) ) {
 		declManager->MediaPrint( "DEFAULTED\n" );
 		return globalImages->defaultImage;
 	}
 
 	// strip any .tga file extensions from anywhere in the _name, including image program parameters
+	//
 	name = _name;
-	name.Replace( ".tga", "" );
+	name.StripFileExtension();
+	//name.Replace( ".tga", "" );
+	//name.Replace( ".jpg", "" );
+	//name.Replace( ".png", "" );
 	name.BackSlashesToSlashes();
 
 	//

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,118 +30,112 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUGGERCLIENT_H_
 
 #ifndef DEBUGGERBREAKPOINT_H_
-#include "DebuggerBreakpoint.h"
+	#include "DebuggerBreakpoint.h"
 #endif
 
 class rvDebuggerCallstack
 {
 public:
-
-	idStr	mFilename;
-	int		mLineNumber;
-	idStr	mFunction;
+	idStr mFilename;
+	int	  mLineNumber;
+	idStr mFunction;
 };
 
 class rvDebuggerThread
 {
 public:
-
-	idStr	mName;
-	int		mID;
-	bool	mCurrent;
-	bool	mDying;
-	bool	mWaiting;
-	bool	mDoneProcessing;
+	idStr mName;
+	int	  mID;
+	bool  mCurrent;
+	bool  mDying;
+	bool  mWaiting;
+	bool  mDoneProcessing;
 };
 
-
-typedef idList<rvDebuggerCallstack*>	rvDebuggerCallstackList;
-typedef idList<rvDebuggerThread*>		rvDebuggerThreadList;
-typedef idList<rvDebuggerBreakpoint*>	rvDebuggerBreakpointList;
+typedef idList<rvDebuggerCallstack*>  rvDebuggerCallstackList;
+typedef idList<rvDebuggerThread*>	  rvDebuggerThreadList;
+typedef idList<rvDebuggerBreakpoint*> rvDebuggerBreakpointList;
 
 class rvDebuggerClient
 {
 public:
+	rvDebuggerClient();
+	~rvDebuggerClient();
 
-	rvDebuggerClient ( );
-	~rvDebuggerClient ( );
+	bool					 Initialize( void );
+	void					 Shutdown( void );
+	bool					 ProcessMessages( void );
+	bool					 WaitFor( EDebuggerMessage msg, int time );
 
-	bool						Initialize				( void );
-	void						Shutdown				( void );
-	bool						ProcessMessages			( void );
-	bool						WaitFor					( EDebuggerMessage msg, int time );
+	bool					 IsConnected( void );
+	bool					 IsStopped( void );
 
-	bool						IsConnected				( void );
-	bool						IsStopped				( void );
+	int						 GetActiveBreakpointID( void );
+	const char*				 GetBreakFilename( void );
+	int						 GetBreakLineNumber( void );
+	idProgram*				 GetBreakProgram( void );
+	rvDebuggerCallstackList& GetCallstack( void );
+	rvDebuggerThreadList&	 GetThreads( void );
+	const char*				 GetVariableValue( const char* name, int stackDepth );
+	idStrList&				 GetServerScripts( void );
 
-	int							GetActiveBreakpointID	( void );
-	const char*					GetBreakFilename		( void );
-	int							GetBreakLineNumber		( void );
-	idProgram*					GetBreakProgram			( void );
-	rvDebuggerCallstackList&	GetCallstack			( void );
-	rvDebuggerThreadList&		GetThreads				( void );
-	const char*					GetVariableValue		( const char* name, int stackDepth );
-	idStrList&					GetServerScripts		( void );
+	void					 InspectVariable( const char* name, int callstackDepth );
+	void					 InspectScripts( void );
+	void					 Break( void );
+	void					 Resume( void );
+	void					 StepInto( void );
+	void					 StepOver( void );
 
-	void						InspectVariable			( const char* name, int callstackDepth );
-	void						InspectScripts			( void );
-	void						Break					( void );
-	void						Resume					( void );
-	void						StepInto				( void );
-	void						StepOver				( void );
-
-	void						SendCommand				( const char* cmdStr );
+	void					 SendCommand( const char* cmdStr );
 
 	// Breakpoints
-	int							AddBreakpoint			( const char* filename, int lineNumber, bool onceOnly = false);
-	bool						RemoveBreakpoint		( int bpID );
-	void						ClearBreakpoints		( void );
-	int							GetBreakpointCount		( void );
-	rvDebuggerBreakpoint*		GetBreakpoint			( int index );
-	rvDebuggerBreakpoint*		FindBreakpoint			( const char* filename, int linenumber );
+	int						 AddBreakpoint( const char* filename, int lineNumber, bool onceOnly = false );
+	bool					 RemoveBreakpoint( int bpID );
+	void					 ClearBreakpoints( void );
+	int						 GetBreakpointCount( void );
+	rvDebuggerBreakpoint*	 GetBreakpoint( int index );
+	rvDebuggerBreakpoint*	 FindBreakpoint( const char* filename, int linenumber );
 
 protected:
+	void					 SendMessage( EDebuggerMessage dbmsg );
+	void					 SendBreakpoints( void );
+	void					 SendAddBreakpoint( rvDebuggerBreakpoint& bp );
+	void					 SendRemoveBreakpoint( rvDebuggerBreakpoint& bp );
+	void					 SendPacket( void* data, int datasize );
 
-	void						SendMessage				( EDebuggerMessage dbmsg );
-	void						SendBreakpoints			( void );
-	void						SendAddBreakpoint		( rvDebuggerBreakpoint& bp );
-	void						SendRemoveBreakpoint	( rvDebuggerBreakpoint& bp );
-	void						SendPacket				( void* data, int datasize );
+	bool					 mConnected;
+	netadr_t				 mServerAdr;
+	idPort					 mPort;
 
-	bool						mConnected;
-	netadr_t					mServerAdr;
-	idPort						mPort;
+	bool					 mBreak;
+	int						 mBreakID;
+	int						 mBreakLineNumber;
+	idStr					 mBreakFilename;
 
-	bool						mBreak;
-	int							mBreakID;
-	int							mBreakLineNumber;
-	idStr						mBreakFilename;
+	idDict					 mVariables;
 
-	idDict						mVariables;
+	rvDebuggerCallstackList	 mCallstack;
+	rvDebuggerThreadList	 mThreads;
+	rvDebuggerBreakpointList mBreakpoints;
 
-	rvDebuggerCallstackList		mCallstack;
-	rvDebuggerThreadList		mThreads;
-	rvDebuggerBreakpointList	mBreakpoints;
+	EDebuggerMessage		 mWaitFor;
 
-	EDebuggerMessage			mWaitFor;
-
-	idStrList					mServerScripts;
+	idStrList				 mServerScripts;
 
 private:
+	void ClearCallstack( void );
+	void ClearThreads( void );
 
-	void		ClearCallstack				( void );
-	void		ClearThreads				( void );
-
-	void		UpdateWatches				( void );
+	void UpdateWatches( void );
 
 	// Network message handlers
-	void		HandleBreak					( idBitMsg* msg );
-	void		HandleInspectScripts		( idBitMsg* msg );
-	void		HandleInspectCallstack		( idBitMsg* msg );
-	void		HandleInspectThreads		( idBitMsg* msg );
-	void		HandleInspectVariable		( idBitMsg* msg );
-	void		HandleGameDLLHandle			( idBitMsg* msg );
-	void		HandleRemoveBreakpoint		( idBitMsg* msg );
+	void HandleBreak( idBitMsg* msg );
+	void HandleInspectScripts( idBitMsg* msg );
+	void HandleInspectCallstack( idBitMsg* msg );
+	void HandleInspectThreads( idBitMsg* msg );
+	void HandleInspectVariable( idBitMsg* msg );
+	void HandleGameDLLHandle( idBitMsg* msg );
+	void HandleRemoveBreakpoint( idBitMsg* msg );
 };
 
 /*
@@ -148,7 +143,7 @@ private:
 rvDebuggerClient::IsConnected
 ================
 */
-ID_INLINE bool rvDebuggerClient::IsConnected ( void )
+ID_INLINE bool rvDebuggerClient::IsConnected( void )
 {
 	return mConnected;
 }
@@ -158,7 +153,7 @@ ID_INLINE bool rvDebuggerClient::IsConnected ( void )
 rvDebuggerClient::IsStopped
 ================
 */
-ID_INLINE bool rvDebuggerClient::IsStopped ( void )
+ID_INLINE bool rvDebuggerClient::IsStopped( void )
 {
 	return mBreak;
 }
@@ -168,7 +163,7 @@ ID_INLINE bool rvDebuggerClient::IsStopped ( void )
 rvDebuggerClient::GetActiveBreakpointID
 ================
 */
-ID_INLINE int rvDebuggerClient::GetActiveBreakpointID ( void )
+ID_INLINE int rvDebuggerClient::GetActiveBreakpointID( void )
 {
 	return mBreakID;
 }
@@ -178,7 +173,7 @@ ID_INLINE int rvDebuggerClient::GetActiveBreakpointID ( void )
 rvDebuggerClient::GetBreakFilename
 ================
 */
-ID_INLINE const char* rvDebuggerClient::GetBreakFilename ( void )
+ID_INLINE const char* rvDebuggerClient::GetBreakFilename( void )
 {
 	return mBreakFilename;
 }
@@ -188,7 +183,7 @@ ID_INLINE const char* rvDebuggerClient::GetBreakFilename ( void )
 rvDebuggerClient::GetBreakLineNumber
 ================
 */
-ID_INLINE int rvDebuggerClient::GetBreakLineNumber ( void )
+ID_INLINE int rvDebuggerClient::GetBreakLineNumber( void )
 {
 	return mBreakLineNumber;
 }
@@ -198,7 +193,7 @@ ID_INLINE int rvDebuggerClient::GetBreakLineNumber ( void )
 rvDebuggerClient::GetCallstack
 ================
 */
-ID_INLINE rvDebuggerCallstackList& rvDebuggerClient::GetCallstack ( void )
+ID_INLINE rvDebuggerCallstackList& rvDebuggerClient::GetCallstack( void )
 {
 	return mCallstack;
 }
@@ -208,7 +203,7 @@ ID_INLINE rvDebuggerCallstackList& rvDebuggerClient::GetCallstack ( void )
 rvDebuggerClient::GetThreads
 ================
 */
-ID_INLINE rvDebuggerThreadList& rvDebuggerClient::GetThreads ( void )
+ID_INLINE rvDebuggerThreadList& rvDebuggerClient::GetThreads( void )
 {
 	return mThreads;
 }
@@ -218,9 +213,9 @@ ID_INLINE rvDebuggerThreadList& rvDebuggerClient::GetThreads ( void )
 rvDebuggerClient::GetVariableValue
 ================
 */
-ID_INLINE const char* rvDebuggerClient::GetVariableValue ( const char* var, int stackDepth )
+ID_INLINE const char* rvDebuggerClient::GetVariableValue( const char* var, int stackDepth )
 {
-	return mVariables.GetString ( va("%d:%s",stackDepth,var), "" );
+	return mVariables.GetString( va( "%d:%s", stackDepth, var ), "" );
 }
 
 /*
@@ -228,9 +223,9 @@ ID_INLINE const char* rvDebuggerClient::GetVariableValue ( const char* var, int 
 rvDebuggerClient::GetBreakpointCount
 ================
 */
-ID_INLINE int rvDebuggerClient::GetBreakpointCount ( void )
+ID_INLINE int rvDebuggerClient::GetBreakpointCount( void )
 {
-	return mBreakpoints.Num ( );
+	return mBreakpoints.Num();
 }
 
 /*
@@ -238,7 +233,7 @@ ID_INLINE int rvDebuggerClient::GetBreakpointCount ( void )
 rvDebuggerClient::GetBreakpoint
 ================
 */
-ID_INLINE rvDebuggerBreakpoint* rvDebuggerClient::GetBreakpoint ( int index )
+ID_INLINE rvDebuggerBreakpoint* rvDebuggerClient::GetBreakpoint( int index )
 {
 	return mBreakpoints[index];
 }
@@ -248,9 +243,9 @@ ID_INLINE rvDebuggerBreakpoint* rvDebuggerClient::GetBreakpoint ( int index )
 rvDebuggerClient::Break
 ================
 */
-ID_INLINE void rvDebuggerClient::Break ( void )
+ID_INLINE void rvDebuggerClient::Break( void )
 {
-	SendMessage ( DBMSG_BREAK );
+	SendMessage( DBMSG_BREAK );
 }
 
 /*
@@ -258,10 +253,10 @@ ID_INLINE void rvDebuggerClient::Break ( void )
 rvDebuggerClient::Resume
 ================
 */
-ID_INLINE void rvDebuggerClient::Resume ( void )
+ID_INLINE void rvDebuggerClient::Resume( void )
 {
 	mBreak = false;
-	SendMessage ( DBMSG_RESUME );
+	SendMessage( DBMSG_RESUME );
 }
 
 /*
@@ -269,10 +264,10 @@ ID_INLINE void rvDebuggerClient::Resume ( void )
 rvDebuggerClient::StepOver
 ================
 */
-ID_INLINE void rvDebuggerClient::StepOver ( void )
+ID_INLINE void rvDebuggerClient::StepOver( void )
 {
 	mBreak = false;
-	SendMessage ( DBMSG_STEPOVER );
+	SendMessage( DBMSG_STEPOVER );
 }
 
 /*
@@ -280,10 +275,10 @@ ID_INLINE void rvDebuggerClient::StepOver ( void )
 rvDebuggerClient::StepInto
 ================
 */
-ID_INLINE void rvDebuggerClient::StepInto ( void )
+ID_INLINE void rvDebuggerClient::StepInto( void )
 {
 	mBreak = false;
-	SendMessage ( DBMSG_STEPINTO );
+	SendMessage( DBMSG_STEPINTO );
 }
 
 /*
@@ -291,11 +286,10 @@ ID_INLINE void rvDebuggerClient::StepInto ( void )
 rvDebuggerClient::SendPacket
 ================
 */
-ID_INLINE void rvDebuggerClient::SendPacket ( void* data, int size )
+ID_INLINE void rvDebuggerClient::SendPacket( void* data, int size )
 {
-	mPort.SendPacket ( mServerAdr, data, size );
+	mPort.SendPacket( mServerAdr, data, size );
 }
-
 
 /*
 ================

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,86 +30,89 @@ If you have questions concerning this license or the applicable additional terms
 #include "../ImGuiTools.h"
 #pragma hdrstop
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
-const int MOUSEWHEEL_DELTA				= 120;
+const int MOUSEWHEEL_DELTA = 120;
 
-const int AUTOCOMPLETE_WIDTH			= 200;
-const int AUTOCOMPLETE_HEIGHT			= 180;
-const int AUTOCOMPLETE_OFFSET			= 16;
+const int AUTOCOMPLETE_WIDTH  = 200;
+const int AUTOCOMPLETE_HEIGHT = 180;
+const int AUTOCOMPLETE_OFFSET = 16;
 
-const int FUNCPARMTOOLTIP_WIDTH			= 16;
-const int FUNCPARMTOOLTIP_HEIGHT		= 20;
-const int FUNCPARMTOOLTIP_OFFSET		= 16;
+const int FUNCPARMTOOLTIP_WIDTH	 = 16;
+const int FUNCPARMTOOLTIP_HEIGHT = 20;
+const int FUNCPARMTOOLTIP_OFFSET = 16;
 /*
 const COLORREF DEFAULT_BACK_COLOR				= SRE_COLOR_WHITE;
 const COLORREF INVALID_BACK_COLOR				= SRE_COLOR_WHITE - 2;
 const COLORREF MULTILINE_COMMENT_BACK_COLOR		= SRE_COLOR_WHITE - 1;
 */
-//#define IDC_LISTBOX_AUTOCOMPLETE		700
-//#define IDC_EDITBOX_FUNCPARMS			701
+// #define IDC_LISTBOX_AUTOCOMPLETE		700
+// #define IDC_EDITBOX_FUNCPARMS			701
 
-void SyntaxRichEditCtrlKeyPress( void* data, bool ctrl, bool shift, bool alt, int chr ) {
-	reinterpret_cast<SyntaxRichEditCtrl*>(data)->OnChar(ctrl, shift, alt, chr);
+void	  SyntaxRichEditCtrlKeyPress( void* data, bool ctrl, bool shift, bool alt, int chr )
+{
+	reinterpret_cast<SyntaxRichEditCtrl*>( data )->OnChar( ctrl, shift, alt, chr );
 }
-bool SyntaxRichEditCtrlKeyDown( void *data ) {
-	return reinterpret_cast<SyntaxRichEditCtrl*>(data)->OnKeyDown();
+bool SyntaxRichEditCtrlKeyDown( void* data )
+{
+	return reinterpret_cast<SyntaxRichEditCtrl*>( data )->OnKeyDown();
 }
-bool SyntaxRichEditMouseButtonDown( void *data ) {
-	return reinterpret_cast<SyntaxRichEditCtrl*>(data)->OnMouseButtonDown();
+bool SyntaxRichEditMouseButtonDown( void* data )
+{
+	return reinterpret_cast<SyntaxRichEditCtrl*>( data )->OnMouseButtonDown();
 }
-bool SyntaxRichEditToolTipNotify( void *data, const char *ident, char *output, size_t outputLength ) {
-	return reinterpret_cast<SyntaxRichEditCtrl*>(data)->OnToolTipNotify( ident, output, outputLength );
+bool SyntaxRichEditToolTipNotify( void* data, const char* ident, char* output, size_t outputLength )
+{
+	return reinterpret_cast<SyntaxRichEditCtrl*>( data )->OnToolTipNotify( ident, output, outputLength );
 }
 
-static keyWord_t defaultKeyWords[] = {
-	{ NULL, vec3_origin, "" }
-};
+static keyWord_t defaultKeyWords[] = { { NULL, vec3_origin, "" } };
 
 /*
 ================
 SyntaxRichEditCtrl::SyntaxRichEditCtrl
 ================
 */
-SyntaxRichEditCtrl::SyntaxRichEditCtrl( void )
-	: scriptEdit( NULL )
-	, scriptEditPos( 0.0f, 0.0f )
-	, scriptEditSize( 400.0f, 400.0f )
-	, errorText()
-	, findDlg()
-	, gotoDlg()
-	, msgBoxDlg()
-	, findStr()
-	, replaceStr()
-	, matchCase( false )
-	, matchWholeWords( false )
-	, searchForward( true )
-	, firstLine( 0 )
+SyntaxRichEditCtrl::SyntaxRichEditCtrl( void ) :
+	scriptEdit( NULL ),
+	scriptEditPos( 0.0f, 0.0f ),
+	scriptEditSize( 400.0f, 400.0f ),
+	errorText(),
+	findDlg(),
+	gotoDlg(),
+	msgBoxDlg(),
+	findStr(),
+	replaceStr(),
+	matchCase( false ),
+	matchWholeWords( false ),
+	searchForward( true ),
+	firstLine( 0 )
 {
-	//m_TextDoc = NULL;
-	keyWords = defaultKeyWords;
-	keyWordColors = NULL;
-	keyWordLengths = NULL;
-	caseSensitive = false;
-	allowPathNames = true;
+	// m_TextDoc = NULL;
+	keyWords			  = defaultKeyWords;
+	keyWordColors		  = NULL;
+	keyWordLengths		  = NULL;
+	caseSensitive		  = false;
+	allowPathNames		  = true;
 	keyWordAutoCompletion = true;
-	//updateRange.cpMin = 0;
-	//updateRange.cpMax = 0;
-	updateSyntaxHighlighting = true;
-	stringColorIndex = 0;
-	stringColorLine = -1;
-	autoCompleteStart = -1;
-	autoCompleteListBoxSel = -1;
+	// updateRange.cpMin = 0;
+	// updateRange.cpMax = 0;
+	updateSyntaxHighlighting	= true;
+	stringColorIndex			= 0;
+	stringColorLine				= -1;
+	autoCompleteStart			= -1;
+	autoCompleteListBoxSel		= -1;
 	autoCompleteLastKeyDownTime = 0;
 	autoCompleteInput.Clear();
-	autoCompleteListBoxPos = ImVec2( 0.0f, 0.0f );
+	autoCompleteListBoxPos	= ImVec2( 0.0f, 0.0f );
 	autoCompleteListBoxSize = ImVec2( 0.0f, 0.0f );
-	funcParmToolTipStart = -1;
-	funcParmToolTipPos = ImVec2( 0.0f, 0.0f );
-	funcParmToolTipSize = ImVec2( 0.0f, 0.0f );
-	GetObjectMembers = NULL;
-	GetFunctionParms = NULL;
-	GetToolTip = NULL;
+	funcParmToolTipStart	= -1;
+	funcParmToolTipPos		= ImVec2( 0.0f, 0.0f );
+	funcParmToolTipSize		= ImVec2( 0.0f, 0.0f );
+	GetObjectMembers		= NULL;
+	GetFunctionParms		= NULL;
+	GetToolTip				= NULL;
 }
 
 /*
@@ -116,7 +120,8 @@ SyntaxRichEditCtrl::SyntaxRichEditCtrl( void )
 SyntaxRichEditCtrl::~SyntaxRichEditCtrl
 ================
 */
-SyntaxRichEditCtrl::~SyntaxRichEditCtrl( void ) {
+SyntaxRichEditCtrl::~SyntaxRichEditCtrl( void )
+{
 	FreeKeyWordsFromFile();
 }
 
@@ -125,8 +130,10 @@ SyntaxRichEditCtrl::~SyntaxRichEditCtrl( void ) {
 SyntaxRichEditCtrl::SetCharType
 ================
 */
-void SyntaxRichEditCtrl::SetCharType( int first, int last, int type ) {
-	for ( int i = first; i <= last; i++ ) {
+void SyntaxRichEditCtrl::SetCharType( int first, int last, int type )
+{
+	for( int i = first; i <= last; i++ )
+	{
 		charType[i] = type;
 	}
 }
@@ -136,7 +143,8 @@ void SyntaxRichEditCtrl::SetCharType( int first, int last, int type ) {
 SyntaxRichEditCtrl::InitSyntaxHighlighting
 ================
 */
-void SyntaxRichEditCtrl::InitSyntaxHighlighting( void ) {
+void SyntaxRichEditCtrl::InitSyntaxHighlighting( void )
+{
 	SetCharType( 0x00, 0xFF, CT_PUNCTUATION );
 	SetCharType( '\0', ' ', CT_WHITESPACE );
 	SetCharType( '/', '/', CT_COMMENT );
@@ -154,7 +162,8 @@ void SyntaxRichEditCtrl::InitSyntaxHighlighting( void ) {
 SyntaxRichEditCtrl::Init
 ================
 */
-void SyntaxRichEditCtrl::Init( void ) {
+void SyntaxRichEditCtrl::Init( void )
+{
 	scriptEdit = new TextEditor();
 	scriptEdit->SetHandlers( this, SyntaxRichEditCtrlKeyPress, SyntaxRichEditCtrlKeyDown, SyntaxRichEditMouseButtonDown, SyntaxRichEditToolTipNotify );
 
@@ -163,13 +172,13 @@ void SyntaxRichEditCtrl::Init( void ) {
 	SetFocus();
 
 	// create auto complete list box
-	autoCompleteListBoxPos = ImVec2( 0.0f, 0.0f );
+	autoCompleteListBoxPos	= ImVec2( 0.0f, 0.0f );
 	autoCompleteListBoxSize = ImVec2( AUTOCOMPLETE_WIDTH, AUTOCOMPLETE_HEIGHT );
-	autoCompleteStart = -1;
-	
+	autoCompleteStart		= -1;
+
 	// create function parameter tool tip
-	funcParmToolTipPos = ImVec2( 0.0f, 0.0f );
-	funcParmToolTipSize = ImVec2( FUNCPARMTOOLTIP_WIDTH, FUNCPARMTOOLTIP_HEIGHT );
+	funcParmToolTipPos	 = ImVec2( 0.0f, 0.0f );
+	funcParmToolTipSize	 = ImVec2( FUNCPARMTOOLTIP_WIDTH, FUNCPARMTOOLTIP_HEIGHT );
 	funcParmToolTipStart = -1;
 }
 
@@ -177,28 +186,32 @@ void SyntaxRichEditCtrl::Draw()
 {
 	bool clickedNew = false, clickedSelect = false;
 
-	scriptEditPos = ImGui::GetCursorPos();
+	scriptEditPos  = ImGui::GetCursorPos();
 	scriptEditSize = ImVec2( 800, 600 );
 
 	scriptEdit->Render( "Text", scriptEditSize, false );
 
-	if ( ImGui::Button( "Go to" ) ) {
+	if( ImGui::Button( "Go to" ) )
+	{
 		OnEditGoToLine();
 	}
 	ImGui::SameLine();
-	if ( ImGui::Button( "Find" ) ) {
+	if( ImGui::Button( "Find" ) )
+	{
 		idStr selText = scriptEdit->GetSelectedText().c_str();
 
 		findDlg.Start( selText, false );
 	}
 	ImGui::SameLine();
-	if ( ImGui::Button( "Replace" ) ) {
+	if( ImGui::Button( "Replace" ) )
+	{
 		idStr selText = scriptEdit->GetSelectedText().c_str();
 
 		findDlg.Start( selText, true );
 	}
 
-	if ( gotoDlg.Draw( scriptEditPos, scriptEditSize ) ) {
+	if( gotoDlg.Draw( scriptEditPos, scriptEditSize ) )
+	{
 		TextEditor::Coordinates coords( gotoDlg.GetLine() - 1 - firstLine, 0 );
 
 		scriptEdit->SetCursorPosition( coords );
@@ -207,22 +220,27 @@ void SyntaxRichEditCtrl::Draw()
 	FindReplaceDialog::command_t findReplaceResult = findDlg.Draw( scriptEditPos, scriptEditSize );
 	OnFindDialogMessage( findReplaceResult );
 
-	if ( msgBoxDlg.Draw( scriptEditPos, scriptEditSize ) ) {
+	if( msgBoxDlg.Draw( scriptEditPos, scriptEditSize ) )
+	{
 		SetFocus();
 	}
 
-	if ( autoCompleteStart >= 0 ) {
+	if( autoCompleteStart >= 0 )
+	{
 		ImVec2 oldCursorPos = ImGui::GetCursorPos();
-		ImVec2 newPos = ImVec2( scriptEditPos.x + autoCompleteListBoxPos.x, scriptEditPos.y + autoCompleteListBoxPos.y );
+		ImVec2 newPos		= ImVec2( scriptEditPos.x + autoCompleteListBoxPos.x, scriptEditPos.y + autoCompleteListBoxPos.y );
 
 		ImGui::SetCursorPos( newPos );
 
-		if ( ImGui::BeginChild( "###AutoCompleteListBox", autoCompleteListBoxSize, ImGuiChildFlags_Borders ) ) {
-			for ( int i = 0; i < autoCompleteListBoxFiltered.Num(); i++ ) {
+		if( ImGui::BeginChild( "###AutoCompleteListBox", autoCompleteListBoxSize, ImGuiChildFlags_Borders ) )
+		{
+			for( int i = 0; i < autoCompleteListBoxFiltered.Num(); i++ )
+			{
 				bool selected = ( i == autoCompleteListBoxSel );
 
 				ImGui::PushID( i );
-				if ( ImGui::Selectable( autoCompleteListBox[autoCompleteListBoxFiltered[i]].c_str(), selected ) ) {
+				if( ImGui::Selectable( autoCompleteListBox[autoCompleteListBoxFiltered[i]].c_str(), selected ) )
+				{
 					// steal focus back from the auto-complete list box
 					SetFocus();
 
@@ -232,7 +250,8 @@ void SyntaxRichEditCtrl::Draw()
 					AutoCompleteHide();
 				}
 				ImGui::SetItemKeyOwner( ImGuiKey_MouseWheelY );
-				if ( selected ) {
+				if( selected )
+				{
 					ImGui::SetItemDefaultFocus();
 					ImGui::SetScrollHereY();
 				}
@@ -242,13 +261,15 @@ void SyntaxRichEditCtrl::Draw()
 		ImGui::EndChild();
 		ImGui::SetCursorPos( oldCursorPos );
 	}
-	if ( funcParmToolTipStart >= 0 ) {
+	if( funcParmToolTipStart >= 0 )
+	{
 		ImVec2 oldCursorPos = ImGui::GetCursorPos();
-		ImVec2 newPos = ImVec2( scriptEditPos.x + funcParmToolTipPos.x, scriptEditPos.y + funcParmToolTipPos.y );
+		ImVec2 newPos		= ImVec2( scriptEditPos.x + funcParmToolTipPos.x, scriptEditPos.y + funcParmToolTipPos.y );
 
 		ImGui::SetCursorPos( newPos );
 
-		if ( ImGui::BeginChild( "###FuncParmToolTip", funcParmToolTipSize ) ) {
+		if( ImGui::BeginChild( "###FuncParmToolTip", funcParmToolTipSize ) )
+		{
 			ImGui::TextUnformatted( funcParmToolTip.c_str() );
 		}
 		ImGui::EndChild();
@@ -258,30 +279,40 @@ void SyntaxRichEditCtrl::Draw()
 	ImGui::TextColored( ImVec4( 1, 0, 0, 1 ), "%s", errorText.c_str() );
 }
 
-
 /*
 ================
 SyntaxRichEditCtrl::FindKeyWord
 ================
 */
-ID_INLINE int SyntaxRichEditCtrl::FindKeyWord( const char *keyWord, int length ) const {
+ID_INLINE int SyntaxRichEditCtrl::FindKeyWord( const char* keyWord, int length ) const
+{
 	int i, hash;
 
-	if ( caseSensitive ) {
+	if( caseSensitive )
+	{
 		hash = idStr::Hash( keyWord, length );
-	} else {
+	}
+	else
+	{
 		hash = idStr::IHash( keyWord, length );
 	}
-	for ( i = keyWordHash.First( hash ); i != -1; i = keyWordHash.Next( i ) ) {
-		if ( length != keyWordLengths[i] ) {
+	for( i = keyWordHash.First( hash ); i != -1; i = keyWordHash.Next( i ) )
+	{
+		if( length != keyWordLengths[i] )
+		{
 			continue;
 		}
-		if ( caseSensitive ) {
-			if ( idStr::Cmpn( keyWords[i].keyWord, keyWord, length ) != 0 ) {
+		if( caseSensitive )
+		{
+			if( idStr::Cmpn( keyWords[i].keyWord, keyWord, length ) != 0 )
+			{
 				continue;
 			}
-		} else {
-			if ( idStr::Icmpn( keyWords[i].keyWord, keyWord, length ) != 0 ) {
+		}
+		else
+		{
+			if( idStr::Icmpn( keyWords[i].keyWord, keyWord, length ) != 0 )
+			{
 				continue;
 			}
 		}
@@ -295,33 +326,41 @@ ID_INLINE int SyntaxRichEditCtrl::FindKeyWord( const char *keyWord, int length )
 SyntaxRichEditCtrl::SetKeyWords
 ================
 */
-void SyntaxRichEditCtrl::SetKeyWords( const keyWord_t kws[] ) {
+void SyntaxRichEditCtrl::SetKeyWords( const keyWord_t kws[] )
+{
 	int i, numKeyWords, hash;
 
 	keyWords = kws;
 
-	for ( numKeyWords = 0; keyWords[numKeyWords].keyWord; numKeyWords++ ) {
+	for( numKeyWords = 0; keyWords[numKeyWords].keyWord; numKeyWords++ )
+	{
 	}
 
 	delete keyWordColors;
 	keyWordColors = new idVec3[numKeyWords];
 
-	for ( i = 0; i < numKeyWords; i++ ) {
+	for( i = 0; i < numKeyWords; i++ )
+	{
 		keyWordColors[i] = keyWords[i].color;
 	}
 
 	delete keyWordLengths;
 	keyWordLengths = new int[numKeyWords];
 
-	for ( i = 0; i < numKeyWords; i++ ) {
+	for( i = 0; i < numKeyWords; i++ )
+	{
 		keyWordLengths[i] = idStr::Length( keyWords[i].keyWord );
 	}
 
 	keyWordHash.Clear( 1024, 1024 );
-	for ( i = 0; i < numKeyWords; i++ ) {
-		if ( caseSensitive ) {
+	for( i = 0; i < numKeyWords; i++ )
+	{
+		if( caseSensitive )
+		{
 			hash = idStr::Hash( keyWords[i].keyWord, keyWordLengths[i] );
-		} else {
+		}
+		else
+		{
 			hash = idStr::IHash( keyWords[i].keyWord, keyWordLengths[i] );
 		}
 		keyWordHash.Add( hash, i );
@@ -329,23 +368,27 @@ void SyntaxRichEditCtrl::SetKeyWords( const keyWord_t kws[] ) {
 
 	TextEditor::LanguageDefinition langDef;
 
-	for ( i = 0; i < numKeyWords; i++ ) {
-		if ( keyWords[i].description ) {
+	for( i = 0; i < numKeyWords; i++ )
+	{
+		if( keyWords[i].description )
+		{
 			TextEditor::Identifier id;
 			id.mDeclaration = keyWords[i].description;
 			langDef.mIdentifiers.insert( std::make_pair( std::string( keyWords[i].keyWord ), id ) );
-		} else {
+		}
+		else
+		{
 			langDef.mKeywords.insert( std::string( keyWords[i].keyWord ) );
 		}
 	}
 
 	langDef.mTokenize = TextEditor::LanguageDefinition::CPlusPlus().mTokenize;
 
-	langDef.mCommentStart = "/*";
-	langDef.mCommentEnd = "*/";
+	langDef.mCommentStart	   = "/*";
+	langDef.mCommentEnd		   = "*/";
 	langDef.mSingleLineComment = "//";
 
-	langDef.mCaseSensitive = caseSensitive;
+	langDef.mCaseSensitive	 = caseSensitive;
 	langDef.mAutoIndentation = true;
 
 	langDef.mName = "doomscript"; // TODO: change?
@@ -358,27 +401,33 @@ void SyntaxRichEditCtrl::SetKeyWords( const keyWord_t kws[] ) {
 SyntaxRichEditCtrl::LoadKeyWordsFromFile
 ================
 */
-bool SyntaxRichEditCtrl::LoadKeyWordsFromFile( const char *fileName ) {
-	idParser src;
-	idToken token, name, description;
-	byte red, green, blue;
+bool SyntaxRichEditCtrl::LoadKeyWordsFromFile( const char* fileName )
+{
+	idParser  src;
+	idToken	  token, name, description;
+	byte	  red, green, blue;
 	keyWord_t keyword;
 
-	if ( !src.LoadFile( fileName ) ) {
+	if( !src.LoadFile( fileName ) )
+	{
 		return false;
 	}
 
 	FreeKeyWordsFromFile();
 
-	while( src.ReadToken( &token ) ) {
-		if ( token.Icmp( "keywords" ) == 0 ) {
+	while( src.ReadToken( &token ) )
+	{
+		if( token.Icmp( "keywords" ) == 0 )
+		{
 			src.ExpectTokenString( "{" );
-			while( src.ReadToken( &token ) ) {
-				if ( token == "}" ) {
+			while( src.ReadToken( &token ) )
+			{
+				if( token == "}" )
+				{
 					break;
 				}
-				if ( token == "{" ) {
-
+				if( token == "{" )
+				{
 					// parse name
 					src.ExpectTokenType( TT_STRING, 0, &name );
 					src.ExpectTokenString( "," );
@@ -400,20 +449,22 @@ bool SyntaxRichEditCtrl::LoadKeyWordsFromFile( const char *fileName ) {
 					src.ExpectTokenType( TT_STRING, 0, &description );
 					src.ExpectTokenString( "}" );
 
-					keyword.keyWord = Mem_CopyString( name );
-					keyword.color = idVec3( red / 255.0f, green / 255.0f, blue / 255.0f );
+					keyword.keyWord		= Mem_CopyString( name );
+					keyword.color		= idVec3( red / 255.0f, green / 255.0f, blue / 255.0f );
 					keyword.description = Mem_CopyString( description );
 
 					keyWordsFromFile.Append( keyword );
 				}
 			}
-		} else {
+		}
+		else
+		{
 			src.SkipBracedSection();
 		}
 	}
 
-	keyword.keyWord = NULL;
-	keyword.color = idVec3( 1.0f, 1.0f, 1.0f );
+	keyword.keyWord		= NULL;
+	keyword.color		= idVec3( 1.0f, 1.0f, 1.0f );
 	keyword.description = NULL;
 	keyWordsFromFile.Append( keyword );
 
@@ -427,10 +478,12 @@ bool SyntaxRichEditCtrl::LoadKeyWordsFromFile( const char *fileName ) {
 SyntaxRichEditCtrl::FreeKeyWordsFromFile
 ================
 */
-void SyntaxRichEditCtrl::FreeKeyWordsFromFile( void ) {
-	for ( int i = 0; i < keyWordsFromFile.Num(); i++ ) {
-		Mem_Free( const_cast<char *>( keyWordsFromFile[i].keyWord ) );
-		Mem_Free( const_cast<char *>( keyWordsFromFile[i].description ) );
+void SyntaxRichEditCtrl::FreeKeyWordsFromFile( void )
+{
+	for( int i = 0; i < keyWordsFromFile.Num(); i++ )
+	{
+		Mem_Free( const_cast<char*>( keyWordsFromFile[i].keyWord ) );
+		Mem_Free( const_cast<char*>( keyWordsFromFile[i].description ) );
 	}
 	keyWordsFromFile.Clear();
 }
@@ -440,11 +493,15 @@ void SyntaxRichEditCtrl::FreeKeyWordsFromFile( void ) {
 SyntaxRichEditCtrl::SetStringColor
 ================
 */
-void SyntaxRichEditCtrl::SetStringColor( const idVec3 &color, const idVec3 &altColor ) {
+void SyntaxRichEditCtrl::SetStringColor( const idVec3& color, const idVec3& altColor )
+{
 	stringColor[0] = color;
-	if ( altColor == vec3_origin ) {
+	if( altColor == vec3_origin )
+	{
 		stringColor[1] = color;
-	} else {
+	}
+	else
+	{
 		stringColor[1] = altColor;
 	}
 }
@@ -454,7 +511,8 @@ void SyntaxRichEditCtrl::SetStringColor( const idVec3 &color, const idVec3 &altC
 SyntaxRichEditCtrl::SetObjectMemberCallback
 ================
 */
-void SyntaxRichEditCtrl::SetObjectMemberCallback( objectMemberCallback_t callback ) {
+void SyntaxRichEditCtrl::SetObjectMemberCallback( objectMemberCallback_t callback )
+{
 	GetObjectMembers = callback;
 }
 
@@ -463,7 +521,8 @@ void SyntaxRichEditCtrl::SetObjectMemberCallback( objectMemberCallback_t callbac
 SyntaxRichEditCtrl::SetFunctionParmCallback
 ================
 */
-void SyntaxRichEditCtrl::SetFunctionParmCallback( toolTipCallback_t callback ) {
+void SyntaxRichEditCtrl::SetFunctionParmCallback( toolTipCallback_t callback )
+{
 	GetFunctionParms = callback;
 }
 
@@ -472,7 +531,8 @@ void SyntaxRichEditCtrl::SetFunctionParmCallback( toolTipCallback_t callback ) {
 SyntaxRichEditCtrl::SetToolTipCallback
 ================
 */
-void SyntaxRichEditCtrl::SetToolTipCallback( toolTipCallback_t callback ) {
+void SyntaxRichEditCtrl::SetToolTipCallback( toolTipCallback_t callback )
+{
 	GetToolTip = callback;
 }
 
@@ -481,7 +541,8 @@ void SyntaxRichEditCtrl::SetToolTipCallback( toolTipCallback_t callback ) {
 SyntaxRichEditCtrl::SetCaseSensitive
 ================
 */
-void SyntaxRichEditCtrl::SetCaseSensitive( bool caseSensitive ) {
+void SyntaxRichEditCtrl::SetCaseSensitive( bool caseSensitive )
+{
 	this->caseSensitive = caseSensitive;
 }
 
@@ -490,7 +551,8 @@ void SyntaxRichEditCtrl::SetCaseSensitive( bool caseSensitive ) {
 SyntaxRichEditCtrl::AllowPathNames
 ================
 */
-void SyntaxRichEditCtrl::AllowPathNames( bool allow ) {
+void SyntaxRichEditCtrl::AllowPathNames( bool allow )
+{
 	allowPathNames = allow;
 }
 
@@ -499,7 +561,8 @@ void SyntaxRichEditCtrl::AllowPathNames( bool allow ) {
 SyntaxRichEditCtrl::EnableKeyWordAutoCompletion
 ================
 */
-void SyntaxRichEditCtrl::EnableKeyWordAutoCompletion( bool enable ) {
+void SyntaxRichEditCtrl::EnableKeyWordAutoCompletion( bool enable )
+{
 	keyWordAutoCompletion = enable;
 }
 
@@ -508,11 +571,12 @@ void SyntaxRichEditCtrl::EnableKeyWordAutoCompletion( bool enable ) {
 SyntaxRichEditCtrl::GetCursorPos
 ================
 */
-void SyntaxRichEditCtrl::GetCursorPos( int &line, int &column, int &character ) const {
+void SyntaxRichEditCtrl::GetCursorPos( int& line, int& column, int& character ) const
+{
 	TextEditor::Coordinates coords = scriptEdit->GetCursorPosition();
-	line = coords.mLine;
-	column = coords.mColumn;
-	character = 0;
+	line						   = coords.mLine;
+	column						   = coords.mColumn;
+	character					   = 0;
 }
 
 /*
@@ -520,7 +584,8 @@ void SyntaxRichEditCtrl::GetCursorPos( int &line, int &column, int &character ) 
 SyntaxRichEditCtrl::GetText
 ================
 */
-void SyntaxRichEditCtrl::GetText( idStr &text ) const {
+void SyntaxRichEditCtrl::GetText( idStr& text ) const
+{
 	text = scriptEdit->GetText().c_str();
 }
 
@@ -529,7 +594,8 @@ void SyntaxRichEditCtrl::GetText( idStr &text ) const {
 SyntaxRichEditCtrl::SetText
 ================
 */
-void SyntaxRichEditCtrl::SetText( const char *text ) {
+void SyntaxRichEditCtrl::SetText( const char* text )
+{
 	scriptEdit->SetText( std::string( text ) );
 }
 
@@ -538,7 +604,8 @@ void SyntaxRichEditCtrl::SetText( const char *text ) {
 SyntaxRichEditCtrl::SetReadOnly
 ================
 */
-void SyntaxRichEditCtrl::SetReadOnly( bool readOnly ) {
+void SyntaxRichEditCtrl::SetReadOnly( bool readOnly )
+{
 	scriptEdit->SetReadOnly( readOnly );
 }
 
@@ -547,7 +614,8 @@ void SyntaxRichEditCtrl::SetReadOnly( bool readOnly ) {
 SyntaxRichEditCtrl::GetReadOnly
 ================
 */
-bool SyntaxRichEditCtrl::GetReadOnly() {
+bool SyntaxRichEditCtrl::GetReadOnly()
+{
 	return scriptEdit->IsReadOnly();
 }
 
@@ -556,68 +624,80 @@ bool SyntaxRichEditCtrl::GetReadOnly() {
 SyntaxRichEditCtrl::IsEdited
 ================
 */
-bool SyntaxRichEditCtrl::IsEdited() const {
+bool SyntaxRichEditCtrl::IsEdited() const
+{
 	return scriptEdit->CanUndo();
 }
 
-bool SyntaxRichEditCtrl::CanCopy() {
+bool SyntaxRichEditCtrl::CanCopy()
+{
 	return scriptEdit->HasSelection();
 }
 
-void SyntaxRichEditCtrl::Copy() {
+void SyntaxRichEditCtrl::Copy()
+{
 	scriptEdit->Copy();
 }
 
-bool SyntaxRichEditCtrl::CanCut() {
+bool SyntaxRichEditCtrl::CanCut()
+{
 	return !scriptEdit->IsReadOnly() && scriptEdit->HasSelection();
 }
 
-void SyntaxRichEditCtrl::Cut() {
+void SyntaxRichEditCtrl::Cut()
+{
 	scriptEdit->Cut();
 }
 
-bool SyntaxRichEditCtrl::CanPaste() {
-	const char *clipboardText = ImGui::GetClipboardText();
+bool SyntaxRichEditCtrl::CanPaste()
+{
+	const char* clipboardText = ImGui::GetClipboardText();
 
 	return !scriptEdit->IsReadOnly() && clipboardText && *clipboardText;
 }
 
-void SyntaxRichEditCtrl::Paste() {
+void SyntaxRichEditCtrl::Paste()
+{
 	scriptEdit->Paste();
 }
 
-bool SyntaxRichEditCtrl::CanUndo() {
+bool SyntaxRichEditCtrl::CanUndo()
+{
 	return scriptEdit->CanUndo();
 }
 
-void SyntaxRichEditCtrl::Undo() {
+void SyntaxRichEditCtrl::Undo()
+{
 	scriptEdit->Undo();
 }
 
-bool SyntaxRichEditCtrl::CanRedo() {
+bool SyntaxRichEditCtrl::CanRedo()
+{
 	return scriptEdit->CanRedo();
 }
 
-void SyntaxRichEditCtrl::Redo() {
+void SyntaxRichEditCtrl::Redo()
+{
 	scriptEdit->Redo();
 }
 
-bool SyntaxRichEditCtrl::CanDelete() {
+bool SyntaxRichEditCtrl::CanDelete()
+{
 	return !scriptEdit->IsReadOnly();
 }
 
-void SyntaxRichEditCtrl::Delete() {
+void SyntaxRichEditCtrl::Delete()
+{
 	scriptEdit->Delete();
 }
-
-
 
 /*
 ================
 SyntaxRichEditCtrl::SetFocus
 ================
 */
-void SyntaxRichEditCtrl::SetFocus() {
+void SyntaxRichEditCtrl::SetFocus()
+{
 	scriptEdit->Focus();
 }
 
@@ -626,14 +706,16 @@ void SyntaxRichEditCtrl::SetFocus() {
 SyntaxRichEditCtrl::AutoCompleteInsertText
 ================
 */
-void SyntaxRichEditCtrl::AutoCompleteInsertText( void ) {
+void SyntaxRichEditCtrl::AutoCompleteInsertText( void )
+{
 	TextEditor::Coordinates sel;
-	int index;
+	int						index;
 
 	index = autoCompleteListBoxSel;
-	if ( index >= 0 && index < autoCompleteListBoxFiltered.Num() ) {
-		sel = scriptEdit->GetCursorPosition();
-		idStr text = autoCompleteListBox[autoCompleteListBoxFiltered[index]];
+	if( index >= 0 && index < autoCompleteListBoxFiltered.Num() )
+	{
+		sel							 = scriptEdit->GetCursorPosition();
+		idStr					text = autoCompleteListBox[autoCompleteListBoxFiltered[index]];
 
 		TextEditor::Coordinates autoCompleteCoords = TextEditor::Coordinates( sel.mLine, autoCompleteStart );
 		scriptEdit->SetSelection( autoCompleteCoords, sel );
@@ -646,23 +728,27 @@ void SyntaxRichEditCtrl::AutoCompleteInsertText( void ) {
 SyntaxRichEditCtrl::AutoCompleteUpdate
 ================
 */
-void SyntaxRichEditCtrl::AutoCompleteUpdate() {
+void SyntaxRichEditCtrl::AutoCompleteUpdate()
+{
 	TextEditor::Coordinates sel, autoCompleteCoords;
-	int index = -1;
+	int						index = -1;
 
 	sel = scriptEdit->GetCursorPosition();
 
 	autoCompleteCoords = TextEditor::Coordinates( sel.mLine, autoCompleteStart );
-	autoCompleteInput = scriptEdit->GetText( autoCompleteCoords, sel ).c_str();
+	autoCompleteInput  = scriptEdit->GetText( autoCompleteCoords, sel ).c_str();
 
 	int i, num;
 
 	num = autoCompleteListBox.Num();
 	autoCompleteListBoxFiltered.Clear();
-	for( i = 0; i < num; i++ ) {
-		if ( !autoCompleteInput.Length() || autoCompleteListBox[ i ].Find( autoCompleteInput.c_str(), false ) >= 0 ) {
-			autoCompleteListBoxFiltered.Append(i);
-			if ( index == -1 ) {
+	for( i = 0; i < num; i++ )
+	{
+		if( !autoCompleteInput.Length() || autoCompleteListBox[i].Find( autoCompleteInput.c_str(), false ) >= 0 )
+		{
+			autoCompleteListBoxFiltered.Append( i );
+			if( index == -1 )
+			{
 				index = autoCompleteListBoxFiltered.Num() - 1;
 			}
 		}
@@ -676,26 +762,31 @@ void SyntaxRichEditCtrl::AutoCompleteUpdate() {
 SyntaxRichEditCtrl::AutoCompleteShow
 ================
 */
-void SyntaxRichEditCtrl::AutoCompleteShow( int columnIndex ) {
+void SyntaxRichEditCtrl::AutoCompleteShow( int columnIndex )
+{
 	ImVec2 point;
-	float top, left;
+	float  top, left;
 
-	if ( !autoCompleteListBox.Num() ) {
+	if( !autoCompleteListBox.Num() )
+	{
 		return;
 	}
 
 	autoCompleteStart = columnIndex;
-	point = scriptEdit->GetCursorScreenCoordinates();
-	
-	if ( point.y + AUTOCOMPLETE_HEIGHT + AUTOCOMPLETE_OFFSET < scriptEditSize.y ) {
+	point			  = scriptEdit->GetCursorScreenCoordinates();
+
+	if( point.y + AUTOCOMPLETE_HEIGHT + AUTOCOMPLETE_OFFSET < scriptEditSize.y )
+	{
 		top = point.y + AUTOCOMPLETE_OFFSET;
-	} else {
+	}
+	else
+	{
 		top = point.y - AUTOCOMPLETE_HEIGHT - AUTOCOMPLETE_OFFSET;
 	}
-	left = point.x;
-	autoCompleteListBoxPos = ImVec2( left, top );
+	left					= point.x;
+	autoCompleteListBoxPos	= ImVec2( left, top );
 	autoCompleteListBoxSize = ImVec2( AUTOCOMPLETE_WIDTH, AUTOCOMPLETE_HEIGHT );
-	
+
 	AutoCompleteUpdate();
 }
 
@@ -704,7 +795,8 @@ void SyntaxRichEditCtrl::AutoCompleteShow( int columnIndex ) {
 SyntaxRichEditCtrl::AutoCompleteHide
 ================
 */
-void SyntaxRichEditCtrl::AutoCompleteHide( void ) {
+void SyntaxRichEditCtrl::AutoCompleteHide( void )
+{
 	autoCompleteStart = -1;
 	autoCompleteInput.Clear();
 }
@@ -714,24 +806,28 @@ void SyntaxRichEditCtrl::AutoCompleteHide( void ) {
 SyntaxRichEditCtrl::ToolTipShow
 ================
 */
-void SyntaxRichEditCtrl::ToolTipShow( int charIndex, const char *string ) {
+void SyntaxRichEditCtrl::ToolTipShow( int charIndex, const char* string )
+{
 	ImVec2 point;
-	float top, left;
+	float  top, left;
 
 	funcParmToolTipStart = charIndex;
-	funcParmToolTip = string;
+	funcParmToolTip		 = string;
 	// set tooltip size based on text size
-	float sizeX = ImGui::GetFont()->CalcTextSizeA( ImGui::GetFontSize(), FLT_MAX, -1.0f, funcParmToolTip.c_str(), nullptr, nullptr).x;
-	float sizeY = Min( (float)FUNCPARMTOOLTIP_HEIGHT, ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr).y );
-	point = scriptEdit->GetCursorScreenCoordinates();
+	float sizeX = ImGui::GetFont()->CalcTextSizeA( ImGui::GetFontSize(), FLT_MAX, -1.0f, funcParmToolTip.c_str(), nullptr, nullptr ).x;
+	float sizeY = Min( ( float )FUNCPARMTOOLTIP_HEIGHT, ImGui::GetFont()->CalcTextSizeA( ImGui::GetFontSize(), FLT_MAX, -1.0f, " ", nullptr, nullptr ).y );
+	point		= scriptEdit->GetCursorScreenCoordinates();
 
-	if ( point.y + sizeY + FUNCPARMTOOLTIP_OFFSET < scriptEditSize.y ) {
+	if( point.y + sizeY + FUNCPARMTOOLTIP_OFFSET < scriptEditSize.y )
+	{
 		top = point.y + FUNCPARMTOOLTIP_OFFSET;
-	} else {
+	}
+	else
+	{
 		top = point.y - sizeY - FUNCPARMTOOLTIP_OFFSET;
 	}
-	left = point.x;
-	funcParmToolTipPos = ImVec2( left, top );
+	left				= point.x;
+	funcParmToolTipPos	= ImVec2( left, top );
 	funcParmToolTipSize = ImVec2( sizeX, sizeY );
 }
 
@@ -740,7 +836,8 @@ void SyntaxRichEditCtrl::ToolTipShow( int charIndex, const char *string ) {
 SyntaxRichEditCtrl::ToolTipHide
 ================
 */
-void SyntaxRichEditCtrl::ToolTipHide( void ) {
+void SyntaxRichEditCtrl::ToolTipHide( void )
+{
 	funcParmToolTipStart = -1;
 }
 
@@ -749,11 +846,13 @@ void SyntaxRichEditCtrl::ToolTipHide( void ) {
 SyntaxRichEditCtrl::GetNameBeforeCurrentSelection
 ================
 */
-bool SyntaxRichEditCtrl::GetNameBeforeCurrentSelection( idStr &name, int &charIndex ) const {
+bool SyntaxRichEditCtrl::GetNameBeforeCurrentSelection( idStr& name, int& charIndex ) const
+{
 	idStr buffer = scriptEdit->GetWordBeforeCursor().c_str();
 
-	if ( buffer.Length() > 0 ) {
-		name = buffer;
+	if( buffer.Length() > 0 )
+	{
+		name	  = buffer;
 		charIndex = scriptEdit->GetCursorPosition().mColumn;
 		return true;
 	}
@@ -766,18 +865,22 @@ bool SyntaxRichEditCtrl::GetNameBeforeCurrentSelection( idStr &name, int &charIn
 SyntaxRichEditCtrl::OnToolTipNotify
 ================
 */
-bool SyntaxRichEditCtrl::OnToolTipNotify( const char *ident, char *toolTip, size_t toolTipSize ) {
+bool SyntaxRichEditCtrl::OnToolTipNotify( const char* ident, char* toolTip, size_t toolTipSize )
+{
 	idStr str;
 	idStr name = ident;
 
 	toolTip[0] = '\0';
-	if ( GetToolTip == NULL || !GetToolTip( name.c_str(), str)) {
-
+	if( GetToolTip == NULL || !GetToolTip( name.c_str(), str ) )
+	{
 		int keyWordIndex = FindKeyWord( name.c_str(), name.Length() );
 
-		if ( keyWordIndex != -1 && keyWords[keyWordIndex].description[0] != '\0' ) {
+		if( keyWordIndex != -1 && keyWords[keyWordIndex].description[0] != '\0' )
+		{
 			str = keyWords[keyWordIndex].description;
-		} else {
+		}
+		else
+		{
 			str = name.c_str();
 		}
 	}
@@ -791,7 +894,8 @@ bool SyntaxRichEditCtrl::OnToolTipNotify( const char *ident, char *toolTip, size
 SyntaxRichEditCtrl::OnEditGoToLine
 ================
 */
-void SyntaxRichEditCtrl::OnEditGoToLine() {
+void SyntaxRichEditCtrl::OnEditGoToLine()
+{
 	TextEditor::Coordinates coords = scriptEdit->GetCursorPosition();
 
 	gotoDlg.Start( firstLine + 1, firstLine + scriptEdit->GetTotalLines(), coords.mLine + 1 );
@@ -802,13 +906,16 @@ void SyntaxRichEditCtrl::OnEditGoToLine() {
 SyntaxRichEditCtrl::OnEditFindNext
 ================
 */
-void SyntaxRichEditCtrl::OnEditFindNext() {
-	if ( scriptEdit->FindNext( findStr.c_str(), matchCase, matchWholeWords, searchForward ) ) {
+void SyntaxRichEditCtrl::OnEditFindNext()
+{
+	if( scriptEdit->FindNext( findStr.c_str(), matchCase, matchWholeWords, searchForward ) )
+	{
 		SetFocus();
-	} else {
+	}
+	else
+	{
 		msgBoxDlg.Start( "The specified text was not found.", false, false );
 	}
-
 }
 
 /*
@@ -816,57 +923,63 @@ void SyntaxRichEditCtrl::OnEditFindNext() {
 SyntaxRichEditCtrl::OnFindDialogMessage
 ================
 */
-void SyntaxRichEditCtrl::OnFindDialogMessage( FindReplaceDialog::command_t command ) {
-	switch ( command ) {
-	case FindReplaceDialog::command_t::FIND_NEXT:
-	case FindReplaceDialog::command_t::FIND_PREV:
+void SyntaxRichEditCtrl::OnFindDialogMessage( FindReplaceDialog::command_t command )
+{
+	switch( command )
 	{
-		findStr = findDlg.GetFindString();
-		matchCase = findDlg.MatchCase();
-		matchWholeWords = findDlg.MatchWholeWord();
-		searchForward = ( command == FindReplaceDialog::command_t::FIND_NEXT );
-		OnEditFindNext();
-		break;
-	}
-	case FindReplaceDialog::command_t::FIND_ALL:
-		break;
-	case FindReplaceDialog::command_t::REPLACE_NEXT:
-	{
-		replaceStr = findDlg.GetReplaceString();
-		idStr selection = scriptEdit->GetSelectedText().c_str();
-
-		if ( selection.Length() && selection == findStr ) {
-			scriptEdit->ReplaceSelection( replaceStr.c_str() );
+		case FindReplaceDialog::command_t::FIND_NEXT:
+		case FindReplaceDialog::command_t::FIND_PREV:
+		{
+			findStr			= findDlg.GetFindString();
+			matchCase		= findDlg.MatchCase();
+			matchWholeWords = findDlg.MatchWholeWord();
+			searchForward	= ( command == FindReplaceDialog::command_t::FIND_NEXT );
+			OnEditFindNext();
+			break;
 		}
+		case FindReplaceDialog::command_t::FIND_ALL:
+			break;
+		case FindReplaceDialog::command_t::REPLACE_NEXT:
+		{
+			replaceStr		= findDlg.GetReplaceString();
+			idStr selection = scriptEdit->GetSelectedText().c_str();
 
-		findStr = findDlg.GetFindString();
-		matchCase = findDlg.MatchCase();
-		matchWholeWords = findDlg.MatchWholeWord();
-		searchForward = true;
-		OnEditFindNext();
-		break;
-	}
-	case FindReplaceDialog::command_t::REPLACE_ALL:
-	{
-		replaceStr = findDlg.GetReplaceString();
-		findStr = findDlg.GetFindString();
-		matchCase = findDlg.MatchCase();
-		matchWholeWords = findDlg.MatchWholeWord();
+			if( selection.Length() && selection == findStr )
+			{
+				scriptEdit->ReplaceSelection( replaceStr.c_str() );
+			}
 
-		int numReplaces = scriptEdit->ReplaceAll( findStr.c_str(), replaceStr.c_str(), matchCase, matchWholeWords );
-		if (numReplaces == 0) {
-			msgBoxDlg.Start( "The specified text was not found.", false, false );
-		} else {
-			msgBoxDlg.Start( va( "Replaced %d occurances.", numReplaces ), false, false );
+			findStr			= findDlg.GetFindString();
+			matchCase		= findDlg.MatchCase();
+			matchWholeWords = findDlg.MatchWholeWord();
+			searchForward	= true;
+			OnEditFindNext();
+			break;
 		}
-		break;
-	}
-	case FindReplaceDialog::command_t::DONE:
-		SetFocus();
-		break;
-	case FindReplaceDialog::command_t::NONE:
-	default:
-		break;
+		case FindReplaceDialog::command_t::REPLACE_ALL:
+		{
+			replaceStr		= findDlg.GetReplaceString();
+			findStr			= findDlg.GetFindString();
+			matchCase		= findDlg.MatchCase();
+			matchWholeWords = findDlg.MatchWholeWord();
+
+			int numReplaces = scriptEdit->ReplaceAll( findStr.c_str(), replaceStr.c_str(), matchCase, matchWholeWords );
+			if( numReplaces == 0 )
+			{
+				msgBoxDlg.Start( "The specified text was not found.", false, false );
+			}
+			else
+			{
+				msgBoxDlg.Start( va( "Replaced %d occurances.", numReplaces ), false, false );
+			}
+			break;
+		}
+		case FindReplaceDialog::command_t::DONE:
+			SetFocus();
+			break;
+		case FindReplaceDialog::command_t::NONE:
+		default:
+			break;
 	}
 }
 
@@ -875,97 +988,118 @@ void SyntaxRichEditCtrl::OnFindDialogMessage( FindReplaceDialog::command_t comma
 SyntaxRichEditCtrl::OnKeyDown
 ================
 */
-bool SyntaxRichEditCtrl::OnKeyDown() {
-
-	if ( autoCompleteStart >= 0 ) {
+bool SyntaxRichEditCtrl::OnKeyDown()
+{
+	if( autoCompleteStart >= 0 )
+	{
 		int timeEnd = Sys_Milliseconds();
 		int elapsed = timeEnd - autoCompleteLastKeyDownTime;
 		int sel;
 		int keydownTime = 200;
 
-		if ( ImGui::IsKeyDown( ImGuiKey_UpArrow ) ) {
-			if ( elapsed > keydownTime ) {
-				sel = Max( 0, autoCompleteListBoxSel - 1 );
-				autoCompleteListBoxSel = sel;
+		if( ImGui::IsKeyDown( ImGuiKey_UpArrow ) )
+		{
+			if( elapsed > keydownTime )
+			{
+				sel							= Max( 0, autoCompleteListBoxSel - 1 );
+				autoCompleteListBoxSel		= sel;
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_DownArrow ) ) {
-			if ( elapsed > keydownTime ) {
-				sel = Min( autoCompleteListBoxFiltered.Num() - 1, autoCompleteListBoxSel + 1 );
-				autoCompleteListBoxSel = sel;
+		if( ImGui::IsKeyDown( ImGuiKey_DownArrow ) )
+		{
+			if( elapsed > keydownTime )
+			{
+				sel							= Min( autoCompleteListBoxFiltered.Num() - 1, autoCompleteListBoxSel + 1 );
+				autoCompleteListBoxSel		= sel;
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_PageUp ) ) {
-			if ( elapsed > keydownTime ) {
-				sel = Max( 0, autoCompleteListBoxSel - 10 );
-				autoCompleteListBoxSel = sel;
+		if( ImGui::IsKeyDown( ImGuiKey_PageUp ) )
+		{
+			if( elapsed > keydownTime )
+			{
+				sel							= Max( 0, autoCompleteListBoxSel - 10 );
+				autoCompleteListBoxSel		= sel;
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_PageDown ) ) {
-			if ( elapsed > keydownTime ) {
-				sel = Min( autoCompleteListBoxFiltered.Num() - 1, autoCompleteListBoxSel + 10 );
-				autoCompleteListBoxSel = sel;
+		if( ImGui::IsKeyDown( ImGuiKey_PageDown ) )
+		{
+			if( elapsed > keydownTime )
+			{
+				sel							= Min( autoCompleteListBoxFiltered.Num() - 1, autoCompleteListBoxSel + 10 );
+				autoCompleteListBoxSel		= sel;
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_Home ) ) {
-			if ( elapsed > keydownTime ) {
-				autoCompleteListBoxSel = 0;
+		if( ImGui::IsKeyDown( ImGuiKey_Home ) )
+		{
+			if( elapsed > keydownTime )
+			{
+				autoCompleteListBoxSel		= 0;
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_End ) ) {
-			if ( elapsed > keydownTime ) {
-				autoCompleteListBoxSel = autoCompleteListBoxFiltered.Num() - 1;
+		if( ImGui::IsKeyDown( ImGuiKey_End ) )
+		{
+			if( elapsed > keydownTime )
+			{
+				autoCompleteListBoxSel		= autoCompleteListBoxFiltered.Num() - 1;
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_Enter ) || ImGui::IsKeyDown( ImGuiKey_Tab ) ) {
-			if ( elapsed > keydownTime ) {
+		if( ImGui::IsKeyDown( ImGuiKey_Enter ) || ImGui::IsKeyDown( ImGuiKey_Tab ) )
+		{
+			if( elapsed > keydownTime )
+			{
 				AutoCompleteInsertText();
 				AutoCompleteHide();
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_Escape ) ) {
-			if ( elapsed > keydownTime ) {
+		if( ImGui::IsKeyDown( ImGuiKey_Escape ) )
+		{
+			if( elapsed > keydownTime )
+			{
 				AutoCompleteHide();
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
-		if ( ImGui::IsKeyDown( ImGuiKey_LeftArrow )
-			|| ImGui::IsKeyDown( ImGuiKey_RightArrow )
-			|| ImGui::IsKeyDown( ImGuiKey_Insert )
-			|| ImGui::IsKeyDown( ImGuiKey_Delete ) ) {
-			if ( elapsed > keydownTime ) {
+		if( ImGui::IsKeyDown( ImGuiKey_LeftArrow ) || ImGui::IsKeyDown( ImGuiKey_RightArrow ) || ImGui::IsKeyDown( ImGuiKey_Insert ) || ImGui::IsKeyDown( ImGuiKey_Delete ) )
+		{
+			if( elapsed > keydownTime )
+			{
 				autoCompleteLastKeyDownTime = timeEnd;
 			}
 			return true;
 		}
 	}
 
-	if ( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_G ) ) {
+	if( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_G ) )
+	{
 		OnEditGoToLine();
 
 		return true;
-	} else if ( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_F ) ) {
+	}
+	else if( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_F ) )
+	{
 		idStr selText = scriptEdit->GetSelectedText().c_str();
 
 		findDlg.Start( selText, false );
 
 		return true;
-	} else if ( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_H ) ) {
+	}
+	else if( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_H ) )
+	{
 		idStr selText = scriptEdit->GetSelectedText().c_str();
 
 		findDlg.Start( selText, true );
@@ -981,57 +1115,75 @@ bool SyntaxRichEditCtrl::OnKeyDown() {
 SyntaxRichEditCtrl::OnChar
 ================
 */
-void SyntaxRichEditCtrl::OnChar( bool ctrl, bool shift, bool alt, int nChar ) {
+void SyntaxRichEditCtrl::OnChar( bool ctrl, bool shift, bool alt, int nChar )
+{
 	// if the auto-complete list box is up
-	if ( autoCompleteStart >= 0 ) {
+	if( autoCompleteStart >= 0 )
+	{
 		TextEditor::Coordinates sel;
 
-		if ( charType[nChar] == CT_NAME ) {
+		if( charType[nChar] == CT_NAME )
+		{
 			AutoCompleteUpdate();
 			return;
-		} else if ( nChar == 0x08/*backspace*/) {
+		}
+		else if( nChar == 0x08 /*backspace*/ )
+		{
 			sel = scriptEdit->GetCursorPosition();
-			if ( sel.mColumn > autoCompleteStart ) {
+			if( sel.mColumn > autoCompleteStart )
+			{
 				AutoCompleteUpdate();
-			} else {
+			}
+			else
+			{
 				AutoCompleteHide();
 			}
 			return;
-		} else {
+		}
+		else
+		{
 			AutoCompleteHide();
 		}
 	}
 
 	// if the function parameter tool tip is up
-	if ( funcParmToolTipStart >= 0 ) {
+	if( funcParmToolTipStart >= 0 )
+	{
 		TextEditor::Coordinates sel;
 
-		if ( nChar == ')' || nChar == 0x1b/*escape*/ ) {
+		if( nChar == ')' || nChar == 0x1b /*escape*/ )
+		{
 			ToolTipHide();
-		} else if ( nChar == 0x08/*backspace*/ ) {
+		}
+		else if( nChar == 0x08 /*backspace*/ )
+		{
 			sel = scriptEdit->GetCursorPosition();
-			if ( sel.mColumn < funcParmToolTipStart ) {
+			if( sel.mColumn < funcParmToolTipStart )
+			{
 				ToolTipHide();
 			}
 		}
 	}
 
 	// show keyword auto-completion
-	if ( keyWordAutoCompletion && charType[nChar] == CT_NAME && funcParmToolTipStart < 0 ) {
+	if( keyWordAutoCompletion && charType[nChar] == CT_NAME && funcParmToolTipStart < 0 )
+	{
 		TextEditor::Coordinates sel;
-		int line, column, length, i;
+		int						line, column, length, i;
 
 		sel = scriptEdit->GetCursorPosition();
-		
-		line = sel.mLine;
+
+		line   = sel.mLine;
 		column = sel.mColumn;
 		length = scriptEdit->GetCurrentLineText().length();
-		
-		if ( column <= 1 || scriptEdit->PeekLeftIsWhiteSpace( 2 ) ) {
-			if ( column >= length-1 || scriptEdit->PeekLeftIsWhiteSpace( 0 ) ) {
 
+		if( column <= 1 || scriptEdit->PeekLeftIsWhiteSpace( 2 ) )
+		{
+			if( column >= length - 1 || scriptEdit->PeekLeftIsWhiteSpace( 0 ) )
+			{
 				autoCompleteListBox.Clear();
-				for ( i = 0; keyWords[i].keyWord; i++ ) {
+				for( i = 0; keyWords[i].keyWord; i++ )
+				{
 					autoCompleteListBox.Append( keyWords[i].keyWord );
 				}
 				autoCompleteListBox.Sort();
@@ -1042,27 +1194,33 @@ void SyntaxRichEditCtrl::OnChar( bool ctrl, bool shift, bool alt, int nChar ) {
 	}
 
 	// show object member auto-completion
-	if ( nChar == '.' && GetObjectMembers && funcParmToolTipStart < 0 ) {
-		int charIndex;
+	if( nChar == '.' && GetObjectMembers && funcParmToolTipStart < 0 )
+	{
+		int	  charIndex;
 		idStr name;
 
-		if ( GetNameBeforeCurrentSelection( name, charIndex ) ) {
+		if( GetNameBeforeCurrentSelection( name, charIndex ) )
+		{
 			autoCompleteListBox.Clear();
-			if ( GetObjectMembers( name, autoCompleteListBox ) ) {
+			if( GetObjectMembers( name, autoCompleteListBox ) )
+			{
 				AutoCompleteShow( charIndex );
 			}
 		}
 		return;
 	}
-	
+
 	// show function parameter tool tip
-	if ( nChar == '(' && GetFunctionParms ) {
-		int charIndex;
+	if( nChar == '(' && GetFunctionParms )
+	{
+		int	  charIndex;
 		idStr name;
 
-		if ( GetNameBeforeCurrentSelection( name, charIndex ) ) {
+		if( GetNameBeforeCurrentSelection( name, charIndex ) )
+		{
 			idStr parmString;
-			if ( GetFunctionParms( name, parmString ) ) {
+			if( GetFunctionParms( name, parmString ) )
+			{
 				ToolTipShow( charIndex, parmString );
 			}
 		}
@@ -1075,9 +1233,10 @@ void SyntaxRichEditCtrl::OnChar( bool ctrl, bool shift, bool alt, int nChar ) {
 SyntaxRichEditCtrl::OnMouseButtonDown
 ================
 */
-bool SyntaxRichEditCtrl::OnMouseButtonDown() {
-
-	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && autoCompleteStart >= 0 ) {
+bool SyntaxRichEditCtrl::OnMouseButtonDown()
+{
+	if( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && autoCompleteStart >= 0 )
+	{
 		AutoCompleteHide();
 		return true;
 	}
@@ -1090,14 +1249,19 @@ bool SyntaxRichEditCtrl::OnMouseButtonDown() {
 SyntaxRichEditCtrl::OnMouseWheel
 ================
 */
-void SyntaxRichEditCtrl::OnMouseWheel( float wheel ) {
-	if ( autoCompleteStart >= 0 ) {
+void SyntaxRichEditCtrl::OnMouseWheel( float wheel )
+{
+	if( autoCompleteStart >= 0 )
+	{
 		int sel;
 
-		if ( wheel > 0  ) {
-			sel = Max( 0, autoCompleteListBoxSel - (int)( wheel / MOUSEWHEEL_DELTA ) );
-		} else {
-			sel = Min( autoCompleteListBoxFiltered.Num() - 1, autoCompleteListBoxSel - (int)( wheel / MOUSEWHEEL_DELTA ) );
+		if( wheel > 0 )
+		{
+			sel = Max( 0, autoCompleteListBoxSel - ( int )( wheel / MOUSEWHEEL_DELTA ) );
+		}
+		else
+		{
+			sel = Min( autoCompleteListBoxFiltered.Num() - 1, autoCompleteListBoxSel - ( int )( wheel / MOUSEWHEEL_DELTA ) );
 		}
 		autoCompleteListBoxSel = sel;
 		return;

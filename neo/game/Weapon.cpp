@@ -343,6 +343,10 @@ void idWeapon::Restore( idRestoreGame *savefile ) {
 	idStr objectname;
 	savefile->ReadString( objectname );
 	weaponDef = gameLocal.FindEntityDef( objectname );
+	if ( !weaponDef ) {
+		gameLocal.Error( "weaponDef not found:  %s\n", objectname.c_str() );
+	}
+
 	meleeDef = gameLocal.FindEntityDef( weaponDef->dict.GetString( "def_melee" ), false );
 
 	const idDeclEntityDef *projectileDef = gameLocal.FindEntityDef( weaponDef->dict.GetString( "def_projectile" ), false );
@@ -705,6 +709,9 @@ void idWeapon::GetWeaponDef( const char *objectname, int ammoinclip ) {
 	assert( owner );
 
 	weaponDef			= gameLocal.FindEntityDef( objectname );
+	if ( !weaponDef ) {
+		gameLocal.Error( "weaponDef not found:  %s\n", objectname );
+	}
 
 	ammoType			= GetAmmoNumForName( weaponDef->dict.GetString( "ammoType" ) );
 	ammoRequired		= weaponDef->dict.GetInt( "ammoRequired" );
@@ -1634,6 +1641,10 @@ Can be overridden by subclasses when a thread doesn't need to be allocated.
 */
 idThread *idWeapon::ConstructScriptObject( void ) {
 	const function_t *constructor;
+
+	if ( !thread ) {
+		return thread;
+	}
 
 	thread->EndThread();
 

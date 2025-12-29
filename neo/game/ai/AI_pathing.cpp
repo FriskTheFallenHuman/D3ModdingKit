@@ -822,7 +822,7 @@ float PathLength( idVec2 optimizedPath[MAX_OBSTACLE_PATH], int numPathPoints, co
 	}
 
 	// add penalty if this path does not go in the current direction
-	if ( curDir * ( optimizedPath[1] - optimizedPath[0] ) < 0.0f ) {
+	if ( numPathPoints > 1 && curDir * ( optimizedPath[1] - optimizedPath[0] ) < 0.0f ) {
 		pathLength += 100.0f;
 	}
 	return pathLength;
@@ -900,7 +900,11 @@ bool FindOptimalPath( const pathNode_t *root, const obstacle_t *obstacles, int n
 	}
 
 	if ( !pathToGoalExists ) {
-		seekPos.ToVec2() = root->children[0]->pos;
+		if ( !root->children[0] ) {
+			seekPos.ToVec2() = root->pos;
+		} else {
+			seekPos.ToVec2() = root->children[0]->pos;
+		}
 	} else if ( !optimizedPathCalculated ) {
 		OptimizePath( root, bestNode, obstacles, numObstacles, optimizedPath );
 		seekPos.ToVec2() = optimizedPath[1];

@@ -118,6 +118,11 @@ idLangDict::Save
 */
 void idLangDict::Save( const char *fileName ) {
 	idFile *outFile = idLib::fileSystem->OpenFileWrite( fileName );
+	if ( outFile == NULL ) {
+		idLib::common->Warning( "Couldn't open for writing: %s", fileName );
+		return;
+	}
+
 	outFile->WriteFloatString( "// string table\n// english\n//\n\n{\n" );
 	for ( int j = 0; j < args.Num(); j++ ) {
 		outFile->WriteFloatString( "\t\"%s\"\t\"", args[j].key.c_str() );
@@ -133,6 +138,9 @@ void idLangDict::Save( const char *fileName ) {
 			} else if ( ch == '\n' || ch == '\r' ) {
 				outFile->Write( &slash, 1 );
 				outFile->Write( &nl, 1 );
+			} else if ( ch == slash ) {
+				outFile->Write( &slash, 1 );
+				outFile->Write( &slash, 1 );
 			} else {
 				outFile->Write( &ch, 1 );
 			}

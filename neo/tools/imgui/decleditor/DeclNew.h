@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,51 +30,56 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLNEW_H__
 #define __DECLNEW_H__
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 // DeclNew dialog
 
-class DeclNew {
-
+class DeclNew
+{
 public:
-						DeclNew();   // standard constructor
+	DeclNew(); // standard constructor
 
-	void				SetDeclTree( PathTreeCtrl *tree ) { declTree = tree; }
-	void				SetDefaultType( const char *type ) { defaultType = type; }
-	void				SetDefaultName( const char *name ) { defaultName = name; }
-	void				SetDefaultFile( const char *file ) { defaultFile = file; }
-	idDecl *			GetNewDecl( void ) const { return newDecl; }
+	void	SetDeclTree( PathTreeCtrl* tree ) { declTree = tree; }
+	void	SetDefaultType( const char* type ) { defaultType = type; }
+	void	SetDefaultName( const char* name ) { defaultName = name; }
+	void	SetDefaultFile( const char* file ) { defaultFile = file; }
+	idDecl* GetNewDecl( void ) const { return newDecl; }
 
-	void				Reset();
-	void				Start();
-	bool				Draw();
-
-private:
-	void				OnBnClickedFile();
-	void				OnBnClickedOk();
-	void				OnBnClickedCancel();
+	void	Reset();
+	void	Start();
+	bool	Draw();
 
 private:
-	enum state_t { DONE = 0, NAME };
-
-	idStrList			typeList;
-	int					typeListSel;
-	idStr				nameEdit;
-	idStr				fileEdit;
-
-	idStr				errorText;
-
-	PathTreeCtrl *		declTree;
-	idStr				defaultType;
-	idStr				defaultName;
-	idStr				defaultFile;
-	idDecl *			newDecl;
-	state_t				state;
-
-	DeclNewSelect		selectDlg;
+	void OnBnClickedFile();
+	void OnBnClickedOk();
+	void OnBnClickedCancel();
 
 private:
-	void				InitTypeList( void );
+	enum state_t
+	{
+		DONE = 0,
+		NAME
+	};
+
+	idStrList	  typeList;
+	int			  typeListSel;
+	idStr		  nameEdit;
+	idStr		  fileEdit;
+
+	idStr		  errorText;
+
+	PathTreeCtrl* declTree;
+	idStr		  defaultType;
+	idStr		  defaultName;
+	idStr		  defaultFile;
+	idDecl*		  newDecl;
+	state_t		  state;
+
+	DeclNewSelect selectDlg;
+
+private:
+	void InitTypeList( void );
 };
 
 }

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,48 +30,46 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLEDITOR_H__
 #define __DECLEDITOR_H__
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 // DeclEditor dialog
 
-class DeclEditor {
+class DeclEditor
+{
 public:
-							DeclEditor();   // standard constructor
+	DeclEditor(); // standard constructor
 
-	void					Reset();
-	void					Start( idDecl* decl );
+	void Reset();
+	void Start( idDecl* decl );
 
-	bool					Draw();
+	bool Draw();
 
-	void					ShowIt(bool show) {
-		isShown = show;
-	}
-	bool					IsShown() {
-		return isShown;
-	}
+	void ShowIt( bool show ) { isShown = show; }
+	bool IsShown() { return isShown; }
 
 private:
-	void				OnBnClickedTest();
-	bool				OnBnClickedOk();
-	void				OnBnClickedOkAccepted();
-	void				OnBnClickedCancel();
+	void OnBnClickedTest();
+	bool OnBnClickedOk();
+	void OnBnClickedOkAccepted();
+	void OnBnClickedCancel();
 
 private:
-	bool				isShown;
-	idStr				windowText;
-	idStr				statusBarText;
-	SyntaxRichEditCtrl	declEdit;
-	bool				testButtonEnabled;
-	bool				okButtonEnabled;
-	bool				cancelButtonEnabled;
-	idStr				errorText;
+	bool			   isShown;
+	idStr			   windowText;
+	idStr			   statusBarText;
+	SyntaxRichEditCtrl declEdit;
+	bool			   testButtonEnabled;
+	bool			   okButtonEnabled;
+	bool			   cancelButtonEnabled;
+	idStr			   errorText;
 
-	idDecl *			decl;
-	int					firstLine;
+	idDecl*			   decl;
+	int				   firstLine;
 
 private:
-	bool				TestDecl( const idStr &declText );
-	void				UpdateStatusBar( void );
+	bool TestDecl( const idStr& declText );
+	void UpdateStatusBar( void );
 };
 
 }

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -91,15 +92,16 @@ static UINT indicators[] =
 	ID_INDICATOR_SCRL,
 };*/
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /**
-* Constructor for MEMainFrame. Initialize some member data and load the options.
-*/
-MEMainFrame::MEMainFrame() {
-
+ * Constructor for MEMainFrame. Initialize some member data and load the options.
+ */
+MEMainFrame::MEMainFrame()
+{
 	currentDoc = NULL;
-	m_find = NULL;
+	m_find	   = NULL;
 
 	searchData.searched = false;
 
@@ -109,31 +111,35 @@ MEMainFrame::MEMainFrame() {
 }
 
 /**
-* Destructor for MEMainFrame.
-*/
-MEMainFrame::~MEMainFrame() {
+ * Destructor for MEMainFrame.
+ */
+MEMainFrame::~MEMainFrame()
+{
 }
 
 /**
-* Called to add console text to the console view.
-* @param msg The text that is to be added to the console.
-*/
-void MEMainFrame::PrintConsoleMessage(const char *msg) {
-	m_consoleView->AddText(msg);
+ * Called to add console text to the console view.
+ * @param msg The text that is to be added to the console.
+ */
+void MEMainFrame::PrintConsoleMessage( const char* msg )
+{
+	m_consoleView->AddText( msg );
 }
 
 /**
-* Sets a few window styles for the main window during the creation process.
-*/
-bool MEMainFrame::PreCreateWindow() {
+ * Sets a few window styles for the main window during the creation process.
+ */
+bool MEMainFrame::PreCreateWindow()
+{
 	return true;
 }
 
 /**
-* Called by the MFC framework to allow the window to create any client windows. This method
-* creates all of the spliter windows and registers all of the views with the document manager.
-*/
-void MEMainFrame::OnCreateClient() {
+ * Called by the MFC framework to allow the window to create any client windows. This method
+ * creates all of the spliter windows and registers all of the views with the document manager.
+ */
+void MEMainFrame::OnCreateClient()
+{
 	includeFileInMaterialList = true;
 
 	/*
@@ -142,7 +148,7 @@ void MEMainFrame::OnCreateClient() {
 	*/
 	m_consoleView = new ConsoleView();
 	m_consoleView->Init();
-	//m_consoleView->ShowWindow(SW_HIDE);
+	// m_consoleView->ShowWindow(SW_HIDE);
 	/*
 	m_tabs.Create(TCS_BOTTOM | TCS_FLATBUTTONS | WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), this, TAB_CONTROL);
 	m_tabs.InsertItem(0, "Editor");
@@ -177,125 +183,137 @@ void MEMainFrame::OnCreateClient() {
 		return FALSE;
 	}
 	*/
-	//Get references to all of the views
+	// Get references to all of the views
 	m_materialTreeView = new MaterialTreeView(); //(MaterialTreeView*)m_editSplitter.GetPane(0, 0);
 	m_materialTreeView->OnCreate();
-	m_previewPropertyView = new MaterialPreviewPropView();// (MaterialPreviewPropView*)m_previewSplitter.GetPane(0, 0);
-	m_materialPreviewView = new MaterialPreviewView(); //(MaterialPreviewView*)m_previewSplitter.GetPane(0, 1);
+	m_previewPropertyView = new MaterialPreviewPropView(); // (MaterialPreviewPropView*)m_previewSplitter.GetPane(0, 0);
+	m_materialPreviewView = new MaterialPreviewView();	   //(MaterialPreviewView*)m_previewSplitter.GetPane(0, 1);
 
 	m_materialEditView = new MaterialEditView(); // (MaterialEditView*)m_editSplitter.GetPane(0, 1);
 	m_materialEditView->OnCreate();
-	m_stageView = m_materialEditView->m_stageView;
+	m_stageView			   = m_materialEditView->m_stageView;
 	m_materialPropertyView = m_materialEditView->m_materialPropertyView;
-	//m_materialEditSplitter = &m_materialEditView->m_editSplitter;
+	// m_materialEditSplitter = &m_materialEditView->m_editSplitter;
 
-	//Load the splitter positions from the registry
+	// Load the splitter positions from the registry
 
-	editSplitterPos = 300;
-	editSplitterWidth = 500 + m_materialEditView->m_editSplitterWidth;
-	editSplitterHeight = 200;
-	previewSplitterPos = 300;
-	previewSplitterPos = 500;
-	previewSplitterWidth = 500;
+	editSplitterPos		  = 300;
+	editSplitterWidth	  = 500 + m_materialEditView->m_editSplitterWidth;
+	editSplitterHeight	  = 200;
+	previewSplitterPos	  = 300;
+	previewSplitterPos	  = 500;
+	previewSplitterWidth  = 500;
 	previewSplitterHeight = 500;
 
 	int val = options.GetMaterialEditHeight();
-	if(val <= 0)
+	if( val <= 0 )
+	{
 		val = 300;
-	//m_splitterWnd.SetRowInfo(0, val, 0);
+	}
+	// m_splitterWnd.SetRowInfo(0, val, 0);
 	editSplitterHeight = val;
 
 	val = options.GetMaterialTreeWidth();
-	if(val <= 0)
+	if( val <= 0 )
+	{
 		val = 300;
+	}
 	editSplitterPos = val;
-	
+
 	val = options.GetStageWidth();
-	if(val <= 0)
+	if( val <= 0 )
+	{
 		val = 200;
+	}
 	m_materialEditView->m_editSplitterPos = val;
 
 	val = options.GetPreviewPropertiesWidth();
-	if(val <= 0)
+	if( val <= 0 )
+	{
 		val = 300;
+	}
 	previewSplitterPos = val;
 
-	//Register the views with the document manager
-	materialDocManager.RegisterMaterialView(this);
-	materialDocManager.RegisterMaterialView(m_materialTreeView);
-	materialDocManager.RegisterMaterialView(m_stageView);
-	materialDocManager.RegisterMaterialView(m_materialPropertyView);
-	materialDocManager.RegisterMaterialView(m_materialPreviewView);
-	materialDocManager.RegisterMaterialView(m_materialEditView);
+	// Register the views with the document manager
+	materialDocManager.RegisterMaterialView( this );
+	materialDocManager.RegisterMaterialView( m_materialTreeView );
+	materialDocManager.RegisterMaterialView( m_stageView );
+	materialDocManager.RegisterMaterialView( m_materialPropertyView );
+	materialDocManager.RegisterMaterialView( m_materialPreviewView );
+	materialDocManager.RegisterMaterialView( m_materialEditView );
 
-	//Let the stage window know about the prop window
-	m_stageView->SetMaterialPropertyView(m_materialPropertyView);
+	// Let the stage window know about the prop window
+	m_stageView->SetMaterialPropertyView( m_materialPropertyView );
 
-	//Let the preview props now about the preview window
-	m_previewPropertyView->RegisterPreviewView(m_materialPreviewView);
+	// Let the preview props now about the preview window
+	m_previewPropertyView->RegisterPreviewView( m_materialPreviewView );
 	m_previewPropertyView->InitializePropTree();
-	//m_previewPropertyView->GetPropertyTreeCtrl().SetColumn(120);
+	// m_previewPropertyView->GetPropertyTreeCtrl().SetColumn(120);
 
 	MaterialDefManager::InitializeMaterialDefLists();
-	
-	//Some prop tree initialization
+
+	// Some prop tree initialization
 
 	val = options.GetMaterialPropHeadingWidth();
-	if(val <= 0)
+	if( val <= 0 )
+	{
 		val = 200;
-	//m_materialPropertyView->GetPropertyTreeCtrl().SetColumn(val);
+	}
+	// m_materialPropertyView->GetPropertyTreeCtrl().SetColumn(val);
 	m_materialPropertyView->LoadSettings();
 
 	val = options.GetPreviewPropHeadingWidth();
-	if(val <= 0)
+	if( val <= 0 )
+	{
 		val = 120;
-	//m_previewPropertyView->GetPropertyTreeCtrl().SetColumn(val);
+	}
+	// m_previewPropertyView->GetPropertyTreeCtrl().SetColumn(val);
 
 	// Build the material list
 	m_materialTreeView->InitializeMaterialList( includeFileInMaterialList );
-	
-	//SetActiveView(m_materialTreeView);
+
+	// SetActiveView(m_materialTreeView);
 }
 
 /**
-* Called by the framework while the window is being created. This methods
-* creates the tool bars and status bars
-* /todo Bmatt Nerve: Need to get the toolbars to work correctly.
-*/
-int MEMainFrame::OnCreate() {
+ * Called by the framework while the window is being created. This methods
+ * creates the tool bars and status bars
+ * /todo Bmatt Nerve: Need to get the toolbars to work correctly.
+ */
+int MEMainFrame::OnCreate()
+{
 	m_stageView = new StageView();
 
 	return 0;
 }
 
 /**
-* Called by the MFC framework while the window is being destroyed. This method
-* saves the splitter and window positions.
-*/
-void MEMainFrame::OnDestroy() {
+ * Called by the MFC framework while the window is being destroyed. This method
+ * saves the splitter and window positions.
+ */
+void MEMainFrame::OnDestroy()
+{
 	int cur;
-	int min;
 
 	cur = editSplitterHeight;
-	options.SetMaterialEditHeight(cur);
+	options.SetMaterialEditHeight( cur );
 
 	cur = editSplitterPos;
-	options.SetMaterialTreeWidth(cur);
+	options.SetMaterialTreeWidth( cur );
 
 	cur = m_materialEditView->m_editSplitterPos;
-	options.SetStageWidth(cur);
+	options.SetStageWidth( cur );
 
 	cur = previewSplitterPos;
-	options.SetPreviewPropertiesWidth(cur);
+	options.SetPreviewPropertiesWidth( cur );
 
+	// cur = m_materialPropertyView->GetPropertyTreeCtrl().GetColumn();
+	// options.SetMaterialPropHeadingWidth(cur);
 
-	//cur = m_materialPropertyView->GetPropertyTreeCtrl().GetColumn();
-	//options.SetMaterialPropHeadingWidth(cur);
+	// cur = m_previewPropertyView->GetPropertyTreeCtrl().GetColumn();
+	// options.SetPreviewPropHeadingWidth(cur);
 
-	//cur = m_previewPropertyView->GetPropertyTreeCtrl().GetColumn();
-	//options.SetPreviewPropHeadingWidth(cur);
-
-	//options.SetWindowPlacement ( "mainframe", m_hWnd );
+	// options.SetWindowPlacement ( "mainframe", m_hWnd );
 	options.Save();
 
 	m_materialPropertyView->SaveSettings();
@@ -303,41 +321,48 @@ void MEMainFrame::OnDestroy() {
 	MaterialDefManager::DestroyMaterialDefLists();
 }
 
-void MEMainFrame::Draw() {
+void MEMainFrame::Draw()
+{
 	if( ImGui::BeginMenuBar() )
 	{
 		if( ImGui::BeginMenu( "File" ) )
 		{
 			ImGui::BeginDisabled( !IsFileSaveMaterialEnabled() );
-			if( ImGui::MenuItem( "Save Material" ) ) {
+			if( ImGui::MenuItem( "Save Material" ) )
+			{
 				OnFileSaveMaterial();
 			}
 			ImGui::EndDisabled();
 
 			ImGui::BeginDisabled( !IsFileSaveEnabled() );
-			if ( ImGui::MenuItem( "Save File", "Ctrl+S" ) ) {
+			if( ImGui::MenuItem( "Save File", "Ctrl+S" ) )
+			{
 				OnFileSaveFile();
 			}
 			ImGui::EndDisabled();
 
 			ImGui::BeginDisabled( !IsFileSaveAllEnabled() );
-			if ( ImGui::MenuItem( "Save All" ) ) {
+			if( ImGui::MenuItem( "Save All" ) )
+			{
 				OnFileSaveAll();
 			}
 			ImGui::EndDisabled();
 
 			ImGui::Separator();
 
-			if( ImGui::MenuItem( "Exit", "Ctrl+W" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_W ) ) {
+			if( ImGui::MenuItem( "Exit", "Ctrl+W" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_W ) )
+			{
 				OnFileExit();
 			}
 
 			ImGui::EndMenu();
 		}
-		if ( ImGui::BeginMenu( "Edit" ) ) {
+		if( ImGui::BeginMenu( "Edit" ) )
+		{
 			ImGui::BeginDisabled( !IsEditUndoEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_Z );
-			if ( ImGui::MenuItem( "Undo", "Ctrl+Z" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_Z ) ) {
+			if( ImGui::MenuItem( "Undo", "Ctrl+Z" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_Z ) )
+			{
 				OnEditUndo();
 			}
 			ImGui::EndDisabled();
@@ -345,7 +370,8 @@ void MEMainFrame::Draw() {
 			ImGui::BeginDisabled( !IsEditRedoEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_Y );
 			ImGui::MenuItem( "Redo", "Ctrl-Y" );
-			if ( ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_Y ) || ImGui::Shortcut( ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_Z ) ) {
+			if( ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_Y ) || ImGui::Shortcut( ImGuiMod_Shift | ImGuiMod_Ctrl | ImGuiKey_Z ) )
+			{
 				OnEditRedo();
 			}
 			ImGui::EndDisabled();
@@ -354,32 +380,37 @@ void MEMainFrame::Draw() {
 
 			ImGui::BeginDisabled( !IsEditCutEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_X );
-			if ( ImGui::MenuItem( "Cut", "Ctrl+X" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_X ) ) {
+			if( ImGui::MenuItem( "Cut", "Ctrl+X" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_X ) )
+			{
 				OnEditCut();
 			}
 			ImGui::EndDisabled();
 
 			ImGui::BeginDisabled( !IsEditCopyEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_C );
-			if ( ImGui::MenuItem( "Copy", "Ctrl+C" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_C ) ) {
+			if( ImGui::MenuItem( "Copy", "Ctrl+C" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_C ) )
+			{
 				OnEditCopy();
 			}
 			ImGui::EndDisabled();
 			ImGui::BeginDisabled( !IsEditPasteEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_V );
-			if ( ImGui::MenuItem( "Paste", "Ctrl+V" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_V ) ) {
+			if( ImGui::MenuItem( "Paste", "Ctrl+V" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_V ) )
+			{
 				OnEditPaste();
 			}
 			ImGui::EndDisabled();
 			ImGui::BeginDisabled( !IsEditDeleteEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiKey_Delete );
-			if ( ImGui::MenuItem( "Delete", "Del" ) || ImGui::Shortcut( ImGuiKey_Delete ) ) {
+			if( ImGui::MenuItem( "Delete", "Del" ) || ImGui::Shortcut( ImGuiKey_Delete ) )
+			{
 				OnEditDelete();
 			}
 			ImGui::EndDisabled();
 			ImGui::BeginDisabled( !IsEditRenameEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiKey_F2 );
-			if ( ImGui::MenuItem( "Rename", "F2" ) || ImGui::Shortcut( ImGuiKey_F2 ) ) {
+			if( ImGui::MenuItem( "Rename", "F2" ) || ImGui::Shortcut( ImGuiKey_F2 ) )
+			{
 				OnEditRename();
 			}
 			ImGui::EndDisabled();
@@ -387,35 +418,42 @@ void MEMainFrame::Draw() {
 			ImGui::Separator();
 
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_F );
-			if ( ImGui::MenuItem( "Find", "Ctrl+F" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_F ) ) {
+			if( ImGui::MenuItem( "Find", "Ctrl+F" ) || ImGui::Shortcut( ImGuiMod_Ctrl | ImGuiKey_F ) )
+			{
 				OnEditFind();
 			}
 
 			ImGui::EndMenu();
 		}
-		if ( ImGui::BeginMenu( "Material View" ) ) {
-			if ( ImGui::Checkbox( "Include Filename",  &includeFileInMaterialList ) ) {
+		if( ImGui::BeginMenu( "Material View" ) )
+		{
+			if( ImGui::Checkbox( "Include Filename", &includeFileInMaterialList ) )
+			{
 				OnViewIncludeFile();
 			}
 
 			ImGui::EndMenu();
 		}
-		if ( ImGui::BeginMenu( "Preview" ) ) {
+		if( ImGui::BeginMenu( "Preview" ) )
+		{
 			ImGui::BeginDisabled( !IsApplyAllEnabled() );
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_A );
-			if ( ImGui::MenuItem( "Apply Material", "Ctrl+A" ) ) {
+			if( ImGui::MenuItem( "Apply Material", "Ctrl+A" ) )
+			{
 				OnApplyMaterial();
 			}
 			ImGui::EndDisabled();
 
 			ImGui::BeginDisabled( !IsApplyFileEnabled() );
-			if ( ImGui::MenuItem( "Apply File" ) ) {
+			if( ImGui::MenuItem( "Apply File" ) )
+			{
 				OnApplyFile();
 			}
 			ImGui::EndDisabled();
 
 			ImGui::BeginDisabled( !IsApplyAllEnabled() );
-			if ( ImGui::MenuItem( "Apply All" ) ) {
+			if( ImGui::MenuItem( "Apply All" ) )
+			{
 				OnApplyAll();
 			}
 			ImGui::EndDisabled();
@@ -423,12 +461,14 @@ void MEMainFrame::Draw() {
 			ImGui::Separator();
 
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_R );
-			if ( ImGui::MenuItem( "Reload ARB Programs", "Ctrl+R" ) ) {
+			if( ImGui::MenuItem( "Reload ARB Programs", "Ctrl+R" ) )
+			{
 				OnReloadArbPrograms();
 			}
 
 			ImGui::SetNextItemShortcut( ImGuiMod_Ctrl | ImGuiKey_I );
-			if ( ImGui::MenuItem( "Reload Images", "Ctrl+I" ) ) {
+			if( ImGui::MenuItem( "Reload Images", "Ctrl+I" ) )
+			{
 				OnReloadImages();
 			}
 
@@ -448,67 +488,74 @@ void MEMainFrame::Draw() {
 		: activeWindow == ME_WINDOW_STAGE ? "Stage"
 		: "Console" );*/
 
-	if ( ImGui::BeginTabBar( "MainTabBar" ) ) {
-
-		if ( ImGui::BeginTabItem( "Editor" ) ) {
-			float splitterButtonWidthOrHeight = 8.0f;
+	if( ImGui::BeginTabBar( "MainTabBar" ) )
+	{
+		if( ImGui::BeginTabItem( "Editor" ) )
+		{
+			float  splitterButtonWidthOrHeight = 8.0f;
 			ImVec2 windowSize = ImVec2( Max( editSplitterWidth, previewSplitterWidth ) + splitterButtonWidthOrHeight, editSplitterHeight + previewSplitterHeight + splitterButtonWidthOrHeight * 2.0f );
 
-			if ( ImGui::BeginChild( "editorSplitters", windowSize ) ) {
+			if( ImGui::BeginChild( "editorSplitters", windowSize ) )
+			{
 				ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 0, 0 ) );
 
 				// m_editSplitter: splitter with 1 row, 2 columns (at cell 0,0 of m_splitterWnd)
 
 				// m_materialTreeView : MaterialTreeView at 0, 0 of m_editSplitter
-					// Size 300, 200
-				if ( m_materialTreeView->Draw( ImVec2( editSplitterPos, editSplitterHeight ) ) ) {
-
+				// Size 300, 200
+				if( m_materialTreeView->Draw( ImVec2( editSplitterPos, editSplitterHeight ) ) )
+				{
 				}
 
 				ImGui::SameLine();
 				ImGui::InvisibleButton( "editSplitter", ImVec2( splitterButtonWidthOrHeight, editSplitterHeight ) );
-				if ( ImGui::IsItemActive() ) {
+				if( ImGui::IsItemActive() )
+				{
 					editSplitterPos += ImGui::GetIO().MouseDelta.x;
 				}
 				ImGui::SameLine();
 
 				// m_materialEditView : MaterialEditView at 0, 1 of m_editSplitter
-					// Size 200, 200
-				if ( m_materialEditView->Draw( ImVec2( 0, editSplitterHeight ) ) ) {
-			
+				// Size 200, 200
+				if( m_materialEditView->Draw( ImVec2( 0, editSplitterHeight ) ) )
+				{
 				}
 
-				if ( m_find ) {
+				if( m_find )
+				{
 					m_find->Draw( ImVec2( previewSplitterPos, 0 ), ImVec2( editSplitterWidth, editSplitterHeight ) );
 				}
 
 				ImGui::InvisibleButton( "editRowHSplitter", ImVec2( -1, splitterButtonWidthOrHeight ) );
-				if ( ImGui::IsItemActive() ) {
+				if( ImGui::IsItemActive() )
+				{
 					editSplitterHeight += ImGui::GetIO().MouseDelta.y;
 				}
 				// m_previewSplitter : splitter with 1 row, 2 columns(at cell 1, 0 of m_splitterWnd)
-					// m_previewPropertyView : MaterialPreviewPropView at 0, 0 of m_previewSplitter
-					// Size 300, 200
-			
-				if ( m_previewPropertyView->Draw( ImVec2( previewSplitterPos, previewSplitterHeight ) ) ) {
+				// m_previewPropertyView : MaterialPreviewPropView at 0, 0 of m_previewSplitter
+				// Size 300, 200
 
+				if( m_previewPropertyView->Draw( ImVec2( previewSplitterPos, previewSplitterHeight ) ) )
+				{
 				}
 
 				ImGui::SameLine();
 				ImGui::InvisibleButton( "previewSplitter", ImVec2( splitterButtonWidthOrHeight, previewSplitterHeight ) );
-				if ( ImGui::IsItemActive() ) {
+				if( ImGui::IsItemActive() )
+				{
 					previewSplitterPos += ImGui::GetIO().MouseDelta.x;
 				}
 				ImGui::SameLine();
 
 				// m_materialPreviewView : MaterialPreviewView at 0, 1 of m_previewSplitter
-					// Size 200, 200
-				if ( m_materialPreviewView->Draw( ImVec2( windowSize.x - previewSplitterPos, previewSplitterHeight ) ) ) {
-
+				// Size 200, 200
+				if( m_materialPreviewView->Draw( ImVec2( windowSize.x - previewSplitterPos, previewSplitterHeight ) ) )
+				{
 				}
 
 				ImGui::InvisibleButton( "previewRowHSplitter", ImVec2( -1, splitterButtonWidthOrHeight ) );
-				if ( ImGui::IsItemActive() ) {
+				if( ImGui::IsItemActive() )
+				{
 					previewSplitterHeight += ImGui::GetIO().MouseDelta.y;
 				}
 
@@ -517,263 +564,295 @@ void MEMainFrame::Draw() {
 			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem("Console"))
+		if( ImGui::BeginTabItem( "Console" ) )
 		{
-			m_consoleView->Draw(ImVec2(0, 0), ImVec2(800, 600));
+			m_consoleView->Draw( ImVec2( 0, 0 ), ImVec2( 800, 600 ) );
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
 	}
 }
 
-void MEMainFrame::SetActiveWindow( MaterialEditorWindow_t window ) {
+void MEMainFrame::SetActiveWindow( MaterialEditorWindow_t window )
+{
 	activeWindow = window;
 }
 
 /**
-* Shuts down the material editor.
-* /todo BMatt Nerve: Need to warn the user if a file is modified.
-*/
-void MEMainFrame::OnFileExit() {
+ * Shuts down the material editor.
+ * /todo BMatt Nerve: Need to warn the user if a file is modified.
+ */
+void MEMainFrame::OnFileExit()
+{
 	OnDestroy();
 	cmdSystem->BufferCommandText( CMD_EXEC_NOW, "quit\n" );
 }
 
 /**
-* Saves the selected material.
-*/
-void MEMainFrame::OnFileSaveMaterial() {
+ * Saves the selected material.
+ */
+void MEMainFrame::OnFileSaveMaterial()
+{
 	MaterialDoc* material = materialDocManager.GetCurrentMaterialDoc();
-	if(material) {
-		materialDocManager.SaveMaterial(material);
+	if( material )
+	{
+		materialDocManager.SaveMaterial( material );
 	}
 }
 
 /**
-* Saves the selected file.
-*/
-void MEMainFrame::OnFileSaveFile() {
+ * Saves the selected file.
+ */
+void MEMainFrame::OnFileSaveFile()
+{
 	idStr filename = m_materialTreeView->GetSaveFilename();
-	if(filename.Length() > 0) {
-		materialDocManager.SaveFile(filename);
+	if( filename.Length() > 0 )
+	{
+		materialDocManager.SaveFile( filename );
 	}
 }
 
 /**
-* Saves all modified materials.
-*/
-void MEMainFrame::OnFileSaveAll() {
+ * Saves all modified materials.
+ */
+void MEMainFrame::OnFileSaveAll()
+{
 	materialDocManager.SaveAllMaterials();
 }
 
 /**
-* Enables the save material menu item if a material is selected and has been modified.
-*/
-bool MEMainFrame::IsFileSaveMaterialEnabled() {
+ * Enables the save material menu item if a material is selected and has been modified.
+ */
+bool MEMainFrame::IsFileSaveMaterialEnabled()
+{
 	MaterialDoc* pDoc = materialDocManager.GetCurrentMaterialDoc();
 
 	return pDoc && pDoc->modified;
 }
 
 /**
-* Enables the Save File menu item if the current file contains a modified material.
-*/
-bool MEMainFrame::IsFileSaveEnabled() {
-	return (m_materialTreeView->CanSaveFile());
+ * Enables the Save File menu item if the current file contains a modified material.
+ */
+bool MEMainFrame::IsFileSaveEnabled()
+{
+	return ( m_materialTreeView->CanSaveFile() );
 }
 
 /**
-* Enables the Save All menu item if there are any materials that have been modified.
-*/
-bool MEMainFrame::IsFileSaveAllEnabled() {
-	return (materialDocManager.IsAnyModified());
+ * Enables the Save All menu item if there are any materials that have been modified.
+ */
+bool MEMainFrame::IsFileSaveAllEnabled()
+{
+	return ( materialDocManager.IsAnyModified() );
 }
 
 /**
-* Apply the selected material.
-*/
-void MEMainFrame::OnApplyMaterial() {
+ * Apply the selected material.
+ */
+void MEMainFrame::OnApplyMaterial()
+{
 	MaterialDoc* material = materialDocManager.GetCurrentMaterialDoc();
-	if(material) {
-		materialDocManager.ApplyMaterial(material);
+	if( material )
+	{
+		materialDocManager.ApplyMaterial( material );
 	}
 }
 
 /**
-* Applies all modified materials in the selected file.
-*/
-void MEMainFrame::OnApplyFile() {
+ * Applies all modified materials in the selected file.
+ */
+void MEMainFrame::OnApplyFile()
+{
 	idStr filename = m_materialTreeView->GetSaveFilename();
-	if(filename.Length() > 0) {
-		materialDocManager.ApplyFile(filename);
+	if( filename.Length() > 0 )
+	{
+		materialDocManager.ApplyFile( filename );
 	}
 }
 
 /**
-* Applies all modified materials.
-*/
-void MEMainFrame::OnApplyAll() {
+ * Applies all modified materials.
+ */
+void MEMainFrame::OnApplyAll()
+{
 	materialDocManager.ApplyAll();
 }
 
 /**
-* Enables the Apply Material menu item if the current material has an apply waiting.
-*/
-bool MEMainFrame::IsApplyMaterialEnabled() {
+ * Enables the Apply Material menu item if the current material has an apply waiting.
+ */
+bool MEMainFrame::IsApplyMaterialEnabled()
+{
 	MaterialDoc* pDoc = materialDocManager.GetCurrentMaterialDoc();
 
-	return (pDoc && pDoc->applyWaiting);
+	return ( pDoc && pDoc->applyWaiting );
 }
 
 /**
-* Enables the apply file menu item if the current file contains any materials
-* that need to be applied.
-*/
-bool MEMainFrame::IsApplyFileEnabled() {
+ * Enables the apply file menu item if the current file contains any materials
+ * that need to be applied.
+ */
+bool MEMainFrame::IsApplyFileEnabled()
+{
 	MaterialDoc* pDoc = materialDocManager.GetCurrentMaterialDoc();
 
-	return (pDoc && materialDocManager.DoesFileNeedApply(pDoc->renderMaterial->GetFileName()));
+	return ( pDoc && materialDocManager.DoesFileNeedApply( pDoc->renderMaterial->GetFileName() ) );
 }
 
 /**
-* Enables the apply all menu item if there are any materials that need
-* to be applied.
-*/
-bool MEMainFrame::IsApplyAllEnabled() {
-	return (materialDocManager.DoesAnyNeedApply());
+ * Enables the apply all menu item if there are any materials that need
+ * to be applied.
+ */
+bool MEMainFrame::IsApplyAllEnabled()
+{
+	return ( materialDocManager.DoesAnyNeedApply() );
 }
 
 /**
-* Performs a cut operation on the selected material.
-*/
-void MEMainFrame::OnEditCut() {
-	switch ( activeWindow ) {
-	case ME_WINDOW_TREE:
-		m_materialTreeView->OnCut();
-		break;
-	case ME_WINDOW_TEXT_EDIT:
-		m_materialEditView->OnCut();
-		break;
-	default:
-		break;
+ * Performs a cut operation on the selected material.
+ */
+void MEMainFrame::OnEditCut()
+{
+	switch( activeWindow )
+	{
+		case ME_WINDOW_TREE:
+			m_materialTreeView->OnCut();
+			break;
+		case ME_WINDOW_TEXT_EDIT:
+			m_materialEditView->OnCut();
+			break;
+		default:
+			break;
 	}
 }
 
 /**
-* Performs a copy operation on the selected material or stage.
-*/
-void MEMainFrame::OnEditCopy() {
-	switch ( activeWindow ) {
-	case ME_WINDOW_STAGE:
-		m_stageView->OnCopy();
-		break;
-	case ME_WINDOW_TREE:
-		m_materialTreeView->OnCopy();
-		break;
-	case ME_WINDOW_TEXT_EDIT:
-		m_materialEditView->OnCopy();
-		break;
-	default:
-		break;
+ * Performs a copy operation on the selected material or stage.
+ */
+void MEMainFrame::OnEditCopy()
+{
+	switch( activeWindow )
+	{
+		case ME_WINDOW_STAGE:
+			m_stageView->OnCopy();
+			break;
+		case ME_WINDOW_TREE:
+			m_materialTreeView->OnCopy();
+			break;
+		case ME_WINDOW_TEXT_EDIT:
+			m_materialEditView->OnCopy();
+			break;
+		default:
+			break;
 	}
 }
 
 /**
-* Performs a paste operation on the selected material or stage.
-*/
-void MEMainFrame::OnEditPaste() {
-	switch ( activeWindow ) {
-	case ME_WINDOW_STAGE:
-		m_stageView->OnPaste();
-		break;
-	case ME_WINDOW_TREE:
-		m_materialTreeView->OnPaste();
-		break;
-	case ME_WINDOW_TEXT_EDIT:
-		m_materialEditView->OnPaste();
-		break;
-	default:
-		break;
+ * Performs a paste operation on the selected material or stage.
+ */
+void MEMainFrame::OnEditPaste()
+{
+	switch( activeWindow )
+	{
+		case ME_WINDOW_STAGE:
+			m_stageView->OnPaste();
+			break;
+		case ME_WINDOW_TREE:
+			m_materialTreeView->OnPaste();
+			break;
+		case ME_WINDOW_TEXT_EDIT:
+			m_materialEditView->OnPaste();
+			break;
+		default:
+			break;
 	}
 }
 
 /**
-* Performs a delete operation on the selected material or stage.
-*/
-void MEMainFrame::OnEditDelete() {
-	switch ( activeWindow ) {
-	case ME_WINDOW_STAGE:
-		m_stageView->OnDeleteStage();
-		return;
-	case ME_WINDOW_TREE:
-		m_materialTreeView->OnDeleteMaterial();
-		break;
-	case ME_WINDOW_TEXT_EDIT:
-		m_materialEditView->OnDelete();
-		break;
-	default:
-		break;
+ * Performs a delete operation on the selected material or stage.
+ */
+void MEMainFrame::OnEditDelete()
+{
+	switch( activeWindow )
+	{
+		case ME_WINDOW_STAGE:
+			m_stageView->OnDeleteStage();
+			return;
+		case ME_WINDOW_TREE:
+			m_materialTreeView->OnDeleteMaterial();
+			break;
+		case ME_WINDOW_TEXT_EDIT:
+			m_materialEditView->OnDelete();
+			break;
+		default:
+			break;
 	}
 }
 
 /**
-* Performs a rename operation on the selected material or stage.
-*/
-void MEMainFrame::OnEditRename() {
-	switch ( activeWindow ) {
-	case ME_WINDOW_STAGE:
-		m_stageView->OnRenameStage();
-		break;
-	case ME_WINDOW_TREE:
-		m_materialTreeView->OnRenameMaterial();
-		break;
-	default:
-		break;
+ * Performs a rename operation on the selected material or stage.
+ */
+void MEMainFrame::OnEditRename()
+{
+	switch( activeWindow )
+	{
+		case ME_WINDOW_STAGE:
+			m_stageView->OnRenameStage();
+			break;
+		case ME_WINDOW_TREE:
+			m_materialTreeView->OnRenameMaterial();
+			break;
+		default:
+			break;
 	}
 }
 
-
 /**
-* Enable the cut menu item if a material is selected.
-*/
-bool MEMainFrame::IsEditCutEnabled() {
+ * Enable the cut menu item if a material is selected.
+ */
+bool MEMainFrame::IsEditCutEnabled()
+{
 	return m_stageView->CanCut() || m_materialTreeView->CanCut() || m_materialEditView->CanCut();
 }
 
 /**
-* Enables the copy menu item if a material or stage is selected.
-*/
-bool MEMainFrame::IsEditCopyEnabled() {
+ * Enables the copy menu item if a material or stage is selected.
+ */
+bool MEMainFrame::IsEditCopyEnabled()
+{
 	return m_stageView->CanCopy() || m_materialTreeView->CanCopy() || m_materialEditView->CanCopy();
 }
 
 /**
-* Enables a paste operation when a material or stage has been copied.
-*/
-bool MEMainFrame::IsEditPasteEnabled() {
+ * Enables a paste operation when a material or stage has been copied.
+ */
+bool MEMainFrame::IsEditPasteEnabled()
+{
 	return m_stageView->CanPaste() || m_materialTreeView->CanPaste() || m_materialEditView->CanPaste();
 }
 
 /**
-* Enables a delete operation when a material or stage is selected.
-*/
-bool MEMainFrame::IsEditDeleteEnabled() {
+ * Enables a delete operation when a material or stage is selected.
+ */
+bool MEMainFrame::IsEditDeleteEnabled()
+{
 	return m_stageView->CanDelete() || m_materialTreeView->CanDelete() || m_materialEditView->CanDelete();
 }
 
 /**
-* Enables a rename operation when a material, folder or stage is selected.
-*/
-bool MEMainFrame::IsEditRenameEnabled() {
+ * Enables a rename operation when a material, folder or stage is selected.
+ */
+bool MEMainFrame::IsEditRenameEnabled()
+{
 	return m_stageView->CanRename() || m_materialTreeView->CanRename();
 }
 
 /**
-* Opens the find dialog.
-*/
-void MEMainFrame::OnEditFind() {
-
-	if (m_find== NULL)
+ * Opens the find dialog.
+ */
+void MEMainFrame::OnEditFind()
+{
+	if( m_find == NULL )
 	{
 		m_find = new FindDialog( this );
 	}
@@ -782,126 +861,141 @@ void MEMainFrame::OnEditFind() {
 }
 
 /**
-* Performs a search with the previously selected search parameters.
-*/
-void MEMainFrame::OnEditFindNext() {
-	FindNext(NULL);
+ * Performs a search with the previously selected search parameters.
+ */
+void MEMainFrame::OnEditFindNext()
+{
+	FindNext( NULL );
 }
 
 /**
-* Performs an undo operation.
-*/
-void MEMainFrame::OnEditUndo() {
-	//Check for undo operation on special windows
-	switch ( activeWindow ) {
-	case ME_WINDOW_TEXT_EDIT:
-		m_materialEditView->m_textView.Undo();
-		break;
-	case ME_WINDOW_TREE:
-	case ME_WINDOW_PROP:
-	case ME_WINDOW_PREVIEW:
-	case ME_WINDOW_PREVIEW_PROP:
-	case ME_WINDOW_STAGE:
-	case ME_WINDOW_CONSOLE:
-		materialDocManager.Undo();
-		break;
-	default:
-		break;
+ * Performs an undo operation.
+ */
+void MEMainFrame::OnEditUndo()
+{
+	// Check for undo operation on special windows
+	switch( activeWindow )
+	{
+		case ME_WINDOW_TEXT_EDIT:
+			m_materialEditView->m_textView.Undo();
+			break;
+		case ME_WINDOW_TREE:
+		case ME_WINDOW_PROP:
+		case ME_WINDOW_PREVIEW:
+		case ME_WINDOW_PREVIEW_PROP:
+		case ME_WINDOW_STAGE:
+		case ME_WINDOW_CONSOLE:
+			materialDocManager.Undo();
+			break;
+		default:
+			break;
 	}
 }
 
 /**
-* Performs a redo operation.
-*/
-void MEMainFrame::OnEditRedo() {
-	//Check for redo operation on special windows
-	switch ( activeWindow ) {
-	case ME_WINDOW_TEXT_EDIT:
-		m_materialEditView->m_textView.Redo();
-		break;
-	case ME_WINDOW_TREE:
-	case ME_WINDOW_PROP:
-	case ME_WINDOW_PREVIEW:
-	case ME_WINDOW_PREVIEW_PROP:
-	case ME_WINDOW_STAGE:
-	case ME_WINDOW_CONSOLE:
-		materialDocManager.Redo();
-		break;
-	default:
-		break;
+ * Performs a redo operation.
+ */
+void MEMainFrame::OnEditRedo()
+{
+	// Check for redo operation on special windows
+	switch( activeWindow )
+	{
+		case ME_WINDOW_TEXT_EDIT:
+			m_materialEditView->m_textView.Redo();
+			break;
+		case ME_WINDOW_TREE:
+		case ME_WINDOW_PROP:
+		case ME_WINDOW_PREVIEW:
+		case ME_WINDOW_PREVIEW_PROP:
+		case ME_WINDOW_STAGE:
+		case ME_WINDOW_CONSOLE:
+			materialDocManager.Redo();
+			break;
+		default:
+			break;
 	}
 }
 
 /**
-* Enables the undo menu item if an undo is available.
-*/
-bool MEMainFrame::IsEditUndoEnabled() {
+ * Enables the undo menu item if an undo is available.
+ */
+bool MEMainFrame::IsEditUndoEnabled()
+{
 	return m_materialEditView->m_textView.CanUndo() || materialDocManager.IsUndoAvailable();
 }
 
 /**
-* Enables the redo menu item if a redo is available.
-*/
-bool MEMainFrame::IsEditRedoEnabled() {
+ * Enables the redo menu item if a redo is available.
+ */
+bool MEMainFrame::IsEditRedoEnabled()
+{
 	return m_materialEditView->m_textView.CanRedo() || materialDocManager.IsRedoAvailable();
 }
 
 /**
-* Toggles between including the file into the material list and not.
-*/
-void MEMainFrame::OnViewIncludeFile() {
+ * Toggles between including the file into the material list and not.
+ */
+void MEMainFrame::OnViewIncludeFile()
+{
 	m_materialTreeView->InitializeMaterialList( includeFileInMaterialList );
 }
 
 /**
-* Executes the reloadARBPrograms console command for convinience.
-*/
-void MEMainFrame::OnReloadArbPrograms() {
-	cmdSystem->BufferCommandText(CMD_EXEC_NOW, "reloadARBprograms");
+ * Executes the reloadARBPrograms console command for convinience.
+ */
+void MEMainFrame::OnReloadArbPrograms()
+{
+	cmdSystem->BufferCommandText( CMD_EXEC_NOW, "reloadARBprograms" );
 }
 
 /**
-* Executes the reloadImages command to reload images that have been changed outside
-* of the editor.
-*/
-void MEMainFrame::OnReloadImages() {
-	cmdSystem->BufferCommandText(CMD_EXEC_NOW, "reloadImages");
+ * Executes the reloadImages command to reload images that have been changed outside
+ * of the editor.
+ */
+void MEMainFrame::OnReloadImages()
+{
+	cmdSystem->BufferCommandText( CMD_EXEC_NOW, "reloadImages" );
 }
 
 /**
-* Called by the find dialog when it is closing.
-*/
-void MEMainFrame::CloseFind() {
-
+ * Called by the find dialog when it is closing.
+ */
+void MEMainFrame::CloseFind()
+{
 }
 
 /**
-* Begins a search based on the provided parameters or the previously used
-* parameters.
-*/
-void MEMainFrame::FindNext(MaterialSearchData_t* search) {
-
-	if(search) {
+ * Begins a search based on the provided parameters or the previously used
+ * parameters.
+ */
+void MEMainFrame::FindNext( MaterialSearchData_t* search )
+{
+	if( search )
+	{
 		searchData = *search;
-	} else {
-		if(!searchData.searched) {
+	}
+	else
+	{
+		if( !searchData.searched )
+		{
 			return;
 		}
 	}
 
-	//The material tree controls the searching
-	if(!m_materialTreeView->FindNextMaterial(&searchData)) {
+	// The material tree controls the searching
+	if( !m_materialTreeView->FindNextMaterial( &searchData ) )
+	{
 		m_find->UnableToFind();
 	}
 	searchData.searched = true;
 }
 
 /**
-* Called when the selected material has changed.
-* @param pMaterial The newly selected material.
-*/
-void MEMainFrame::MV_OnMaterialSelectionChange(MaterialDoc* pMaterial) {
-
+ * Called when the selected material has changed.
+ * @param pMaterial The newly selected material.
+ */
+void MEMainFrame::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial )
+{
 }
 
 }

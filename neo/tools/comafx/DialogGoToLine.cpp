@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,30 +30,28 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-
 #include "../../sys/win32/rc/resource.h"
 
 #include "DialogGoToLine.h"
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
-
-IMPLEMENT_DYNAMIC(DialogGoToLine, CDialog)
+IMPLEMENT_DYNAMIC( DialogGoToLine, CDialog )
 
 /*
 ================
 DialogGoToLine::DialogGoToLine
 ================
 */
-DialogGoToLine::DialogGoToLine( CWnd* pParent /*=NULL*/ )
-	: CDialog(DialogGoToLine::IDD, pParent)
-	, firstLine(0)
-	, lastLine(0)
-	, line(0)
+DialogGoToLine::DialogGoToLine( CWnd* pParent /*=NULL*/ ) :
+	CDialog( DialogGoToLine::IDD, pParent ),
+	firstLine( 0 ),
+	lastLine( 0 ),
+	line( 0 )
 {
 }
 
@@ -61,7 +60,8 @@ DialogGoToLine::DialogGoToLine( CWnd* pParent /*=NULL*/ )
 DialogGoToLine::~DialogGoToLine
 ================
 */
-DialogGoToLine::~DialogGoToLine() {
+DialogGoToLine::~DialogGoToLine()
+{
 }
 
 /*
@@ -69,10 +69,11 @@ DialogGoToLine::~DialogGoToLine() {
 DialogGoToLine::DoDataExchange
 ================
 */
-void DialogGoToLine::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void DialogGoToLine::DoDataExchange( CDataExchange* pDX )
+{
+	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogGoToLine)
-	DDX_Control( pDX, IDC_GOTOLINE_EDIT, numberEdit);
+	DDX_Control( pDX, IDC_GOTOLINE_EDIT, numberEdit );
 	//}}AFX_DATA_MAP
 }
 
@@ -81,9 +82,10 @@ void DialogGoToLine::DoDataExchange(CDataExchange* pDX) {
 DialogGoToLine::SetRange
 ================
 */
-void DialogGoToLine::SetRange( int firstLine, int lastLine ) {
+void DialogGoToLine::SetRange( int firstLine, int lastLine )
+{
 	this->firstLine = firstLine;
-	this->lastLine = lastLine;
+	this->lastLine	= lastLine;
 }
 
 /*
@@ -91,7 +93,8 @@ void DialogGoToLine::SetRange( int firstLine, int lastLine ) {
 DialogGoToLine::GetLine
 ================
 */
-int DialogGoToLine::GetLine( void ) const {
+int DialogGoToLine::GetLine( void ) const
+{
 	return line;
 }
 
@@ -100,8 +103,8 @@ int DialogGoToLine::GetLine( void ) const {
 DialogGoToLine::OnInitDialog
 ================
 */
-BOOL DialogGoToLine::OnInitDialog()  {
-
+BOOL DialogGoToLine::OnInitDialog()
+{
 	CDialog::OnInitDialog();
 
 	GetDlgItem( IDC_GOTOLINE_STATIC )->SetWindowText( va( "&Line number (%d - %d):", firstLine, lastLine ) );
@@ -114,11 +117,9 @@ BOOL DialogGoToLine::OnInitDialog()  {
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-
-BEGIN_MESSAGE_MAP(DialogGoToLine, CDialog)
-	ON_BN_CLICKED(IDOK, OnBnClickedOk)
+BEGIN_MESSAGE_MAP( DialogGoToLine, CDialog )
+ON_BN_CLICKED( IDOK, OnBnClickedOk )
 END_MESSAGE_MAP()
-
 
 // DialogGoToLine message handlers
 
@@ -127,7 +128,8 @@ END_MESSAGE_MAP()
 DialogGoToLine::OnBnClickedOk
 ================
 */
-void DialogGoToLine::OnBnClickedOk() {
+void DialogGoToLine::OnBnClickedOk()
+{
 	CString text;
 	numberEdit.GetWindowText( text );
 	line = idMath::ClampInt( firstLine, lastLine, atoi( text ) );

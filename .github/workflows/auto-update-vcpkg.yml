@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: "0 0 1,25,29 * *"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

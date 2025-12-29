@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,63 +32,64 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "MEOptions.h"
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /**
-* Constructor for MEOptions.
-*/
-MEOptions::MEOptions ( ) {
+ * Constructor for MEOptions.
+ */
+MEOptions::MEOptions()
+{
+	registry.Init( "MaterialEditor" );
 
-	registry.Init("MaterialEditor");
-
-	materialTreeWidth = 0;
-	stageWidth = 0;
-	previewPropertiesWidth = 0;
-	materialEditHeight = 0;
+	materialTreeWidth		 = 0;
+	stageWidth				 = 0;
+	previewPropertiesWidth	 = 0;
+	materialEditHeight		 = 0;
 	materialPropHeadingWidth = 0;
-	previewPropHeadingWidth = 0;
-
+	previewPropHeadingWidth	 = 0;
 }
 
 /**
-* Destructor for MEOptions.
-*/
-MEOptions::~MEOptions() {
+ * Destructor for MEOptions.
+ */
+MEOptions::~MEOptions()
+{
 }
 
 /**
-* Saves the material editor options to the registry.
-*/
-bool MEOptions::Save (void) {
-	
-	registry.SetFloat("materialTreeWidth", materialTreeWidth);
-	registry.SetFloat("stageWidth", stageWidth);
-	registry.SetFloat("previewPropertiesWidth", previewPropertiesWidth);
-	registry.SetFloat("materialEditHeight", materialEditHeight);
-	registry.SetFloat("materialPropHeadingWidth", materialPropHeadingWidth);
-	registry.SetFloat("previewPropHeadingWidth", previewPropHeadingWidth);
+ * Saves the material editor options to the registry.
+ */
+bool MEOptions::Save( void )
+{
+	registry.SetFloat( "materialTreeWidth", materialTreeWidth );
+	registry.SetFloat( "stageWidth", stageWidth );
+	registry.SetFloat( "previewPropertiesWidth", previewPropertiesWidth );
+	registry.SetFloat( "materialEditHeight", materialEditHeight );
+	registry.SetFloat( "materialPropHeadingWidth", materialPropHeadingWidth );
+	registry.SetFloat( "previewPropHeadingWidth", previewPropHeadingWidth );
 
 	return registry.Save();
 }
 
 /**
-* Loads the material editor options from the registry.
-*/
-bool MEOptions::Load (void) {
-	
-	if(!registry.Load()) {
+ * Loads the material editor options from the registry.
+ */
+bool MEOptions::Load( void )
+{
+	if( !registry.Load() )
+	{
 		return false;
 	}
 
-	materialTreeWidth = (int)registry.GetFloat("materialTreeWidth");
-	stageWidth = (int)registry.GetFloat("stageWidth");
-	previewPropertiesWidth = (int)registry.GetFloat("previewPropertiesWidth");
-	materialEditHeight = (int)registry.GetFloat("materialEditHeight");
-	materialPropHeadingWidth = (int)registry.GetFloat("materialPropHeadingWidth");
-	previewPropHeadingWidth = (int)registry.GetFloat("previewPropHeadingWidth");
+	materialTreeWidth		 = ( int )registry.GetFloat( "materialTreeWidth" );
+	stageWidth				 = ( int )registry.GetFloat( "stageWidth" );
+	previewPropertiesWidth	 = ( int )registry.GetFloat( "previewPropertiesWidth" );
+	materialEditHeight		 = ( int )registry.GetFloat( "materialEditHeight" );
+	materialPropHeadingWidth = ( int )registry.GetFloat( "materialPropHeadingWidth" );
+	previewPropHeadingWidth	 = ( int )registry.GetFloat( "previewPropHeadingWidth" );
 
 	return true;
-
 }
 
 }

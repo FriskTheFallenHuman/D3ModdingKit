@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,68 +35,69 @@ If you have questions concerning this license or the applicable additional terms
 #include "MaterialPropTreeView.h"
 #include "StageView.h"
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /**
-* View that contains the material edit controls. These controls include
-* the stage view, the properties view and the source view.
-*/
-class MaterialEditView : public MaterialView, SourceModifyOwner {
+ * View that contains the material edit controls. These controls include
+ * the stage view, the properties view and the source view.
+ */
+class MaterialEditView : public MaterialView, SourceModifyOwner
+{
+public:
+	idStr				  m_nameEdit;
+	float				  m_editSplitterPos;
+	float				  m_editSplitterWidth;
+	float				  m_editSplitterHeight;
+
+	StageView*			  m_stageView;
+	MaterialPropTreeView* m_materialPropertyView;
+	SyntaxRichEditCtrl	  m_textView;
 
 public:
-	idStr						m_nameEdit;
-	float						m_editSplitterPos;
-	float						m_editSplitterWidth;
-	float						m_editSplitterHeight;
+	MaterialEditView();
+	virtual ~MaterialEditView();
 
-	StageView*					m_stageView;
-	MaterialPropTreeView*		m_materialPropertyView;
-	SyntaxRichEditCtrl			m_textView;
+	bool		  Draw( const ImVec2& size );
 
-public:
-					MaterialEditView();
-	virtual			~MaterialEditView();
+	// MaterialView Interface
+	virtual void  MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
+	virtual void  MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName );
 
-	bool			Draw( const ImVec2 &size );
-
-	//MaterialView Interface
-	virtual void	MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
-	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName );
-
-	//SourceModifyOwner Interface
+	// SourceModifyOwner Interface
 	virtual idStr GetSourceText();
 
-	bool			CanCopy();
-	void			OnCopy();
-	bool			CanCut();
-	void			OnCut();
-	bool			CanPaste();
-	void			OnPaste();
-	bool			CanDelete();
-	void			OnDelete();
+	bool		  CanCopy();
+	void		  OnCopy();
+	bool		  CanCut();
+	void		  OnCut();
+	bool		  CanPaste();
+	void		  OnPaste();
+	bool		  CanDelete();
+	void		  OnDelete();
 
 protected:
-	void			GetMaterialSource();
-	void			ApplyMaterialSource();
+	void GetMaterialSource();
+	void ApplyMaterialSource();
 
 public:
-	//Message Handlers
-	void			OnCreate();
+	// Message Handlers
+	void OnCreate();
 
 protected:
-	//afx_msg void	OnSize(UINT nType, int cx, int cy);
-	void			OnTcnSelChange(int sel);
-	void			OnEnChangeEdit();
+	// afx_msg void	OnSize(UINT nType, int cx, int cy);
+	void OnTcnSelChange( int sel );
+	void OnEnChangeEdit();
 
 protected:
-	bool	initHack;
-	bool	sourceInit;
+	bool  initHack;
+	bool  sourceInit;
 
-	bool	sourceChanged;
-	idStr	currentMaterialName;
-	bool	propsTabSelected;
-	bool	textTabSelected;
-	int		tabSel;
+	bool  sourceChanged;
+	idStr currentMaterialName;
+	bool  propsTabSelected;
+	bool  textTabSelected;
+	int	  tabSel;
 };
 
 }

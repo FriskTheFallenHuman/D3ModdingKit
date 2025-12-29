@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,46 +33,46 @@ If you have questions concerning this license or the applicable additional terms
 
 class TextEditor;
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /**
-* View in the Material Editor that functions as a Doom III
-* console. It allows users to view console output as well as issue
-* console commands to the engine.
-*/
+ * View in the Material Editor that functions as a Doom III
+ * console. It allows users to view console output as well as issue
+ * console commands to the engine.
+ */
 class ConsoleView
 {
 public:
+	TextEditor* editConsole;
+	idStr		editInput;
 
-	TextEditor *		editConsole;
-	idStr				editInput;
-
-	idStr				consoleStr;
-	idStrList			consoleHistory;
-	idStr				currentCommand;
-	int					currentHistoryPosition;
-	bool				saveCurrentCommand;
+	idStr		consoleStr;
+	idStrList	consoleHistory;
+	idStr		currentCommand;
+	int			currentHistoryPosition;
+	bool		saveCurrentCommand;
 
 public:
-						ConsoleView();
-						~ConsoleView();
+	ConsoleView();
+	~ConsoleView();
 
-	void				Init();
+	void Init();
 
 	// Public Operations
-	void				AddText( const char* msg );
-	void				SetConsoleText( const idStr &text );
-	void				ExecuteCommand( const idStr &cmd = "" );
+	void AddText( const char* msg );
+	void SetConsoleText( const idStr& text );
+	void ExecuteCommand( const idStr& cmd = "" );
 
-	void				Draw( const ImVec2 &pos, const ImVec2 &size );
-
-private:
-	int					limitConsoleLines;
-	bool				selectEditInput;
-	int					editInputLastKeyDownTime;
+	void Draw( const ImVec2& pos, const ImVec2& size );
 
 private:
-	bool				PreTranslateMessage();
+	int	 limitConsoleLines;
+	bool selectEditInput;
+	int	 editInputLastKeyDownTime;
+
+private:
+	bool PreTranslateMessage();
 };
 
 }

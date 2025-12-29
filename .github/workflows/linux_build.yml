@@ -3,11 +3,16 @@ on:
   push:
     branches:
       - "master"
+    paths-ignore:
+      - .github/workflows/windows_build.yml
   pull_request:
     types:
       - edited
       - opened
       - synchronize
+    paths-ignore:
+      - .github/workflows/windows_build.yml
+  workflow_dispatch:
 concurrency:
   # Cancel concurrent workflows for the same PR or commit hash.
   group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
@@ -23,7 +28,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - name: Download dependencies
-        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev
+        run: sudo apt update && sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev
 
       - name: Check out repository code
         uses: actions/checkout@v4

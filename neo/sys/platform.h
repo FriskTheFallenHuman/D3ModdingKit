@@ -63,11 +63,6 @@ If you have questions concerning this license or the applicable additional terms
 	  #define D3_ARCH "x86"
 	#else
 	  // if you're not targeting one of the aforementioned architectures,
-	  // check https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros
-	  // to find out how to detect yours and add it here - and please send a patch :)
-	  #error "Unknown CPU architecture!"
-	  // (for a quick and dirty solution, comment out the previous line, but keep in mind
-	  //  that savegames may not be compatible with other builds of dhewm3)
 	  #define D3_ARCH "UNKNOWN"
 	#endif // _M_X64 etc
 #endif // _MSC_VER

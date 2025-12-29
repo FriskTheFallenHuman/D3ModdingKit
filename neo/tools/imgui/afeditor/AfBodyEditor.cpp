@@ -20,7 +20,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,31 +33,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "AfBodyEditor.h"
 
-#define ARRAY_COUNT IM_ARRAYSIZE
+static const char* bodyTypeNames[] = { "none", "box", "octahedron", "dedecahedron", "cylinder", "cone", "bone", "polygon", "polygonvolume", "custom" };
 
-static const char* bodyTypeNames[] =
-{
-	"none",
-	"box",
-	"octahedron",
-	"dedecahedron",
-	"cylinder",
-	"cone",
-	"bone",
-	"polygon",
-	"polygonvolume",
-	"custom"
-};
+static const char* modifyJointsNames[] = { "axis", "origin", "both" };
 
-static const char* modifyJointsNames[] =
-{
-	"axis",
-	"origin",
-	"both"
-};
-
-static const char* afVecTypeNames[] =
-{
+static const char* afVecTypeNames[] = {
 	"coordinates",
 	"joint",
 	"bone center",
@@ -66,17 +47,17 @@ static bool ModelTypeItemGetter( void* data, int index, const char** out );
 
 namespace ImGuiTools
 {
-AfBodyEditor::AfBodyEditor( idDeclAF* newDecl, idDeclAF_Body* newBody )
-	: decl( newDecl )
-	, body( newBody )
-	, positionType( 0 )
-	, modifyJointType( 0 )
-	, comboJoint1( 0 )
-	, comboJoint2( 0 )
-	, originBoneCenterJoint1( 0 )
-	, originBoneCenterJoint2( 0 )
-	, originJoint( 0 )
-	, contentWidget( MakePhysicsContentsSelector() )
+AfBodyEditor::AfBodyEditor( idDeclAF* newDecl, idDeclAF_Body* newBody ) :
+	decl( newDecl ),
+	body( newBody ),
+	positionType( 0 ),
+	modifyJointType( 0 ),
+	comboJoint1( 0 ),
+	comboJoint2( 0 ),
+	originBoneCenterJoint1( 0 ),
+	originBoneCenterJoint2( 0 ),
+	originJoint( 0 ),
+	contentWidget( MakePhysicsContentsSelector() )
 {
 	InitJointLists();
 }
@@ -133,9 +114,9 @@ bool AfBodyEditor::Do()
 		if( ImGui::Combo( "Modified Joint", &comboJoint1, StringListItemGetter, &joints, joints.Num() ) )
 		{
 			body->jointName = joints[comboJoint1];
-			changed = true;
+			changed			= true;
 		}
-		changed = ImGui::Combo( "Modify", ( int* )&body->jointMod, modifyJointsNames, ARRAY_COUNT( modifyJointsNames ) ) || changed;
+		changed = ImGui::Combo( "Modify", ( int* )&body->jointMod, modifyJointsNames, IM_ARRAYSIZE( modifyJointsNames ) ) || changed;
 		changed = ImGui::InputTextStr( "Contained Joints", &body->containedJoints ) || changed;
 	}
 
@@ -166,7 +147,7 @@ bool AfBodyEditor::Position()
 
 	ImGui::Columns( 2, "positionColumns2" );
 
-	changed = ImGui::Combo( "Type", ( int* )&body->origin.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+	changed = ImGui::Combo( "Type", ( int* )&body->origin.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 
 	ImGui::NextColumn();
 	changed = PositionProperty() || changed;
@@ -180,7 +161,7 @@ bool AfBodyEditor::Position()
 
 bool AfBodyEditor::PositionProperty()
 {
-	bool changed = false;
+	bool		changed = false;
 
 	idAFVector* afVec = &body->origin;
 
@@ -197,12 +178,12 @@ bool AfBodyEditor::PositionProperty()
 					bool is_selected = ( afVec->joint1 == joints[n] );
 					if( ImGui::Selectable( joints[n], is_selected ) )
 					{
-						changed = true;
+						changed		  = true;
 						afVec->joint1 = joints[n];
 					}
 					if( is_selected )
 					{
-						ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 				}
 				ImGui::EndCombo();
@@ -217,12 +198,12 @@ bool AfBodyEditor::PositionProperty()
 					bool is_selected = ( afVec->joint1 == joints[n] );
 					if( ImGui::Selectable( joints[n], is_selected ) )
 					{
-						changed = true;
+						changed		  = true;
 						afVec->joint1 = joints[n];
 					}
 					if( is_selected )
 					{
-						ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 				}
 				ImGui::EndCombo();
@@ -234,12 +215,12 @@ bool AfBodyEditor::PositionProperty()
 					bool is_selected = ( afVec->joint2 == joints[n] );
 					if( ImGui::Selectable( joints[n], is_selected ) )
 					{
-						changed = true;
+						changed		  = true;
 						afVec->joint2 = joints[n];
 					}
 					if( is_selected )
 					{
-						ImGui::SetItemDefaultFocus();    // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
 					}
 				}
 				ImGui::EndCombo();
@@ -254,15 +235,15 @@ bool AfBodyEditor::PositionProperty()
 
 bool AfBodyEditor::PitchYawRoll()
 {
-	bool changed = false;
-	const ImGuiStyle& style = ImGui::GetStyle();
-	const float w_full = ImGui::CalcItemWidth();
-	const float square_sz = ImGui::GetFrameHeight();
-	const float w_button = square_sz + style.ItemInnerSpacing.x;
-	const float w_inputs = w_full - w_button;
+	bool			  changed	= false;
+	const ImGuiStyle& style		= ImGui::GetStyle();
+	const float		  w_full	= ImGui::CalcItemWidth();
+	const float		  square_sz = ImGui::GetFrameHeight();
+	const float		  w_button	= square_sz + style.ItemInnerSpacing.x;
+	const float		  w_inputs	= w_full - w_button;
 
-	const float widthItemOne = Max( 1.0f, ( float )( int )( ( w_inputs - ( style.ItemInnerSpacing.x ) * 2 ) / 2.0f ) );
-	const float widthItemLast = Max( 1.0f, ( float )( int )( w_inputs - ( widthItemOne + style.ItemInnerSpacing.x ) ) );
+	const float		  widthItemOne	= Max( 1.0f, ( float )( int )( ( w_inputs - ( style.ItemInnerSpacing.x ) * 2 ) / 2.0f ) );
+	const float		  widthItemLast = Max( 1.0f, ( float )( int )( w_inputs - ( widthItemOne + style.ItemInnerSpacing.x ) ) );
 
 	ImGui::SetNextItemWidth( widthItemOne );
 	changed = ImGui::DragFloat( "##p", &body->angles.pitch, 1.0f, 0.0f, 360.0f, "pitch: %.3f" ) || changed;
@@ -283,7 +264,7 @@ bool AfBodyEditor::CollisionModel()
 	ImGui::PushID( "CollisionModel" );
 
 	ImGui::Columns( 2, "collisonColumns2" );
-	changed = ImGui::Combo( "Model Type", &body->modelType, ModelTypeItemGetter, nullptr, ARRAY_COUNT( bodyTypeNames ) ) || changed;
+	changed = ImGui::Combo( "Model Type", &body->modelType, ModelTypeItemGetter, nullptr, IM_ARRAYSIZE( bodyTypeNames ) ) || changed;
 	changed = ImGui::DragFloat( "Density", &body->density ) || changed;
 	ImGui::NextColumn();
 	changed = CollisionModelSize() || changed;
@@ -342,10 +323,9 @@ bool AfBodyEditor::InputAfVector( const char* label, idAFVector* vec )
 
 }
 
-
 static bool ModelTypeItemGetter( void* data, int index, const char** out )
 {
-	if( index < 0 || index >= ARRAY_COUNT( bodyTypeNames ) )
+	if( index < 0 || index >= IM_ARRAYSIZE( bodyTypeNames ) )
 	{
 		return false;
 	}

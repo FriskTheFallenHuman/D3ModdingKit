@@ -256,7 +256,7 @@ if(NOT MSVC)
 	check_c_source_compiles("#include <SDL_syswm.h>
 		int main() { SDL_SysWMinfo wmInfo = {}; wmInfo.info.x11.display = NULL; return 0; }" HAVE_SDL_X11)
 	unset(CMAKE_REQUIRED_LIBRARIES)
-		
+
 	if (HAVE_SDL_X11)
 		message(STATUS "This SDL2 has X11 support")
 		add_definitions(-DD3_SDL_X11)
@@ -322,7 +322,7 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 	if(cxx_has_fp-contract)
 		add_compile_options(-ffp-contract=off)
 	endif()
-	
+
 	if(ASAN)
 		# if this doesn't work, ASan might not be available on your platform, don't set ASAN then..
 		add_compile_options(-fsanitize=address)
@@ -349,7 +349,7 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 	if(cxx_has_Woverload_virtual)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual")
 	endif()
-	
+
 	# shut up about using memcpy() on classes, in the cases doom3 uses it it seems to be fine
 	CHECK_CXX_COMPILER_FLAG("-Wno-class-memaccess" cxx_has_Wno-class-memaccess)
 	if(cxx_has_Wno-class-memaccess)
@@ -432,20 +432,21 @@ elseif(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4286 /ignore:4217")
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4286 /ignore:4217")
 	set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4286 /ignore:4217")
-	
+
+
 	add_definitions(-D_ALLOW_KEYWORD_MACROS) # because of the "#define private public" and "#define protected public" in TypeInfo.cpp
-	
+
 	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
 	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
 	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
 	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
-	
+
 	# use 8MB stack instead of 1MB, so big models don't overflow it with _alloca()
 	set(ldflags "${ldflags} /STACK:8388608")
-	
+
 	# let the 32bit app use more than 2gb of ram
 	set(ldflags "${ldflags} /LARGEADDRESSAWARE")
-	
+
 	# Don't let the linker generate manifest files for shared dlls
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
 else()
@@ -583,7 +584,7 @@ set(src_renderer
 	renderer/tr_turboshadow.cpp
 )
 
-# Don't use precompiled headers for renderer/stblib_impls.c
+# Don't use precompiled headers for renderer/stblib_impls.c source.
 set_source_files_properties(
 	renderer/stblib_impls.c
 	PROPERTIES
@@ -730,7 +731,7 @@ set(src_snd
 	sound/stbvorbis_impl.c
 )
 
-# Don't use precompiled headers for sound/stbvorbis_impl.c
+# Don't use precompiled headers for sound/stbvorbis_impl.c source.
 set_source_files_properties(
 	sound/stbvorbis_impl.c
 	PROPERTIES
@@ -1366,9 +1367,9 @@ if(ENGINE)
 		${src_imgui}
 		${src_editor_tools}
 	)
-	
+
 	if(MSVC)
-		# set MSVC default debug directory on executable	
+		# set MSVC default debug directory on executable
 		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_STARTUP_PROJECT ${DHEWM3BINARY})
 		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${DHEWM3BINARY}.exe")
 		set_target_properties(${DHEWM3BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
@@ -1378,13 +1379,13 @@ if(ENGINE)
 	endif()
 
 	target_precompile_headers(${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(${DHEWM3BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" "${CMAKE_SOURCE_DIR}/libs/imgui")
 
 	if(HARDLINK_GAME)
 		set_target_properties(${DHEWM3BINARY} PROPERTIES COMPILE_DEFINITIONS "${TOOLS_DEFINES}")
 		target_include_directories(${DHEWM3BINARY} PRIVATE ${game_includes})
-	
+
 		# Hack to get .natvis added
 		if (MSVC)
 			target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/game.natvis")
@@ -1427,19 +1428,19 @@ if(DEDICATED)
 		${src_sys_base}
 		${src_debuggerServer}
 	)
-	
+
 	if(MSVC)
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer})
 	endif()
-	
+
 	target_precompile_headers(${DHEWM3BINARY}ded PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(${DHEWM3BINARY}ded PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
 		set_target_properties(${DHEWM3BINARY}ded PROPERTIES COMPILE_DEFINITIONS "IMGUI_DISABLE;ID_DEDICATED")
 		target_include_directories(${DHEWM3BINARY}ded PRIVATE ${game_includes})
-	
+
 		# Hack to get .natvis added
 		if (MSVC)
 			target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/game.natvis")
@@ -1455,7 +1456,7 @@ if(DEDICATED)
 	set_target_properties(${DHEWM3BINARY}ded PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(${DHEWM3BINARY}ded PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 	set_target_properties(${DHEWM3BINARY}ded PROPERTIES FOLDER "exes")
-	
+
 	list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
 
 	target_link_libraries(${DHEWM3BINARY}ded
@@ -1549,16 +1550,16 @@ endif()
 
 if(BASE AND NOT HARDLINK_GAME)
 	add_library(Game${cpu} SHARED ${src_game})
-	
+
 	if (MSVC)
 		target_sources(Game${cpu} PRIVATE "sys/win32/natvis/game.natvis")
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game})
 	endif()
-	
+
 	target_precompile_headers(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
-	
+
 	set_target_properties(Game${cpu} PROPERTIES PREFIX "")
 	set_target_properties(Game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL")
 	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/game")

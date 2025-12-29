@@ -2018,8 +2018,8 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 	//     yes, like so many scaling-related things this is a bit hacky
 	//     and note that this is special cased in StateChanged and you
 	//     can *not* generally set windowDef properties like this.
-	cursor->SetStateBool("scaleto43", true);
-	cursor->StateChanged(gameLocal.time); // DG end
+	cursor->SetStateBool( "scaleto43", true );
+	cursor->StateChanged( gameLocal.time ); // DG end
 
 	savefile->ReadInt( oldMouseX );
 	savefile->ReadInt( oldMouseY );
@@ -7994,9 +7994,7 @@ bool idPlayer::GetPhysicsToVisualTransform( idVec3 &origin, idMat3 &axis ) {
 
 		axis = idAngles( 0.0f, smoothedAngles.yaw, 0.0f ).ToMat3();
 		origin = ( smoothedOrigin - GetPhysics()->GetOrigin() ) * axis.Transpose();
-
 	} else {
-
 		axis = viewAxis;
 		origin = modelOffset;
 	}

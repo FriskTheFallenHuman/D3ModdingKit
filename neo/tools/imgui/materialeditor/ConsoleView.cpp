@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -33,25 +34,28 @@ If you have questions concerning this license or the applicable additional terms
 
 #define EDIT_HEIGHT 25
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /**
-* Constructor for ConsoleView.
-*/
-ConsoleView::ConsoleView()
-	: editConsole(NULL)
-	, limitConsoleLines(100)
-	, editInputLastKeyDownTime(0)
+ * Constructor for ConsoleView.
+ */
+ConsoleView::ConsoleView() :
+	editConsole( NULL ),
+	limitConsoleLines( 100 ),
+	editInputLastKeyDownTime( 0 )
 {
 }
 
 /**
-* Destructor for ConsoleView.
-*/
-ConsoleView::~ConsoleView() {
+ * Destructor for ConsoleView.
+ */
+ConsoleView::~ConsoleView()
+{
 }
 
-void ConsoleView::Init() {
+void ConsoleView::Init()
+{
 	editConsole = new TextEditor();
 	editConsole->SetReadOnly( true );
 	editConsole->SetShowLineNumber( false );
@@ -63,13 +67,13 @@ void ConsoleView::Init() {
 }
 
 /**
-* Adds text to the end of the console output window.
-* @param msg The text to append.
-* \todo: BMatt Nerve: Fix scroll code so the output window will scroll as text
-* is added if the cursor is at the end of the window.
-*/
-void ConsoleView::AddText( const char *msg ) {
-
+ * Adds text to the end of the console output window.
+ * @param msg The text to append.
+ * \todo: BMatt Nerve: Fix scroll code so the output window will scroll as text
+ * is added if the cursor is at the end of the window.
+ */
+void ConsoleView::AddText( const char* msg )
+{
 	idStr work;
 
 	work = msg;
@@ -77,88 +81,105 @@ void ConsoleView::AddText( const char *msg ) {
 
 	auto lines = editConsole->GetTextLines();
 
-	if ( lines.size() > limitConsoleLines ) {
+	if( lines.size() > limitConsoleLines )
+	{
 		int numDelete = lines.size() - limitConsoleLines;
 		lines.erase( lines.begin(), lines.begin() + numDelete );
 	}
-	for ( int i = 0; i < work.Length(); ) {
-		int j = work.Find('\n', i);
-		if (j == -1) {
+	for( int i = 0; i < work.Length(); )
+	{
+		int j = work.Find( '\n', i );
+		if( j == -1 )
+		{
 			break;
 		}
 		idStr line;
-		work.Mid(i, j - i, line);
+		work.Mid( i, j - i, line );
 
 		lines.push_back( std::string( line.c_str() ) );
 		i = j + 1;
-	}	
+	}
 
-	TextEditor::Coordinates sel = TextEditor::Coordinates( (int)lines.size() - 1, 0 );
+	TextEditor::Coordinates sel = TextEditor::Coordinates( ( int )lines.size() - 1, 0 );
 	editConsole->SetTextLines( lines );
 	editConsole->SetCursorPosition( sel );
 }
 
 /**
-* Replaces the text in the console window with the specified text.
-* @param text The text to place in the console window.
-*/
-void ConsoleView::SetConsoleText ( const idStr &text ) {
+ * Replaces the text in the console window with the specified text.
+ * @param text The text to place in the console window.
+ */
+void ConsoleView::SetConsoleText( const idStr& text )
+{
 	editInput = text;
 }
 
 /**
-* Executes the specified console command. If the command is passed
-* as a parameter then it is executed otherwise the command in the
-* input box is executed.
-* @param cmd The text to execute. If this string is empty then the
-* input edit box text is used.
-*/
-void ConsoleView::ExecuteCommand ( const idStr &cmd ) {
-
+ * Executes the specified console command. If the command is passed
+ * as a parameter then it is executed otherwise the command in the
+ * input box is executed.
+ * @param cmd The text to execute. If this string is empty then the
+ * input edit box text is used.
+ */
+void ConsoleView::ExecuteCommand( const idStr& cmd )
+{
 	idStr str;
-	if ( cmd.Length() > 0 ) {
+	if( cmd.Length() > 0 )
+	{
 		str = cmd;
-	} else {
+	}
+	else
+	{
 		str = editInput;
 	}
 
-	if ( str != "" ) {
+	if( str != "" )
+	{
 		editInput.Clear();
 		common->Printf( "%s\n", str.c_str() );
 
 		// avoid adding multiple identical commands in a row
 		int index = consoleHistory.Num();
 
-		if ( index == 0 || str != consoleHistory[index-1]) {
+		if( index == 0 || str != consoleHistory[index - 1] )
+		{
 			// keep the history to 16 commands, removing the oldest command
-			if ( consoleHistory.Num () > 16 ) {
-				consoleHistory.RemoveIndex ( 0 );
+			if( consoleHistory.Num() > 16 )
+			{
+				consoleHistory.RemoveIndex( 0 );
 			}
 			currentHistoryPosition = consoleHistory.Append( str );
-		} else {
+		}
+		else
+		{
 			currentHistoryPosition = consoleHistory.Num() - 1;
 		}
 
-		currentCommand.Clear ();
+		currentCommand.Clear();
 
 		bool propogateCommand = true;
 
 		// process some of our own special commands
-		if ( str.Icmp( "clear" ) == 0 ) {
+		if( str.Icmp( "clear" ) == 0 )
+		{
 			editConsole->SetText( std::string( "" ) );
 		}
-		else if ( str.Icmp ( "edit" ) == 0) {
+		else if( str.Icmp( "edit" ) == 0 )
+		{
 			propogateCommand = false;
 		}
-		if ( propogateCommand ) {
+		if( propogateCommand )
+		{
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, str );
 		}
 	}
 }
 
-void ConsoleView::Draw( const ImVec2 &pos, const ImVec2 &size ) {
-	editConsole->Render( "###Lines", ImVec2( size.x, size.y-EDIT_HEIGHT ) );
-	if ( ImGui::InputTextStr( "###Input", &editInput, ImGuiInputTextFlags_ElideLeft ) ) {
+void ConsoleView::Draw( const ImVec2& pos, const ImVec2& size )
+{
+	editConsole->Render( "###Lines", ImVec2( size.x, size.y - EDIT_HEIGHT ) );
+	if( ImGui::InputTextStr( "###Input", &editInput, ImGuiInputTextFlags_ElideLeft ) )
+	{
 	}
 	ImGui::SetItemDefaultFocus();
 	ImGui::SetItemKeyOwner( ImGuiKey_Enter );
@@ -169,50 +190,62 @@ void ConsoleView::Draw( const ImVec2 &pos, const ImVec2 &size ) {
 	ImGui::SetItemKeyOwner( ImGuiKey_PageDown );
 
 	// keep auto focus on the input box
-	if (ImGui::IsItemHovered() || (ImGui::IsWindowFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)))
-		ImGui::SetKeyboardFocusHere(-1);
+	if( ImGui::IsItemHovered() || ( ImGui::IsWindowFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked( 0 ) ) )
+	{
+		ImGui::SetKeyboardFocusHere( -1 );
+	}
 
 	PreTranslateMessage();
-	if ( selectEditInput ) {
+	if( selectEditInput )
+	{
 		selectEditInput = false;
 	}
-	if ( ImGui::IsWindowFocused() ) {
+	if( ImGui::IsWindowFocused() )
+	{
 		MaterialEditorSetActiveWindow( ME_WINDOW_CONSOLE );
 	}
 }
 
 /**
-* Handles keyboard input to process the "Enter" key to execute
-* commands and command history.
-*/
-bool ConsoleView::PreTranslateMessage() {
-	int timeEnd = Sys_Milliseconds();
-	int elapsed = timeEnd - editInputLastKeyDownTime;
+ * Handles keyboard input to process the "Enter" key to execute
+ * commands and command history.
+ */
+bool ConsoleView::PreTranslateMessage()
+{
+	int timeEnd		= Sys_Milliseconds();
+	int elapsed		= timeEnd - editInputLastKeyDownTime;
 	int keydownTime = 200;
 
-	if ( ImGui::IsKeyDown( ImGuiKey_Enter ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_Enter ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			this->ExecuteCommand();
 			editInputLastKeyDownTime = timeEnd;
 		}
 		return true;
 	}
 
-	if ( ImGui::IsKeyDown( ImGuiKey_UpArrow ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_UpArrow ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			// save off the current in-progress command so we can get back to it
-			if ( saveCurrentCommand == true ) {
-				currentCommand = editInput;
+			if( saveCurrentCommand == true )
+			{
+				currentCommand	   = editInput;
 				saveCurrentCommand = false;
 			}
 
-			if ( consoleHistory.Num () > 0 ) {
+			if( consoleHistory.Num() > 0 )
+			{
 				editInput = consoleHistory[currentHistoryPosition];
 
 				selectEditInput = true;
 			}
 
-			if ( currentHistoryPosition > 0 ) {
+			if( currentHistoryPosition > 0 )
+			{
 				--currentHistoryPosition;
 			}
 			editInputLastKeyDownTime = timeEnd;
@@ -220,64 +253,78 @@ bool ConsoleView::PreTranslateMessage() {
 		return true;
 	}
 
-	if ( ImGui::IsKeyDown( ImGuiKey_DownArrow ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_DownArrow ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			int selLocation = 0;
-			if ( currentHistoryPosition < consoleHistory.Num () - 1 ) {
+			if( currentHistoryPosition < consoleHistory.Num() - 1 )
+			{
 				++currentHistoryPosition;
-				editInput = consoleHistory[currentHistoryPosition];
+				editInput	= consoleHistory[currentHistoryPosition];
 				selLocation = consoleHistory[currentHistoryPosition].Length();
 			}
-			else {
-				editInput = currentCommand;
+			else
+			{
+				editInput	= currentCommand;
 				selLocation = currentCommand.Length();
-				currentCommand.Clear ();
+				currentCommand.Clear();
 				saveCurrentCommand = true;
 			}
 
-			selectEditInput = true;
+			selectEditInput			 = true;
 			editInputLastKeyDownTime = timeEnd;
 		}
 		return true;
 	}
-	if ( ImGui::IsKeyDown( ImGuiKey_Tab ) ) {
-		if ( elapsed > keydownTime ) {
-			common->Printf ( "Command History\n----------------\n" );
-			for ( int i = 0 ; i < consoleHistory.Num ();i++ )
+	if( ImGui::IsKeyDown( ImGuiKey_Tab ) )
+	{
+		if( elapsed > keydownTime )
+		{
+			common->Printf( "Command History\n----------------\n" );
+			for( int i = 0; i < consoleHistory.Num(); i++ )
 			{
-				common->Printf ( "[cmd %d]:  %s\n" , i , consoleHistory[i].c_str() );
+				common->Printf( "[cmd %d]:  %s\n", i, consoleHistory[i].c_str() );
 			}
-			common->Printf ( "----------------\n" );
+			common->Printf( "----------------\n" );
 			editInputLastKeyDownTime = timeEnd;
 		}
 		return true;
 	}
-	if ( ImGui::IsKeyDown( ImGuiKey_PageDown ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_PageDown ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			editConsole->MoveDown( 10 );
 			editInputLastKeyDownTime = timeEnd;
 		}
 		return true;
 	}
 
-	if ( ImGui::IsKeyDown( ImGuiKey_PageUp ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_PageUp ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			editConsole->MoveUp( 10 );
 			editInputLastKeyDownTime = timeEnd;
 		}
 		return true;
 	}
 
-	if ( ImGui::IsKeyDown( ImGuiKey_Home ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_Home ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			editConsole->MoveTop();
 			editInputLastKeyDownTime = timeEnd;
 		}
 		return true;
 	}
 
-	if ( ImGui::IsKeyDown( ImGuiKey_End ) ) {
-		if ( elapsed > keydownTime ) {
+	if( ImGui::IsKeyDown( ImGuiKey_End ) )
+	{
+		if( elapsed > keydownTime )
+		{
 			editConsole->MoveBottom();
 			editInputLastKeyDownTime = timeEnd;
 		}

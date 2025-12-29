@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,7 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __TREECTRL_H__
 #define __TREECTRL_H__
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 /*
 ===============================================================================
@@ -39,27 +41,25 @@ namespace ImGuiTools {
 ===============================================================================
 */
 
-class TreeNode {
+class TreeNode
+{
 public:
-	TreeNode()
-		: label()
-		, item(0)
-		, node()
-		, id(-1)
-		, imageId(-1)
+	TreeNode() :
+		label(),
+		item( 0 ),
+		node(),
+		id( -1 ),
+		imageId( -1 )
 	{
-		
 	}
-	virtual ~TreeNode() {
-		Shutdown();
-	}
+	virtual ~TreeNode() { Shutdown(); }
 
-	void Init(int _id)
+	void Init( int _id )
 	{
 		label.Clear();
 		item = 0;
-		node.SetOwner(this);
-		id = _id;
+		node.SetOwner( this );
+		id		= _id;
 		imageId = -1;
 	}
 
@@ -67,97 +67,90 @@ public:
 	{
 		node.RemoveFromParent();
 		label.Clear();
-		id = 0;
+		id		= 0;
 		imageId = -1;
 	}
 
-	ID_INLINE int					GetItem() {
-		return item;
-	}
-	ID_INLINE void					SetItem( int _item ) {
-		item = _item;
-	}
-	ID_INLINE void					SetLabel( const char *_label ) {
-		label = _label;
-	}
-	ID_INLINE const idStr &				GetLabel() const {
-		return label;
-	}
-	ID_INLINE idHierarchy<TreeNode>& GetNode() {
-		return node;
-	}
-	ID_INLINE int				GetID() {
-		return id;
-	}
-	ID_INLINE void				SetImageID( int _imageId ) {
-		imageId = _imageId;
-	}
-	ID_INLINE int				GetImageID() {
-		return imageId;
-	}
+	ID_INLINE int		   GetItem() { return item; }
+	ID_INLINE void		   SetItem( int _item ) { item = _item; }
+	ID_INLINE void		   SetLabel( const char* _label ) { label = _label; }
+	ID_INLINE const idStr& GetLabel() const { return label; }
+	ID_INLINE idHierarchy<TreeNode>& GetNode() { return node; }
+	ID_INLINE int					 GetID() { return id; }
+	ID_INLINE void					 SetImageID( int _imageId ) { imageId = _imageId; }
+	ID_INLINE int					 GetImageID() { return imageId; }
 
 private:
-	idStr						label;
-	int							item;
-	idHierarchy<TreeNode>		node;
-	int							id;
-	int							imageId;
+	idStr				  label;
+	int					  item;
+	idHierarchy<TreeNode> node;
+	int					  id;
+	int					  imageId;
 };
 
-typedef bool (*treeItemCompare_t)( void *data, TreeNode *item, const char *name );
-typedef bool (*treeItemTooltip_t)( void *data, TreeNode *item, idStr &tooltipText );
-typedef void (*treeItemSelected_t)( void *data, bool doubleClick );
-typedef void (*treeItemContextMenu_t)( void *data, TreeNode *item );
-typedef void (*treeItemBeginDrag_t)( void *data, TreeNode *source );
-typedef void (*treeItemEndDrag_t)( void *data, TreeNode *source, TreeNode *destination );
-typedef void (*treeItemInput_t)( void *data, bool prepare, TreeNode *item );
+typedef bool ( *treeItemCompare_t )( void* data, TreeNode* item, const char* name );
+typedef bool ( *treeItemTooltip_t )( void* data, TreeNode* item, idStr& tooltipText );
+typedef void ( *treeItemSelected_t )( void* data, bool doubleClick );
+typedef void ( *treeItemContextMenu_t )( void* data, TreeNode* item );
+typedef void ( *treeItemBeginDrag_t )( void* data, TreeNode* source );
+typedef void ( *treeItemEndDrag_t )( void* data, TreeNode* source, TreeNode* destination );
+typedef void ( *treeItemInput_t )( void* data, bool prepare, TreeNode* item );
 
-class TreeCtrl {
+class TreeCtrl
+{
 public:
-	TreeCtrl()
-		: nodeAllocator()
-		, root()
-		, selectedItem(NULL)
-		, pathToSelectedItem()
-		, numNodes(0)
+	TreeCtrl() :
+		nodeAllocator(),
+		root(),
+		selectedItem( NULL ),
+		pathToSelectedItem(),
+		numNodes( 0 )
 	{
 		root = nodeAllocator.Alloc();
-		root->Init(0);
+		root->Init( 0 );
 		numNodes++;
 	}
-	virtual ~TreeCtrl() {
+	virtual ~TreeCtrl()
+	{
 		DeleteAllItems();
 		pathToSelectedItem.Clear();
 	}
 
-	void							DeleteAllItems();
-	void							DeleteItem( TreeNode *item );
-	TreeNode *						GetRootItem() const;
-	void							SetItemText( TreeNode *item, const char *text );
-	const idStr&					GetItemText( TreeNode *item ) const;
-	TreeNode *						GetParentItem( TreeNode *item ) const;
-	TreeNode *						GetChildItem( TreeNode *item ) const;
-	TreeNode *						GetNextSiblingItem( TreeNode *item ) const;
-	TreeNode *						InsertItem( const idStr &name, TreeNode *parent = NULL, TreeNode *after = NULL );
-	void							SetItemData( TreeNode *item, int data );
-	int								GetItemData( TreeNode *item ) const;
-	TreeNode *						GetSelectedItem() const;
-	void							SelectItem( TreeNode *item );
-	void							SortChildren( TreeNode *item );
-	void							EditLabel( TreeNode *item );
+	void		 DeleteAllItems();
+	void		 DeleteItem( TreeNode* item );
+	TreeNode*	 GetRootItem() const;
+	void		 SetItemText( TreeNode* item, const char* text );
+	const idStr& GetItemText( TreeNode* item ) const;
+	TreeNode*	 GetParentItem( TreeNode* item ) const;
+	TreeNode*	 GetChildItem( TreeNode* item ) const;
+	TreeNode*	 GetNextSiblingItem( TreeNode* item ) const;
+	TreeNode*	 InsertItem( const idStr& name, TreeNode* parent = NULL, TreeNode* after = NULL );
+	void		 SetItemData( TreeNode* item, int data );
+	int			 GetItemData( TreeNode* item ) const;
+	TreeNode*	 GetSelectedItem() const;
+	void		 SelectItem( TreeNode* item );
+	void		 SortChildren( TreeNode* item );
+	void		 EditLabel( TreeNode* item );
 
-	void							Draw( treeItemTooltip_t tooltip, treeItemSelected_t selected, treeItemContextMenu_t contextMenu, treeItemBeginDrag_t beginDrag, treeItemEndDrag_t endDrag, treeItemInput_t input, void *data );
+	void Draw( treeItemTooltip_t tooltip, treeItemSelected_t selected, treeItemContextMenu_t contextMenu, treeItemBeginDrag_t beginDrag, treeItemEndDrag_t endDrag, treeItemInput_t input, void* data );
 
 private:
-	void							DrawNode( TreeNode *item,  treeItemTooltip_t tooltip, treeItemSelected_t selected, treeItemContextMenu_t contextMenu, treeItemBeginDrag_t beginDrag, treeItemEndDrag_t endDrag, treeItemInput_t input, void *data );
-	void							UpdatePathToSelectedItem();
-	void							DeleteAllItemsOfNode( TreeNode *item );
+	void						DrawNode( TreeNode*	 item,
+							   treeItemTooltip_t	 tooltip,
+							   treeItemSelected_t	 selected,
+							   treeItemContextMenu_t contextMenu,
+							   treeItemBeginDrag_t	 beginDrag,
+							   treeItemEndDrag_t	 endDrag,
+							   treeItemInput_t		 input,
+							   void*				 data );
+	void						UpdatePathToSelectedItem();
+	void						DeleteAllItemsOfNode( TreeNode* item );
 
-	idBlockAlloc<TreeNode,256>		nodeAllocator;
-	TreeNode *						root;
-	TreeNode *						selectedItem;
-	idList<int>						pathToSelectedItem;
-	int								numNodes;
+	idBlockAlloc<TreeNode, 256> nodeAllocator;
+	TreeNode*					root;
+	TreeNode*					selectedItem;
+	idList<int>					pathToSelectedItem;
+	int							numNodes;
 };
 
 }

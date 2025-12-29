@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,7 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "../ImGuiTools.h"
 #pragma hdrstop
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 // DeclEditor dialog
 
@@ -38,17 +40,17 @@ namespace ImGuiTools {
 DeclEditor::DeclEditor
 ================
 */
-DeclEditor::DeclEditor()
-	: isShown(false)
-	, windowText()
-	, statusBarText()
-	, declEdit()
-	, testButtonEnabled(false)
-	, okButtonEnabled(false)
-	, cancelButtonEnabled(true)
-	, errorText()
-	, decl(NULL)
-	, firstLine(0)
+DeclEditor::DeclEditor() :
+	isShown( false ),
+	windowText(),
+	statusBarText(),
+	declEdit(),
+	testButtonEnabled( false ),
+	okButtonEnabled( false ),
+	cancelButtonEnabled( true ),
+	errorText(),
+	decl( NULL ),
+	firstLine( 0 )
 {
 	declEdit.Init();
 }
@@ -58,29 +60,36 @@ DeclEditor::DeclEditor()
 DeclEditor::TestDecl
 ================
 */
-bool DeclEditor::TestDecl( const idStr &declText ) {
+bool DeclEditor::TestDecl( const idStr& declText )
+{
 	idLexer src( LEXFL_NOSTRINGCONCAT );
 	idToken token;
-	int indent;
+	int		indent;
 
 	errorText.Clear();
 
 	src.LoadMemory( declText, declText.Length(), "decl text" );
 
 	indent = 0;
-	while( src.ReadToken( &token ) ) {
-		if ( token == "{" ) {
+	while( src.ReadToken( &token ) )
+	{
+		if( token == "{" )
+		{
 			indent++;
-		} else if ( token == "}" ) {
+		}
+		else if( token == "}" )
+		{
 			indent--;
 		}
 	}
 
-	if ( indent < 0 ) {
+	if( indent < 0 )
+	{
 		errorText = "Missing opening brace!";
 		return false;
 	}
-	if ( indent > 0 ) {
+	if( indent > 0 )
+	{
 		errorText = "Missing closing brace!";
 		return false;
 	}
@@ -92,10 +101,12 @@ bool DeclEditor::TestDecl( const idStr &declText ) {
 DeclEditor::UpdateStatusBar
 ================
 */
-void DeclEditor::UpdateStatusBar( void ) {
+void DeclEditor::UpdateStatusBar( void )
+{
 	int line, column, character;
 
-	if ( decl ) {
+	if( decl )
+	{
 		declEdit.GetCursorPos( line, column, character );
 		statusBarText = va( "Line: %d, Column: %d", decl->GetLineNum() + line, column );
 	}
@@ -106,12 +117,12 @@ void DeclEditor::UpdateStatusBar( void ) {
 DeclEditor::Reset
 ================
 */
-void DeclEditor::Reset() {
-
+void DeclEditor::Reset()
+{
 	windowText.Clear();
 
 	testButtonEnabled = false;
-	okButtonEnabled = false;
+	okButtonEnabled	  = false;
 
 	UpdateStatusBar();
 }
@@ -121,19 +132,21 @@ void DeclEditor::Reset() {
 DeclEditor::Start
 ================
 */
-void DeclEditor::Start( idDecl *decl ) {
-	int numLines = 0;
-	int numCharsPerLine = 0;
-	int maxCharsPerLine = 0;
+void DeclEditor::Start( idDecl* decl )
+{
+	int	  numLines		  = 0;
+	int	  numCharsPerLine = 0;
+	int	  maxCharsPerLine = 0;
 	idStr declText;
 
 	this->decl = decl;
 
 	ShowIt( true );
 
-	switch( decl->GetType() ) {
+	switch( decl->GetType() )
+	{
 		case DECL_ENTITYDEF:
-			//declEdit.SetStringColor( SRE_COLOR_BLUE, SRE_COLOR_DARK_CYAN );
+			// declEdit.SetStringColor( SRE_COLOR_BLUE, SRE_COLOR_DARK_CYAN );
 			declEdit.LoadKeyWordsFromFile( "editors/entity.def" );
 			break;
 		case DECL_MATERIAL:
@@ -167,22 +180,29 @@ void DeclEditor::Start( idDecl *decl ) {
 
 	firstLine = decl->GetLineNum();
 
-	char *localDeclText = (char *)_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
+	char* localDeclText = ( char* )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
 	decl->GetText( localDeclText );
 	declText = localDeclText;
 
 	declEdit.SetText( declText );
 
-	for( const char *ptr = declText.c_str(); *ptr; ptr++ ) {
-		if ( *ptr == '\r' ) {
-			if ( numCharsPerLine > maxCharsPerLine ) {
+	for( const char* ptr = declText.c_str(); *ptr; ptr++ )
+	{
+		if( *ptr == '\r' )
+		{
+			if( numCharsPerLine > maxCharsPerLine )
+			{
 				maxCharsPerLine = numCharsPerLine;
 			}
 			numCharsPerLine = 0;
 			numLines++;
-		} else if ( *ptr == '\t' ) {
+		}
+		else if( *ptr == '\t' )
+		{
 			numCharsPerLine += TAB_SIZE;
-		} else {
+		}
+		else
+		{
 			numCharsPerLine++;
 		}
 	}
@@ -190,66 +210,77 @@ void DeclEditor::Start( idDecl *decl ) {
 	windowText = va( "Declaration Editor (%s, line %d)", decl->GetFileName(), decl->GetLineNum() );
 
 	testButtonEnabled = false;
-	okButtonEnabled = false;
+	okButtonEnabled	  = false;
 
 	UpdateStatusBar();
 
-	//declEdit.SetFocus();
+	// declEdit.SetFocus();
 
 	ImGui::OpenPopup( "Declaration Editor" );
 }
 
-bool DeclEditor::Draw() {
+bool DeclEditor::Draw()
+{
 	bool accepted = false;
 
-	if ( !isShown ) {
+	if( !isShown )
+	{
 		return false;
 	}
 
-	if ( ImGui::BeginPopup( "Declaration Editor" ) ) {
-
+	if( ImGui::BeginPopup( "Declaration Editor" ) )
+	{
 		declEdit.Draw();
-		if ( declEdit.IsEdited() ) {
+		if( declEdit.IsEdited() )
+		{
 			testButtonEnabled = true;
-			okButtonEnabled = true;
+			okButtonEnabled	  = true;
 		}
 
 		ImGui::BeginDisabled( !testButtonEnabled );
-		if ( ImGui::Button( "Test" ) ) {
+		if( ImGui::Button( "Test" ) )
+		{
 			OnBnClickedTest();
 		}
 		ImGui::EndDisabled();
 
 		ImGui::BeginDisabled( !okButtonEnabled );
-		if ( ImGui::Button( "Save" ) ) {
-			if ( OnBnClickedOk() ) {
+		if( ImGui::Button( "Save" ) )
+		{
+			if( OnBnClickedOk() )
+			{
 				accepted = true;
 				ImGui::CloseCurrentPopup();
 			}
 		}
 		bool subPopupAccepted = false;
-		if ( ImGui::BeginPopup( "Warning saving" ) ) {
+		if( ImGui::BeginPopup( "Warning saving" ) )
+		{
 			ImGui::TextUnformatted( va( "Declaration file %s has been modified outside of the editor.\r\nReload declarations and save?", decl->GetFileName() ) );
 
-			if ( ImGui::Button( "OK" ) ) {
+			if( ImGui::Button( "OK" ) )
+			{
 				OnBnClickedOkAccepted();
 				subPopupAccepted = true;
 				ImGui::CloseCurrentPopup();
 			}
-			if ( ImGui::Button( "Cancel" ) ) {
+			if( ImGui::Button( "Cancel" ) )
+			{
 				ImGui::CloseCurrentPopup();
 			}
 
 			ImGui::EndPopup();
 		}
-		if ( subPopupAccepted ) {
+		if( subPopupAccepted )
+		{
 			accepted = true;
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndDisabled();
 		ImGui::SameLine();
 		ImGui::BeginDisabled( !cancelButtonEnabled );
-		if ( ImGui::Button( "Cancel" ) ) {
+		if( ImGui::Button( "Cancel" ) )
+		{
 			OnBnClickedCancel();
 			ImGui::CloseCurrentPopup();
 		}
@@ -258,7 +289,7 @@ bool DeclEditor::Draw() {
 		ImGui::EndPopup();
 	}
 
-	if ( accepted )
+	if( accepted )
 	{
 		isShown = false;
 	}
@@ -273,18 +304,20 @@ bool DeclEditor::Draw() {
 DeclEditor::OnBnClickedTest
 ================
 */
-void DeclEditor::OnBnClickedTest() {
+void DeclEditor::OnBnClickedTest()
+{
 	idStr declText;
 
-	if ( decl ) {
-
+	if( decl )
+	{
 		declEdit.GetText( declText );
 
-		if ( !TestDecl( declText ) ) {
+		if( !TestDecl( declText ) )
+		{
 			return;
 		}
 
-		char *oldDeclText = (char *)_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
+		char* oldDeclText = ( char* )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
 		decl->GetText( oldDeclText );
 		decl->SetText( declText );
 		decl->Invalidate();
@@ -302,24 +335,28 @@ void DeclEditor::OnBnClickedTest() {
 DeclEditor::OnBnClickedOk
 ================
 */
-bool DeclEditor::OnBnClickedOk() {
+bool DeclEditor::OnBnClickedOk()
+{
 	idStr declText;
 
-	if ( decl ) {
-
+	if( decl )
+	{
 		declEdit.GetText( declText );
 
-		if ( !TestDecl( declText ) ) {
+		if( !TestDecl( declText ) )
+		{
 			return false;
 		}
 
-		if ( decl->SourceFileChanged() ) {
+		if( decl->SourceFileChanged() )
+		{
 			ImGui::OpenPopup( "Warning saving" );
 			return false;
 		}
 
 		decl->SetText( declText );
-		if ( !decl->ReplaceSourceFileText() ) {
+		if( !decl->ReplaceSourceFileText() )
+		{
 			errorText = va( "Couldn't save: %s.\r\nMake sure the declaration file is not read-only.", decl->GetFileName() );
 			return false;
 		}
@@ -330,24 +367,26 @@ bool DeclEditor::OnBnClickedOk() {
 	return true;
 }
 
-void DeclEditor::OnBnClickedOkAccepted() {
+void DeclEditor::OnBnClickedOkAccepted()
+{
 	idStr declText;
 
-	if ( decl ) {
-
+	if( decl )
+	{
 		declEdit.GetText( declText );
 
 		declManager->Reload( false );
 		DeclBrowser::Instance().ReloadDeclarations();
 
 		decl->SetText( declText );
-		if ( !decl->ReplaceSourceFileText() ) {
+		if( !decl->ReplaceSourceFileText() )
+		{
 			errorText = va( "Couldn't save: %s.\r\nMake sure the declaration file is not read-only.", decl->GetFileName() );
 			return;
 		}
 		decl->Invalidate();
 	}
-	
+
 	okButtonEnabled = false;
 }
 
@@ -356,14 +395,16 @@ void DeclEditor::OnBnClickedOkAccepted() {
 DeclEditor::OnBnClickedCancel
 ================
 */
-void DeclEditor::OnBnClickedCancel() {
-	if ( okButtonEnabled ) {
+void DeclEditor::OnBnClickedCancel()
+{
+	if( okButtonEnabled )
+	{
 		/*
 		if ( MessageBox( "Cancel changes?", "Cancel", MB_YESNO | MB_ICONQUESTION ) != IDYES ) {
 			return;
 		}*/
 	}
-	//OnCancel();
+	// OnCancel();
 }
 
 }

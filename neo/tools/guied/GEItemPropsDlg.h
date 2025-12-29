@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -28,6 +29,37 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEITEMPROPSDLG_H_
 #define GEITEMPROPSDLG_H_
 
-bool GEItemPropsDlg_DoModal	( HWND parent, idWindow* window, idDict& outDict );
+//bool GEItemPropsDlg_DoModal	( HWND parent, idWindow* window, idDict& outDict );
+
+class rvGEItemProps
+{
+public:
+	rvGEItemProps();
+	~rvGEItemProps();
+
+	bool	Create( HWND parent, bool visible );
+	void	Show( bool visible );
+	void	Update( void );
+
+	HWND	GetWindow( void );
+	void	SetWorkspace( rvGEWorkspace* workspace );
+
+protected:
+
+	static int CALLBACK WndProc( HWND hWnd, UINT msg, LPARAM lParam );
+
+	HWND				mWnd;
+	HWND				mDlg;
+	rvGEWindowWrapper	* mWrapper;
+	rvGEWorkspace	*	mWorkspace;
+
+	idDict				mDict;
+	PROPSHEETHEADER		propsh;
+	PROPSHEETPAGE		propsp[4];
+};
+
+ID_INLINE HWND rvGEItemProps::GetWindow( void ) {
+	return mWnd;
+}
 
 #endif // GEITEMPROPSDLG_H_

@@ -775,6 +775,7 @@ void idCollisionModelManagerLocal::SetupTrmModelStructure( void ) {
 	trmBrushes[0]->b->bounds.Clear();
 	trmBrushes[0]->b->checkcount = 0;
 	trmBrushes[0]->b->contents = -1;		// all contents
+	trmBrushes[0]->b->material = trmMaterial;
 	trmBrushes[0]->b->numPlanes = 0;
 }
 
@@ -3071,7 +3072,7 @@ cm_model_t *idCollisionModelManagerLocal::LoadRenderModel( const char *fileName 
 	// shutdown the hash
 	ShutdownHash();
 
-	common->DPrintf( "...loaded collision model: " S_COLOR_WHITE "'%s'\n", model->name.c_str() );
+	common->DPrintf( "..loaded collision model: '%s'\n", model->name.c_str() );
 
 	return model;
 }

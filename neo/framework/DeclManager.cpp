@@ -1148,14 +1148,14 @@ const idDecl *idDeclManagerLocal::FindType( declType_t type, const char *name, b
 	// if it hasn't been parsed yet, parse it now
 	if ( decl->declState == DS_UNPARSED ) {
 		decl->ParseLocal();
+
+		// SRS - set non-purgeable flag only after ParseLocal(), don't reset if declState is parsed or defaulted
+		decl->parsedOutsideLevelLoad = !insideLevelLoad;
 	}
 
 	// mark it as referenced
 	decl->referencedThisLevel = true;
 	decl->everReferenced = true;
-	if ( insideLevelLoad ) {
-		decl->parsedOutsideLevelLoad = false;
-	}
 
 	return decl->self;
 }
@@ -1272,7 +1272,9 @@ void idDeclManagerLocal::ListType( const idCmdArgs &args, declType_t type ) {
 			continue;
 		}
 
-		if ( decl->referencedThisLevel ) {
+		if ( decl->parsedOutsideLevelLoad ) {
+			common->Printf( "!" );
+		} else if ( decl->referencedThisLevel ) {
 			common->Printf( "*" );
 		} else if ( decl->everReferenced ) {
 			common->Printf( "." );
@@ -1746,7 +1748,8 @@ idDeclLocal *idDeclManagerLocal::FindTypeWithoutParsing( declType_t type, const 
 	decl->sourceFile = &implicitDecls;
 	decl->referencedThisLevel = false;
 	decl->everReferenced = false;
-	decl->parsedOutsideLevelLoad = !insideLevelLoad;
+	// SRS - initialize to false, otherwise all decls will be set to non-purgeable during Init()
+	decl->parsedOutsideLevelLoad = false;	// !insideLevelLoad;
 
 	// add it to the linear list and hash table
 	decl->index = linearLists[typeIndex].Num();

@@ -511,7 +511,6 @@ void idSessionLocal::CompleteWipe() {
 	}
 }
 
-
 /*
 ================
 idSessionLocal::ShowLoadingGui
@@ -1535,7 +1534,7 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 			fileSystem->CloseFile( savegameFile );
 			savegameFile = NULL;
 
-			common->Warning( "WARNING: Loading savegame failed, will restart the map with the player persistent data!" );
+			common->Warning( "Loading savegame failed, will restart the map with the player persistent data!\n" );
 
 			game->SetServerInfo( mapSpawnData.serverInfo );
 			game->InitFromNewMap( fullMapName + ".map", rw, sw, idAsyncNetwork::server.IsActive(), idAsyncNetwork::client.IsActive(), Sys_Milliseconds(), com_editors );
@@ -1972,8 +1971,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 #endif
 }
 
-bool idSessionLocal::QuickSave()
-{
+bool idSessionLocal::QuickSave() {
 	idStr saveName = common->GetLanguageDict()->GetString( "#str_07178" );
 
 	idStr saveFilePathBase = saveName;
@@ -2025,8 +2023,7 @@ bool idSessionLocal::QuickSave()
 	return false;
 }
 
-bool idSessionLocal::QuickLoad()
-{
+bool idSessionLocal::QuickLoad() {
 	idStr saveName = common->GetLanguageDict()->GetString( "#str_07178" );
 
 	idStr saveFilePathBase = saveName;

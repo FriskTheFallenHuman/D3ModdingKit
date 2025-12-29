@@ -106,6 +106,7 @@ public:
 
 	// fires up the optional GUI event, also returns them if you set wait to true
 	// if MSG_PROMPT and wait, returns the prompt string or NULL if aborted
+	// if MSG_CDKEY and want, returns the cd key or NULL if aborted
 	// network tells wether one should still run the network loop in a wait dialog
 	virtual const char *MessageBox( msgBoxType_t type, const char *message, const char *title = NULL, bool wait = false, const char *fire_yes = NULL, const char *fire_no = NULL, bool network = false ) = 0;
 	virtual void	StopBox( void ) = 0;

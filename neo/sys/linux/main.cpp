@@ -62,10 +62,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <mach-o/dyld.h> // _NSGetExecutablePath
 #endif
 
-#ifdef __HAIKU__
-#include <FindDirectory.h>
-#endif
-
 #ifndef PATH_MAX
 // this is mostly for windows. windows has a MAX_PATH = 260 #define, but allows
 // longer paths anyway.. this might not be the maximum allowed length, but is
@@ -167,14 +163,6 @@ static void SetExecutablePath(char* exePath)
 		exePath[0] = '\0';
 	}
 
-	// TODO: realpath() ?
-	// TODO: no idea what this is if the executable is in an app bundle
-#elif defined(__HAIKU__)
-	if (find_path(B_APP_IMAGE_SYMBOL, B_FIND_PATH_IMAGE_PATH, NULL, exePath, PATH_MAX) != B_OK)
-	{
-		exePath[0] = '\0';
-	}
-
 #else
 
 	// Several platforms (for example OpenBSD) don't provide a
@@ -210,9 +198,9 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 				// the path should have a base dir in it, otherwise it probably just contains the executable
 				idStr testPath = path + "/" BASE_GAMEDIR;
 				if (stat(testPath.c_str(), &st) != -1 && S_ISDIR(st.st_mode)) {
-	#ifdef _DEBUG
+#ifdef _DEBUG
 					common->Warning("using path of executable: %s", path.c_str());
-	#endif // _DEBUG
+#endif // _DEBUG
 					return true;
 				} else {
 					path.Clear();

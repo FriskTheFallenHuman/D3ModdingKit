@@ -1430,7 +1430,7 @@ sysEvent_t Sys_GetEvent() {
 	#if SDL_VERSION_ATLEAST(3, 0, 0)
 						// yes, it's ok if this is not 0-terminated, the code generating
 						// events from s handles that
-						strncpy(s, ev.text.text, sizeof(s));
+						idStr::Copynz(s, ev.text.text, sizeof(s));
 	#else // SDL2
 						memcpy( s, ev.text.text, SDL_TEXTINPUTEVENT_TEXT_SIZE );
 						s[SDL_TEXTINPUTEVENT_TEXT_SIZE] = '\0';

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -48,120 +49,124 @@ If you have questions concerning this license or the applicable additional terms
 
 class TextEditor;
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
-static const int		TAB_SIZE = 4;
+static const int	TAB_SIZE = 4;
 
-static const idVec3		SRE_COLOR_BLACK	= idVec3(0.0f, 0.0f, 0.0f);
-static const idVec3		SRE_COLOR_WHITE = idVec3(1.0f, 1.0f, 1.0f);
-static const idVec3		SRE_COLOR_RED = idVec3(1.0f, 0.0f, 0.0f);
-static const idVec3		SRE_COLOR_GREEN = idVec3(0.0f, 1.0f, 0.0f);
-static const idVec3		SRE_COLOR_BLUE = idVec3(0.0f, 0.0f, 1.0f);
-static const idVec3		SRE_COLOR_YELLOW = idVec3(1.0f, 1.0f, 0.0f);
-static const idVec3		SRE_COLOR_MAGENTA = idVec3(1.0f, 0.0f, 1.0f);
-static const idVec3		SRE_COLOR_CYAN = idVec3(0.0f, 1.0f, 1.0f);
-static const idVec3		SRE_COLOR_ORANGE = idVec3(1.0f, 0.5f, 0.0f);
-static const idVec3		SRE_COLOR_PURPLE = idVec3(0.59f, 0.0f, 0.59f);
-static const idVec3		SRE_COLOR_PINK = idVec3(0.73f, 0.4f, 0.48f);
-static const idVec3		SRE_COLOR_GREY = idVec3(0.33f, 0.33f, 0.33f);
-static const idVec3		SRE_COLOR_BROWN = idVec3(0.4f, 0.35f, 0.07f);
-static const idVec3		SRE_COLOR_LIGHT_GREY = idVec3(0.66f, 0.66f, 0.66f);
-static const idVec3		SRE_COLOR_LIGHT_BROWN = idVec3(0.66f, 0.59f, 0.08f);
-static const idVec3		SRE_COLOR_DARK_GREEN = idVec3(0.0f, 0.5f, 0.0f);
-static const idVec3		SRE_COLOR_DARK_CYAN = idVec3(0.0f, 0.59f, 0.59f);
-static const idVec3		SRE_COLOR_DARK_YELLOW = idVec3(0.86f, 0.78f, 0.07f);
+static const idVec3 SRE_COLOR_BLACK		  = idVec3( 0.0f, 0.0f, 0.0f );
+static const idVec3 SRE_COLOR_WHITE		  = idVec3( 1.0f, 1.0f, 1.0f );
+static const idVec3 SRE_COLOR_RED		  = idVec3( 1.0f, 0.0f, 0.0f );
+static const idVec3 SRE_COLOR_GREEN		  = idVec3( 0.0f, 1.0f, 0.0f );
+static const idVec3 SRE_COLOR_BLUE		  = idVec3( 0.0f, 0.0f, 1.0f );
+static const idVec3 SRE_COLOR_YELLOW	  = idVec3( 1.0f, 1.0f, 0.0f );
+static const idVec3 SRE_COLOR_MAGENTA	  = idVec3( 1.0f, 0.0f, 1.0f );
+static const idVec3 SRE_COLOR_CYAN		  = idVec3( 0.0f, 1.0f, 1.0f );
+static const idVec3 SRE_COLOR_ORANGE	  = idVec3( 1.0f, 0.5f, 0.0f );
+static const idVec3 SRE_COLOR_PURPLE	  = idVec3( 0.59f, 0.0f, 0.59f );
+static const idVec3 SRE_COLOR_PINK		  = idVec3( 0.73f, 0.4f, 0.48f );
+static const idVec3 SRE_COLOR_GREY		  = idVec3( 0.33f, 0.33f, 0.33f );
+static const idVec3 SRE_COLOR_BROWN		  = idVec3( 0.4f, 0.35f, 0.07f );
+static const idVec3 SRE_COLOR_LIGHT_GREY  = idVec3( 0.66f, 0.66f, 0.66f );
+static const idVec3 SRE_COLOR_LIGHT_BROWN = idVec3( 0.66f, 0.59f, 0.08f );
+static const idVec3 SRE_COLOR_DARK_GREEN  = idVec3( 0.0f, 0.5f, 0.0f );
+static const idVec3 SRE_COLOR_DARK_CYAN	  = idVec3( 0.0f, 0.59f, 0.59f );
+static const idVec3 SRE_COLOR_DARK_YELLOW = idVec3( 0.86f, 0.78f, 0.07f );
 
-typedef struct {
-	const char *	keyWord;
-	idVec3			color;
-	const char *	description;
+typedef struct
+{
+	const char* keyWord;
+	idVec3		color;
+	const char* description;
 } keyWord_t;
 
-typedef bool ( *objectMemberCallback_t )( const char* objectName, idStrList &listBox );
-typedef bool ( *toolTipCallback_t )( const char* name, idStr &string );
+typedef bool ( *objectMemberCallback_t )( const char* objectName, idStrList& listBox );
+typedef bool ( *toolTipCallback_t )( const char* name, idStr& string );
 
-class SyntaxRichEditCtrl {
+class SyntaxRichEditCtrl
+{
 public:
-							SyntaxRichEditCtrl( void );
-							~SyntaxRichEditCtrl( void );
+	SyntaxRichEditCtrl( void );
+	~SyntaxRichEditCtrl( void );
 
-	void					Init( void );
-	void					Draw( void );
+	void Init( void );
+	void Draw( void );
 
-	void					SetCaseSensitive( bool caseSensitive );
-	void					AllowPathNames( bool allow );
-	void					EnableKeyWordAutoCompletion( bool enable );
-	void					SetKeyWords( const keyWord_t kws[] );
-	bool					LoadKeyWordsFromFile( const char *fileName );
-	void					SetObjectMemberCallback( objectMemberCallback_t callback );
-	void					SetFunctionParmCallback( toolTipCallback_t callback );
-	void					SetToolTipCallback( toolTipCallback_t callback );
+	void SetCaseSensitive( bool caseSensitive );
+	void AllowPathNames( bool allow );
+	void EnableKeyWordAutoCompletion( bool enable );
+	void SetKeyWords( const keyWord_t kws[] );
+	bool LoadKeyWordsFromFile( const char* fileName );
+	void SetObjectMemberCallback( objectMemberCallback_t callback );
+	void SetFunctionParmCallback( toolTipCallback_t callback );
+	void SetToolTipCallback( toolTipCallback_t callback );
 
-	void					SetStringColor( const idVec3 &color, const idVec3 &altColor = vec3_origin );
+	void SetStringColor( const idVec3& color, const idVec3& altColor = vec3_origin );
 
-	void					GetCursorPos( int &line, int &column, int &character ) const;
+	void GetCursorPos( int& line, int& column, int& character ) const;
 
-	void					GetText( idStr &text ) const;
-	void					SetText( const char *text );
+	void GetText( idStr& text ) const;
+	void SetText( const char* text );
 
-	void					SetReadOnly( bool readOnly );
-	bool					GetReadOnly();
+	void SetReadOnly( bool readOnly );
+	bool GetReadOnly();
 
-	bool					CanCopy();
-	void					Copy();
-	bool					CanCut();
-	void					Cut();
-	bool					CanPaste();
-	void					Paste();
-	bool					CanUndo();
-	void					Undo();
-	bool					CanRedo();
-	void					Redo();
-	bool					CanDelete();
-	void					Delete();
+	bool CanCopy();
+	void Copy();
+	bool CanCut();
+	void Cut();
+	bool CanPaste();
+	void Paste();
+	bool CanUndo();
+	void Undo();
+	bool CanRedo();
+	void Redo();
+	bool CanDelete();
+	void Delete();
 
-	bool					IsEdited() const;
+	bool IsEdited() const;
 
-	void					SetFocus();
+	void SetFocus();
 
 public:
-	bool					OnToolTipNotify( const char *ident, char *tooltip, size_t tooltipSize );
-	void					OnChar( bool ctrl, bool shift, bool alt, int nChar );
-	bool					OnKeyDown();
-	bool					OnMouseButtonDown();
-private:
-	void					OnMouseWheel(float wheel);
-
-	void					OnEditGoToLine();
-	void					OnEditFindNext();
-	void					OnFindDialogMessage( FindReplaceDialog::command_t command );
+	bool OnToolTipNotify( const char* ident, char* tooltip, size_t tooltipSize );
+	void OnChar( bool ctrl, bool shift, bool alt, int nChar );
+	bool OnKeyDown();
+	bool OnMouseButtonDown();
 
 private:
+	void OnMouseWheel( float wheel );
 
-	TextEditor *			scriptEdit;
-	ImVec2					scriptEditPos;
-	ImVec2					scriptEditSize;
-	idStr					errorText;
-	FindReplaceDialog		findDlg;
-	GoToLineDialog			gotoDlg;
-	MessageBoxDialog		msgBoxDlg;
-	idStr					findStr;
-	idStr					replaceStr;
-	bool					matchCase;
-	bool					matchWholeWords;
-	bool					searchForward;
-	int						firstLine;
+	void OnEditGoToLine();
+	void OnEditFindNext();
+	void OnFindDialogMessage( FindReplaceDialog::command_t command );
+
+private:
+	TextEditor*		  scriptEdit;
+	ImVec2			  scriptEditPos;
+	ImVec2			  scriptEditSize;
+	idStr			  errorText;
+	FindReplaceDialog findDlg;
+	GoToLineDialog	  gotoDlg;
+	MessageBoxDialog  msgBoxDlg;
+	idStr			  findStr;
+	idStr			  replaceStr;
+	bool			  matchCase;
+	bool			  matchWholeWords;
+	bool			  searchForward;
+	int				  firstLine;
 
 	// settings
-	//CHARFORMAT2				defaultCharFormat;
-	idVec3					defaultColor;
-	idVec3					singleLineCommentColor;
-	idVec3					multiLineCommentColor;
-	idVec3					stringColor[2];
-	idVec3					literalColor;
-	idVec3					braceHighlightColor;
+	// CHARFORMAT2				defaultCharFormat;
+	idVec3			  defaultColor;
+	idVec3			  singleLineCommentColor;
+	idVec3			  multiLineCommentColor;
+	idVec3			  stringColor[2];
+	idVec3			  literalColor;
+	idVec3			  braceHighlightColor;
 
-	typedef enum {
+	typedef enum
+	{
 		CT_WHITESPACE,
 		CT_COMMENT,
 		CT_STRING,
@@ -171,56 +176,56 @@ private:
 		CT_PUNCTUATION
 	} charType_t;
 
-	int						charType[256];
+	int					   charType[256];
 
-	idList<keyWord_t>		keyWordsFromFile;
-	const keyWord_t *		keyWords;
-	int *					keyWordLengths;
-	idVec3 *				keyWordColors;
-	idHashIndex				keyWordHash;
+	idList<keyWord_t>	   keyWordsFromFile;
+	const keyWord_t*	   keyWords;
+	int*				   keyWordLengths;
+	idVec3*				   keyWordColors;
+	idHashIndex			   keyWordHash;
 
-	bool					caseSensitive;
-	bool					allowPathNames;
-	bool					keyWordAutoCompletion;
+	bool				   caseSensitive;
+	bool				   allowPathNames;
+	bool				   keyWordAutoCompletion;
 
-	objectMemberCallback_t	GetObjectMembers;
-	toolTipCallback_t		GetFunctionParms;
-	toolTipCallback_t		GetToolTip;
+	objectMemberCallback_t GetObjectMembers;
+	toolTipCallback_t	   GetFunctionParms;
+	toolTipCallback_t	   GetToolTip;
 
-	bool					updateSyntaxHighlighting;
-	int						stringColorIndex;
-	int						stringColorLine;
+	bool				   updateSyntaxHighlighting;
+	int					   stringColorIndex;
+	int					   stringColorLine;
 
-	int						autoCompleteStart;
-	ImVec2					autoCompleteListBoxPos;
-	ImVec2					autoCompleteListBoxSize;
-	idStrList				autoCompleteListBox;
-	idList<int>				autoCompleteListBoxFiltered;
-	int						autoCompleteListBoxSel;
-	idStr					autoCompleteInput;
-	int						autoCompleteLastKeyDownTime;
+	int					   autoCompleteStart;
+	ImVec2				   autoCompleteListBoxPos;
+	ImVec2				   autoCompleteListBoxSize;
+	idStrList			   autoCompleteListBox;
+	idList<int>			   autoCompleteListBoxFiltered;
+	int					   autoCompleteListBoxSel;
+	idStr				   autoCompleteInput;
+	int					   autoCompleteLastKeyDownTime;
 
-	int						funcParmToolTipStart;
-	ImVec2					funcParmToolTipPos;
-	ImVec2					funcParmToolTipSize;
-	idStr					funcParmToolTip;
+	int					   funcParmToolTipStart;
+	ImVec2				   funcParmToolTipPos;
+	ImVec2				   funcParmToolTipSize;
+	idStr				   funcParmToolTip;
 
 private:
-	void					InitSyntaxHighlighting( void );
-	void					SetCharType( int first, int last, int type );
+	void InitSyntaxHighlighting( void );
+	void SetCharType( int first, int last, int type );
 
-	void					FreeKeyWordsFromFile( void );
-	int						FindKeyWord( const char *keyWord, int length ) const;
+	void FreeKeyWordsFromFile( void );
+	int	 FindKeyWord( const char* keyWord, int length ) const;
 
-	bool					GetNameBeforeCurrentSelection( idStr &name, int &charIndex ) const;
+	bool GetNameBeforeCurrentSelection( idStr& name, int& charIndex ) const;
 
-	void					AutoCompleteInsertText( void );
-	void					AutoCompleteUpdate( void );
-	void					AutoCompleteShow( int columnIndex );
-	void					AutoCompleteHide( void );
+	void AutoCompleteInsertText( void );
+	void AutoCompleteUpdate( void );
+	void AutoCompleteShow( int columnIndex );
+	void AutoCompleteHide( void );
 
-	void					ToolTipShow( int charIndex, const char *string );
-	void					ToolTipHide( void );
+	void ToolTipShow( int charIndex, const char* string );
+	void ToolTipHide( void );
 };
 
 }

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,45 +35,41 @@ namespace ImGuiTools
 
 class SyntaxRichEditCtrl;
 
-class ScriptEditor {
-
+class ScriptEditor
+{
 public:
-							ScriptEditor();   // standard constructor
+	ScriptEditor(); // standard constructor
 
-	static ScriptEditor&	Instance();
+	static ScriptEditor& Instance();
 
-	void					OpenFile( const char *fileName );
+	void				 OpenFile( const char* fileName );
 
-	void					Reset();
-	void					Draw();
-	void					Exit( void );
+	void				 Reset();
+	void				 Draw();
+	void				 Exit( void );
 
-	void					ShowIt(bool show) {
-		isShown = show;
-	}
-	bool					IsShown() {
-		return isShown;
-	}
+	void				 ShowIt( bool show ) { isShown = show; }
+	bool				 IsShown() { return isShown; }
 
 protected:
-	void					OnBnClickedOk();
-	void					OnBnClickedCancel();
+	void OnBnClickedOk();
+	void OnBnClickedCancel();
 
 private:
-	bool					showTool;
-	bool					isShown;
-	idStr					windowText;
-	idStr					errorText;
-	idStr					statusBarText;
-	SyntaxRichEditCtrl		scriptEdit;
-	bool					okButtonEnabled;
-	bool					cancelButtonEnabled;
-	idStr					fileName;
-	int						firstLine;
+	bool			   showTool;
+	bool			   isShown;
+	idStr			   windowText;
+	idStr			   errorText;
+	idStr			   statusBarText;
+	SyntaxRichEditCtrl scriptEdit;
+	bool			   okButtonEnabled;
+	bool			   cancelButtonEnabled;
+	idStr			   fileName;
+	int				   firstLine;
 
 private:
-	void				InitScriptEvents( void );
-	void				UpdateStatusBar( void );
+	void InitScriptEvents( void );
+	void UpdateStatusBar( void );
 };
 
 }

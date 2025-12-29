@@ -20,7 +20,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,14 +33,16 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "MEMainFrame.h"
 
-namespace ImGuiTools {
+namespace ImGuiTools
+{
 
 MEMainFrame* meMainFrame = NULL;
 
 /**
-* Initializes the material editor tool.
-*/
-void MaterialEditorInit( void ) {
+ * Initializes the material editor tool.
+ */
+void		 MaterialEditorInit( void )
+{
 	com_editors = EDITOR_MATERIAL;
 
 	// To create the main window, this code creates a new frame window
@@ -50,11 +53,13 @@ void MaterialEditorInit( void ) {
 
 	impl::SetReleaseToolMouse( true );
 
-	D3::ImGuiHooks::OpenWindow(D3::ImGuiHooks::D3_ImGuiWin_MaterialEditor);
+	D3::ImGuiHooks::OpenWindow( D3::ImGuiHooks::D3_ImGuiWin_MaterialEditor );
 }
 
-void MaterialEditorSetActiveWindow( MaterialEditorWindow_t window ) {
-	if ( !meMainFrame ) {
+void MaterialEditorSetActiveWindow( MaterialEditorWindow_t window )
+{
+	if( !meMainFrame )
+	{
 		return;
 	}
 
@@ -62,25 +67,28 @@ void MaterialEditorSetActiveWindow( MaterialEditorWindow_t window ) {
 }
 
 /**
-* Called every frame by the doom engine to allow the material editor to process messages.
-*/
-void MaterialEditorDraw( void ) {
+ * Called every frame by the doom engine to allow the material editor to process messages.
+ */
+void MaterialEditorDraw( void )
+{
 	bool showTool;
 
-	if ( !meMainFrame ) {
+	if( !meMainFrame )
+	{
 		return;
 	}
 
 	showTool = meMainFrame != NULL;
 
-	if ( ImGui::Begin( "Material Editor", &showTool, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar ) ) {
+	if( ImGui::Begin( "Material Editor", &showTool, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar ) )
+	{
 		impl::SetReleaseToolMouse( true );
 
 		meMainFrame->Draw();
 	}
 	ImGui::End();
 
-	if ( meMainFrame && !showTool )
+	if( meMainFrame && !showTool )
 	{
 		MaterialEditorShutdown();
 		impl::SetReleaseToolMouse( false );
@@ -89,10 +97,10 @@ void MaterialEditorDraw( void ) {
 }
 
 /**
-* Called by the doom engine when the material editor needs to be destroyed.
-*/
-void MaterialEditorShutdown( void ) {
-
+ * Called by the doom engine when the material editor needs to be destroyed.
+ */
+void MaterialEditorShutdown( void )
+{
 	meMainFrame->OnDestroy();
 
 	delete meMainFrame;
@@ -102,12 +110,15 @@ void MaterialEditorShutdown( void ) {
 }
 
 /**
-* Allows the doom engine to reflect console output to the material editors console.
-*/
-void MaterialEditorPrintConsole( const char *msg ) {
+ * Allows the doom engine to reflect console output to the material editors console.
+ */
+void MaterialEditorPrintConsole( const char* msg )
+{
 	// meMainFrame can be null when starting immediately from commandline.
-	if(meMainFrame && com_editors & EDITOR_MATERIAL)
-		meMainFrame->PrintConsoleMessage(msg);
+	if( meMainFrame && com_editors & EDITOR_MATERIAL )
+	{
+		meMainFrame->PrintConsoleMessage( msg );
+	}
 }
 
 }

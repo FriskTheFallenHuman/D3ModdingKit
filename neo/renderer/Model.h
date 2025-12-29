@@ -153,7 +153,6 @@ typedef enum {
 	DM_CONTINUOUS	// must be recreated for every single view (time dependent things like particles)
 } dynamicModel_t;
 
-
 // Use when a joint its invalid in a selected model
 typedef int jointHandle_t;
 const int	INVALID_JOINT				= -1;
