@@ -335,15 +335,23 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 		set(sys_libs ${sys_libs} -fsanitize=undefined)
 	endif()
 
-	CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" cxx_has_fvisibility)
-	if(NOT cxx_has_fvisibility)
-		message(FATAL_ERROR "Compiler does not support -fvisibility")
+	if(NOT WIN32)
+		CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" cxx_has_fvisibility)
+		if(NOT cxx_has_fvisibility)
+			message(FATAL_ERROR "Compiler does not support -fvisibility")
+		endif()
+		add_compile_options(-fvisibility=hidden)
 	endif()
 	add_compile_options(-fvisibility=hidden)
 
 	# TODO fix these warnings
 	add_compile_options(-Wno-sign-compare)
 	add_compile_options(-Wno-switch)
+
+	CHECK_CXX_COMPILER_FLAG("-Wdangling-reference" cxx_has_Wdangling_reference)
+	if(cxx_has_Wdangling_reference)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=dangling-reference")
+	endif()
 
 	CHECK_CXX_COMPILER_FLAG("-Woverloaded-virtual" cxx_has_Woverload_virtual)
 	if(cxx_has_Woverload_virtual)
