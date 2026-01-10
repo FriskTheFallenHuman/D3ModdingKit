@@ -131,7 +131,11 @@ else()
 	add_definitions(-DIMGUI_DISABLE)
 endif()
 
-# Curl
+if(DEFINED ENV{MSYSTEM})
+	message(STATUS "Detected MSYS or similar environment. Using alternate curl path")
+	set(CURL_NO_CURL_CMAKE ON)
+endif()
+
 find_package(CURL QUIET)
 if(CURL_FOUND)
 	set(ID_ENABLE_CURL ON)
