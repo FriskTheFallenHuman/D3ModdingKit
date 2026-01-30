@@ -1533,14 +1533,21 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 		if ( gameSoundWorld ) {
 			gameSoundWorld->SetSlowmo( false );
 		}
-	} else {
+		// DG: not saving/restoring msecPrecise to avoid breaking savegames
+		//     if slowmo is off, this is the value msec(Precise) should have
+		msecPrecise = USERCMD_MSEC_PRECISE;
+	}
+	else {
 		if ( gameSoundWorld ) {
 			gameSoundWorld->SetSlowmo( true );
 		}
+		// DG: msec(Precise) should be set frequently anyway, so using the approximate msec
+		//     in the slowmo-case should be good enough (I know, famous last words etc)
+		msecPrecise = msec;
 	}
 
 	if ( gameSoundWorld ) {
-		gameSoundWorld->SetSlowmoSpeed( slowmoMsec / (float)USERCMD_MSEC );
+		gameSoundWorld->SetSlowmoSpeed( slowmoMsec / USERCMD_MSEC_PRECISE ); // DG: slowmoMsec now is precise
 	}
 #endif
 
@@ -2393,7 +2400,7 @@ void idGameLocal::RunTimeGroup2( int msec_fast ) { // dezo2/DG: added argument f
 	int num = 0;
 
 	fast.Increment( msec_fast );
-	fast.Get( time, previousTime, msec, framenum, realClientTime );
+	fast.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 
 	for( ent = activeEntities.Next(); ent != NULL; ent = ent->activeNode.Next() ) {
 		if ( ent->timeGroup != TIME_GROUP2 ) {
@@ -2404,7 +2411,7 @@ void idGameLocal::RunTimeGroup2( int msec_fast ) { // dezo2/DG: added argument f
 		num++;
 	}
 
-	slow.Get( time, previousTime, msec, framenum, realClientTime );
+	slow.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 }
 #endif
 
@@ -2446,8 +2453,9 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds, int activeEdito
 #ifdef _D3XP
 	ComputeSlowMsec();
 
-	slow.Get( time, previousTime, msec, framenum, realClientTime );
+	slow.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 	msec = slowmoMsec;
+	msecPrecise = slowmoMsec;
 #endif
 
 	if ( !isMultiplayer && g_stopTime.GetBool() ) {
@@ -2467,14 +2475,16 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds, int activeEdito
 
 		// dezo2/DG: recalculate each frame, see comment at CalcMSec()
 		int msec_fast = CalcMSec( framenum );
-		if ( slowmoState == SLOWMO_STATE_OFF )
+		if ( slowmoState == SLOWMO_STATE_OFF ) {
 			msec = msec_fast;
+			msecPrecise = USERCMD_MSEC_PRECISE;
+		}
 
 		time += msec;
 		realClientTime = time;
 
 #ifdef _D3XP
-		slow.Set( time, previousTime, msec, framenum, realClientTime );
+		slow.Set( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 #endif
 
 #ifdef GAME_DLL
@@ -2594,9 +2604,9 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds, int activeEdito
 
 #ifdef _D3XP
 		// service pending fast events
-		fast.Get( time, previousTime, msec, framenum, realClientTime );
+		fast.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 		idEvent::ServiceFastEvents();
-		slow.Get( time, previousTime, msec, framenum, realClientTime );
+		slow.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 #endif
 
 		timer_events.Stop();
@@ -4810,9 +4820,9 @@ idGameLocal::SelectTimeGroup
 */
 void idGameLocal::SelectTimeGroup( int timeGroup ) {
 	if ( timeGroup ) {
-		fast.Get( time, previousTime, msec, framenum, realClientTime );
+		fast.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 	} else {
-		slow.Get( time, previousTime, msec, framenum, realClientTime );
+		slow.Get( time, previousTime, msec, framenum, realClientTime, msecPrecise );
 	}
 }
 
@@ -4862,7 +4872,7 @@ void idGameLocal::ComputeSlowMsec() {
 
 		// stop the state
 		slowmoState = SLOWMO_STATE_OFF;
-		slowmoMsec = USERCMD_MSEC;
+		slowmoMsec = USERCMD_MSEC_PRECISE; // DG: slowmoMsec now is precise
 	}
 
 	// check the player state
@@ -4880,10 +4890,10 @@ void idGameLocal::ComputeSlowMsec() {
 	if ( powerupOn && slowmoState == SLOWMO_STATE_OFF ) {
 		slowmoState = SLOWMO_STATE_RAMPUP;
 
-		slowmoMsec = msec;
+		slowmoMsec = msecPrecise;
 		if ( gameSoundWorld ) {
 			gameSoundWorld->SetSlowmo( true );
-			gameSoundWorld->SetSlowmoSpeed( slowmoMsec / (float)USERCMD_MSEC );
+			gameSoundWorld->SetSlowmoSpeed( slowmoMsec / USERCMD_MSEC_PRECISE ); // DG: slowmoMsec now is precise
 		}
 	}
 	else if ( !powerupOn && slowmoState == SLOWMO_STATE_ON ) {
@@ -4895,12 +4905,15 @@ void idGameLocal::ComputeSlowMsec() {
 		}
 	}
 
+	// DG: for more precision in slowmo timing
+	static const float quarterFrameTime = USERCMD_MSEC_PRECISE * 0.25;
+
 	// do any necessary ramping
 	if ( slowmoState == SLOWMO_STATE_RAMPUP ) {
-		delta = 4 - slowmoMsec;
+		delta = quarterFrameTime - slowmoMsec; // DG: slowmoMsec now is precise
 
 		if ( fabs( delta ) < g_slowmoStepRate.GetFloat() ) {
-			slowmoMsec = 4;
+			slowmoMsec = quarterFrameTime; // DG: slowmoMsec now is precise
 			slowmoState = SLOWMO_STATE_ON;
 		}
 		else {
@@ -4908,14 +4921,14 @@ void idGameLocal::ComputeSlowMsec() {
 		}
 
 		if ( gameSoundWorld ) {
-			gameSoundWorld->SetSlowmoSpeed( slowmoMsec / (float)USERCMD_MSEC );
+			gameSoundWorld->SetSlowmoSpeed( slowmoMsec / USERCMD_MSEC_PRECISE ); // DG: slowmoMsec now is precise
 		}
 	}
 	else if ( slowmoState == SLOWMO_STATE_RAMPDOWN ) {
-		delta = 16 - slowmoMsec;
+		delta = USERCMD_MSEC_PRECISE - slowmoMsec; // DG: slowmoMsec now is precise
 
 		if ( fabs( delta ) < g_slowmoStepRate.GetFloat() ) {
-			slowmoMsec = 16;
+			slowmoMsec = USERCMD_MSEC_PRECISE; // DG: slowmoMsec now is precise
 			slowmoState = SLOWMO_STATE_OFF;
 			if ( gameSoundWorld ) {
 				gameSoundWorld->SetSlowmo( false );
@@ -4926,7 +4939,7 @@ void idGameLocal::ComputeSlowMsec() {
 		}
 
 		if ( gameSoundWorld ) {
-			gameSoundWorld->SetSlowmoSpeed( slowmoMsec / (float)USERCMD_MSEC );
+			gameSoundWorld->SetSlowmoSpeed( slowmoMsec / USERCMD_MSEC_PRECISE ); // DG: slowmoMsec now is precise
 		}
 	}
 }
@@ -4938,18 +4951,21 @@ idGameLocal::ResetSlowTimeVars
 */
 void idGameLocal::ResetSlowTimeVars() {
 	msec				= USERCMD_MSEC;
-	slowmoMsec			= USERCMD_MSEC;
+	msecPrecise			= USERCMD_MSEC_PRECISE;
+	slowmoMsec			= USERCMD_MSEC_PRECISE; // DG: slowmoMsec now is precise
 	slowmoState			= SLOWMO_STATE_OFF;
 
 	fast.framenum		= 0;
 	fast.previousTime	= 0;
 	fast.time			= 0;
 	fast.msec			= USERCMD_MSEC;
+	fast.msecPrecise	= USERCMD_MSEC_PRECISE;
 
 	slow.framenum		= 0;
 	slow.previousTime	= 0;
 	slow.time			= 0;
 	slow.msec			= USERCMD_MSEC;
+	fast.msecPrecise	= USERCMD_MSEC_PRECISE;
 }
 
 /*
