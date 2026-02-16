@@ -2607,18 +2607,28 @@ void idCommonLocal::Frame( void ) {
 		// set idLib frame number for frame based memory dumps
 		idLib::frameNumber = com_frameNumber;
 
-		if ( com_timescale.GetFloat() == 1.0f && GLimp_GetSwapInterval() != 0
-		     && fabsf(60.0f - GLimp_GetDisplayRefresh()) < 1.0f ) {
-			// if we're using vsync and the display is running at about 60Hz, start next tic
-			// immediately so our internal tic time and vsync don't drift apart
-			double now = Sys_MillisecondsPrecise();
-			if(nextTicTime > now) {
-				nextTicTime = now;
-			} // else a new tic is started anyway (which often means that this frame was too long)
-		} else if ( com_ticNumber == ticNumAtStart ) {
-			Com_WaitForNextTicStart();
+#if defined(_WIN32) && defined(ID_ALLOW_TOOLS)
+		// DG: when Radiant is open (unsure about other editors), sleeping here until
+		//   the next frame start somehow makes camera updates (in 2D and 3D windows) crawl?!
+		//   Doesn't *really* make sense (the editor updates run before common->Frame()),
+		//   but what can you do.. maybe MFC just doesn't like sleeping, maybe too many events pile up?
+		if ( com_editors == 0 )
+#endif
+		{
+			if ( com_timescale.GetFloat() == 1.0f && GLimp_GetSwapInterval() != 0
+				&& fabsf(60.0f - GLimp_GetDisplayRefresh()) < 1.0f ) {
+				// if we're using vsync and the display is running at about 60Hz, start next tic
+				// immediately so our internal tic time and vsync don't drift apart
+				double now = Sys_MillisecondsPrecise();
+				if ( nextTicTime > now ) {
+					nextTicTime = now;
+				} // else a new tic is started anyway (which often means that this frame was too long)
+			}
+			else if ( com_ticNumber == ticNumAtStart ) {
+				Com_WaitForNextTicStart();
+			}
+			// else the com_ticNumber has already been updated and it's past time to start the next frame
 		}
-		// else the com_ticNumber has already been updated and it's past time to start the next frame
 
 		D3P_FRAMEMARK // tell profiler (tracy) that this is the end of a frame
 	}
