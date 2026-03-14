@@ -70,6 +70,7 @@ Note: Numbers starting with a "#" like #330 refer to the bugreport with that num
 * Fixed a crash when using an incomplete cubemap texture (missing one side).  
   Will now print a warning about the missing side.
 * Fix wrong (flipped) labels of Prev./Next Weapon in dhewm3 settings menu (#731)
+* Gamepad trigger axes can now also be used for ducking and jumping (#733)
 * Several smaller fixes for all kinds of things incl. build issues
 
 

@@ -644,12 +644,12 @@ windowDef Desktop {
 }
 ```
 
-This sets an unstretched(!) background texture over the whole screen, repeating as aften as
+This sets an unstretched(!) background texture over the whole screen, repeating as often as
 necessary to fit the screen. Wouldn't have been possible without the new variables and CstDoom3's
 anchor system!
 
 Another usecase is to display things only in the "letter-box" bars, if you anchor the main part
-of your menu to the center (especially useful when modifying existing comples GUIs, like the Doom3
+of your menu to the center (especially useful when modifying existing complex GUIs, like the Doom3
 mainmenu, to be widescreen-friendly). For example, if your existing menu has a half-translucent
 grey bar on the bottom of the centered area (kinda like the doom3 main menu...), and you want to
 continue that to the borders of the screen, you could add something like:
