@@ -322,10 +322,10 @@ float idConsoleLocal::DrawMemoryUsage( float y ) {
 	memoryStats_t allocs, frees;
 
 	Mem_GetStats( allocs );
-	idStr s = va( "total allocated memory: %4d, %4dkB\n", allocs.num, allocs.totalSize >> 10 );
+	idStr s = va( "total allocated memory: %4d, %4lldkB\n", allocs.num, allocs.totalSize >> 10 );
 
 	Mem_GetFrameStats( allocs, frees );
-	s += va( "frame alloc: %4d, %4dkB  frame free: %4d, %4dkB", allocs.num, allocs.totalSize>>10, frees.num, frees.totalSize>>10 );
+	s += va( "frame alloc: %4d, %4lldkB  frame free: %4d, %4lldkB", allocs.num, allocs.totalSize>>10, frees.num, frees.totalSize>>10 );
 
 	Mem_ClearFrameStats();
 

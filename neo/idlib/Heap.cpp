@@ -1286,7 +1286,8 @@ Mem_Dump
 ==================
 */
 void Mem_Dump( const char *fileName ) {
-	int i, numBlocks, totalSize;
+	int i, numBlocks;
+	long long totalSize;
 	char dump[32], *ptr;
 	debugMemory_t *b;
 	idStr module, funcName;
@@ -1318,7 +1319,7 @@ void Mem_Dump( const char *fileName ) {
 	}
 
 	fprintf( f, "%8d total memory blocks allocated\r\n", numBlocks );
-	fprintf( f, "%8d KB memory allocated\r\n", ( totalSize >> 10 ) );
+	fprintf( f, "%8lld KB memory allocated\r\n", ( totalSize >> 10 ) );
 
 	fclose( f );
 }
@@ -1360,7 +1361,8 @@ typedef enum {
 } memorySortType_t;
 
 void Mem_DumpCompressed( const char *fileName, memorySortType_t memSort, int numFrames ) {
-	int numBlocks, totalSize, r, j;
+	int numBlocks, r, j;
+	long long totalSize;
 	debugMemory_t *b;
 	allocInfo_t *a, *nexta, *allocInfo = NULL, *sortedAllocInfo = NULL, *prevSorted, *nextSorted;
 	idStr module, funcName;
@@ -1469,7 +1471,7 @@ void Mem_DumpCompressed( const char *fileName, memorySortType_t memSort, int num
 	}
 
 	fprintf( f, "%8d total memory blocks allocated\r\n", numBlocks );
-	fprintf( f, "%8d KB memory allocated\r\n", ( totalSize >> 10 ) );
+	fprintf( f, "%8lld KB memory allocated\r\n", ( totalSize >> 10 ) );
 
 	fclose( f );
 }
