@@ -8,7 +8,21 @@
 
 Doom 3 Modding Kit is basically a kit oriented for modders and people that wants to make total conversion mods.
 
+## Contributing
 
+Contributions in the form of Pull Requests or by creating (meaningful) bugreports are welcome!
+
+But please note that **only human-written code** is accepted for this fork.
+
+#### Do not submit code developed with the assistance of generative "AI"!
+
+... like Microsoft Copilot, Anthropic Claude, ChatGPT, etc.
+
+Don't generate bugreports/issues or comments with "AI" either.
+
+Doing it anyway may get you banned from this project.
+
+This is not open for discussion.
 
 # CHANGES
 
